@@ -121,19 +121,20 @@ try
     // API endpoints
     app.MapContactApi();
 
-    // Auto-migrate and seed in development, ensure InMemory DB is created in production without PG
-    using (var scope = app.Services.CreateScope())
+    // Auto-migrate and seed
+    try
     {
+        using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        if (app.Environment.IsDevelopment())
-        {
+        if (hasDatabase && app.Environment.IsDevelopment())
             await db.Database.MigrateAsync();
-        }
         else
-        {
             await db.Database.EnsureCreatedAsync();
-        }
         await AdminSeedService.SeedAdminUserAsync(scope.ServiceProvider);
+    }
+    catch (Exception ex)
+    {
+        Log.Warning(ex, "Database initialization skipped — running without persistence");
     }
 
     app.Run();
