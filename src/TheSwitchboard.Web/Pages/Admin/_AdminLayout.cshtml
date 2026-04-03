@@ -1,0 +1,48 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Switchboard Admin</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <meta name="robots" content="noindex, nofollow" />
+</head>
+<body style="display: flex; min-height: 100vh;">
+    <!-- Sidebar -->
+    <aside style="width: 240px; background: rgba(255,255,255,0.02); border-right: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; flex-shrink: 0;">
+        <div style="font-size: 1rem; font-weight: 700; color: white; margin-bottom: 2rem;">
+            <span class="text-accent-blue">⚡</span> Admin
+        </div>
+        <nav style="display: flex; flex-direction: column; gap: 0.25rem;">
+            <a href="/Admin/Dashboard" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); transition: all 0.15s;">Dashboard</a>
+            <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-600); margin-top: 1rem; margin-bottom: 0.5rem; padding-left: 0.75rem;">Content</div>
+            <a href="/Admin/Content/BlogPosts" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Blog Posts</a>
+            <a href="/Admin/Content/CaseStudies" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Case Studies</a>
+            <a href="/Admin/Content/Testimonials" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Testimonials</a>
+            <a href="/Admin/Content/TeamMembers" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Team</a>
+            <a href="/Admin/Content/ClientLogos" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Logos</a>
+            <a href="/Admin/Content/FAQs" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">FAQs</a>
+            <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-600); margin-top: 1rem; margin-bottom: 0.5rem; padding-left: 0.75rem;">Forms</div>
+            <a href="/Admin/Forms/Submissions" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Submissions</a>
+            <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-600); margin-top: 1rem; margin-bottom: 0.5rem; padding-left: 0.75rem;">Settings</div>
+            <a href="/Admin/Settings" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Site Settings</a>
+        </nav>
+        <div style="margin-top: auto; padding-top: 2rem;">
+            <form method="post" asp-page="/Admin/Logout">
+                @Html.AntiForgeryToken()
+                <button type="submit" style="width: 100%; padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-500); background: none; border: 1px solid rgba(255,255,255,0.05); cursor: pointer;">
+                    Sign Out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main style="flex: 1; padding: 2rem;">
+        @RenderBody()
+    </main>
+</body>
+</html>

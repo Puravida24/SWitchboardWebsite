@@ -1,0 +1,157 @@
+/* The Switchboard — Design System Foundation */
+/* This will be replaced by Tailwind CSS 4 build output. */
+/* For now, define core custom properties and base styles. */
+
+:root {
+  /* Navy palette */
+  --navy-950: #050b24;
+  --navy-900: #07102e;
+  --navy-800: #091538;
+  --navy-700: #0b1a42;
+  --navy-600: #0d1f4c;
+
+  /* Accent */
+  --accent-blue: #2563eb;
+  --accent-blue-light: #3b82f6;
+  --accent-blue-glow: rgba(37, 99, 235, 0.4);
+  --accent-green: #059669;
+  --accent-amber: #d97706;
+  --accent-red: #dc2626;
+
+  /* Neutrals */
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--navy-950);
+  color: var(--slate-200);
+  line-height: 1.6;
+}
+
+/* Header */
+#site-header {
+  background: transparent;
+  transition: background-color 0.3s, backdrop-filter 0.3s;
+}
+#site-header.header-scrolled {
+  background: rgba(5, 11, 36, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(37, 99, 235, 0.08);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--accent-blue);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-primary:hover {
+  background-color: #1d4ed8;
+  box-shadow: 0 0 24px var(--accent-blue-glow);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--slate-300);
+  border: 1px solid var(--slate-700);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-secondary:hover {
+  border-color: var(--slate-500);
+  color: white;
+}
+
+/* Typography utilities */
+.text-accent-blue { color: var(--accent-blue-light); }
+.bg-navy-950 { background-color: var(--navy-950); }
+.text-slate-200 { color: var(--slate-200); }
+.text-slate-400 { color: var(--slate-400); }
+.text-slate-500 { color: var(--slate-500); }
+.text-slate-600 { color: var(--slate-600); }
+
+/* Section styling */
+.section-light {
+  background-color: var(--slate-50);
+  color: #0f172a;
+}
+
+/* Stat card left border */
+.stat-accent-border {
+  border-left: 2px solid var(--accent-blue);
+  padding-left: 1.5rem;
+}
+
+/* Utility: container */
+.container-site {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* Link reset */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--navy-950);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--slate-700);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--slate-600);
+}

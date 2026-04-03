@@ -1,0 +1,8 @@
+{
+  "name": "switchboard-web-styles",
+  "private": true,
+  "scripts": {
+    "css:build": "npx @tailwindcss/cli -i ./src/TheSwitchboard.Web/Styles/input.css -o ./src/TheSwitchboard.Web/wwwroot/css/site.css --minify",
+    "css:watch": "npx @tailwindcss/cli -i ./src/TheSwitchboard.Web/Styles/input.css -o ./src/TheSwitchboard.Web/wwwroot/css/site.css --watch"
+  }
+}

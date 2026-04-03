@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Switchboard — Insurance Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+                    colors: {
+                        dark: { 900: '#030818', 800: '#050b24', 700: '#07102e' },
+                        accent: { DEFAULT: '#2563eb', light: '#3b82f6', lighter: '#60a5fa' },
+                        emerald: { DEFAULT: '#059669' },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        .grid-bg {
+            background-color: #030818;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+
+        /* Marquee */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+            display: flex;
+            animation: marquee 30s linear infinite;
+            width: max-content;
+        }
+        .marquee-track:hover { animation-play-state: paused; }
+
+        /* Fade in on scroll */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Dashed animated line */
+        @keyframes dash {
+            to { stroke-dashoffset: -20; }
+        }
+        .dash-line {
+            stroke-dasharray: 8 6;
+            animation: dash 1s linear infinite;
+        }
+
+        /* Count-up transition */
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-[#030818] text-white antialiased">
+
+    <!-- ═══════════════════════════════════════════
+         1. HEADER
+    ═══════════════════════════════════════════ -->
+    <header class="fixed top-0 left-0 right-0 z-50 h-[72px] flex items-center"
+            style="background: rgba(3,8,24,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+        <div class="w-full max-w-[1400px] mx-auto px-6 md:px-10 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2 shrink-0">
+                <div class="w-8 h-8 rounded-lg bg-[#2563eb] flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <span class="text-white font-bold text-lg tracking-tight">The Switchboard</span>
+            </a>
+            <!-- Nav center -->
+            <nav class="hidden lg:flex items-center gap-8 text-[14px] font-medium text-white/60">
+                <a href="#engines" class="hover:text-white transition">Platform</a>
+                <a href="#process" class="hover:text-white transition">How It Works</a>
+                <a href="#comparison" class="hover:text-white transition">Why Us</a>
+                <a href="#case-studies" class="hover:text-white transition">Results</a>
+                <a href="#" class="hover:text-white transition">Pricing</a>
+            </nav>
+            <!-- CTA -->
+            <a href="#cta" class="hidden sm:inline-flex items-center gap-2 bg-[#2563eb] text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg hover:bg-[#3b82f6] transition">
+                Request a Demo
+            </a>
+            <!-- Mobile menu button -->
+            <button class="lg:hidden text-white/60" x-data @click="$dispatch('toggle-menu')">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════
+         2. HERO
+    ═══════════════════════════════════════════ -->
+    <section class="grid-bg relative min-h-screen flex items-center overflow-hidden pt-[72px]">
+        <div class="w-full max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
+            <div class="max-w-[700px]">
+                <!-- Overline -->
+                <p class="text-[12px] font-semibold tracking-[0.2em] text-[#60a5fa] mb-6 uppercase">Insurance Intelligence Platform</p>
+                <!-- Headline -->
+                <h1 class="text-[44px] sm:text-[56px] md:text-[72px] font-extrabold leading-[1.05] tracking-[-0.04em] text-white mb-6">
+                    Your Data Is Worth More Than You Think.
+                </h1>
+                <!-- Subtext -->
+                <p class="text-[18px] md:text-[24px] leading-relaxed text-white/60 mb-10 max-w-[600px]">
+                    The Switchboard transforms raw prospect data into risk-scored, conversion-predicted opportunities — enriched, segmented, and routed in real-time.
+                </p>
+                <!-- Buttons -->
+                <div class="flex flex-wrap gap-4">
+                    <a href="#cta" class="inline-flex items-center gap-2 bg-[#2563eb] text-white text-[16px] font-semibold px-8 py-4 rounded-lg hover:bg-[#3b82f6] transition">
+                        Request a Demo
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    </a>
+                    <a href="#engines" class="inline-flex items-center gap-2 border border-white/20 text-white text-[16px] font-semibold px-8 py-4 rounded-lg hover:border-white/40 transition">
+                        See the Platform
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Massive stat -->
+        <div class="hidden md:block absolute right-[5%] top-1/2 -translate-y-1/2 select-none pointer-events-none" aria-hidden="true">
+            <span class="block text-[200px] lg:text-[280px] font-black leading-none" style="color: rgba(255,255,255,0.04);">340%</span>
+            <span class="block text-[14px] font-medium mt-2 text-right" style="color: rgba(255,255,255,0.3);">Average ROI lift for our agency partners</span>
+        </div>
+        <!-- Bottom line -->
+        <div class="absolute bottom-0 left-0 right-0 h-px" style="background: rgba(255,255,255,0.1);"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         3. SCROLLING METRICS BAR
+    ═══════════════════════════════════════════ -->
+    <section class="bg-[#2563eb] h-14 flex items-center overflow-hidden relative">
+        <div class="marquee-track">
+            <span class="whitespace-nowrap text-white text-[16px] font-semibold px-3">10M+ opportunities processed &nbsp;&bull;&nbsp; &lt;250ms decision latency &nbsp;&bull;&nbsp; 340% avg ROI lift &nbsp;&bull;&nbsp; 50+ agency partners &nbsp;&bull;&nbsp; 94% match accuracy &nbsp;&bull;&nbsp; 47% close rate increase &nbsp;&bull;&nbsp;</span>
+            <span class="whitespace-nowrap text-white text-[16px] font-semibold px-3">10M+ opportunities processed &nbsp;&bull;&nbsp; &lt;250ms decision latency &nbsp;&bull;&nbsp; 340% avg ROI lift &nbsp;&bull;&nbsp; 50+ agency partners &nbsp;&bull;&nbsp; 94% match accuracy &nbsp;&bull;&nbsp; 47% close rate increase &nbsp;&bull;&nbsp;</span>
+            <span class="whitespace-nowrap text-white text-[16px] font-semibold px-3">10M+ opportunities processed &nbsp;&bull;&nbsp; &lt;250ms decision latency &nbsp;&bull;&nbsp; 340% avg ROI lift &nbsp;&bull;&nbsp; 50+ agency partners &nbsp;&bull;&nbsp; 94% match accuracy &nbsp;&bull;&nbsp; 47% close rate increase &nbsp;&bull;&nbsp;</span>
+            <span class="whitespace-nowrap text-white text-[16px] font-semibold px-3">10M+ opportunities processed &nbsp;&bull;&nbsp; &lt;250ms decision latency &nbsp;&bull;&nbsp; 340% avg ROI lift &nbsp;&bull;&nbsp; 50+ agency partners &nbsp;&bull;&nbsp; 94% match accuracy &nbsp;&bull;&nbsp; 47% close rate increase &nbsp;&bull;&nbsp;</span>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         4. FIVE ENGINES
+    ═══════════════════════════════════════════ -->
+    <section id="engines" class="bg-[#f8fafc] py-24 md:py-32">
+        <div class="w-full max-w-[1400px] mx-auto px-6 md:px-10">
+            <h2 class="text-[36px] md:text-[48px] font-extrabold tracking-tight text-[#0f172a] mb-4 leading-tight">Five Engines.<br>One Intelligence Layer.</h2>
+            <p class="text-[18px] text-[#64748b] mb-16 max-w-[560px]">Every capability your competitors offer individually, unified into a single real-time platform.</p>
+
+            <!-- Engine rows -->
+            <div class="divide-y divide-[#e2e8f0]">
+
+                <!-- Row 1 — Content Left -->
+                <div class="fade-up grid md:grid-cols-2 gap-8 md:gap-16 py-16 md:py-20 relative items-center">
+                    <div class="absolute top-8 left-0 text-[120px] font-black leading-none select-none pointer-events-none" style="color: rgba(0,0,0,0.04);" aria-hidden="true">01</div>
+                    <div class="relative z-10">
+                        <h3 class="text-[28px] md:text-[36px] font-bold text-[#0f172a] mb-4">Data Enrichment</h3>
+                        <p class="text-[16px] text-[#64748b] max-w-[480px] mb-5 leading-relaxed">90GB+ of proprietary intelligence, real-time Equifax integration, demographic overlays, and risk attributes — all appended before a buyer ever sees the opportunity.</p>
+                        <span class="inline-block bg-[#2563eb] text-white text-[13px] font-semibold px-4 py-1.5 rounded-full">90GB+</span>
+                    </div>
+                    <div class="hidden md:flex items-center justify-center">
+                        <div class="w-full max-w-[360px] h-[240px] rounded-2xl bg-gradient-to-br from-[#2563eb]/10 to-[#2563eb]/5 border border-[#2563eb]/10 relative overflow-hidden">
+                            <div class="absolute inset-0 grid grid-cols-6 grid-rows-4 gap-[1px] p-4">
+                                <div class="bg-[#2563eb]/20 rounded"></div><div class="bg-[#2563eb]/10 rounded"></div><div class="bg-[#2563eb]/30 rounded"></div><div class="bg-[#2563eb]/5 rounded"></div><div class="bg-[#2563eb]/15 rounded"></div><div class="bg-[#2563eb]/25 rounded"></div>
+                                <div class="bg-[#2563eb]/10 rounded"></div><div class="bg-[#2563eb]/35 rounded"></div><div class="bg-[#2563eb]/5 rounded"></div><div class="bg-[#2563eb]/20 rounded"></div><div class="bg-[#2563eb]/10 rounded"></div><div class="bg-[#2563eb]/5 rounded"></div>
+                                <div class="bg-[#2563eb]/25 rounded"></div><div class="bg-[#2563eb]/5 rounded"></div><div class="bg-[#2563eb]/15 rounded"></div><div class="bg-[#2563eb]/40 rounded"></div><div class="bg-[#2563eb]/20 rounded"></div><div class="bg-[#2563eb]/10 rounded"></div>
+                                <div class="bg-[#2563eb]/5 rounded"></div><div class="bg-[#2563eb]/20 rounded"></div><div class="bg-[#2563eb]/10 rounded"></div><div class="bg-[#2563eb]/5 rounded"></div><div class="bg-[#2563eb]/30 rounded"></div><div class="bg-[#2563eb]/15 rounded"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2 — Content Right -->
+                <div class="fade-up grid md:grid-cols-2 gap-8 md:gap-16 py-16 md:py-20 relative items-center">
+                    <div class="absolute top-8 right-0 text-[120px] font-black leading-none select-none pointer-events-none text-right" style="color: rgba(0,0,0,0.04);" aria-hidden="true">02</div>
+                    <div class="hidden md:flex items-center justify-center order-1 md:order-none">
+                        <div class="w-full max-w-[360px] h-[240px] rounded-2xl bg-gradient-to-br from-[#059669]/10 to-[#059669]/5 border border-[#059669]/10 relative overflow-hidden flex items-end p-6 gap-2">
+                            <div class="w-1/5 bg-[#059669]/15 rounded-t-lg" style="height:35%"></div>
+                            <div class="w-1/5 bg-[#059669]/25 rounded-t-lg" style="height:55%"></div>
+                            <div class="w-1/5 bg-[#059669]/35 rounded-t-lg" style="height:80%"></div>
+                            <div class="w-1/5 bg-[#059669]/50 rounded-t-lg" style="height:95%"></div>
+                            <div class="w-1/5 bg-[#059669]/60 rounded-t-lg" style="height:70%"></div>
+                        </div>
+                    </div>
+                    <div class="relative z-10">
+                        <h3 class="text-[28px] md:text-[36px] font-bold text-[#0f172a] mb-4">Risk Segmentation</h3>
+                        <p class="text-[16px] text-[#64748b] max-w-[480px] mb-5 leading-relaxed">ML-powered scoring categorizes every opportunity by risk tier, carrier match probability, and conversion likelihood — so buyers only see what converts.</p>
+                        <span class="inline-block bg-[#2563eb] text-white text-[13px] font-semibold px-4 py-1.5 rounded-full">97% accuracy</span>
+                    </div>
+                </div>
+
+                <!-- Row 3 — Content Left -->
+                <div class="fade-up grid md:grid-cols-2 gap-8 md:gap-16 py-16 md:py-20 relative items-center">
+                    <div class="absolute top-8 left-0 text-[120px] font-black leading-none select-none pointer-events-none" style="color: rgba(0,0,0,0.04);" aria-hidden="true">03</div>
+                    <div class="relative z-10">
+                        <h3 class="text-[28px] md:text-[36px] font-bold text-[#0f172a] mb-4">Quality Scoring</h3>
+                        <p class="text-[16px] text-[#64748b] max-w-[480px] mb-5 leading-relaxed">Predictive analytics grade every opportunity before it reaches a buyer. No more paying for dead-end data. Every dollar works harder.</p>
+                        <span class="inline-block bg-[#2563eb] text-white text-[13px] font-semibold px-4 py-1.5 rounded-full">3x fewer dead ends</span>
+                    </div>
+                    <div class="hidden md:flex items-center justify-center">
+                        <div class="w-full max-w-[360px] h-[240px] rounded-2xl bg-gradient-to-br from-[#2563eb]/10 to-[#60a5fa]/5 border border-[#2563eb]/10 relative overflow-hidden flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="text-[64px] font-black text-[#2563eb]/30 leading-none">A+</div>
+                                <div class="flex gap-1 mt-3 justify-center">
+                                    <div class="w-8 h-2 rounded-full bg-[#059669]/60"></div>
+                                    <div class="w-8 h-2 rounded-full bg-[#059669]/40"></div>
+                                    <div class="w-8 h-2 rounded-full bg-[#2563eb]/30"></div>
+                                    <div class="w-8 h-2 rounded-full bg-[#2563eb]/15"></div>
+                                    <div class="w-8 h-2 rounded-full bg-[#64748b]/10"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 4 — Content Right -->
+                <div class="fade-up grid md:grid-cols-2 gap-8 md:gap-16 py-16 md:py-20 relative items-center">
+                    <div class="absolute top-8 right-0 text-[120px] font-black leading-none select-none pointer-events-none text-right" style="color: rgba(0,0,0,0.04);" aria-hidden="true">04</div>
+                    <div class="hidden md:flex items-center justify-center order-1 md:order-none">
+                        <div class="w-full max-w-[360px] h-[240px] rounded-2xl bg-gradient-to-br from-[#059669]/10 to-[#059669]/5 border border-[#059669]/10 relative overflow-hidden p-6 flex flex-col justify-between">
+                            <div class="flex items-end gap-1 h-2/3">
+                                <svg class="w-full h-full" viewBox="0 0 300 120" fill="none">
+                                    <polyline points="0,100 50,85 100,70 150,45 200,50 250,20 300,10" stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+                                    <polyline points="0,100 50,85 100,70 150,45 200,50 250,20 300,10" stroke="none" fill="url(#grad1)" opacity="0.15"/>
+                                    <defs><linearGradient id="grad1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="transparent"/></linearGradient></defs>
+                                </svg>
+                            </div>
+                            <div class="text-[11px] font-semibold text-[#059669]/60 tracking-wider uppercase">Bind Rate Over Time</div>
+                        </div>
+                    </div>
+                    <div class="relative z-10">
+                        <h3 class="text-[28px] md:text-[36px] font-bold text-[#0f172a] mb-4">Performance Analytics</h3>
+                        <p class="text-[16px] text-[#64748b] max-w-[480px] mb-5 leading-relaxed">Closed-loop reporting connects acquisition spend to policy bind rates. True ROI, not vanity metrics. Know exactly what works.</p>
+                        <span class="inline-block bg-[#2563eb] text-white text-[13px] font-semibold px-4 py-1.5 rounded-full">Real ROI</span>
+                    </div>
+                </div>
+
+                <!-- Row 5 — Content Left -->
+                <div class="fade-up grid md:grid-cols-2 gap-8 md:gap-16 py-16 md:py-20 relative items-center">
+                    <div class="absolute top-8 left-0 text-[120px] font-black leading-none select-none pointer-events-none" style="color: rgba(0,0,0,0.04);" aria-hidden="true">05</div>
+                    <div class="relative z-10">
+                        <h3 class="text-[28px] md:text-[36px] font-bold text-[#0f172a] mb-4">Decision Engine</h3>
+                        <p class="text-[16px] text-[#64748b] max-w-[480px] mb-5 leading-relaxed">Real-time routing delivers the right opportunity to the right buyer at the right price. Sub-250ms decisions, every time.</p>
+                        <span class="inline-block bg-[#2563eb] text-white text-[13px] font-semibold px-4 py-1.5 rounded-full">&lt;250ms</span>
+                    </div>
+                    <div class="hidden md:flex items-center justify-center">
+                        <div class="w-full max-w-[360px] h-[240px] rounded-2xl bg-gradient-to-br from-[#2563eb]/10 to-[#2563eb]/5 border border-[#2563eb]/10 relative overflow-hidden flex items-center justify-center">
+                            <div class="relative">
+                                <div class="w-24 h-24 rounded-full border-4 border-[#2563eb]/30 flex items-center justify-center">
+                                    <span class="text-[20px] font-black text-[#2563eb]/50">&lt;250</span>
+                                </div>
+                                <div class="absolute -top-2 -right-8 w-3 h-3 rounded-full bg-[#2563eb]/40"></div>
+                                <div class="absolute -bottom-4 -left-6 w-2 h-2 rounded-full bg-[#2563eb]/30"></div>
+                                <div class="absolute top-1/2 -right-16 w-16 h-[2px] bg-[#2563eb]/20"></div>
+                                <div class="absolute top-1/2 -left-16 w-16 h-[2px] bg-[#2563eb]/20"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         5. PROCESS
+    ═══════════════════════════════════════════ -->
+    <section id="process" class="grid-bg py-24 md:py-32 relative">
+        <div class="w-full max-w-[1400px] mx-auto px-6 md:px-10">
+            <h2 class="text-[36px] md:text-[48px] font-extrabold tracking-tight text-white mb-4 text-center">From Raw Data to Revenue</h2>
+            <p class="text-[18px] text-white/50 text-center mb-20 max-w-[540px] mx-auto">Four stages. One seamless pipeline. Every opportunity maximized.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+                <!-- Connecting lines (desktop only) -->
+                <svg class="hidden md:block absolute top-[60px] left-0 w-full h-4 z-0 pointer-events-none" aria-hidden="true">
+                    <line x1="18%" y1="8" x2="35%" y2="8" stroke="#2563eb" stroke-width="2" class="dash-line" opacity="0.3"/>
+                    <line x1="40%" y1="8" x2="60%" y2="8" stroke="#2563eb" stroke-width="2" class="dash-line" opacity="0.3"/>
+                    <line x1="65%" y1="8" x2="82%" y2="8" stroke="#2563eb" stroke-width="2" class="dash-line" opacity="0.3"/>
+                </svg>
+
+                <!-- Step 1 -->
+                <div class="fade-up bg-[#07102e] rounded-2xl p-8 relative z-10 border border-white/5">
+                    <div class="w-12 h-12 rounded-full bg-[#2563eb] flex items-center justify-center text-white font-bold text-[18px] mb-6">1</div>
+                    <h3 class="text-[20px] font-bold text-white mb-2 tracking-tight">Ingest</h3>
+                    <p class="text-[15px] text-white/50 leading-relaxed">Raw data from any source — web forms, APIs, affiliate networks, call centers.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="fade-up bg-[#07102e] rounded-2xl p-8 relative z-10 border border-white/5">
+                    <div class="w-12 h-12 rounded-full bg-[#2563eb] flex items-center justify-center text-white font-bold text-[18px] mb-6">2</div>
+                    <h3 class="text-[20px] font-bold text-white mb-2 tracking-tight">Enrich</h3>
+                    <p class="text-[15px] text-white/50 leading-relaxed">90GB+ intelligence overlay — demographics, risk signals, financial indicators, behavioral data.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="fade-up bg-[#07102e] rounded-2xl p-8 relative z-10 border border-white/5">
+                    <div class="w-12 h-12 rounded-full bg-[#2563eb] flex items-center justify-center text-white font-bold text-[18px] mb-6">3</div>
+                    <h3 class="text-[20px] font-bold text-white mb-2 tracking-tight">Score &amp; Route</h3>
+                    <p class="text-[15px] text-white/50 leading-relaxed">ML pricing + optimal matching. Every opportunity scored, graded, and routed to the best buyer.</p>
+                </div>
+                <!-- Step 4 -->
+                <div class="fade-up bg-[#07102e] rounded-2xl p-8 relative z-10 border border-white/5">
+                    <div class="w-12 h-12 rounded-full bg-[#2563eb] flex items-center justify-center text-white font-bold text-[18px] mb-6">4</div>
+                    <h3 class="text-[20px] font-bold text-white mb-2 tracking-tight">Deliver</h3>
+                    <p class="text-[15px] text-white/50 leading-relaxed">Real-time delivery + closed-loop attribution. Know what converted and why.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         6. COMPARISON TABLE
+    ═══════════════════════════════════════════ -->
+    <section id="comparison" class="bg-[#f8fafc] py-24 md:py-32">
+        <div class="w-full max-w-[1000px] mx-auto px-6 md:px-10">
+            <h2 class="text-[28px] md:text-[36px] font-extrabold tracking-tight text-[#0f172a] mb-4 text-center">The Switchboard vs. The Old Way</h2>
+            <p class="text-[16px] text-[#64748b] text-center mb-14 max-w-[500px] mx-auto">Stop guessing. Start knowing.</p>
+
+            <div class="fade-up rounded-2xl overflow-hidden border border-[#e2e8f0] bg-white">
+                <!-- Header row -->
+                <div class="grid grid-cols-3 text-[13px] font-semibold uppercase tracking-wider">
+                    <div class="p-5 text-[#64748b]">Capability</div>
+                    <div class="p-5 text-[#ef4444] text-center">Old Way</div>
+                    <div class="p-5 text-[#059669] text-center">The Switchboard</div>
+                </div>
+                <!-- Row 1 -->
+                <div class="grid grid-cols-3 text-[15px] border-t border-[#f1f5f9]">
+                    <div class="p-5 font-semibold text-[#0f172a]">Data Quality</div>
+                    <div class="p-5 text-center"><span class="inline-block px-3 py-1 rounded-lg text-[13px] font-medium text-[#ef4444]" style="background:rgba(239,68,68,0.08);">Basic demographics</span></div>
+                    <div class="p-5 text-center"><span class="inline-block px-3 py-1 rounded-lg text-[13px] font-medium text-[#059669]" style="background:rgba(5,150,105,0.08);">90GB+ enriched intelligence</span></div>
+                </div>
+                <!-- Row 2 -->
+                <div class="grid grid-cols-3 text-[15px] bg-[#fafbfc] border-t border-[#f1f5f9]">
+                    <div class="p-5 font-semibold text-[#0f172a]">Speed</div>
+                    <div class="p-5 text-center"><span class="inline-block px-3 py-1 rounded-lg text-[13px] font-medium text-[#ef4444]" style="background:rgba(239,68,68,0.08);">Hours / days</span></div>
+                    <div class="p-5 text-center"><span class="inline-block px-3 py-1 rounded-lg text-[13px] font-medium text-[#059669]" style="background:rgba(5,150,105,0.08);">&lt;250ms real-time</span></div>
+                </div>
+                <!-- Row 3 -->
+                <div class="grid grid-cols-3 text-[15px] border-t border-[#f1f5f9]">
+                    <div class="p-5 font-semibold text-[#0f172a]">Intelligence</div>
+                    <div class="p-5 text-center"><span class="inline-block px-3 py-1 rounded-lg text-[13px] font-medium text-[#ef4444]" style="background:rgba(239,68,68,0.08);">Manual rules</span></div>
+                    <div class="p-5 text-center"><span class="inline-block px-3 py-1 rounded-lg text-[13px] font-medium text-[#059669]" style="background:rgba(5,150,105,0.08);">ML-powered scoring + prediction</span></div>
+                </div>
+                <!-- Row 4 -->
+                <div class="grid grid-cols-3 text-[15px] bg-[#fafbfc] border-t border-[#f1f5f9]">
+                    <div class="p-5 font-semibold text-[#0f172a]">Attribution</div>
+                    <div class="p-5 text-center"><span class="inline-block px-3 py-1 rounded-lg text-[13px] font-medium text-[#ef4444]" style="background:rgba(239,68,68,0.08);">First-touch guessing</span></div>
+                    <div class="p-5 text-center"><span class="inline-block px-3 py-1 rounded-lg text-[13px] font-medium text-[#059669]" style="background:rgba(5,150,105,0.08);">Closed-loop bind-rate tracking</span></div>
+                </div>
+                <!-- Row 5 -->
+                <div class="grid grid-cols-3 text-[15px] border-t border-[#f1f5f9]">
+                    <div class="p-5 font-semibold text-[#0f172a]">Integration</div>
+                    <div class="p-5 text-center"><span class="inline-block px-3 py-1 rounded-lg text-[13px] font-medium text-[#ef4444]" style="background:rgba(239,68,68,0.08);">Custom dev for each partner</span></div>
+                    <div class="p-5 text-center"><span class="inline-block px-3 py-1 rounded-lg text-[13px] font-medium text-[#059669]" style="background:rgba(5,150,105,0.08);">Universal API, instant onboard</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         7. SOCIAL PROOF + TESTIMONIAL
+    ═══════════════════════════════════════════ -->
+    <section class="bg-[#050b24] py-24 md:py-32">
+        <div class="w-full max-w-[1400px] mx-auto px-6 md:px-10">
+            <div class="grid md:grid-cols-5 gap-12 md:gap-16 items-center">
+                <!-- Stats Left (35%) -->
+                <div class="md:col-span-2 space-y-0">
+                    <div x-data="{ shown: false, count: 0 }" x-intersect.once="shown = true; let i = setInterval(() => { count++; if(count >= 10) clearInterval(i) }, 80)" class="py-6 border-b border-white/10">
+                        <span class="block text-[48px] font-extrabold text-white tracking-tight" x-text="shown ? count + 'M+' : '0'" x-cloak>10M+</span>
+                        <span class="block text-[14px] text-white/50 mt-1">Opportunities Processed</span>
+                    </div>
+                    <div class="py-6 border-b border-white/10">
+                        <span class="block text-[48px] font-extrabold text-white tracking-tight">&lt;250ms</span>
+                        <span class="block text-[14px] text-white/50 mt-1">Decision Latency</span>
+                    </div>
+                    <div x-data="{ shown: false, count: 0 }" x-intersect.once="shown = true; let i = setInterval(() => { count += 10; if(count >= 340) clearInterval(i) }, 30)" class="py-6 border-b border-white/10">
+                        <span class="block text-[48px] font-extrabold text-white tracking-tight" x-text="shown ? count + '%' : '0'" x-cloak>340%</span>
+                        <span class="block text-[14px] text-white/50 mt-1">Average ROI Lift</span>
+                    </div>
+                    <div x-data="{ shown: false, count: 0 }" x-intersect.once="shown = true; let i = setInterval(() => { count++; if(count >= 50) clearInterval(i) }, 50)" class="py-6">
+                        <span class="block text-[48px] font-extrabold text-white tracking-tight" x-text="shown ? count + '+' : '0'" x-cloak>50+</span>
+                        <span class="block text-[14px] text-white/50 mt-1">Agency Partners</span>
+                    </div>
+                </div>
+                <!-- Testimonial Right (60%) -->
+                <div class="md:col-span-3">
+                    <div class="bg-[#07102e] rounded-2xl p-8 md:p-12 border border-white/5">
+                        <svg class="w-10 h-10 text-[#2563eb]/40 mb-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                        <blockquote class="text-[20px] md:text-[24px] text-white/90 italic leading-relaxed mb-8">
+                            "The Switchboard transformed how we think about data. We went from buying blind to buying with precision. Our close rates jumped 47% in the first quarter, and our cost per acquisition dropped by a third."
+                        </blockquote>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#2563eb] to-[#60a5fa] flex items-center justify-center text-white font-bold text-[16px]">MR</div>
+                            <div>
+                                <div class="text-white font-semibold text-[15px]">Michael Reeves</div>
+                                <div class="text-white/40 text-[13px]">VP of Growth, National Insurance Group</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         8. CASE STUDIES
+    ═══════════════════════════════════════════ -->
+    <section id="case-studies" class="bg-[#f8fafc] py-24 md:py-32">
+        <div class="w-full max-w-[1400px] mx-auto px-6 md:px-10">
+            <h2 class="text-[28px] md:text-[36px] font-extrabold tracking-tight text-[#0f172a] mb-4">Proven Results</h2>
+            <p class="text-[16px] text-[#64748b] mb-14 max-w-[480px]">Real numbers from real partners. No vanity metrics.</p>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Card 1 -->
+                <div class="fade-up group relative bg-white rounded-2xl p-8 md:p-10 border border-[#e2e8f0] hover:border-[#2563eb]/30 transition-all overflow-hidden">
+                    <div class="absolute top-4 right-4 text-[120px] font-black leading-none select-none pointer-events-none" style="color: rgba(0,0,0,0.03);" aria-hidden="true">01</div>
+                    <div class="relative z-10">
+                        <div class="text-[12px] font-semibold tracking-[0.15em] text-[#2563eb] uppercase mb-3">Case Study</div>
+                        <h3 class="text-[24px] font-bold text-[#0f172a] mb-4">National Insurance Group</h3>
+                        <div class="flex flex-wrap gap-3 mb-6">
+                            <span class="inline-block px-3 py-1.5 rounded-lg text-[13px] font-semibold text-[#059669]" style="background:rgba(5,150,105,0.08);">+340% ROI lift</span>
+                            <span class="inline-block px-3 py-1.5 rounded-lg text-[13px] font-semibold text-[#059669]" style="background:rgba(5,150,105,0.08);">47% close rate</span>
+                        </div>
+                        <p class="text-[15px] text-[#64748b] leading-relaxed mb-6">Switched from manual data review to The Switchboard's enrichment and scoring engines. Within 90 days, close rates nearly doubled and cost per acquisition dropped 33%.</p>
+                        <a href="#" class="inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#2563eb] hover:gap-3 transition-all">
+                            Read the full story
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="fade-up group relative bg-white rounded-2xl p-8 md:p-10 border border-[#e2e8f0] hover:border-[#2563eb]/30 transition-all overflow-hidden">
+                    <div class="absolute top-4 right-4 text-[120px] font-black leading-none select-none pointer-events-none" style="color: rgba(0,0,0,0.03);" aria-hidden="true">02</div>
+                    <div class="relative z-10">
+                        <div class="text-[12px] font-semibold tracking-[0.15em] text-[#2563eb] uppercase mb-3">Case Study</div>
+                        <h3 class="text-[24px] font-bold text-[#0f172a] mb-4">Pacific Health Partners</h3>
+                        <div class="flex flex-wrap gap-3 mb-6">
+                            <span class="inline-block px-3 py-1.5 rounded-lg text-[13px] font-semibold text-[#059669]" style="background:rgba(5,150,105,0.08);">2.3x revenue per opportunity</span>
+                            <span class="inline-block px-3 py-1.5 rounded-lg text-[13px] font-semibold text-[#059669]" style="background:rgba(5,150,105,0.08);">68% reduction in waste</span>
+                        </div>
+                        <p class="text-[15px] text-[#64748b] leading-relaxed mb-6">Integrated The Switchboard's decision engine and analytics platform. Real-time routing eliminated wasted spend, and closed-loop attribution revealed their true top-performing sources.</p>
+                        <a href="#" class="inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#2563eb] hover:gap-3 transition-all">
+                            Read the full story
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         9. FINAL CTA
+    ═══════════════════════════════════════════ -->
+    <section id="cta" class="bg-[#2563eb] py-24 md:py-32">
+        <div class="w-full max-w-[800px] mx-auto px-6 md:px-10 text-center">
+            <h2 class="text-[36px] md:text-[48px] font-extrabold tracking-tight text-white mb-6 leading-tight">Ready to See What Your Data Is Really Worth?</h2>
+            <p class="text-[18px] text-white/80 mb-10 max-w-[560px] mx-auto">Join 50+ agencies already using The Switchboard to turn raw prospect data into predictable, profitable growth.</p>
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <a href="#" class="inline-flex items-center gap-2 bg-white text-[#2563eb] text-[16px] font-bold px-8 py-4 rounded-lg hover:bg-white/90 transition">
+                    Request a Demo
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+                <a href="#" class="inline-flex items-center gap-2 text-white text-[16px] font-semibold px-8 py-4 rounded-lg border border-white/20 hover:border-white/40 transition" style="background:rgba(255,255,255,0.08);">
+                    Contact Sales
+                </a>
+            </div>
+            <p class="text-[14px] text-white/70">No contracts required &bull; Live in under 48 hours &bull; Dedicated onboarding</p>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         10. FOOTER
+    ═══════════════════════════════════════════ -->
+    <footer class="bg-[#030818] pt-20 pb-10">
+        <div class="w-full max-w-[1400px] mx-auto px-6 md:px-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+                <!-- Col 1 -->
+                <div class="col-span-2 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-7 h-7 rounded-md bg-[#2563eb] flex items-center justify-center">
+                            <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <span class="text-white font-bold text-[15px]">The Switchboard</span>
+                    </div>
+                    <p class="text-[14px] text-white/40 leading-relaxed max-w-[240px]">The intelligence layer behind profitable insurance growth.</p>
+                </div>
+                <!-- Col 2 -->
+                <div>
+                    <h4 class="text-[13px] font-semibold text-white/60 uppercase tracking-wider mb-4">Platform</h4>
+                    <ul class="space-y-3 text-[14px] text-white/40">
+                        <li><a href="#" class="hover:text-white transition">Data Enrichment</a></li>
+                        <li><a href="#" class="hover:text-white transition">Risk Segmentation</a></li>
+                        <li><a href="#" class="hover:text-white transition">Quality Scoring</a></li>
+                        <li><a href="#" class="hover:text-white transition">Analytics</a></li>
+                        <li><a href="#" class="hover:text-white transition">Decision Engine</a></li>
+                    </ul>
+                </div>
+                <!-- Col 3 -->
+                <div>
+                    <h4 class="text-[13px] font-semibold text-white/60 uppercase tracking-wider mb-4">Company</h4>
+                    <ul class="space-y-3 text-[14px] text-white/40">
+                        <li><a href="#" class="hover:text-white transition">About</a></li>
+                        <li><a href="#" class="hover:text-white transition">Careers</a></li>
+                        <li><a href="#" class="hover:text-white transition">Blog</a></li>
+                        <li><a href="#" class="hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+                <!-- Col 4 -->
+                <div>
+                    <h4 class="text-[13px] font-semibold text-white/60 uppercase tracking-wider mb-4">Resources</h4>
+                    <ul class="space-y-3 text-[14px] text-white/40">
+                        <li><a href="#" class="hover:text-white transition">Documentation</a></li>
+                        <li><a href="#" class="hover:text-white transition">API Reference</a></li>
+                        <li><a href="#" class="hover:text-white transition">Case Studies</a></li>
+                        <li><a href="#" class="hover:text-white transition">Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-[13px] text-white/30">&copy; 2026 The Switchboard. All rights reserved.</p>
+                <div class="flex gap-6 text-[13px] text-white/30">
+                    <a href="#" class="hover:text-white/60 transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-white/60 transition">Terms of Service</a>
+                    <a href="#" class="hover:text-white/60 transition">Security</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════
+         SCRIPTS
+    ═══════════════════════════════════════════ -->
+    <script>
+        // Intersection Observer for fade-up animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>

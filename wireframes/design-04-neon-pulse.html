@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 4: Neon Pulse — The Switchboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { font-family: 'Inter', sans-serif; }
+body { background: #000000; color: #e2e8f0; }
+
+.neon-green { color: #00ff88; }
+.neon-green-bg { background: #00ff88; color: #000; }
+
+.scanline {
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,255,136,0.01) 2px, rgba(0,255,136,0.01) 4px
+  );
+}
+
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.neon-border {
+  border: 1px solid rgba(0,255,136,0.15);
+  transition: all 0.3s;
+}
+.neon-border:hover {
+  border-color: rgba(0,255,136,0.4);
+  box-shadow: 0 0 30px rgba(0,255,136,0.08);
+}
+
+.neon-btn {
+  background: #00ff88; color: #000;
+  font-weight: 700;
+  transition: all 0.2s;
+  box-shadow: 0 0 20px rgba(0,255,136,0.3);
+}
+.neon-btn:hover {
+  box-shadow: 0 0 40px rgba(0,255,136,0.5);
+  transform: translateY(-1px);
+}
+
+.ghost-btn {
+  border: 1px solid rgba(0,255,136,0.3);
+  color: #00ff88;
+  transition: all 0.2s;
+}
+.ghost-btn:hover {
+  background: rgba(0,255,136,0.05);
+}
+
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+.terminal-card {
+  background: rgba(0,255,136,0.02);
+  border: 1px solid rgba(0,255,136,0.1);
+  border-radius: 12px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+}
+.terminal-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #00ff88, transparent);
+  opacity: 0.5;
+}
+
+.pulse-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #00ff88;
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+@keyframes neon-pulse {
+  0%, 100% { box-shadow: 0 0 4px #00ff88; opacity: 0.6; }
+  50% { box-shadow: 0 0 12px #00ff88; opacity: 1; }
+}
+
+.data-stream {
+  position: absolute; right: 40px; top: 0; bottom: 0;
+  width: 300px; overflow: hidden; opacity: 0.15;
+}
+.data-stream .line {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: #00ff88;
+  white-space: nowrap;
+  animation: stream-up 20s linear infinite;
+}
+@keyframes stream-up {
+  0% { transform: translateY(100vh); }
+  100% { transform: translateY(-200vh); }
+}
+
+.metric-bar {
+  height: 3px; background: rgba(0,255,136,0.1);
+  border-radius: 2px; overflow: hidden;
+}
+.metric-bar .fill {
+  height: 100%; background: #00ff88;
+  border-radius: 2px;
+  animation: fill-in 2s ease-out forwards;
+}
+@keyframes fill-in {
+  from { width: 0; }
+}
+</style>
+</head>
+<body class="grid-bg">
+
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-green-500/10 px-8 py-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="text-lg font-bold tracking-tight">
+      <span class="neon-green">⚡</span> THE SWITCHBOARD
+    </div>
+    <nav class="hidden md:flex items-center gap-8 text-sm text-slate-500 mono">
+      <a href="#" class="hover:text-green-400 transition">solutions</a>
+      <a href="#" class="hover:text-green-400 transition">industries</a>
+      <a href="#" class="hover:text-green-400 transition">about</a>
+      <a href="#" class="hover:text-green-400 transition">resources</a>
+    </nav>
+    <a href="#" class="neon-btn px-5 py-2.5 rounded-lg text-sm">BOOK DEMO</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="relative min-h-screen flex items-center overflow-hidden">
+  <div class="scanline"></div>
+  <div class="data-stream">
+    <div class="line" style="animation-delay: 0s;">enrichment.score: 94.2 | match: AUTO_HOME | route: BUYER_0x4f2a...</div>
+    <div class="line" style="animation-delay: -3s;">enrichment.score: 87.1 | match: COMMERCIAL | route: BUYER_0x7b1c...</div>
+    <div class="line" style="animation-delay: -6s;">enrichment.score: 91.8 | match: HEALTH | route: BUYER_0x2e9d...</div>
+    <div class="line" style="animation-delay: -9s;">enrichment.score: 96.3 | match: AUTO | route: BUYER_0x8a4f...</div>
+    <div class="line" style="animation-delay: -12s;">enrichment.score: 89.5 | match: HOME | route: BUYER_0x1c7e...</div>
+    <div class="line" style="animation-delay: -15s;">enrichment.score: 93.7 | match: LIFE | route: BUYER_0x5d3b...</div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-8">
+    <div class="max-w-2xl">
+      <div class="mono text-xs neon-green mb-6 flex items-center gap-2">
+        <span class="pulse-dot"></span>
+        SYSTEM ONLINE — PROCESSING 847 PROSPECTS/SEC
+      </div>
+      <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-[1.02] mb-6">
+        Raw data in.<br>
+        <span class="neon-green">Revenue out.</span>
+      </h1>
+      <p class="text-lg text-slate-500 leading-relaxed mb-8 max-w-lg">
+        The Switchboard enriches, scores, and routes insurance prospects in real time. Every opportunity matched to its highest-value buyer.
+      </p>
+      <div class="flex items-center gap-4">
+        <a href="#" class="neon-btn px-7 py-3.5 rounded-lg text-sm font-bold tracking-wide">GET STARTED</a>
+        <a href="#" class="ghost-btn px-7 py-3.5 rounded-lg text-sm font-semibold">SEE DEMO →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="py-20">
+  <div class="max-w-7xl mx-auto px-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div class="terminal-card">
+      <div class="mono text-xs text-green-400/50 mb-2">avg_roi</div>
+      <div class="text-4xl font-black neon-green">340%</div>
+      <div class="metric-bar mt-3"><div class="fill" style="width:94%"></div></div>
+    </div>
+    <div class="terminal-card">
+      <div class="mono text-xs text-green-400/50 mb-2">enrich_speed</div>
+      <div class="text-4xl font-black neon-green">0.3s</div>
+      <div class="metric-bar mt-3"><div class="fill" style="width:98%"></div></div>
+    </div>
+    <div class="terminal-card">
+      <div class="mono text-xs text-green-400/50 mb-2">cpa_reduction</div>
+      <div class="text-4xl font-black neon-green">47%</div>
+      <div class="metric-bar mt-3"><div class="fill" style="width:88%"></div></div>
+    </div>
+    <div class="terminal-card">
+      <div class="mono text-xs text-green-400/50 mb-2">total_processed</div>
+      <div class="text-4xl font-black neon-green">12M+</div>
+      <div class="metric-bar mt-3"><div class="fill" style="width:76%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Process -->
+<section class="py-24">
+  <div class="max-w-7xl mx-auto px-8">
+    <h2 class="text-4xl font-black tracking-tight mb-4">How it works</h2>
+    <p class="text-slate-500 mb-16 max-w-lg">Four stages. Milliseconds. Fully automated.</p>
+
+    <div class="space-y-4">
+      <div class="terminal-card flex items-start gap-8">
+        <div class="mono text-green-400/30 text-5xl font-black">01</div>
+        <div>
+          <h3 class="text-xl font-bold mb-2">Connect your sources</h3>
+          <p class="text-slate-500 text-sm max-w-lg">Web forms, aggregators, call centers, APIs — plug in any prospect source with a two-minute integration.</p>
+        </div>
+        <div class="mono text-xs text-green-400/30 ml-auto hidden md:block">
+          api.connect()<br>source.verify()<br>stream.init()
+        </div>
+      </div>
+      <div class="terminal-card flex items-start gap-8">
+        <div class="mono text-green-400/30 text-5xl font-black">02</div>
+        <div>
+          <h3 class="text-xl font-bold mb-2">Enrich every record</h3>
+          <p class="text-slate-500 text-sm max-w-lg">40+ verified data points appended instantly — property, risk, coverage, behavioral signals.</p>
+        </div>
+        <div class="mono text-xs text-green-400/30 ml-auto hidden md:block">
+          data.enrich(40+)<br>risk.calculate()<br>score.assign()
+        </div>
+      </div>
+      <div class="terminal-card flex items-start gap-8">
+        <div class="mono text-green-400/30 text-5xl font-black">03</div>
+        <div>
+          <h3 class="text-xl font-bold mb-2">Score & route</h3>
+          <p class="text-slate-500 text-sm max-w-lg">ML models score quality and intent. Rules engine matches to the right buyer instantly.</p>
+        </div>
+        <div class="mono text-xs text-green-400/30 ml-auto hidden md:block">
+          ml.predict(conv)<br>buyer.match()<br>route.execute()
+        </div>
+      </div>
+      <div class="terminal-card flex items-start gap-8">
+        <div class="mono text-green-400/30 text-5xl font-black">04</div>
+        <div>
+          <h3 class="text-xl font-bold mb-2">Convert</h3>
+          <p class="text-slate-500 text-sm max-w-lg">Every opportunity reaches the buyer most likely to close it. Watch conversion rates climb.</p>
+        </div>
+        <div class="mono text-xs text-green-400/30 ml-auto hidden md:block">
+          conversion.track()<br>revenue.report()<br>roi.optimize()
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-24 border-t border-green-500/10">
+  <div class="max-w-3xl mx-auto px-8 text-center">
+    <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-6">
+      Ready to <span class="neon-green">plug in?</span>
+    </h2>
+    <p class="text-slate-500 mb-8">15-minute demo. See the data flow in real time.</p>
+    <a href="#" class="neon-btn inline-block px-8 py-4 rounded-lg text-sm font-bold tracking-wide">BOOK YOUR DEMO</a>
+  </div>
+</section>
+
+<footer class="border-t border-green-500/5 py-12 px-8">
+  <div class="max-w-7xl mx-auto flex justify-between items-center text-sm text-slate-600 mono">
+    <span>© 2026 the_switchboard</span>
+    <div class="flex gap-6">
+      <a href="#" class="hover:text-green-400 transition">privacy</a>
+      <a href="#" class="hover:text-green-400 transition">terms</a>
+    </div>
+  </div>
+</footer>
+
+<div style="position:fixed;bottom:20px;left:20px;background:#000;border:1px solid rgba(0,255,136,0.2);padding:12px 20px;border-radius:12px;font-size:13px;color:#64748b;z-index:99;">
+  Design 4 of 10 — <strong style="color:#00ff88;">Neon Pulse</strong>
+</div>
+</body>
+</html>

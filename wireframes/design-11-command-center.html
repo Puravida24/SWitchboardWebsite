@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Switchboard — Insurance Intelligence Platform</title>
+  <meta name="description" content="The intelligence layer behind profitable insurance growth. Enrich, score, segment, route, and analyze every opportunity in real-time.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            navy: {
+              950: '#030818',
+              900: '#050b24',
+              800: '#07102e',
+            },
+            signal: {
+              DEFAULT: '#2563eb',
+              hover: '#3b82f6',
+              light: '#60a5fa',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { font-family: 'Inter', system-ui, sans-serif; }
+
+    /* ─── Scrollbar ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #030818; }
+    ::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.3); border-radius: 3px; }
+
+    /* ─── Hero dot grid ─── */
+    .dot-grid {
+      background-image: radial-gradient(rgba(59,130,246,0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* ─── Hero radial gradient ─── */
+    .hero-gradient {
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(37,99,235,0.08) 0%, transparent 70%),
+                  #030818;
+    }
+
+    /* ─── Node pulse animation ─── */
+    @keyframes pulse-node {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.4); opacity: 1; }
+    }
+    .node-pulse {
+      animation: pulse-node 3s ease-in-out infinite;
+    }
+
+    /* ─── Float animation for data labels ─── */
+    @keyframes float-label {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+    .float-label {
+      animation: float-label 6s ease-in-out infinite;
+    }
+
+    /* ─── Logo marquee ─── */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-track {
+      animation: marquee 30s linear infinite;
+    }
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    /* ─── Dashed line connector animation ─── */
+    @keyframes dash-flow {
+      0% { stroke-dashoffset: 20; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .dash-animate {
+      stroke-dasharray: 6 4;
+      animation: dash-flow 1.5s linear infinite;
+    }
+
+    /* ─── CTA glow ─── */
+    .btn-glow {
+      box-shadow: 0 0 0px rgba(37,99,235,0);
+      transition: all 0.3s ease;
+    }
+    .btn-glow:hover {
+      box-shadow: 0 0 30px rgba(37,99,235,0.4);
+    }
+
+    /* ─── Card hover ─── */
+    .card-lift {
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .card-lift:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      border-color: rgba(37,99,235,0.2);
+    }
+
+    /* ─── Testimonial progress bar ─── */
+    @keyframes progress-fill {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+    .testimonial-progress {
+      animation: progress-fill 6s linear infinite;
+    }
+
+    /* ─── Connection lines ─── */
+    .connection-line {
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent);
+    }
+
+    /* ─── Overline style ─── */
+    .overline {
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #2563eb;
+    }
+
+    /* ─── No italic except testimonials ─── */
+    em, i { font-style: normal; }
+    .testimonial-quote { font-style: italic; }
+
+    /* ─── Smooth section transitions ─── */
+    section { position: relative; }
+
+    /* ─── Stats count animation placeholder ─── */
+    [x-cloak] { display: none !important; }
+  </style>
+</head>
+<body class="bg-navy-950 text-white antialiased overflow-x-hidden">
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 1: HEADER — Fixed frosted glass navigation
+       On-scroll: background becomes more opaque (handled by Alpine)
+       ═══════════════════════════════════════════════════════════════ -->
+  <header
+    x-data="{ scrolled: false, mobileOpen: false }"
+    x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 20 })"
+    :class="scrolled ? 'bg-[rgba(3,8,24,0.92)] shadow-lg shadow-black/20' : 'bg-[rgba(3,8,24,0.7)]'"
+    class="fixed top-0 left-0 right-0 z-50 h-[72px] flex items-center transition-all duration-300"
+    style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);"
+  >
+    <div class="max-w-7xl mx-auto w-full px-6 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 group">
+        <div class="w-8 h-8 rounded-lg bg-signal flex items-center justify-center">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v14M5 5h8M5 9h8M5 13h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <span class="text-white font-bold text-lg tracking-tight">The Switchboard</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-8">
+        <a href="#capabilities" class="text-[rgba(255,255,255,0.7)] hover:text-white text-sm font-medium transition-colors">Solutions</a>
+        <a href="#industries" class="text-[rgba(255,255,255,0.7)] hover:text-white text-sm font-medium transition-colors">Industries</a>
+        <a href="#how-it-works" class="text-[rgba(255,255,255,0.7)] hover:text-white text-sm font-medium transition-colors">Resources</a>
+        <a href="#footer" class="text-[rgba(255,255,255,0.7)] hover:text-white text-sm font-medium transition-colors">About</a>
+        <a href="#cta" class="text-[rgba(255,255,255,0.7)] hover:text-white text-sm font-medium transition-colors">Contact</a>
+      </nav>
+
+      <!-- CTA + Mobile Toggle -->
+      <div class="flex items-center gap-4">
+        <a href="#cta" class="hidden lg:inline-flex items-center px-5 py-2.5 bg-signal text-white text-sm font-semibold rounded-lg btn-glow hover:bg-signal-hover transition-colors">
+          Request a Demo
+        </a>
+        <button @click="mobileOpen = !mobileOpen" class="lg:hidden text-white p-2" aria-label="Menu">
+          <svg x-show="!mobileOpen" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg x-show="mobileOpen" x-cloak width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M6 18L18 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div
+      x-show="mobileOpen"
+      x-cloak
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0 -translate-y-2"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      x-transition:leave="transition ease-in duration-150"
+      x-transition:leave-start="opacity-100 translate-y-0"
+      x-transition:leave-end="opacity-0 -translate-y-2"
+      class="absolute top-[72px] left-0 right-0 bg-[rgba(3,8,24,0.97)] border-t border-[rgba(255,255,255,0.05)] lg:hidden"
+      style="backdrop-filter: blur(20px);"
+    >
+      <nav class="flex flex-col p-6 gap-4">
+        <a @click="mobileOpen = false" href="#capabilities" class="text-[rgba(255,255,255,0.7)] hover:text-white text-base font-medium">Solutions</a>
+        <a @click="mobileOpen = false" href="#industries" class="text-[rgba(255,255,255,0.7)] hover:text-white text-base font-medium">Industries</a>
+        <a @click="mobileOpen = false" href="#how-it-works" class="text-[rgba(255,255,255,0.7)] hover:text-white text-base font-medium">Resources</a>
+        <a @click="mobileOpen = false" href="#footer" class="text-[rgba(255,255,255,0.7)] hover:text-white text-base font-medium">About</a>
+        <a @click="mobileOpen = false" href="#cta" class="text-[rgba(255,255,255,0.7)] hover:text-white text-base font-medium">Contact</a>
+        <a href="#cta" class="mt-2 inline-flex items-center justify-center px-5 py-3 bg-signal text-white text-sm font-semibold rounded-lg">Request a Demo</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 2: HERO — Full viewport, command center aesthetic
+       Left: copy + CTAs, Right: animated network visualization
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="relative min-h-screen flex items-center hero-gradient dot-grid overflow-hidden pt-[72px]">
+    <div class="max-w-7xl mx-auto w-full px-6 py-20 lg:py-0">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+
+        <!-- Left Content (55% ~ 7 cols) -->
+        <div class="lg:col-span-7 relative z-10">
+          <p class="overline mb-5">Insurance Intelligence Platform</p>
+          <h1 class="text-[36px] lg:text-[64px] font-extrabold text-white leading-[1.05] tracking-[-0.03em] mb-6">
+            The Intelligence Layer Behind Profitable Insurance Growth
+          </h1>
+          <p class="text-lg text-[rgba(255,255,255,0.7)] leading-[1.65] mb-8 max-w-xl">
+            Transform raw prospect data into risk-scored, conversion-predicted opportunities — enriched, segmented, and routed in real-time to the right buyer at the right price.
+          </p>
+          <div class="flex flex-wrap gap-4 mb-8">
+            <a href="#cta" class="inline-flex items-center px-7 py-3.5 bg-signal text-white text-base font-semibold rounded-lg btn-glow hover:bg-signal-hover transition-all">
+              Request a Demo
+            </a>
+            <a href="#how-it-works" class="inline-flex items-center px-7 py-3.5 bg-transparent text-white text-base font-semibold rounded-lg border border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.4)] transition-colors">
+              See How It Works
+            </a>
+          </div>
+          <p class="text-[rgba(255,255,255,0.4)] text-sm">
+            Trusted by 50+ insurance organizations processing 10,000+ opportunities daily
+          </p>
+        </div>
+
+        <!-- Right Visualization (45% ~ 5 cols) -->
+        <div class="lg:col-span-5 relative h-[400px] lg:h-[520px]">
+          <!-- Network Graph Nodes -->
+          <div class="absolute w-[10px] h-[10px] rounded-full bg-[#3b82f6] node-pulse" style="top: 15%; left: 20%; box-shadow: 0 0 20px rgba(59,130,246,0.6); animation-delay: 0s;"></div>
+          <div class="absolute w-[14px] h-[14px] rounded-full bg-[#3b82f6] node-pulse" style="top: 8%; left: 55%; box-shadow: 0 0 20px rgba(59,130,246,0.6); animation-delay: 0.4s;"></div>
+          <div class="absolute w-[8px] h-[8px] rounded-full bg-[#3b82f6] node-pulse" style="top: 30%; left: 75%; box-shadow: 0 0 20px rgba(59,130,246,0.6); animation-delay: 0.8s;"></div>
+          <div class="absolute w-[12px] h-[12px] rounded-full bg-[#3b82f6] node-pulse" style="top: 50%; left: 10%; box-shadow: 0 0 20px rgba(59,130,246,0.6); animation-delay: 1.2s;"></div>
+          <div class="absolute w-[6px] h-[6px] rounded-full bg-[#3b82f6] node-pulse" style="top: 45%; left: 50%; box-shadow: 0 0 20px rgba(59,130,246,0.6); animation-delay: 1.6s;"></div>
+          <div class="absolute w-[10px] h-[10px] rounded-full bg-[#3b82f6] node-pulse" style="top: 65%; left: 85%; box-shadow: 0 0 20px rgba(59,130,246,0.6); animation-delay: 2s;"></div>
+          <div class="absolute w-[8px] h-[8px] rounded-full bg-[#3b82f6] node-pulse" style="top: 78%; left: 30%; box-shadow: 0 0 20px rgba(59,130,246,0.6); animation-delay: 2.4s;"></div>
+          <div class="absolute w-[12px] h-[12px] rounded-full bg-[#3b82f6] node-pulse" style="top: 85%; left: 65%; box-shadow: 0 0 20px rgba(59,130,246,0.6); animation-delay: 0.6s;"></div>
+          <div class="absolute w-[6px] h-[6px] rounded-full bg-[#3b82f6] node-pulse" style="top: 35%; left: 40%; box-shadow: 0 0 20px rgba(59,130,246,0.6); animation-delay: 1s;"></div>
+          <div class="absolute w-[10px] h-[10px] rounded-full bg-[#3b82f6] node-pulse" style="top: 60%; left: 45%; box-shadow: 0 0 20px rgba(59,130,246,0.6); animation-delay: 1.8s;"></div>
+
+          <!-- Connection Lines -->
+          <div class="absolute h-[1px] w-[120px] connection-line" style="top: 18%; left: 25%; transform: rotate(15deg);"></div>
+          <div class="absolute h-[1px] w-[100px] connection-line" style="top: 12%; left: 55%; transform: rotate(-35deg);"></div>
+          <div class="absolute h-[1px] w-[140px] connection-line" style="top: 38%; left: 15%; transform: rotate(25deg);"></div>
+          <div class="absolute h-[1px] w-[90px] connection-line" style="top: 48%; left: 48%; transform: rotate(-20deg);"></div>
+          <div class="absolute h-[1px] w-[130px] connection-line" style="top: 55%; left: 50%; transform: rotate(40deg);"></div>
+          <div class="absolute h-[1px] w-[110px] connection-line" style="top: 70%; left: 35%; transform: rotate(-10deg);"></div>
+          <div class="absolute h-[1px] w-[80px] connection-line" style="top: 80%; left: 55%; transform: rotate(30deg);"></div>
+          <div class="absolute h-[1px] w-[160px] connection-line" style="top: 25%; left: 30%; transform: rotate(-5deg);"></div>
+
+          <!-- Floating Data Labels -->
+          <div class="absolute float-label" style="top: 5%; left: 30%; animation-delay: 0s;">
+            <div class="px-4 py-2.5 rounded-lg text-sm font-semibold text-white" style="background: rgba(15,23,42,0.8); border: 1px solid rgba(59,130,246,0.2); backdrop-filter: blur(8px);">
+              <span class="text-[rgba(255,255,255,0.5)] text-xs font-medium">Risk Score</span>
+              <div class="text-[#60a5fa] text-lg font-bold -mt-0.5">847</div>
+            </div>
+          </div>
+          <div class="absolute float-label" style="top: 35%; right: 5%; animation-delay: 1.5s;">
+            <div class="px-4 py-2.5 rounded-lg text-sm font-semibold text-white" style="background: rgba(15,23,42,0.8); border: 1px solid rgba(59,130,246,0.2); backdrop-filter: blur(8px);">
+              <span class="text-[rgba(255,255,255,0.5)] text-xs font-medium">Match Rate</span>
+              <div class="text-[#059669] text-lg font-bold -mt-0.5">94%</div>
+            </div>
+          </div>
+          <div class="absolute float-label" style="top: 58%; left: 8%; animation-delay: 3s;">
+            <div class="px-4 py-2.5 rounded-lg text-sm font-semibold text-white" style="background: rgba(15,23,42,0.8); border: 1px solid rgba(59,130,246,0.2); backdrop-filter: blur(8px);">
+              <span class="text-[rgba(255,255,255,0.5)] text-xs font-medium">Latency</span>
+              <div class="text-[#d97706] text-lg font-bold -mt-0.5">&lt; 250ms</div>
+            </div>
+          </div>
+          <div class="absolute float-label" style="top: 72%; right: 15%; animation-delay: 4.5s;">
+            <div class="px-4 py-2.5 rounded-lg text-sm font-semibold text-white" style="background: rgba(15,23,42,0.8); border: 1px solid rgba(59,130,246,0.2); backdrop-filter: blur(8px);">
+              <span class="text-[rgba(255,255,255,0.5)] text-xs font-medium">Conversion Prob</span>
+              <div class="text-[#60a5fa] text-lg font-bold -mt-0.5">73%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom fade -->
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-navy-900 to-transparent"></div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 3: SOCIAL PROOF BAR — Logo marquee
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy-900 border-t border-[rgba(255,255,255,0.05)] py-6 overflow-hidden">
+    <p class="text-center text-[rgba(255,255,255,0.3)] text-xs font-medium uppercase tracking-[0.08em] mb-5">
+      Trusted by leading insurance organizations
+    </p>
+    <div class="relative overflow-hidden">
+      <div class="flex whitespace-nowrap marquee-track" style="width: max-content;">
+        <!-- First set -->
+        <span class="inline-flex items-center gap-16 px-8 text-[rgba(255,255,255,0.3)] text-sm font-bold tracking-widest uppercase">
+          <span>National General</span>
+          <span>Mercury</span>
+          <span>Progressive</span>
+          <span>Allstate</span>
+          <span>Liberty Mutual</span>
+          <span>Safeco</span>
+          <span>Travelers</span>
+          <span>Hartford</span>
+        </span>
+        <!-- Duplicate for seamless loop -->
+        <span class="inline-flex items-center gap-16 px-8 text-[rgba(255,255,255,0.3)] text-sm font-bold tracking-widest uppercase">
+          <span>National General</span>
+          <span>Mercury</span>
+          <span>Progressive</span>
+          <span>Allstate</span>
+          <span>Liberty Mutual</span>
+          <span>Safeco</span>
+          <span>Travelers</span>
+          <span>Hartford</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 4: STATS — Count-up on scroll with Alpine.js
+       ═══════════════════════════════════════════════════════════════ -->
+  <section
+    class="bg-navy-950 py-20"
+    x-data="{
+      visible: false,
+      stats: [
+        { value: 0, target: 10, suffix: 'M+', label: 'Opportunities Processed' },
+        { value: 0, target: 250, prefix: '<', suffix: 'ms', label: 'Enrichment Time' },
+        { value: 0, target: 340, suffix: '%', label: 'Avg ROI Lift' },
+        { value: 0, target: 50, suffix: '+', label: 'Agency Partners' }
+      ],
+      animate() {
+        if (this.visible) return;
+        this.visible = true;
+        this.stats.forEach((stat, i) => {
+          let start = 0;
+          const duration = 2000;
+          const step = 16;
+          const steps = duration / step;
+          const increment = stat.target / steps;
+          const interval = setInterval(() => {
+            start += increment;
+            if (start >= stat.target) {
+              stat.value = stat.target;
+              clearInterval(interval);
+            } else {
+              stat.value = Math.floor(start);
+            }
+          }, step);
+        });
+      }
+    }"
+    x-intersect:enter="animate()"
+  >
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
+        <template x-for="(stat, idx) in stats" :key="idx">
+          <div class="text-center lg:border-r lg:last:border-r-0 border-[rgba(255,255,255,0.1)]" :class="idx < 2 ? 'border-b lg:border-b-0 pb-8 lg:pb-0' : ''">
+            <div class="text-white font-extrabold text-[40px] lg:text-[56px] tracking-tight leading-none mb-2">
+              <span x-text="stat.prefix || ''"></span><span x-text="stat.value"></span><span x-text="stat.suffix"></span>
+            </div>
+            <div class="text-[rgba(255,255,255,0.5)] text-sm font-normal" x-text="stat.label"></div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 5: CAPABILITIES — 5 intelligence engines
+       Asymmetric grid: 2 large top, 3 bottom
+       ═══════════════════════════════════════════════════════════════ -->
+  <section id="capabilities" class="bg-[#f8fafc] py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6">
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <p class="overline mb-4">Platform Capabilities</p>
+        <h2 class="text-[32px] lg:text-[48px] font-bold text-[#0f172a] tracking-[-0.02em] leading-tight">
+          Five Intelligence Engines. One Decision.
+        </h2>
+      </div>
+
+      <!-- Top Row: 2 large cards (7fr / 5fr) -->
+      <div class="grid lg:grid-cols-12 gap-6 mb-6">
+        <!-- Card 1: Data Enrichment -->
+        <div class="lg:col-span-7 bg-white border border-[#e2e8f0] rounded-2xl p-8 lg:p-10 card-lift cursor-pointer group">
+          <div class="w-12 h-12 rounded-xl bg-[rgba(37,99,235,0.1)] flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-[#0f172a] mb-3">Data Enrichment</h3>
+          <p class="text-[#64748b] leading-[1.65] mb-5">
+            Enhance prospect data with 90GB+ of proprietary intelligence. Real-time Equifax integration, demographic overlays, and risk attributes that transform raw records into actionable opportunity profiles.
+          </p>
+          <span class="text-signal font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+            Learn More <span aria-hidden="true">&rarr;</span>
+          </span>
+        </div>
+
+        <!-- Card 2: Risk Segmentation -->
+        <div class="lg:col-span-5 bg-white border border-[#e2e8f0] rounded-2xl p-8 lg:p-10 card-lift cursor-pointer group">
+          <div class="w-12 h-12 rounded-xl bg-[rgba(37,99,235,0.1)] flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 6-10"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-[#0f172a] mb-3">Risk Segmentation</h3>
+          <p class="text-[#64748b] leading-[1.65] mb-5">
+            ML-powered scoring categorizes every opportunity by risk tier, carrier match probability, and conversion likelihood. Precision targeting replaces guesswork.
+          </p>
+          <span class="text-signal font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+            Learn More <span aria-hidden="true">&rarr;</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Bottom Row: 3 equal cards -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 3: Quality Scoring -->
+        <div class="bg-white border border-[#e2e8f0] rounded-2xl p-8 lg:p-10 card-lift cursor-pointer group">
+          <div class="w-12 h-12 rounded-xl bg-[rgba(37,99,235,0.1)] flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-[#0f172a] mb-3">Quality Scoring</h3>
+          <p class="text-[#64748b] leading-[1.65] mb-5">
+            Predictive analytics grade every opportunity before it reaches a buyer. No more paying for dead-end data.
+          </p>
+          <span class="text-signal font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+            Learn More <span aria-hidden="true">&rarr;</span>
+          </span>
+        </div>
+
+        <!-- Card 4: Performance Analytics -->
+        <div class="bg-white border border-[#e2e8f0] rounded-2xl p-8 lg:p-10 card-lift cursor-pointer group">
+          <div class="w-12 h-12 rounded-xl bg-[rgba(37,99,235,0.1)] flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-[#0f172a] mb-3">Performance Analytics</h3>
+          <p class="text-[#64748b] leading-[1.65] mb-5">
+            Closed-loop reporting connects acquisition spend to policy bind rates. See true ROI, not vanity metrics.
+          </p>
+          <span class="text-signal font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+            Learn More <span aria-hidden="true">&rarr;</span>
+          </span>
+        </div>
+
+        <!-- Card 5: Decision Engine -->
+        <div class="bg-white border border-[#e2e8f0] rounded-2xl p-8 lg:p-10 card-lift cursor-pointer group">
+          <div class="w-12 h-12 rounded-xl bg-[rgba(37,99,235,0.1)] flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4m0 14v4M4.22 4.22l2.83 2.83m9.9 9.9l2.83 2.83M1 12h4m14 0h4M4.22 19.78l2.83-2.83m9.9-9.9l2.83-2.83"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-[#0f172a] mb-3">Decision Engine</h3>
+          <p class="text-[#64748b] leading-[1.65] mb-5">
+            Real-time routing delivers the right opportunity to the right buyer at the right price. Sub-250ms decision latency.
+          </p>
+          <span class="text-signal font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+            Learn More <span aria-hidden="true">&rarr;</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 6: HOW IT WORKS — 4-step horizontal pipeline
+       ═══════════════════════════════════════════════════════════════ -->
+  <section id="how-it-works" class="bg-navy-950 py-24 lg:py-32 relative overflow-hidden">
+    <!-- Background accent -->
+    <div class="absolute inset-0 hero-gradient opacity-50"></div>
+
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <p class="overline mb-4">How It Works</p>
+        <h2 class="text-[32px] lg:text-[48px] font-bold text-white tracking-[-0.02em] leading-tight">
+          From Raw Data to Revenue in Four Steps
+        </h2>
+      </div>
+
+      <!-- Steps -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4 relative">
+
+        <!-- Connector Lines (desktop only) -->
+        <div class="hidden lg:block absolute top-[52px] left-[25%] right-[25%] z-0">
+          <svg width="100%" height="4" class="overflow-visible">
+            <line x1="0" y1="2" x2="100%" y2="2" stroke="rgba(37,99,235,0.3)" stroke-width="2" class="dash-animate" />
+          </svg>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="relative z-10 bg-navy-800 border border-[rgba(255,255,255,0.1)] rounded-xl p-8 text-center">
+          <div class="w-12 h-12 rounded-full bg-signal text-white font-bold text-lg flex items-center justify-center mx-auto mb-5">1</div>
+          <h3 class="text-white font-semibold text-lg mb-2">Ingest</h3>
+          <p class="text-[rgba(255,255,255,0.6)] text-sm leading-relaxed">Raw prospect data enters from any source — APIs, file uploads, or real-time integrations</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="relative z-10 bg-navy-800 border border-[rgba(255,255,255,0.1)] rounded-xl p-8 text-center">
+          <div class="w-12 h-12 rounded-full bg-signal text-white font-bold text-lg flex items-center justify-center mx-auto mb-5">2</div>
+          <h3 class="text-white font-semibold text-lg mb-2">Enrich &amp; Segment</h3>
+          <p class="text-[rgba(255,255,255,0.6)] text-sm leading-relaxed">90GB+ enrichment. ML-powered segmentation. Risk scoring in under 250ms.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="relative z-10 bg-navy-800 border border-[rgba(255,255,255,0.1)] rounded-xl p-8 text-center">
+          <div class="w-12 h-12 rounded-full bg-signal text-white font-bold text-lg flex items-center justify-center mx-auto mb-5">3</div>
+          <h3 class="text-white font-semibold text-lg mb-2">Score &amp; Route</h3>
+          <p class="text-[rgba(255,255,255,0.6)] text-sm leading-relaxed">Decision engine prices and routes to the optimal buyer match in real-time</p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="relative z-10 bg-navy-800 border border-[rgba(255,255,255,0.1)] rounded-xl p-8 text-center">
+          <div class="w-12 h-12 rounded-full bg-signal text-white font-bold text-lg flex items-center justify-center mx-auto mb-5">4</div>
+          <h3 class="text-white font-semibold text-lg mb-2">Deliver &amp; Learn</h3>
+          <p class="text-[rgba(255,255,255,0.6)] text-sm leading-relaxed">Real-time delivery with closed-loop attribution. The model gets smarter with every transaction.</p>
+        </div>
+      </div>
+
+      <!-- Center Badge -->
+      <div class="flex justify-center mt-10">
+        <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[rgba(37,99,235,0.1)] border border-[rgba(37,99,235,0.3)]">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#2563eb" stroke-width="1.5"/><path d="M8 5v3l2 1" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span class="text-signal text-sm font-semibold">&lt; 250ms end-to-end</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 7: INDUSTRIES — 3 cards
+       ═══════════════════════════════════════════════════════════════ -->
+  <section id="industries" class="bg-[#f8fafc] py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6">
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <p class="overline mb-4">Industries</p>
+        <h2 class="text-[32px] lg:text-[48px] font-bold text-[#0f172a] tracking-[-0.02em] leading-tight">
+          Purpose-Built for Insurance
+        </h2>
+      </div>
+
+      <!-- Cards -->
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Auto Insurance -->
+        <div class="bg-white border border-[#e2e8f0] rounded-2xl p-8 lg:p-10 card-lift group">
+          <div class="w-14 h-14 rounded-xl bg-[rgba(37,99,235,0.1)] flex items-center justify-center mb-6">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5l-2-6H7L5 12z"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-[#0f172a] mb-4">Auto Insurance</h3>
+          <ul class="space-y-3 text-[#64748b] text-sm mb-6">
+            <li class="flex items-start gap-2">
+              <svg class="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(37,99,235,0.1)"/><path d="M5 8l2 2 4-4" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>MVR + claims history enrichment</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(37,99,235,0.1)"/><path d="M5 8l2 2 4-4" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Preferred / standard / non-standard tiering</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(37,99,235,0.1)"/><path d="M5 8l2 2 4-4" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Multi-carrier routing optimization</span>
+            </li>
+          </ul>
+          <span class="text-signal font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+            Explore <span aria-hidden="true">&rarr;</span>
+          </span>
+        </div>
+
+        <!-- Health Insurance -->
+        <div class="bg-white border border-[#e2e8f0] rounded-2xl p-8 lg:p-10 card-lift group">
+          <div class="w-14 h-14 rounded-xl bg-[rgba(37,99,235,0.1)] flex items-center justify-center mb-6">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-[#0f172a] mb-4">Health Insurance</h3>
+          <ul class="space-y-3 text-[#64748b] text-sm mb-6">
+            <li class="flex items-start gap-2">
+              <svg class="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(37,99,235,0.1)"/><path d="M5 8l2 2 4-4" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>AEP / OEP / SEP lifecycle targeting</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(37,99,235,0.1)"/><path d="M5 8l2 2 4-4" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Medicare Advantage + Supplement scoring</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(37,99,235,0.1)"/><path d="M5 8l2 2 4-4" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>TCPA-compliant delivery confirmation</span>
+            </li>
+          </ul>
+          <span class="text-signal font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+            Explore <span aria-hidden="true">&rarr;</span>
+          </span>
+        </div>
+
+        <!-- Commercial Insurance -->
+        <div class="bg-white border border-[#e2e8f0] rounded-2xl p-8 lg:p-10 card-lift group">
+          <div class="w-14 h-14 rounded-xl bg-[rgba(37,99,235,0.1)] flex items-center justify-center mb-6">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M12 12v4"/><path d="M2 12h20"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-[#0f172a] mb-4">Commercial Insurance</h3>
+          <ul class="space-y-3 text-[#64748b] text-sm mb-6">
+            <li class="flex items-start gap-2">
+              <svg class="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(37,99,235,0.1)"/><path d="M5 8l2 2 4-4" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>SIC/NAICS code enrichment + firmographics</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(37,99,235,0.1)"/><path d="M5 8l2 2 4-4" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Workers comp & GL risk classification</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <svg class="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(37,99,235,0.1)"/><path d="M5 8l2 2 4-4" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Agency appetite matching + placement routing</span>
+            </li>
+          </ul>
+          <span class="text-signal font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+            Explore <span aria-hidden="true">&rarr;</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 8: TESTIMONIALS — Carousel with Alpine.js
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="bg-navy-900 py-24 lg:py-32"
+    x-data="{
+      current: 0,
+      testimonials: [
+        {
+          quote: 'The Switchboard transformed how we price and distribute opportunities. Our bind rate increased 47% within 90 days, and we finally have closed-loop attribution we can trust.',
+          name: 'Sarah Mitchell',
+          title: 'VP of Distribution, National Carrier',
+          initials: 'SM'
+        },
+        {
+          quote: 'Before The Switchboard, we were flying blind on opportunity quality. Now every record is scored and segmented before it reaches our agents. The ROI speaks for itself.',
+          name: 'David Chen',
+          title: 'Chief Analytics Officer, Regional Agency',
+          initials: 'DC'
+        },
+        {
+          quote: 'Sub-250ms enrichment seemed impossible until we saw it in production. The intelligence layer is the competitive advantage we did not know we needed.',
+          name: 'Rachel Torres',
+          title: 'Director of Operations, InsurTech Platform',
+          initials: 'RT'
+        }
+      ],
+      auto: null,
+      startAuto() {
+        this.auto = setInterval(() => { this.next() }, 6000);
+      },
+      next() {
+        this.current = (this.current + 1) % this.testimonials.length;
+        this.restartAuto();
+      },
+      prev() {
+        this.current = (this.current - 1 + this.testimonials.length) % this.testimonials.length;
+        this.restartAuto();
+      },
+      restartAuto() {
+        clearInterval(this.auto);
+        this.startAuto();
+      }
+    }"
+    x-init="startAuto()"
+  >
+    <div class="max-w-3xl mx-auto px-6 text-center">
+      <p class="overline mb-10">What Our Partners Say</p>
+
+      <!-- Quote -->
+      <div class="relative min-h-[200px]">
+        <template x-for="(t, idx) in testimonials" :key="idx">
+          <div x-show="current === idx"
+               x-transition:enter="transition ease-out duration-500"
+               x-transition:enter-start="opacity-0 translate-y-4"
+               x-transition:enter-end="opacity-100 translate-y-0"
+               x-transition:leave="transition ease-in duration-300"
+               x-transition:leave-start="opacity-100 translate-y-0"
+               x-transition:leave-end="opacity-0 -translate-y-4"
+               class="absolute inset-0"
+          >
+            <blockquote class="testimonial-quote text-xl lg:text-2xl text-white leading-relaxed font-light mb-8 max-w-[720px] mx-auto" x-text="'&ldquo;' + t.quote + '&rdquo;'"></blockquote>
+            <div class="flex items-center justify-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-signal flex items-center justify-center text-white font-bold text-sm" x-text="t.initials"></div>
+              <div class="text-left">
+                <div class="text-white font-semibold text-sm" x-text="t.name"></div>
+                <div class="text-[rgba(255,255,255,0.5)] text-sm" x-text="t.title"></div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex items-center justify-center gap-6 mt-8">
+        <button @click="prev()" class="w-10 h-10 rounded-full border border-[rgba(255,255,255,0.2)] flex items-center justify-center text-[rgba(255,255,255,0.6)] hover:text-white hover:border-[rgba(255,255,255,0.4)] transition-colors" aria-label="Previous testimonial">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <!-- Dots -->
+        <div class="flex items-center gap-2">
+          <template x-for="(_, idx) in testimonials" :key="idx">
+            <button @click="current = idx; restartAuto()" class="w-2 h-2 rounded-full transition-all" :class="current === idx ? 'bg-signal w-6' : 'bg-[rgba(255,255,255,0.3)]'" :aria-label="'Go to testimonial ' + (idx+1)"></button>
+          </template>
+        </div>
+        <button @click="next()" class="w-10 h-10 rounded-full border border-[rgba(255,255,255,0.2)] flex items-center justify-center text-[rgba(255,255,255,0.6)] hover:text-white hover:border-[rgba(255,255,255,0.4)] transition-colors" aria-label="Next testimonial">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="mt-6 w-48 h-0.5 bg-[rgba(255,255,255,0.1)] mx-auto rounded-full overflow-hidden">
+        <div class="h-full bg-signal rounded-full testimonial-progress" :key="current"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 9: CASE STUDIES — Two asymmetric cards
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="bg-[#f8fafc] py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6">
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <p class="overline mb-4">Case Studies</p>
+        <h2 class="text-[32px] lg:text-[48px] font-bold text-[#0f172a] tracking-[-0.02em] leading-tight">
+          Real Results. Measured in Revenue.
+        </h2>
+      </div>
+
+      <!-- Cards -->
+      <div class="grid lg:grid-cols-12 gap-8">
+        <!-- Card 1 (55%) -->
+        <div class="lg:col-span-7 bg-white border border-[#e2e8f0] rounded-2xl overflow-hidden card-lift group cursor-pointer">
+          <div class="bg-navy-950 p-8 lg:p-10">
+            <span class="text-signal text-xs font-bold uppercase tracking-widest">Auto Insurance</span>
+            <h3 class="text-white text-2xl font-bold mt-3 mb-2">National Carrier Increases Bind Rate 47%</h3>
+            <p class="text-[rgba(255,255,255,0.6)] text-sm leading-relaxed">How a top-20 carrier used risk segmentation and real-time routing to transform their acquisition funnel.</p>
+          </div>
+          <div class="p-8 lg:p-10">
+            <div class="grid grid-cols-3 gap-4 mb-6">
+              <div class="text-center">
+                <div class="text-[#059669] text-2xl font-bold">+47%</div>
+                <div class="text-[#64748b] text-xs mt-1">Bind Rate</div>
+              </div>
+              <div class="text-center">
+                <div class="text-[#059669] text-2xl font-bold">-31%</div>
+                <div class="text-[#64748b] text-xs mt-1">Cost per Acquisition</div>
+              </div>
+              <div class="text-center">
+                <div class="text-[#059669] text-2xl font-bold">3.8x</div>
+                <div class="text-[#64748b] text-xs mt-1">ROI</div>
+              </div>
+            </div>
+            <span class="text-signal font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+              Read Full Case Study <span aria-hidden="true">&rarr;</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Card 2 (45%) -->
+        <div class="lg:col-span-5 bg-white border border-[#e2e8f0] rounded-2xl overflow-hidden card-lift group cursor-pointer">
+          <div class="bg-navy-950 p-8 lg:p-10">
+            <span class="text-signal text-xs font-bold uppercase tracking-widest">Health Insurance</span>
+            <h3 class="text-white text-2xl font-bold mt-3 mb-2">Regional Agency Cuts Waste by 62%</h3>
+            <p class="text-[rgba(255,255,255,0.6)] text-sm leading-relaxed">Quality scoring eliminated low-intent opportunities before agents ever saw them.</p>
+          </div>
+          <div class="p-8 lg:p-10">
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="text-center">
+                <div class="text-[#059669] text-2xl font-bold">-62%</div>
+                <div class="text-[#64748b] text-xs mt-1">Wasted Spend</div>
+              </div>
+              <div class="text-center">
+                <div class="text-[#059669] text-2xl font-bold">+89%</div>
+                <div class="text-[#64748b] text-xs mt-1">Agent Productivity</div>
+              </div>
+            </div>
+            <span class="text-signal font-medium text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+              Read Full Case Study <span aria-hidden="true">&rarr;</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 10: FINAL CTA — Conversion section
+       ═══════════════════════════════════════════════════════════════ -->
+  <section id="cta" class="bg-navy-950 relative overflow-hidden">
+    <!-- Background glow -->
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(37,99,235,0.06) 0%, transparent 70%);"></div>
+
+    <div class="max-w-3xl mx-auto px-6 py-24 lg:py-32 text-center relative z-10">
+      <h2 class="text-[32px] lg:text-[48px] font-bold text-white tracking-[-0.02em] leading-tight mb-6">
+        Ready to Make Every Opportunity Count?
+      </h2>
+      <p class="text-[rgba(255,255,255,0.6)] text-lg leading-relaxed mb-10 max-w-xl mx-auto">
+        See how The Switchboard transforms your acquisition funnel with real-time intelligence, risk scoring, and closed-loop attribution.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4 mb-10">
+        <a href="#" class="inline-flex items-center px-8 py-4 bg-white text-navy-900 text-base font-semibold rounded-lg hover:bg-[#f1f5f9] transition-colors shadow-lg shadow-white/10">
+          Request a Demo
+        </a>
+        <a href="#" class="inline-flex items-center px-8 py-4 bg-transparent text-white text-base font-semibold rounded-lg border border-[rgba(255,255,255,0.2)] hover:border-[rgba(255,255,255,0.4)] transition-colors">
+          Contact Sales
+        </a>
+      </div>
+
+      <!-- Trust checkmarks -->
+      <div class="flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm">
+        <span class="flex items-center gap-2 text-[rgba(255,255,255,0.5)]">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(5,150,105,0.2)"/><path d="M5 8l2 2 4-4" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          No long-term contracts
+        </span>
+        <span class="flex items-center gap-2 text-[rgba(255,255,255,0.5)]">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(5,150,105,0.2)"/><path d="M5 8l2 2 4-4" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          SOC 2 compliant
+        </span>
+        <span class="flex items-center gap-2 text-[rgba(255,255,255,0.5)]">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(5,150,105,0.2)"/><path d="M5 8l2 2 4-4" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Live in under 2 weeks
+        </span>
+        <span class="flex items-center gap-2 text-[rgba(255,255,255,0.5)]">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="rgba(5,150,105,0.2)"/><path d="M5 8l2 2 4-4" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Dedicated success manager
+        </span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 11: FOOTER — 4 columns
+       ═══════════════════════════════════════════════════════════════ -->
+  <footer id="footer" class="bg-navy-950 border-t border-[rgba(255,255,255,0.05)] pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <!-- Column 1: Brand -->
+        <div class="col-span-2 lg:col-span-1">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-7 h-7 rounded-md bg-signal flex items-center justify-center">
+              <svg width="14" height="14" viewBox="0 0 18 18" fill="none"><path d="M9 2v14M5 5h8M5 9h8M5 13h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <span class="text-white font-bold text-base tracking-tight">The Switchboard</span>
+          </div>
+          <p class="text-[rgba(255,255,255,0.4)] text-sm leading-relaxed mb-6 max-w-xs">
+            The intelligence layer behind profitable insurance growth. Enrich. Score. Segment. Route. Analyze.
+          </p>
+          <div class="flex items-center gap-4">
+            <a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] transition-colors" aria-label="LinkedIn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            </a>
+            <a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] transition-colors" aria-label="Twitter">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Column 2: Platform -->
+        <div>
+          <h4 class="text-white font-semibold text-sm mb-4">Platform</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Data Enrichment</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Risk Segmentation</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Quality Scoring</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Decision Engine</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Analytics</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Company -->
+        <div>
+          <h4 class="text-white font-semibold text-sm mb-4">Company</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">About Us</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Careers</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Blog</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Contact</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Partners</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Legal -->
+        <div>
+          <h4 class="text-white font-semibold text-sm mb-4">Legal</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Security</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Compliance</a></li>
+            <li><a href="#" class="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.7)] text-sm transition-colors">Data Processing</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="border-t border-[rgba(255,255,255,0.05)] pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-[rgba(255,255,255,0.3)] text-xs">
+          &copy; 2026 The Switchboard. All rights reserved.
+        </p>
+        <p class="text-[rgba(255,255,255,0.2)] text-xs">
+          Risk intelligence &amp; profitable growth partner for insurance organizations.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

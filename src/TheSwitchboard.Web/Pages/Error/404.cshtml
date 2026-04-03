@@ -1,0 +1,16 @@
+@page
+@{
+    ViewData["Title"] = "Page Not Found";
+    Layout = "_Layout";
+}
+
+<section style="min-height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 5rem;">
+    <div>
+        <div style="font-size: 6rem; font-weight: 900; color: var(--accent-blue); line-height: 1; margin-bottom: 1rem;">404</div>
+        <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem;">Page not found</h1>
+        <p style="color: var(--slate-400); margin-bottom: 2rem;">The page you're looking for doesn't exist or has been moved.</p>
+        <a asp-page="/Index" class="btn-primary" style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600;">
+            Back to Home
+        </a>
+    </div>
+</section>

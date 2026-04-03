@@ -1,0 +1,59 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem;">Dashboard</h1>
+
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem;">
+        <div style="font-size: 0.75rem; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Page Views Today</div>
+        <div style="font-size: 2rem; font-weight: 800; color: white;">@Model.PageViewsToday</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem;">
+        <div style="font-size: 0.75rem; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Page Views This Week</div>
+        <div style="font-size: 2rem; font-weight: 800; color: white;">@Model.PageViewsWeek</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem;">
+        <div style="font-size: 0.75rem; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Form Submissions</div>
+        <div style="font-size: 2rem; font-weight: 800; color: white;">@Model.TotalSubmissions</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem;">
+        <div style="font-size: 0.75rem; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Blog Posts</div>
+        <div style="font-size: 2rem; font-weight: 800; color: white;">@Model.BlogPostCount</div>
+    </div>
+</div>
+
+<h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">Recent Submissions</h2>
+<div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <th style="text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; color: var(--slate-500); text-transform: uppercase;">Type</th>
+                <th style="text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; color: var(--slate-500); text-transform: uppercase;">Date</th>
+                <th style="text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; color: var(--slate-500); text-transform: uppercase;">Phoenix</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sub in Model.RecentSubmissions)
+            {
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+                    <td style="padding: 0.75rem 1rem; font-size: 0.875rem;">@sub.FormType</td>
+                    <td style="padding: 0.75rem 1rem; font-size: 0.875rem; color: var(--slate-400);">@sub.CreatedAt.ToString("MMM dd, yyyy h:mm tt")</td>
+                    <td style="padding: 0.75rem 1rem; font-size: 0.875rem;">
+                        @if (sub.SentToPhoenix)
+                        {
+                            <span style="color: var(--accent-green);">Sent</span>
+                        }
+                        else
+                        {
+                            <span style="color: var(--slate-500);">Pending</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

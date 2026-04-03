@@ -1,0 +1,127 @@
+using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+using TheSwitchboard.Web.Api;
+using TheSwitchboard.Web.Data;
+using TheSwitchboard.Web.Middleware;
+using TheSwitchboard.Web.Models.Site;
+using TheSwitchboard.Web.Services;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
+
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Host.UseSerilog((context, services, configuration) => configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .WriteTo.Console()
+        .WriteTo.Seq(context.Configuration["Seq:ServerUrl"] ?? "http://localhost:5341"));
+
+    // Database
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    // Identity (admin auth)
+    builder.Services.AddIdentity<AdminUser, IdentityRole>(options =>
+    {
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 10;
+        options.Password.RequireUppercase = true;
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.LoginPath = "/Admin/Login";
+        options.AccessDeniedPath = "/Admin/Login";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    });
+
+    // Razor Pages
+    builder.Services.AddRazorPages()
+        .AddRazorPagesOptions(options =>
+        {
+            options.Conventions.AuthorizeFolder("/Admin", "AdminPolicy");
+            options.Conventions.AllowAnonymousToPage("/Admin/Login");
+        });
+
+    builder.Services.AddAuthorizationBuilder()
+        .AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+
+    // Services
+    builder.Services.AddScoped<IContentService, ContentService>();
+    builder.Services.AddScoped<IFormService, FormService>();
+    builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+    builder.Services.AddScoped<IEmailService, EmailService>();
+    builder.Services.AddScoped<IImageService, ImageService>();
+    builder.Services.AddHttpClient<IPhoenixCrmService, PhoenixCrmService>();
+
+    // Validators
+    builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+    // Health checks
+    builder.Services.AddHealthChecks()
+        .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ?? "");
+
+    var app = builder.Build();
+
+    // Security headers (all environments)
+    app.UseMiddleware<SecurityHeadersMiddleware>();
+
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Error/500");
+        app.UseHsts();
+    }
+
+    app.UseStatusCodePagesWithReExecute("/Error/{0}");
+    app.UseHttpsRedirection();
+    app.UseRouting();
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    // Rate limiting on API endpoints
+    app.UseMiddleware<RateLimitMiddleware>();
+
+    // First-party analytics
+    app.UseMiddleware<AnalyticsMiddleware>();
+
+    app.UseSerilogRequestLogging();
+
+    app.MapStaticAssets();
+    app.MapRazorPages().WithStaticAssets();
+    app.MapHealthChecks("/health");
+
+    // API endpoints
+    app.MapContactApi();
+
+    // Auto-migrate and seed in development
+    if (app.Environment.IsDevelopment())
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await db.Database.MigrateAsync();
+        await AdminSeedService.SeedAdminUserAsync(scope.ServiceProvider);
+    }
+
+    app.Run();
+}
+catch (Exception ex) when (ex is not HostAbortedException)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

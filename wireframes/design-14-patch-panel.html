@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Switchboard — Insurance Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+                    colors: {
+                        dark: { 900: '#030818', 800: '#050b24', 700: '#07102e' },
+                        signal: { 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb' },
+                        success: '#059669',
+                        processing: '#d97706',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+
+        /* Dot grid background */
+        .dot-grid {
+            background-image: radial-gradient(circle, rgba(37, 99, 235, 0.12) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        /* Frosted glass header */
+        .glass-header {
+            background: rgba(3, 8, 24, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        /* Glassmorphic cards */
+        .glass-card {
+            background: rgba(37, 99, 235, 0.06);
+            border: 1px solid rgba(37, 99, 235, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Pulsing node animation */
+        @keyframes pulse-node {
+            0%, 100% { opacity: 0.6; r: 4; }
+            50% { opacity: 1; r: 6; }
+        }
+        @keyframes pulse-node-outer {
+            0%, 100% { opacity: 0; r: 8; }
+            50% { opacity: 0.3; r: 14; }
+        }
+
+        .pulse-blue { animation: pulse-node 2s ease-in-out infinite; }
+        .pulse-blue-outer { animation: pulse-node-outer 2s ease-in-out infinite; }
+        .pulse-green { animation: pulse-node 2.2s ease-in-out infinite; }
+        .pulse-green-outer { animation: pulse-node-outer 2.2s ease-in-out infinite; }
+        .pulse-amber { animation: pulse-node 1.8s ease-in-out infinite; }
+        .pulse-amber-outer { animation: pulse-node-outer 1.8s ease-in-out infinite; }
+
+        /* Flowing dash animation for patch cords */
+        @keyframes flow-right {
+            from { stroke-dashoffset: 24; }
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes flow-right-slow {
+            from { stroke-dashoffset: 24; }
+            to { stroke-dashoffset: 0; }
+        }
+        .flow-line {
+            stroke-dasharray: 8 16;
+            animation: flow-right 1.5s linear infinite;
+        }
+        .flow-line-slow {
+            stroke-dasharray: 6 18;
+            animation: flow-right 2s linear infinite;
+        }
+        .flow-line-fast {
+            stroke-dasharray: 10 14;
+            animation: flow-right 1s linear infinite;
+        }
+
+        /* Internal panel flow */
+        @keyframes internal-flow {
+            from { stroke-dashoffset: 16; }
+            to { stroke-dashoffset: 0; }
+        }
+        .internal-flow {
+            stroke-dasharray: 4 12;
+            animation: internal-flow 1.2s linear infinite;
+        }
+
+        /* Panel background grid dots */
+        @keyframes grid-dot-pulse {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 0.4; }
+        }
+        .grid-dot-pulse {
+            animation: grid-dot-pulse 3s ease-in-out infinite;
+        }
+
+        /* Count-up number glow */
+        .stat-glow {
+            text-shadow: 0 0 40px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Marquee */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+            animation: marquee 30s linear infinite;
+        }
+        .marquee-track:hover { animation-play-state: paused; }
+
+        /* Stage label glow */
+        @keyframes stage-glow {
+            0%, 100% { box-shadow: 0 0 8px rgba(37, 99, 235, 0.2); }
+            50% { box-shadow: 0 0 16px rgba(37, 99, 235, 0.5); }
+        }
+        .stage-label {
+            animation: stage-glow 3s ease-in-out infinite;
+        }
+
+        /* Smooth scroll offset for fixed header */
+        html { scroll-padding-top: 80px; }
+
+        /* Mobile patch panel */
+        @media (max-width: 768px) {
+            .patch-panel-desktop { display: none; }
+            .patch-panel-mobile { display: block; }
+        }
+        @media (min-width: 769px) {
+            .patch-panel-desktop { display: block; }
+            .patch-panel-mobile { display: none; }
+        }
+
+        /* Subtle hover lift */
+        .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(37, 99, 235, 0.15); }
+
+        /* Connection line between cards */
+        .connector-line {
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            height: 2px;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-white antialiased">
+
+<!-- ========== HEADER ========== -->
+<header class="glass-header fixed top-0 left-0 right-0 z-50 h-[72px]" x-data="{ mobileOpen: false }">
+    <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2.5">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect x="2" y="2" width="28" height="28" rx="6" stroke="#2563eb" stroke-width="2"/>
+                <circle cx="10" cy="10" r="2" fill="#2563eb"/>
+                <circle cx="16" cy="10" r="2" fill="#3b82f6"/>
+                <circle cx="22" cy="10" r="2" fill="#60a5fa"/>
+                <circle cx="10" cy="16" r="2" fill="#3b82f6"/>
+                <circle cx="16" cy="16" r="2.5" fill="#2563eb"/>
+                <circle cx="22" cy="16" r="2" fill="#3b82f6"/>
+                <circle cx="10" cy="22" r="2" fill="#60a5fa"/>
+                <circle cx="16" cy="22" r="2" fill="#3b82f6"/>
+                <circle cx="22" cy="22" r="2" fill="#2563eb"/>
+                <line x1="10" y1="10" x2="22" y2="22" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="22" y1="10" x2="10" y2="22" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span class="text-lg font-bold tracking-tight">The Switchboard</span>
+        </a>
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center gap-8">
+            <a href="#solutions" class="text-sm text-white/70 hover:text-white transition-colors">Solutions</a>
+            <a href="#industries" class="text-sm text-white/70 hover:text-white transition-colors">Industries</a>
+            <a href="#resources" class="text-sm text-white/70 hover:text-white transition-colors">Resources</a>
+            <a href="#about" class="text-sm text-white/70 hover:text-white transition-colors">About</a>
+            <a href="#contact" class="text-sm text-white/70 hover:text-white transition-colors">Contact</a>
+        </nav>
+        <!-- CTA -->
+        <div class="hidden md:block">
+            <a href="#demo" class="inline-flex items-center gap-2 bg-signal-600 hover:bg-signal-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors">
+                Request a Demo
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
+            </a>
+        </div>
+        <!-- Mobile hamburger -->
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden text-white/70 hover:text-white">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path x-show="!mobileOpen" stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+                <path x-show="mobileOpen" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+    <!-- Mobile menu -->
+    <div x-show="mobileOpen" x-transition class="md:hidden bg-dark-900/95 backdrop-blur-xl border-t border-white/5 px-6 py-6 space-y-4">
+        <a href="#solutions" class="block text-white/70 hover:text-white">Solutions</a>
+        <a href="#industries" class="block text-white/70 hover:text-white">Industries</a>
+        <a href="#resources" class="block text-white/70 hover:text-white">Resources</a>
+        <a href="#about" class="block text-white/70 hover:text-white">About</a>
+        <a href="#contact" class="block text-white/70 hover:text-white">Contact</a>
+        <a href="#demo" class="inline-block bg-signal-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg mt-2">Request a Demo</a>
+    </div>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="relative min-h-screen bg-dark-900 dot-grid pt-[72px] overflow-hidden">
+    <!-- Radial glow behind visualization -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div class="w-[800px] h-[800px] rounded-full bg-signal-600/5 blur-[120px]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 pt-16 md:pt-24 pb-12">
+        <!-- Text Content -->
+        <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+            <p class="text-xs font-bold uppercase tracking-[0.08em] text-signal-600 mb-4">Insurance Intelligence Platform</p>
+            <h1 class="text-4xl sm:text-5xl md:text-[64px] font-extrabold leading-[1.05] tracking-[-0.03em] mb-6">
+                Every Connection.<br>
+                <span class="bg-gradient-to-r from-signal-400 via-signal-500 to-signal-600 bg-clip-text text-transparent">Optimized.</span>
+            </h1>
+            <p class="text-base sm:text-lg text-white/70 leading-relaxed max-w-2xl mx-auto mb-8">
+                The Switchboard sits between your data sources and your revenue &mdash; enriching, scoring, and routing every opportunity to its highest-value destination in real-time.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#demo" class="inline-flex items-center gap-2 bg-signal-600 hover:bg-signal-500 text-white font-semibold px-7 py-3.5 rounded-lg transition-colors text-sm">
+                    Request a Demo
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
+                </a>
+                <a href="#how-it-works" class="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white font-semibold px-7 py-3.5 rounded-lg transition-colors text-sm">
+                    See How It Works
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- ===== PATCH PANEL VISUALIZATION (Desktop) ===== -->
+        <div class="patch-panel-desktop max-w-5xl mx-auto">
+            <svg viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
+                <defs>
+                    <!-- Gradient for patch cords: blue to green -->
+                    <linearGradient id="cord-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#2563eb"/>
+                        <stop offset="50%" stop-color="#3b82f6"/>
+                        <stop offset="100%" stop-color="#059669"/>
+                    </linearGradient>
+                    <linearGradient id="cord-grad-2" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#3b82f6"/>
+                        <stop offset="50%" stop-color="#60a5fa"/>
+                        <stop offset="100%" stop-color="#059669"/>
+                    </linearGradient>
+                    <linearGradient id="cord-grad-3" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#2563eb"/>
+                        <stop offset="60%" stop-color="#3b82f6"/>
+                        <stop offset="100%" stop-color="#d97706"/>
+                    </linearGradient>
+                    <linearGradient id="cord-grad-blue" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#2563eb"/>
+                        <stop offset="100%" stop-color="#60a5fa"/>
+                    </linearGradient>
+                    <!-- Panel background gradient -->
+                    <linearGradient id="panel-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#07102e"/>
+                        <stop offset="100%" stop-color="#050b24"/>
+                    </linearGradient>
+                    <!-- Glow filter -->
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                    <filter id="glow-strong">
+                        <feGaussianBlur stdDeviation="6" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                </defs>
+
+                <!-- ===== LEFT COLUMN: INPUTS ===== -->
+                <!-- Input 1: Web Forms -->
+                <g transform="translate(30, 60)">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(37,99,235,0.2)" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#2563eb" class="pulse-blue" filter="url(#glow)"/>
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#2563eb" stroke-width="0.5" class="pulse-blue-outer" opacity="0"/>
+                    <text x="18" y="5" fill="rgba(255,255,255,0.85)" font-size="12" font-weight="600">Web Forms</text>
+                </g>
+                <!-- Input 2: Partner Feeds -->
+                <g transform="translate(30, 135)">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(37,99,235,0.2)" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#2563eb" class="pulse-blue" filter="url(#glow)" style="animation-delay: 0.3s"/>
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#2563eb" stroke-width="0.5" class="pulse-blue-outer" opacity="0" style="animation-delay: 0.3s"/>
+                    <text x="18" y="5" fill="rgba(255,255,255,0.85)" font-size="12" font-weight="600">Partner Feeds</text>
+                </g>
+                <!-- Input 3: Aggregator APIs -->
+                <g transform="translate(30, 210)">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(37,99,235,0.2)" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#2563eb" class="pulse-blue" filter="url(#glow)" style="animation-delay: 0.6s"/>
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#2563eb" stroke-width="0.5" class="pulse-blue-outer" opacity="0" style="animation-delay: 0.6s"/>
+                    <text x="18" y="5" fill="rgba(255,255,255,0.85)" font-size="12" font-weight="600">Aggregator APIs</text>
+                </g>
+                <!-- Input 4: Call Tracking -->
+                <g transform="translate(30, 285)">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(37,99,235,0.2)" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#2563eb" class="pulse-blue" filter="url(#glow)" style="animation-delay: 0.9s"/>
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#2563eb" stroke-width="0.5" class="pulse-blue-outer" opacity="0" style="animation-delay: 0.9s"/>
+                    <text x="18" y="5" fill="rgba(255,255,255,0.85)" font-size="12" font-weight="600">Call Tracking</text>
+                </g>
+                <!-- Input 5: Manual Upload -->
+                <g transform="translate(30, 360)">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(37,99,235,0.2)" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#2563eb" class="pulse-blue" filter="url(#glow)" style="animation-delay: 1.2s"/>
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#2563eb" stroke-width="0.5" class="pulse-blue-outer" opacity="0" style="animation-delay: 1.2s"/>
+                    <text x="18" y="5" fill="rgba(255,255,255,0.85)" font-size="12" font-weight="600">Manual Upload</text>
+                </g>
+
+                <!-- ===== CENTER: THE SWITCHBOARD PANEL ===== -->
+                <g transform="translate(260, 25)">
+                    <!-- Panel outer border -->
+                    <rect x="0" y="0" width="480" height="370" rx="12" fill="url(#panel-bg)" stroke="rgba(37,99,235,0.25)" stroke-width="1.5"/>
+                    <!-- Panel inner border -->
+                    <rect x="8" y="8" width="464" height="354" rx="8" fill="none" stroke="rgba(37,99,235,0.08)" stroke-width="1"/>
+
+                    <!-- Panel Title -->
+                    <text x="240" y="35" fill="rgba(255,255,255,0.5)" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.12em">THE SWITCHBOARD</text>
+
+                    <!-- Grid dots inside panel -->
+                    <g opacity="0.15">
+                        <!-- Row 1 -->
+                        <circle cx="40" cy="60" r="1.5" fill="#2563eb" class="grid-dot-pulse"/>
+                        <circle cx="80" cy="60" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.5s"/>
+                        <circle cx="120" cy="60" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1s"/>
+                        <circle cx="160" cy="60" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.5s"/>
+                        <circle cx="200" cy="60" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.3s"/>
+                        <circle cx="240" cy="60" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.8s"/>
+                        <circle cx="280" cy="60" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.3s"/>
+                        <circle cx="320" cy="60" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.6s"/>
+                        <circle cx="360" cy="60" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.1s"/>
+                        <circle cx="400" cy="60" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.4s"/>
+                        <circle cx="440" cy="60" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.9s"/>
+                        <!-- Row 2 -->
+                        <circle cx="40" cy="100" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.7s"/>
+                        <circle cx="80" cy="100" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.2s"/>
+                        <circle cx="120" cy="100" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.2s"/>
+                        <circle cx="160" cy="100" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.8s"/>
+                        <circle cx="200" cy="100" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.4s"/>
+                        <circle cx="240" cy="100" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.5s"/>
+                        <circle cx="280" cy="100" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1s"/>
+                        <circle cx="320" cy="100" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.3s"/>
+                        <circle cx="360" cy="100" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.9s"/>
+                        <circle cx="400" cy="100" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.5s"/>
+                        <circle cx="440" cy="100" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.6s"/>
+                        <!-- Row 3 -->
+                        <circle cx="40" cy="140" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.1s"/>
+                        <circle cx="80" cy="140" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.4s"/>
+                        <circle cx="120" cy="140" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.9s"/>
+                        <circle cx="160" cy="140" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.3s"/>
+                        <circle cx="200" cy="140" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.1s"/>
+                        <circle cx="240" cy="140" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.7s"/>
+                        <circle cx="280" cy="140" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.2s"/>
+                        <circle cx="320" cy="140" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.5s"/>
+                        <circle cx="360" cy="140" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1s"/>
+                        <circle cx="400" cy="140" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.2s"/>
+                        <circle cx="440" cy="140" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.8s"/>
+                        <!-- Rows 4-8 sparse dots -->
+                        <circle cx="60" cy="180" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.6s"/>
+                        <circle cx="140" cy="180" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.1s"/>
+                        <circle cx="220" cy="180" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.3s"/>
+                        <circle cx="300" cy="180" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.9s"/>
+                        <circle cx="380" cy="180" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.4s"/>
+                        <circle cx="60" cy="220" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.8s"/>
+                        <circle cx="140" cy="220" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.2s"/>
+                        <circle cx="220" cy="220" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1s"/>
+                        <circle cx="300" cy="220" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.5s"/>
+                        <circle cx="380" cy="220" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.3s"/>
+                        <circle cx="60" cy="260" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.4s"/>
+                        <circle cx="140" cy="260" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.2s"/>
+                        <circle cx="220" cy="260" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.7s"/>
+                        <circle cx="300" cy="260" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.1s"/>
+                        <circle cx="380" cy="260" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.9s"/>
+                        <circle cx="60" cy="300" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1s"/>
+                        <circle cx="140" cy="300" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.3s"/>
+                        <circle cx="220" cy="300" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.6s"/>
+                        <circle cx="300" cy="300" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.1s"/>
+                        <circle cx="380" cy="300" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.4s"/>
+                        <circle cx="60" cy="340" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.5s"/>
+                        <circle cx="140" cy="340" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.8s"/>
+                        <circle cx="220" cy="340" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:1.3s"/>
+                        <circle cx="300" cy="340" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.2s"/>
+                        <circle cx="380" cy="340" r="1.5" fill="#2563eb" class="grid-dot-pulse" style="animation-delay:0.7s"/>
+                    </g>
+
+                    <!-- 5 Processing Stage Labels (horizontal flow inside panel) -->
+                    <!-- ENRICH -->
+                    <g transform="translate(28, 165)">
+                        <rect x="0" y="0" width="72" height="28" rx="6" fill="rgba(37,99,235,0.12)" stroke="rgba(37,99,235,0.3)" stroke-width="1" class="stage-label"/>
+                        <text x="36" y="18" fill="#60a5fa" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="0.06em">ENRICH</text>
+                    </g>
+                    <!-- SCORE -->
+                    <g transform="translate(120, 165)">
+                        <rect x="0" y="0" width="64" height="28" rx="6" fill="rgba(37,99,235,0.12)" stroke="rgba(37,99,235,0.3)" stroke-width="1" class="stage-label" style="animation-delay:0.6s"/>
+                        <text x="32" y="18" fill="#60a5fa" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="0.06em">SCORE</text>
+                    </g>
+                    <!-- SEGMENT -->
+                    <g transform="translate(204, 165)">
+                        <rect x="0" y="0" width="76" height="28" rx="6" fill="rgba(37,99,235,0.12)" stroke="rgba(37,99,235,0.3)" stroke-width="1" class="stage-label" style="animation-delay:1.2s"/>
+                        <text x="38" y="18" fill="#60a5fa" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="0.06em">SEGMENT</text>
+                    </g>
+                    <!-- ROUTE -->
+                    <g transform="translate(300, 165)">
+                        <rect x="0" y="0" width="64" height="28" rx="6" fill="rgba(37,99,235,0.12)" stroke="rgba(37,99,235,0.3)" stroke-width="1" class="stage-label" style="animation-delay:1.8s"/>
+                        <text x="32" y="18" fill="#60a5fa" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="0.06em">ROUTE</text>
+                    </g>
+                    <!-- MATCH -->
+                    <g transform="translate(384, 165)">
+                        <rect x="0" y="0" width="68" height="28" rx="6" fill="rgba(37,99,235,0.12)" stroke="rgba(37,99,235,0.3)" stroke-width="1" class="stage-label" style="animation-delay:2.4s"/>
+                        <text x="34" y="18" fill="#60a5fa" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="0.06em">MATCH</text>
+                    </g>
+
+                    <!-- Internal connecting lines between stages -->
+                    <line x1="100" y1="179" x2="120" y2="179" stroke="#2563eb" stroke-width="1.5" class="internal-flow" filter="url(#glow)"/>
+                    <line x1="184" y1="179" x2="204" y2="179" stroke="#2563eb" stroke-width="1.5" class="internal-flow" style="animation-delay:0.3s" filter="url(#glow)"/>
+                    <line x1="280" y1="179" x2="300" y2="179" stroke="#2563eb" stroke-width="1.5" class="internal-flow" style="animation-delay:0.6s" filter="url(#glow)"/>
+                    <line x1="364" y1="179" x2="384" y2="179" stroke="#2563eb" stroke-width="1.5" class="internal-flow" style="animation-delay:0.9s" filter="url(#glow)"/>
+
+                    <!-- Arrow chevrons between stages -->
+                    <path d="M112,175 L118,179 L112,183" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.6"/>
+                    <path d="M196,175 L202,179 L196,183" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.6"/>
+                    <path d="M292,175 L298,179 L292,183" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.6"/>
+                    <path d="M376,175 L382,179 L376,183" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.6"/>
+                </g>
+
+                <!-- ===== RIGHT COLUMN: OUTPUTS ===== -->
+                <!-- Output 1: Tier 1 Buyers -->
+                <g transform="translate(970, 60)">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(5,150,105,0.25)" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#059669" class="pulse-green" filter="url(#glow)"/>
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#059669" stroke-width="0.5" class="pulse-green-outer" opacity="0"/>
+                    <text x="-18" y="5" fill="rgba(255,255,255,0.85)" font-size="12" font-weight="600" text-anchor="end">Tier 1 Buyers</text>
+                </g>
+                <!-- Output 2: Tier 2 Buyers -->
+                <g transform="translate(970, 135)">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(5,150,105,0.25)" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#059669" class="pulse-green" filter="url(#glow)" style="animation-delay:0.4s"/>
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#059669" stroke-width="0.5" class="pulse-green-outer" opacity="0" style="animation-delay:0.4s"/>
+                    <text x="-18" y="5" fill="rgba(255,255,255,0.85)" font-size="12" font-weight="600" text-anchor="end">Tier 2 Buyers</text>
+                </g>
+                <!-- Output 3: Tier 3 Buyers -->
+                <g transform="translate(970, 210)">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(217,119,6,0.25)" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#d97706" class="pulse-amber" filter="url(#glow)"/>
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#d97706" stroke-width="0.5" class="pulse-amber-outer" opacity="0"/>
+                    <text x="-18" y="5" fill="rgba(255,255,255,0.85)" font-size="12" font-weight="600" text-anchor="end">Tier 3 Buyers</text>
+                </g>
+                <!-- Output 4: Analytics Dashboard -->
+                <g transform="translate(970, 285)">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(37,99,235,0.25)" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#2563eb" class="pulse-blue" filter="url(#glow)" style="animation-delay:0.7s"/>
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#2563eb" stroke-width="0.5" class="pulse-blue-outer" opacity="0" style="animation-delay:0.7s"/>
+                    <text x="-18" y="5" fill="rgba(255,255,255,0.85)" font-size="12" font-weight="600" text-anchor="end">Analytics Dashboard</text>
+                </g>
+                <!-- Output 5: CRM Integration -->
+                <g transform="translate(970, 360)">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(37,99,235,0.25)" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#2563eb" class="pulse-blue" filter="url(#glow)" style="animation-delay:1s"/>
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#2563eb" stroke-width="0.5" class="pulse-blue-outer" opacity="0" style="animation-delay:1s"/>
+                    <text x="-18" y="5" fill="rgba(255,255,255,0.85)" font-size="12" font-weight="600" text-anchor="end">CRM Integration</text>
+                </g>
+
+                <!-- ===== PATCH CORDS: Input to Panel ===== -->
+                <!-- Web Forms -> Panel left -->
+                <path d="M42,60 C140,60 180,80 260,100" fill="none" stroke="url(#cord-grad-blue)" stroke-width="2" class="flow-line" filter="url(#glow)"/>
+                <!-- Partner Feeds -> Panel left -->
+                <path d="M42,135 C140,135 180,140 260,155" fill="none" stroke="url(#cord-grad-blue)" stroke-width="2" class="flow-line" style="animation-delay:0.4s" filter="url(#glow)"/>
+                <!-- Aggregator APIs -> Panel center -->
+                <path d="M42,210 C140,210 180,200 260,200" fill="none" stroke="url(#cord-grad-blue)" stroke-width="2" class="flow-line-slow" style="animation-delay:0.8s" filter="url(#glow)"/>
+                <!-- Call Tracking -> Panel left -->
+                <path d="M42,285 C140,285 180,260 260,250" fill="none" stroke="url(#cord-grad-blue)" stroke-width="2" class="flow-line" style="animation-delay:1.2s" filter="url(#glow)"/>
+                <!-- Manual Upload -> Panel bottom -->
+                <path d="M42,360 C140,360 180,330 260,310" fill="none" stroke="url(#cord-grad-blue)" stroke-width="2" class="flow-line-slow" style="animation-delay:1.6s" filter="url(#glow)"/>
+
+                <!-- ===== PATCH CORDS: Panel to Output ===== -->
+                <!-- Panel -> Tier 1 Buyers (green) -->
+                <path d="M740,100 C820,80 880,60 958,60" fill="none" stroke="url(#cord-grad-1)" stroke-width="2" class="flow-line-fast" filter="url(#glow)"/>
+                <!-- Panel -> Tier 2 Buyers (green) -->
+                <path d="M740,155 C820,145 880,138 958,135" fill="none" stroke="url(#cord-grad-2)" stroke-width="2" class="flow-line" style="animation-delay:0.5s" filter="url(#glow)"/>
+                <!-- Panel -> Tier 3 Buyers (amber) -->
+                <path d="M740,210 C820,210 880,210 958,210" fill="none" stroke="url(#cord-grad-3)" stroke-width="2" class="flow-line-slow" style="animation-delay:1s" filter="url(#glow)"/>
+                <!-- Panel -> Analytics (blue) -->
+                <path d="M740,270 C820,275 880,280 958,285" fill="none" stroke="url(#cord-grad-blue)" stroke-width="2" class="flow-line" style="animation-delay:0.3s" filter="url(#glow)"/>
+                <!-- Panel -> CRM (blue) -->
+                <path d="M740,330 C820,340 880,350 958,360" fill="none" stroke="url(#cord-grad-blue)" stroke-width="2" class="flow-line-slow" style="animation-delay:0.7s" filter="url(#glow)"/>
+
+                <!-- Column Labels -->
+                <text x="70" y="28" fill="rgba(255,255,255,0.35)" font-size="10" font-weight="700" letter-spacing="0.1em">INPUTS</text>
+                <text x="900" y="28" fill="rgba(255,255,255,0.35)" font-size="10" font-weight="700" letter-spacing="0.1em" text-anchor="end">OUTPUTS</text>
+            </svg>
+        </div>
+
+        <!-- ===== PATCH PANEL MOBILE (Vertical flow) ===== -->
+        <div class="patch-panel-mobile px-4">
+            <div class="space-y-3">
+                <!-- Inputs -->
+                <div class="text-center">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.1em] text-white/35 mb-3">Inputs</p>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-signal-600/10 border border-signal-600/20 text-xs text-signal-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-signal-600 animate-pulse"></span> Web Forms
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-signal-600/10 border border-signal-600/20 text-xs text-signal-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-signal-600 animate-pulse"></span> Partner Feeds
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-signal-600/10 border border-signal-600/20 text-xs text-signal-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-signal-600 animate-pulse"></span> Aggregator APIs
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-signal-600/10 border border-signal-600/20 text-xs text-signal-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-signal-600 animate-pulse"></span> Call Tracking
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-signal-600/10 border border-signal-600/20 text-xs text-signal-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-signal-600 animate-pulse"></span> Manual Upload
+                        </span>
+                    </div>
+                </div>
+                <!-- Arrow down -->
+                <div class="flex justify-center">
+                    <svg class="w-6 h-8 text-signal-600/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 32"><path d="M12 4v20m0 0l-6-6m6 6l6-6"/></svg>
+                </div>
+                <!-- Switchboard stages -->
+                <div class="bg-dark-700/50 border border-signal-600/15 rounded-xl p-4">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.1em] text-white/40 text-center mb-3">The Switchboard</p>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <span class="px-3 py-1.5 rounded-md bg-signal-600/10 border border-signal-600/25 text-[10px] font-bold text-signal-400 tracking-wider">ENRICH</span>
+                        <span class="text-signal-600/40 self-center">&rarr;</span>
+                        <span class="px-3 py-1.5 rounded-md bg-signal-600/10 border border-signal-600/25 text-[10px] font-bold text-signal-400 tracking-wider">SCORE</span>
+                        <span class="text-signal-600/40 self-center">&rarr;</span>
+                        <span class="px-3 py-1.5 rounded-md bg-signal-600/10 border border-signal-600/25 text-[10px] font-bold text-signal-400 tracking-wider">SEGMENT</span>
+                        <span class="text-signal-600/40 self-center">&rarr;</span>
+                        <span class="px-3 py-1.5 rounded-md bg-signal-600/10 border border-signal-600/25 text-[10px] font-bold text-signal-400 tracking-wider">ROUTE</span>
+                        <span class="text-signal-600/40 self-center">&rarr;</span>
+                        <span class="px-3 py-1.5 rounded-md bg-signal-600/10 border border-signal-600/25 text-[10px] font-bold text-signal-400 tracking-wider">MATCH</span>
+                    </div>
+                </div>
+                <!-- Arrow down -->
+                <div class="flex justify-center">
+                    <svg class="w-6 h-8 text-success/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 32"><path d="M12 4v20m0 0l-6-6m6 6l6-6"/></svg>
+                </div>
+                <!-- Outputs -->
+                <div class="text-center">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.1em] text-white/35 mb-3">Outputs</p>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-success/10 border border-success/20 text-xs text-emerald-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span> Tier 1 Buyers
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-success/10 border border-success/20 text-xs text-emerald-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span> Tier 2 Buyers
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-processing/10 border border-processing/20 text-xs text-amber-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-processing animate-pulse"></span> Tier 3 Buyers
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-signal-600/10 border border-signal-600/20 text-xs text-signal-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-signal-600 animate-pulse"></span> Analytics
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-signal-600/10 border border-signal-600/20 text-xs text-signal-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-signal-600 animate-pulse"></span> CRM
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== SOCIAL PROOF ========== -->
+<section class="bg-dark-800 py-16 border-t border-b border-white/5 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+        <p class="text-center text-xs font-bold uppercase tracking-[0.08em] text-white/30 mb-8">Trusted by Carriers, Agencies, and Providers Nationwide</p>
+        <div class="relative overflow-hidden">
+            <div class="flex marquee-track" style="width: 200%;">
+                <div class="flex items-center justify-around w-1/2 gap-16 px-8">
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">National General</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">SafeAuto</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Dairyland</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Bristol West</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Kemper</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Elephant</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Root Insurance</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Clearcover</span>
+                </div>
+                <div class="flex items-center justify-around w-1/2 gap-16 px-8">
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">National General</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">SafeAuto</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Dairyland</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Bristol West</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Kemper</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Elephant</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Root Insurance</span>
+                    <span class="text-white/20 font-bold text-lg whitespace-nowrap">Clearcover</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== THE NUMBERS ========== -->
+<section class="bg-dark-900 py-24" x-data="{ shown: false }" x-intersect.once="shown = true">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
+            <!-- Stat 1 -->
+            <div class="text-center" x-data="{ count: 0 }" x-effect="if(shown) { let i=0; const interval = setInterval(() => { i++; count = i >= 40 ? 10 : Math.round(i/4); if(i>=40) clearInterval(interval); }, 50); }">
+                <p class="text-4xl md:text-5xl font-extrabold text-white stat-glow mb-2">
+                    <span x-text="count">0</span>M+
+                </p>
+                <p class="text-sm text-white/50 font-medium">Opportunities Routed</p>
+            </div>
+            <!-- Stat 2 -->
+            <div class="text-center" x-data="{ count: 0 }" x-effect="if(shown) { let i=0; const interval = setInterval(() => { i++; count = i >= 50 ? 250 : Math.round(250*i/50); if(i>=50) clearInterval(interval); }, 40); }">
+                <p class="text-4xl md:text-5xl font-extrabold text-white stat-glow mb-2">
+                    &lt;<span x-text="count">0</span>ms
+                </p>
+                <p class="text-sm text-white/50 font-medium">Routing Latency</p>
+            </div>
+            <!-- Stat 3 -->
+            <div class="text-center" x-data="{ count: 0 }" x-effect="if(shown) { let i=0; const interval = setInterval(() => { i++; count = i >= 50 ? 340 : Math.round(340*i/50); if(i>=50) clearInterval(interval); }, 40); }">
+                <p class="text-4xl md:text-5xl font-extrabold text-white stat-glow mb-2">
+                    <span x-text="count">0</span>%
+                </p>
+                <p class="text-sm text-white/50 font-medium">Avg ROI Lift</p>
+            </div>
+            <!-- Stat 4 -->
+            <div class="text-center" x-data="{ count: 0 }" x-effect="if(shown) { let i=0; const interval = setInterval(() => { i++; count = i >= 50 ? 94 : Math.round(94*i/50); if(i>=50) clearInterval(interval); }, 40); }">
+                <p class="text-4xl md:text-5xl font-extrabold text-white stat-glow mb-2">
+                    <span x-text="count">0</span>%
+                </p>
+                <p class="text-sm text-white/50 font-medium">Match Accuracy</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== HOW THE SWITCHBOARD WORKS ========== -->
+<section id="how-it-works" class="bg-[#f8fafc] py-24">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <p class="text-xs font-bold uppercase tracking-[0.08em] text-[#2563eb] mb-3">How It Works</p>
+            <h2 class="text-3xl md:text-[48px] font-bold text-[#0f172a] leading-tight tracking-tight">Intelligence at Every<br>Connection Point</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-0">
+            <!-- Card 1 -->
+            <div class="relative group">
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 hover-lift h-full">
+                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-4">
+                        <span class="text-sm font-bold text-[#2563eb]">01</span>
+                    </div>
+                    <h3 class="text-base font-bold text-[#0f172a] mb-2">Ingest</h3>
+                    <p class="text-sm text-[#64748b] leading-relaxed">Connect any data source. Forms, APIs, partners, call tracking &mdash; the switchboard accepts them all.</p>
+                </div>
+                <!-- Connector line (hidden on mobile) -->
+                <div class="hidden md:block absolute top-1/2 -right-[1px] w-[2px] h-8 -translate-y-1/2 z-10">
+                    <div class="w-full h-full bg-gradient-to-b from-transparent via-[#2563eb] to-transparent"></div>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="relative group">
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 hover-lift h-full">
+                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-4">
+                        <span class="text-sm font-bold text-[#2563eb]">02</span>
+                    </div>
+                    <h3 class="text-base font-bold text-[#0f172a] mb-2">Enrich</h3>
+                    <p class="text-sm text-[#64748b] leading-relaxed">90GB+ of proprietary intelligence overlays every record. Demographics, risk attributes, Equifax data.</p>
+                </div>
+                <div class="hidden md:block absolute top-1/2 -right-[1px] w-[2px] h-8 -translate-y-1/2 z-10">
+                    <div class="w-full h-full bg-gradient-to-b from-transparent via-[#2563eb] to-transparent"></div>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="relative group">
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 hover-lift h-full">
+                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-4">
+                        <span class="text-sm font-bold text-[#2563eb]">03</span>
+                    </div>
+                    <h3 class="text-base font-bold text-[#0f172a] mb-2">Score</h3>
+                    <p class="text-sm text-[#64748b] leading-relaxed">ML models predict conversion probability, risk tier, and optimal carrier match.</p>
+                </div>
+                <div class="hidden md:block absolute top-1/2 -right-[1px] w-[2px] h-8 -translate-y-1/2 z-10">
+                    <div class="w-full h-full bg-gradient-to-b from-transparent via-[#2563eb] to-transparent"></div>
+                </div>
+            </div>
+            <!-- Card 4 -->
+            <div class="relative group">
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 hover-lift h-full">
+                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-4">
+                        <span class="text-sm font-bold text-[#2563eb]">04</span>
+                    </div>
+                    <h3 class="text-base font-bold text-[#0f172a] mb-2">Route</h3>
+                    <p class="text-sm text-[#64748b] leading-relaxed">The decision engine delivers each opportunity to its highest-value buyer in &lt;250ms.</p>
+                </div>
+                <div class="hidden md:block absolute top-1/2 -right-[1px] w-[2px] h-8 -translate-y-1/2 z-10">
+                    <div class="w-full h-full bg-gradient-to-b from-transparent via-[#2563eb] to-transparent"></div>
+                </div>
+            </div>
+            <!-- Card 5 -->
+            <div class="relative group">
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 hover-lift h-full">
+                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-4">
+                        <span class="text-sm font-bold text-[#2563eb]">05</span>
+                    </div>
+                    <h3 class="text-base font-bold text-[#0f172a] mb-2">Analyze</h3>
+                    <p class="text-sm text-[#64748b] leading-relaxed">Closed-loop attribution connects every acquisition dollar to policy bind rates.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== WHY THE SWITCHBOARD ========== -->
+<section id="about" class="bg-dark-900 py-24">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <p class="text-xs font-bold uppercase tracking-[0.08em] text-signal-600 mb-3">Why The Switchboard</p>
+            <h2 class="text-3xl md:text-[48px] font-bold text-white leading-tight tracking-tight mb-4">Not a Vendor.<br>Your Intelligence Layer.</h2>
+            <p class="text-base text-white/60 max-w-2xl mx-auto leading-relaxed">We don't sell you opportunities. We make your entire acquisition pipeline smarter &mdash; from first touch to policy bind. The Switchboard is the invisible intelligence that connects your data to your revenue.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Differentiator 1 -->
+            <div class="glass-card rounded-2xl p-8 hover-lift">
+                <div class="w-12 h-12 rounded-xl bg-signal-600/15 flex items-center justify-center mb-5">
+                    <svg class="w-6 h-6 text-signal-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-3">Complete Pipeline</h3>
+                <p class="text-sm text-white/60 leading-relaxed">The only platform that enriches, scores, segments, routes, AND provides closed-loop analytics. Competitors do 1-2 of these.</p>
+            </div>
+            <!-- Differentiator 2 -->
+            <div class="glass-card rounded-2xl p-8 hover-lift">
+                <div class="w-12 h-12 rounded-xl bg-signal-600/15 flex items-center justify-center mb-5">
+                    <svg class="w-6 h-6 text-signal-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-3">Real-Time Intelligence</h3>
+                <p class="text-sm text-white/60 leading-relaxed">Sub-250ms end-to-end. While others batch process overnight, we route in real-time. Every millisecond matters in acquisition.</p>
+            </div>
+            <!-- Differentiator 3 -->
+            <div class="glass-card rounded-2xl p-8 hover-lift">
+                <div class="w-12 h-12 rounded-xl bg-signal-600/15 flex items-center justify-center mb-5">
+                    <svg class="w-6 h-6 text-signal-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-3">Your Data, Your Control</h3>
+                <p class="text-sm text-white/60 leading-relaxed">Self-hosted infrastructure. No third-party dependencies. Your data never leaves your pipeline.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== INDUSTRIES ========== -->
+<section id="industries" class="bg-[#f8fafc] py-24">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <p class="text-xs font-bold uppercase tracking-[0.08em] text-[#2563eb] mb-3">Industries</p>
+            <h2 class="text-3xl md:text-[48px] font-bold text-[#0f172a] leading-tight tracking-tight">Built for Insurance.<br>Every Vertical.</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Auto -->
+            <div class="bg-white rounded-2xl p-8 border border-gray-100 hover-lift">
+                <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mb-6">
+                    <svg class="w-7 h-7 text-[#2563eb]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-[#0f172a] mb-3">Auto Insurance</h3>
+                <p class="text-sm text-[#64748b] leading-relaxed mb-4">Route auto opportunities by risk tier, state, vehicle type, and driving history. Optimize match rates with 40+ enrichment attributes.</p>
+                <a href="#" class="text-sm font-semibold text-[#2563eb] hover:text-blue-700 inline-flex items-center gap-1">
+                    Learn more <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
+                </a>
+            </div>
+            <!-- Health -->
+            <div class="bg-white rounded-2xl p-8 border border-gray-100 hover-lift">
+                <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mb-6">
+                    <svg class="w-7 h-7 text-[#2563eb]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-[#0f172a] mb-3">Health Insurance</h3>
+                <p class="text-sm text-[#64748b] leading-relaxed mb-4">ACA, Medicare, supplemental &mdash; segment opportunities by plan eligibility, age bracket, income tier, and geographic market.</p>
+                <a href="#" class="text-sm font-semibold text-[#2563eb] hover:text-blue-700 inline-flex items-center gap-1">
+                    Learn more <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
+                </a>
+            </div>
+            <!-- Commercial -->
+            <div class="bg-white rounded-2xl p-8 border border-gray-100 hover-lift">
+                <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mb-6">
+                    <svg class="w-7 h-7 text-[#2563eb]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-[#0f172a] mb-3">Commercial Lines</h3>
+                <p class="text-sm text-[#64748b] leading-relaxed mb-4">GL, WC, BOP, commercial auto &mdash; intelligent routing by industry class code, revenue band, employee count, and loss history.</p>
+                <a href="#" class="text-sm font-semibold text-[#2563eb] hover:text-blue-700 inline-flex items-center gap-1">
+                    Learn more <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== TESTIMONIAL ========== -->
+<section class="bg-dark-800 py-24">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+        <svg class="w-12 h-12 mx-auto mb-8 text-signal-600/30" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z"/>
+        </svg>
+        <blockquote class="text-xl md:text-2xl font-medium text-white/90 leading-relaxed mb-8">
+            &ldquo;Before The Switchboard, we were manually sorting through thousands of opportunities a day. Now every record is enriched, scored, and routed to the right buyer in milliseconds. Our match rate went from 62% to 94% in the first quarter.&rdquo;
+        </blockquote>
+        <div>
+            <p class="text-white font-semibold">Sarah Chen</p>
+            <p class="text-sm text-white/50">VP of Acquisitions, National Carrier Group</p>
+        </div>
+    </div>
+</section>
+
+<!-- ========== CASE STUDIES ========== -->
+<section id="resources" class="bg-[#f8fafc] py-24">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <p class="text-xs font-bold uppercase tracking-[0.08em] text-[#2563eb] mb-3">Case Studies</p>
+            <h2 class="text-3xl md:text-[48px] font-bold text-[#0f172a] leading-tight tracking-tight">Results That Speak</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Case Study 1 (larger) -->
+            <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 hover-lift md:row-span-1">
+                <div class="bg-gradient-to-br from-dark-900 to-dark-700 p-8 pb-6">
+                    <p class="text-xs font-bold uppercase tracking-[0.08em] text-signal-400 mb-2">Auto Insurance</p>
+                    <h3 class="text-2xl font-bold text-white mb-1">340% ROI Increase</h3>
+                    <p class="text-sm text-white/50">Multi-state carrier, 50K+ monthly opportunities</p>
+                </div>
+                <div class="p-8">
+                    <p class="text-sm text-[#64748b] leading-relaxed mb-6">A top-20 auto carrier was losing $2.3M annually to misrouted opportunities. After deploying The Switchboard's enrichment and scoring engine, they optimized buyer-match rates and reduced wasted spend by 71%.</p>
+                    <div class="flex gap-8">
+                        <div>
+                            <p class="text-2xl font-bold text-[#0f172a]">71%</p>
+                            <p class="text-xs text-[#64748b]">Waste Reduced</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-[#0f172a]">94%</p>
+                            <p class="text-xs text-[#64748b]">Match Rate</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-[#0f172a]">$4.2M</p>
+                            <p class="text-xs text-[#64748b]">Annual Savings</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Case Study 2 -->
+            <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 hover-lift">
+                <div class="bg-gradient-to-br from-dark-800 to-dark-700 p-8 pb-6">
+                    <p class="text-xs font-bold uppercase tracking-[0.08em] text-emerald-400 mb-2">Health Insurance</p>
+                    <h3 class="text-2xl font-bold text-white mb-1">2.4x Bind Rate</h3>
+                    <p class="text-sm text-white/50">Regional agency network, ACA + Medicare</p>
+                </div>
+                <div class="p-8">
+                    <p class="text-sm text-[#64748b] leading-relaxed mb-6">A 200-agent network struggled with opportunity quality. The Switchboard's real-time scoring and segmentation engine identified high-intent shoppers, doubling their bind rate in 90 days.</p>
+                    <div class="flex gap-8">
+                        <div>
+                            <p class="text-2xl font-bold text-[#0f172a]">2.4x</p>
+                            <p class="text-xs text-[#64748b]">Bind Rate</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-[#0f172a]">38%</p>
+                            <p class="text-xs text-[#64748b]">Cost Reduction</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-[#0f172a]">90 days</p>
+                            <p class="text-xs text-[#64748b]">Time to ROI</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== FINAL CTA ========== -->
+<section id="demo" class="bg-dark-900 py-24 relative overflow-hidden">
+    <!-- Background glow -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div class="w-[600px] h-[400px] rounded-full bg-signal-600/8 blur-[100px]"></div>
+    </div>
+
+    <div class="relative max-w-3xl mx-auto px-6 text-center">
+        <p class="text-xs font-bold uppercase tracking-[0.08em] text-signal-600 mb-4">Get Started</p>
+        <h2 class="text-3xl md:text-[48px] font-bold text-white leading-tight tracking-tight mb-6">Ready to Connect Every<br>Opportunity to Revenue?</h2>
+        <p class="text-base text-white/60 leading-relaxed mb-10 max-w-xl mx-auto">See how The Switchboard transforms your acquisition pipeline. Schedule a personalized demo and we'll show you exactly how your data flows through our intelligence engines.</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+            <a href="#" class="inline-flex items-center gap-2 bg-signal-600 hover:bg-signal-500 text-white font-semibold px-8 py-4 rounded-lg transition-colors text-sm">
+                Request a Demo
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg>
+            </a>
+            <a href="#" class="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white font-semibold px-8 py-4 rounded-lg transition-colors text-sm">
+                Talk to Sales
+            </a>
+        </div>
+        <p class="text-xs text-white/30">No commitment required &middot; Custom demo for your vertical &middot; See results in 30 days</p>
+    </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer id="contact" class="bg-dark-900 border-t border-white/5 pt-16 pb-8">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <!-- Column 1: Brand -->
+            <div class="col-span-2 md:col-span-1">
+                <div class="flex items-center gap-2 mb-4">
+                    <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+                        <rect x="2" y="2" width="28" height="28" rx="6" stroke="#2563eb" stroke-width="2"/>
+                        <circle cx="10" cy="10" r="2" fill="#2563eb"/>
+                        <circle cx="16" cy="16" r="2.5" fill="#2563eb"/>
+                        <circle cx="22" cy="22" r="2" fill="#2563eb"/>
+                        <line x1="10" y1="10" x2="22" y2="22" stroke="#2563eb" stroke-width="1.5"/>
+                    </svg>
+                    <span class="text-sm font-bold">The Switchboard</span>
+                </div>
+                <p class="text-xs text-white/40 leading-relaxed">The intelligence layer between your data sources and your revenue. Enrich. Score. Route. Analyze.</p>
+            </div>
+            <!-- Column 2: Solutions -->
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.08em] text-white/40 mb-4">Solutions</p>
+                <ul class="space-y-2.5">
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">Enrichment</a></li>
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">Scoring</a></li>
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">Routing</a></li>
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">Analytics</a></li>
+                </ul>
+            </div>
+            <!-- Column 3: Company -->
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.08em] text-white/40 mb-4">Company</p>
+                <ul class="space-y-2.5">
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">About</a></li>
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">Careers</a></li>
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">Contact</a></li>
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">Blog</a></li>
+                </ul>
+            </div>
+            <!-- Column 4: Legal -->
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.08em] text-white/40 mb-4">Legal</p>
+                <ul class="space-y-2.5">
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">Terms of Service</a></li>
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">Security</a></li>
+                    <li><a href="#" class="text-sm text-white/50 hover:text-white transition-colors">Compliance</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-xs text-white/30">&copy; 2026 The Switchboard. All rights reserved.</p>
+            <div class="flex items-center gap-6">
+                <a href="#" class="text-white/30 hover:text-white/60 transition-colors">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 01-1.93.07 4.28 4.28 0 004 2.98 8.521 8.521 0 01-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+                </a>
+                <a href="#" class="text-white/30 hover:text-white/60 transition-colors">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] != null ? $"{ViewData["Title"]} — The Switchboard" : "The Switchboard — Insurance Intelligence Platform")</title>
+    <meta name="description" content="@(ViewData["MetaDescription"] ?? "The Switchboard enriches, scores, segments, and routes insurance opportunities in real time.")" />
+    <meta property="og:title" content="@(ViewData["OgTitle"] ?? ViewData["Title"] ?? "The Switchboard")" />
+    <meta property="og:description" content="@(ViewData["MetaDescription"] ?? "Insurance intelligence platform.")" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="The Switchboard" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="@(ViewData["CanonicalUrl"] ?? $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}")" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Head", required: false)
+</head>
+<body class="bg-navy-950 text-slate-200 antialiased">
+    <header id="site-header" class="fixed top-0 w-full z-50 transition-all duration-300">
+        <nav class="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
+            <a asp-page="/Index" class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                <span class="text-accent-blue">⚡</span> The Switchboard
+            </a>
+            <div class="hidden md:flex items-center gap-8 text-sm text-slate-400">
+                <a asp-page="/Solutions/Index" class="hover:text-white transition-colors">Solutions</a>
+                <a asp-page="/Industries/Detail" class="hover:text-white transition-colors">Industries</a>
+                <a asp-page="/About" class="hover:text-white transition-colors">About</a>
+                <a asp-page="/Resources/Index" class="hover:text-white transition-colors">Resources</a>
+                <a asp-page="/Contact" class="hover:text-white transition-colors">Contact</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a asp-page="/Demo" class="hidden md:inline-flex btn-primary text-sm font-semibold px-5 py-2.5 rounded-lg">
+                    Book Demo
+                </a>
+                <button id="mobile-menu-btn" class="md:hidden text-white p-2" aria-label="Open menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Nav Overlay -->
+    <div id="mobile-nav" class="fixed inset-0 z-[60] bg-navy-950/98 backdrop-blur-xl hidden flex-col items-center justify-center gap-8">
+        <button id="mobile-close-btn" class="absolute top-6 right-6 text-white p-2" aria-label="Close menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+        <a asp-page="/Solutions/Index" class="text-2xl font-semibold text-white hover:text-accent-blue transition">Solutions</a>
+        <a asp-page="/Industries/Detail" class="text-2xl font-semibold text-white hover:text-accent-blue transition">Industries</a>
+        <a asp-page="/About" class="text-2xl font-semibold text-white hover:text-accent-blue transition">About</a>
+        <a asp-page="/Resources/Index" class="text-2xl font-semibold text-white hover:text-accent-blue transition">Resources</a>
+        <a asp-page="/Contact" class="text-2xl font-semibold text-white hover:text-accent-blue transition">Contact</a>
+        <a asp-page="/Demo" class="btn-primary text-lg font-semibold px-8 py-4 rounded-lg mt-4">Book Demo</a>
+    </div>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="border-t border-slate-800/50 mt-24">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="text-lg font-bold text-white mb-4">
+                        <span class="text-accent-blue">⚡</span> The Switchboard
+                    </div>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        The intelligence layer for insurance. Enrich, score, segment, and route — in real time.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white mb-4">Platform</h4>
+                    <ul class="space-y-2 text-sm text-slate-500">
+                        <li><a asp-page="/Solutions/Index" class="hover:text-white transition">Solutions</a></li>
+                        <li><a asp-page="/Industries/Detail" class="hover:text-white transition">Industries</a></li>
+                        <li><a asp-page="/Resources/Index" class="hover:text-white transition">Resources</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm text-slate-500">
+                        <li><a asp-page="/About" class="hover:text-white transition">About</a></li>
+                        <li><a asp-page="/Contact" class="hover:text-white transition">Contact</a></li>
+                        <li><a asp-page="/Demo" class="hover:text-white transition">Book Demo</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white mb-4">Legal</h4>
+                    <ul class="space-y-2 text-sm text-slate-500">
+                        <li><a asp-page="/Privacy" class="hover:text-white transition">Privacy Policy</a></li>
+                        <li><a asp-page="/Terms" class="hover:text-white transition">Terms of Service</a></li>
+                        <li><a asp-page="/Security" class="hover:text-white transition">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <span class="text-sm text-slate-600">&copy; @DateTime.UtcNow.Year The Switchboard. All rights reserved.</span>
+                <span class="text-xs text-slate-700">Insurance Intelligence Platform</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Switchboard — Insurance Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --navy-950: #030818;
+            --navy-900: #050b24;
+            --navy-800: #07102e;
+            --blue-500: #2563eb;
+            --blue-400: #3b82f6;
+            --blue-600: #1d4ed8;
+            --green-600: #059669;
+            --light: #f8fafc;
+            --dark-text: #0f172a;
+            --muted-text: #64748b;
+            --glass-bg: rgba(255,255,255,0.05);
+            --glass-border: rgba(255,255,255,0.1);
+            --glass-bg-strong: rgba(255,255,255,0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255,255,255,0.8);
+            --text-tertiary: rgba(255,255,255,0.6);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 16px;
+            line-height: 1.65;
+            color: var(--text-primary);
+            background: var(--navy-950);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* ── UTILITY ── */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .overline {
+            font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+            text-transform: uppercase; color: var(--blue-500); margin-bottom: 16px;
+        }
+        .section-pad { padding: 120px 0; }
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+        }
+        .glass-strong {
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 16px;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        @keyframes flow-dot {
+            0% { left: 0; opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(37,99,235,0.15); }
+            50% { box-shadow: 0 0 40px rgba(37,99,235,0.3); }
+        }
+
+        .fade-up {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* ── HEADER ── */
+        .site-header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            height: 72px;
+            background: rgba(3,8,24,0.7);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 100%;
+        }
+        .logo {
+            font-size: 20px; font-weight: 800; color: white;
+            letter-spacing: -0.02em; text-decoration: none;
+        }
+        .logo span { color: var(--blue-500); }
+        .nav-links { display: flex; gap: 36px; list-style: none; }
+        .nav-links a {
+            color: var(--text-tertiary); font-size: 14px; font-weight: 500;
+            text-decoration: none; transition: color 0.2s;
+        }
+        .nav-links a:hover { color: white; }
+        .header-cta {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 24px; border-radius: 10px;
+            background: var(--blue-500); color: white;
+            font-size: 14px; font-weight: 600; text-decoration: none;
+            transition: all 0.2s; border: none; cursor: pointer;
+        }
+        .header-cta:hover { background: var(--blue-600); transform: translateY(-1px); }
+        .mobile-toggle { display: none; background: none; border: none; color: white; cursor: pointer; }
+
+        /* ── HERO ── */
+        .hero {
+            background: var(--navy-950);
+            padding-top: 160px; padding-bottom: 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero .overline { margin-bottom: 24px; }
+        .hero h1 {
+            font-size: 64px; font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.05; color: white; max-width: 800px; margin: 0 auto 24px;
+        }
+        .hero p {
+            font-size: 18px; line-height: 1.65; color: var(--text-tertiary);
+            max-width: 600px; margin: 0 auto 40px;
+        }
+        .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 16px 32px; border-radius: 12px;
+            background: var(--blue-500); color: white;
+            font-size: 16px; font-weight: 600; text-decoration: none;
+            transition: all 0.25s; border: none; cursor: pointer;
+        }
+        .btn-primary:hover { background: var(--blue-600); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,99,235,0.3); }
+        .btn-secondary {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 16px 32px; border-radius: 12px;
+            background: transparent; color: white;
+            font-size: 16px; font-weight: 600; text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.25s; cursor: pointer;
+        }
+        .btn-secondary:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
+
+        /* ── DASHBOARD MOCKUP ── */
+        .dashboard-wrapper {
+            margin-top: 60px;
+            position: relative;
+            display: flex; justify-content: center;
+        }
+        .dashboard-mockup {
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 920px; width: 100%;
+            transform: perspective(1200px) rotateX(8deg);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
+            position: relative;
+        }
+        .dash-topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px; padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .dash-topbar-title {
+            font-size: 13px; font-weight: 600; color: var(--text-secondary);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .live-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--green-600);
+            animation: pulse-dot 2s ease-in-out infinite;
+            display: inline-block;
+        }
+        .dash-topbar-time { font-size: 12px; color: var(--text-tertiary); font-weight: 400; font-variant-numeric: tabular-nums; }
+
+        .dash-stats {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+            margin-bottom: 20px;
+        }
+        .dash-stat {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; padding: 14px 16px; text-align: left;
+        }
+        .dash-stat-label { font-size: 11px; color: var(--text-tertiary); font-weight: 500; margin-bottom: 4px; }
+        .dash-stat-value { font-size: 20px; font-weight: 700; color: white; font-variant-numeric: tabular-nums; }
+        .dash-stat-value.green { color: var(--green-600); }
+
+        .dash-panels { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; margin-bottom: 20px; }
+
+        /* Bar chart */
+        .dash-chart {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; padding: 20px;
+        }
+        .dash-chart-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 16px; }
+        .chart-bars {
+            display: flex; align-items: flex-end; gap: 16px;
+            height: 120px; padding-top: 8px;
+        }
+        .chart-bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .chart-bar {
+            width: 100%; border-radius: 6px 6px 2px 2px;
+            transition: height 0.6s ease;
+        }
+        .chart-bar-label { font-size: 10px; color: var(--text-tertiary); font-weight: 500; }
+
+        /* Gauge */
+        .dash-gauge-panel {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; padding: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .gauge-ring {
+            width: 100px; height: 100px; border-radius: 50%;
+            background: conic-gradient(
+                var(--blue-500) 0deg 305deg,
+                rgba(255,255,255,0.06) 305deg 360deg
+            );
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 12px; position: relative;
+        }
+        .gauge-inner {
+            width: 76px; height: 76px; border-radius: 50%;
+            background: var(--navy-950);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .gauge-value { font-size: 22px; font-weight: 800; color: white; line-height: 1; }
+        .gauge-max { font-size: 10px; color: var(--text-tertiary); }
+        .gauge-label { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+        .gauge-route {
+            margin-top: 8px; padding: 4px 12px; border-radius: 6px;
+            background: rgba(37,99,235,0.15); color: var(--blue-400);
+            font-size: 11px; font-weight: 600;
+        }
+        .gauge-confidence { font-size: 11px; color: var(--green-600); font-weight: 600; margin-top: 6px; }
+
+        /* Mini table */
+        .dash-table {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; overflow: hidden;
+        }
+        .dash-table table { width: 100%; border-collapse: collapse; }
+        .dash-table th {
+            font-size: 10px; font-weight: 600; color: var(--text-tertiary);
+            text-transform: uppercase; letter-spacing: 0.05em;
+            padding: 10px 14px; text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.02);
+        }
+        .dash-table td {
+            font-size: 12px; color: var(--text-secondary);
+            padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-variant-numeric: tabular-nums;
+        }
+        .status-pill {
+            display: inline-block; padding: 2px 8px; border-radius: 4px;
+            font-size: 10px; font-weight: 600;
+        }
+        .status-routed { background: rgba(5,150,105,0.15); color: var(--green-600); }
+        .status-scoring { background: rgba(37,99,235,0.15); color: var(--blue-400); }
+        .status-enriching { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+        /* Floating badges */
+        .floating-badge {
+            position: absolute; padding: 10px 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 13px; font-weight: 600; color: white;
+            white-space: nowrap;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        .badge-risk {
+            top: -16px; right: -40px;
+            animation: float 4s ease-in-out infinite;
+        }
+        .badge-risk .badge-arrow { color: var(--green-600); }
+        .badge-close {
+            bottom: 40px; left: -50px;
+            animation: float 4s ease-in-out infinite 1s;
+        }
+        .badge-close .badge-value { color: var(--green-600); }
+        .badge-latency {
+            left: -60px; top: 50%;
+            animation: float 4s ease-in-out infinite 2s;
+        }
+        .badge-latency .badge-value { color: var(--blue-400); }
+
+        /* ── SOCIAL PROOF MARQUEE ── */
+        .social-proof {
+            background: var(--navy-900);
+            padding: 48px 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            overflow: hidden;
+        }
+        .social-proof-label {
+            text-align: center; font-size: 13px; font-weight: 500;
+            color: var(--text-tertiary); margin-bottom: 28px;
+        }
+        .marquee-track {
+            display: flex; width: max-content;
+            animation: marquee 30s linear infinite;
+        }
+        .marquee-track:hover { animation-play-state: paused; }
+        .marquee-item {
+            font-size: 15px; font-weight: 700; letter-spacing: 0.04em;
+            color: rgba(255,255,255,0.2);
+            padding: 0 40px; white-space: nowrap;
+            text-transform: uppercase;
+        }
+
+        /* ── WHAT WE DO ── */
+        .what-we-do { background: var(--light); color: var(--dark-text); }
+        .what-we-do .overline { color: var(--blue-500); }
+        .what-we-do h2 {
+            font-size: 48px; font-weight: 700; letter-spacing: -0.02em;
+            color: var(--dark-text); margin-bottom: 64px;
+        }
+
+        .pipeline {
+            display: flex; align-items: center; justify-content: center; gap: 0;
+            margin-bottom: 56px; position: relative; flex-wrap: wrap;
+        }
+        .pipeline-step {
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            position: relative; z-index: 2;
+        }
+        .pipeline-circle {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: var(--blue-500);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 20px;
+            box-shadow: 0 4px 20px rgba(37,99,235,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .pipeline-circle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(37,99,235,0.4);
+        }
+        .pipeline-circle svg { width: 28px; height: 28px; }
+        .pipeline-name {
+            font-size: 14px; font-weight: 700; color: var(--dark-text);
+            text-transform: uppercase; letter-spacing: 0.02em;
+        }
+        .pipeline-desc { font-size: 13px; color: var(--muted-text); max-width: 140px; text-align: center; }
+        .pipeline-connector {
+            width: 60px; height: 2px; background: #e2e8f0;
+            position: relative; margin-bottom: 48px; flex-shrink: 0;
+        }
+        .pipeline-connector::after {
+            content: ''; position: absolute;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--blue-500);
+            top: -3px;
+            animation: flow-dot 2s ease-in-out infinite;
+        }
+
+        .what-we-do .description {
+            max-width: 700px; margin: 0 auto;
+            font-size: 17px; line-height: 1.7; color: var(--muted-text); text-align: center;
+        }
+
+        /* ── CAPABILITIES ── */
+        .capabilities { background: var(--navy-950); position: relative; }
+        .capabilities::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .capabilities h2 {
+            font-size: 48px; font-weight: 700; letter-spacing: -0.02em;
+            color: white; text-align: center; margin-bottom: 64px;
+        }
+        .cap-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            position: relative;
+        }
+        .cap-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .cap-card:hover {
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .cap-card:nth-child(2) { transform: translateY(-20px); }
+        .cap-card:nth-child(2):hover { transform: translateY(-24px); }
+        .cap-card:nth-child(4) { transform: translateY(-20px); }
+        .cap-card:nth-child(4):hover { transform: translateY(-24px); }
+        .cap-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            background: rgba(37,99,235,0.15);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+        }
+        .cap-icon svg { width: 24px; height: 24px; color: var(--blue-400); }
+        .cap-card h3 { font-size: 20px; font-weight: 700; color: white; margin-bottom: 12px; }
+        .cap-card p { font-size: 15px; color: var(--text-tertiary); line-height: 1.6; margin-bottom: 20px; }
+        .cap-metric {
+            display: inline-block; padding: 6px 14px; border-radius: 8px;
+            background: rgba(37,99,235,0.12); color: var(--blue-400);
+            font-size: 13px; font-weight: 700;
+        }
+        /* Center last two cards */
+        .cap-grid-bottom {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            max-width: 800px;
+            margin: 24px auto 0;
+        }
+
+        /* ── RESULTS ── */
+        .results { background: var(--light); }
+        .results h2 {
+            font-size: 48px; font-weight: 700; letter-spacing: -0.02em;
+            color: var(--dark-text); text-align: center; margin-bottom: 64px;
+        }
+        .results-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+        }
+        .result-card {
+            background: white;
+            border-radius: 20px; padding: 40px 28px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .result-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+        }
+        .result-number {
+            font-size: 56px; font-weight: 800; color: var(--dark-text);
+            letter-spacing: -0.03em; line-height: 1; margin-bottom: 8px;
+        }
+        .result-label { font-size: 15px; color: var(--muted-text); font-weight: 500; }
+
+        /* ── TESTIMONIAL ── */
+        .testimonial { background: var(--navy-900); text-align: center; }
+        .testimonial-card {
+            max-width: 720px; margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px; padding: 56px 48px;
+        }
+        .testimonial-quote {
+            font-size: 22px; font-weight: 400; color: var(--text-secondary);
+            line-height: 1.6; margin-bottom: 32px; font-style: italic;
+        }
+        .testimonial-quote::before { content: '\201C'; font-size: 48px; color: var(--blue-500); display: block; margin-bottom: 8px; font-style: normal; }
+        .testimonial-avatar {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue-500), var(--blue-400));
+            margin: 0 auto 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 700; color: white;
+        }
+        .testimonial-name { font-size: 16px; font-weight: 700; color: white; }
+        .testimonial-title { font-size: 14px; color: var(--text-tertiary); }
+        .testimonial-progress {
+            margin-top: 32px; display: flex; gap: 8px; justify-content: center;
+        }
+        .testimonial-dot {
+            width: 32px; height: 3px; border-radius: 2px;
+            background: rgba(255,255,255,0.15);
+        }
+        .testimonial-dot.active { background: var(--blue-500); }
+
+        /* ── CASE STUDIES ── */
+        .case-studies { background: var(--light); }
+        .case-studies h2 {
+            font-size: 48px; font-weight: 700; letter-spacing: -0.02em;
+            color: var(--dark-text); text-align: center; margin-bottom: 64px;
+        }
+        .cases-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+        .case-card {
+            background: white; border-radius: 20px; overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .case-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+        }
+        .case-metric-strip {
+            background: var(--green-600); color: white;
+            padding: 16px 28px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .case-metric-strip strong { font-size: 24px; font-weight: 800; }
+        .case-metric-strip span { font-size: 14px; font-weight: 500; opacity: 0.9; }
+        .case-body { padding: 32px 28px; }
+        .case-body h3 { font-size: 20px; font-weight: 700; color: var(--dark-text); margin-bottom: 8px; }
+        .case-body p { font-size: 15px; color: var(--muted-text); line-height: 1.6; margin-bottom: 16px; }
+        .case-link {
+            font-size: 14px; font-weight: 600; color: var(--blue-500);
+            text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .case-link:hover { color: var(--blue-600); }
+
+        /* ── FINAL CTA ── */
+        .final-cta {
+            background: var(--navy-950); text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .final-cta::before {
+            content: '';
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(37,99,235,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .final-cta h2 {
+            font-size: 48px; font-weight: 700; letter-spacing: -0.02em;
+            color: white; margin-bottom: 24px; max-width: 700px; margin-left: auto; margin-right: auto;
+        }
+        .final-cta p {
+            font-size: 18px; color: var(--text-tertiary); margin-bottom: 40px;
+            max-width: 500px; margin-left: auto; margin-right: auto;
+        }
+        .final-cta .hero-buttons { margin-bottom: 32px; }
+        .trust-checks {
+            display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;
+        }
+        .trust-check {
+            font-size: 14px; color: var(--text-tertiary);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .trust-check svg { color: var(--green-600); width: 18px; height: 18px; flex-shrink: 0; }
+
+        /* ── FOOTER ── */
+        .site-footer {
+            background: var(--navy-950);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 64px 0 40px;
+        }
+        .footer-grid {
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+            margin-bottom: 48px;
+        }
+        .footer-brand .logo { font-size: 18px; display: inline-block; margin-bottom: 16px; }
+        .footer-brand p { font-size: 14px; color: var(--text-tertiary); line-height: 1.6; max-width: 280px; }
+        .footer-col h4 {
+            font-size: 13px; font-weight: 700; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px;
+        }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 10px; }
+        .footer-col a { font-size: 14px; color: var(--text-tertiary); text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: white; }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 24px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.3); }
+        .footer-bottom-links { display: flex; gap: 24px; }
+        .footer-bottom-links a { font-size: 13px; color: rgba(255,255,255,0.3); text-decoration: none; }
+        .footer-bottom-links a:hover { color: var(--text-tertiary); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            .hero h1 { font-size: 48px; }
+            .cap-grid { grid-template-columns: repeat(2, 1fr); }
+            .cap-grid-bottom { grid-template-columns: 1fr; max-width: 400px; }
+            .results-grid { grid-template-columns: repeat(2, 1fr); }
+            .dashboard-mockup { transform: perspective(1200px) rotateX(4deg); }
+            .badge-risk { right: -20px; }
+            .badge-close { left: -20px; }
+            .badge-latency { left: -30px; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-toggle { display: block; }
+            .hero { padding-top: 120px; padding-bottom: 60px; }
+            .hero h1 { font-size: 36px; max-width: 500px; }
+            .hero p { font-size: 16px; }
+            .section-pad { padding: 80px 0; }
+            .what-we-do h2, .capabilities h2, .results h2, .case-studies h2, .final-cta h2 { font-size: 32px; }
+            .dashboard-mockup {
+                transform: none;
+                padding: 16px;
+            }
+            .dash-stats { grid-template-columns: repeat(2, 1fr); }
+            .dash-panels { grid-template-columns: 1fr; }
+            .floating-badge { display: none; }
+            .pipeline { flex-direction: column; gap: 8px; }
+            .pipeline-connector { width: 2px; height: 32px; margin-bottom: 0; }
+            .pipeline-connector::after { top: auto; left: -3px; }
+            .cap-grid { grid-template-columns: 1fr; }
+            .cap-grid-bottom { grid-template-columns: 1fr; }
+            .cap-card:nth-child(2), .cap-card:nth-child(4) { transform: none; }
+            .results-grid { grid-template-columns: 1fr; }
+            .cases-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .result-number { font-size: 44px; }
+            .testimonial-card { padding: 32px 24px; }
+            .testimonial-quote { font-size: 18px; }
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 28px; }
+            .hero-buttons { flex-direction: column; align-items: center; }
+            .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+            .dash-stats { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
+</head>
+<body x-data="{ scrolled: false }" @scroll.window="scrolled = (window.scrollY > 20)">
+
+    <!-- ═══════════════════ HEADER ═══════════════════ -->
+    <header class="site-header" :class="{ 'scrolled': scrolled }">
+        <div class="header-inner">
+            <a href="#" class="logo">The <span>Switchboard</span></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#solutions">Solutions</a></li>
+                    <li><a href="#industries">Industries</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+            <a href="#demo" class="header-cta">Request a Demo</a>
+            <button class="mobile-toggle" aria-label="Toggle menu">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- ═══════════════════ HERO ═══════════════════ -->
+    <section class="hero">
+        <div class="container">
+            <div class="overline">Insurance Intelligence Platform</div>
+            <h1>Intelligence That Drives Profitable Growth</h1>
+            <p>The Switchboard enriches, scores, segments, and routes insurance opportunities in real-time &mdash; turning raw data into revenue.</p>
+            <div class="hero-buttons">
+                <a href="#demo" class="btn-primary">
+                    Request a Demo
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5-5-5-5"/></svg>
+                </a>
+                <a href="#platform" class="btn-secondary">See How It Works</a>
+            </div>
+
+            <!-- Dashboard Mockup -->
+            <div class="dashboard-wrapper">
+                <!-- Floating badges -->
+                <div class="floating-badge badge-risk">Risk Score: High <span class="badge-arrow">&uarr;</span></div>
+                <div class="floating-badge badge-close"><span class="badge-value">+47%</span> Close Rate</div>
+                <div class="floating-badge badge-latency"><span class="badge-value">&lt; 250ms</span> Latency</div>
+
+                <div class="dashboard-mockup">
+                    <!-- Top bar -->
+                    <div class="dash-topbar">
+                        <div class="dash-topbar-title">
+                            <span class="live-dot"></span>
+                            Switchboard Intelligence Dashboard
+                        </div>
+                        <div class="dash-topbar-time" x-data="{ time: '' }" x-init="setInterval(() => { time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }, 1000)" x-text="time"></div>
+                    </div>
+
+                    <!-- Stat cards -->
+                    <div class="dash-stats">
+                        <div class="dash-stat">
+                            <div class="dash-stat-label">Opportunities Today</div>
+                            <div class="dash-stat-value">12,847</div>
+                        </div>
+                        <div class="dash-stat">
+                            <div class="dash-stat-label">Processing</div>
+                            <div class="dash-stat-value">1,247/sec</div>
+                        </div>
+                        <div class="dash-stat">
+                            <div class="dash-stat-label">Match Rate</div>
+                            <div class="dash-stat-value green">94.2%</div>
+                        </div>
+                        <div class="dash-stat">
+                            <div class="dash-stat-label">Avg Score</div>
+                            <div class="dash-stat-value">723</div>
+                        </div>
+                    </div>
+
+                    <!-- Panels -->
+                    <div class="dash-panels">
+                        <!-- Bar chart -->
+                        <div class="dash-chart">
+                            <div class="dash-chart-title">Conversion by Risk Tier</div>
+                            <div class="chart-bars">
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar" style="height: 100%; background: #2563eb;"></div>
+                                    <div class="chart-bar-label">Tier 1</div>
+                                </div>
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar" style="height: 78%; background: #3b82f6;"></div>
+                                    <div class="chart-bar-label">Tier 2</div>
+                                </div>
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar" style="height: 56%; background: #60a5fa;"></div>
+                                    <div class="chart-bar-label">Tier 3</div>
+                                </div>
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar" style="height: 34%; background: #93c5fd;"></div>
+                                    <div class="chart-bar-label">Tier 4</div>
+                                </div>
+                                <div class="chart-bar-group">
+                                    <div class="chart-bar" style="height: 18%; background: #bfdbfe;"></div>
+                                    <div class="chart-bar-label">Tier 5</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gauge -->
+                        <div class="dash-gauge-panel">
+                            <div class="gauge-ring">
+                                <div class="gauge-inner">
+                                    <div class="gauge-value">847</div>
+                                    <div class="gauge-max">/ 1000</div>
+                                </div>
+                            </div>
+                            <div class="gauge-label">Risk Score</div>
+                            <div class="gauge-route">Route: Tier 1 Buyer</div>
+                            <div class="gauge-confidence">Confidence: 97%</div>
+                        </div>
+                    </div>
+
+                    <!-- Mini table -->
+                    <div class="dash-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Opportunity ID</th>
+                                    <th>Score</th>
+                                    <th>Tier</th>
+                                    <th>Status</th>
+                                    <th>Route</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>OPP-28491</td>
+                                    <td>847</td>
+                                    <td>Tier 1</td>
+                                    <td><span class="status-pill status-routed">Routed</span></td>
+                                    <td>National General</td>
+                                </tr>
+                                <tr>
+                                    <td>OPP-28492</td>
+                                    <td>612</td>
+                                    <td>Tier 2</td>
+                                    <td><span class="status-pill status-scoring">Scoring</span></td>
+                                    <td>Pending</td>
+                                </tr>
+                                <tr>
+                                    <td>OPP-28493</td>
+                                    <td>--</td>
+                                    <td>--</td>
+                                    <td><span class="status-pill status-enriching">Enriching</span></td>
+                                    <td>Pending</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ SOCIAL PROOF ═══════════════════ -->
+    <section class="social-proof">
+        <div class="social-proof-label">Trusted by 50+ insurance organizations</div>
+        <div style="overflow: hidden;">
+            <div class="marquee-track">
+                <span class="marquee-item">NATIONAL GENERAL</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">MERCURY</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">PROGRESSIVE</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">ALLSTATE</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">LIBERTY MUTUAL</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">SAFECO</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">TRAVELERS</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">HARTFORD</span>
+                <span class="marquee-item">&bull;</span>
+                <!-- Duplicate for seamless loop -->
+                <span class="marquee-item">NATIONAL GENERAL</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">MERCURY</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">PROGRESSIVE</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">ALLSTATE</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">LIBERTY MUTUAL</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">SAFECO</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">TRAVELERS</span>
+                <span class="marquee-item">&bull;</span>
+                <span class="marquee-item">HARTFORD</span>
+                <span class="marquee-item">&bull;</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ WHAT WE DO ═══════════════════ -->
+    <section id="platform" class="what-we-do section-pad">
+        <div class="container">
+            <div style="text-align: center;">
+                <div class="overline">The Platform</div>
+                <h2>Not a Vendor. A Growth Engine.</h2>
+            </div>
+
+            <!-- Pipeline -->
+            <div class="pipeline">
+                <div class="pipeline-step">
+                    <div class="pipeline-circle">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="pipeline-name">Ingest</div>
+                    <div class="pipeline-desc">Capture data from any source in real-time</div>
+                </div>
+                <div class="pipeline-connector"></div>
+                <div class="pipeline-step">
+                    <div class="pipeline-circle">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div class="pipeline-name">Enrich</div>
+                    <div class="pipeline-desc">Layer on 90GB+ of intelligence data</div>
+                </div>
+                <div class="pipeline-connector"></div>
+                <div class="pipeline-step">
+                    <div class="pipeline-circle">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3v18h18" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 9l-5 5-2-2-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div class="pipeline-name">Score</div>
+                    <div class="pipeline-desc">Proprietary ML models score every prospect</div>
+                </div>
+                <div class="pipeline-connector"></div>
+                <div class="pipeline-step">
+                    <div class="pipeline-circle">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div class="pipeline-name">Route</div>
+                    <div class="pipeline-desc">Optimal buyer matching in milliseconds</div>
+                </div>
+                <div class="pipeline-connector"></div>
+                <div class="pipeline-step">
+                    <div class="pipeline-circle">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </div>
+                    <div class="pipeline-name">Analyze</div>
+                    <div class="pipeline-desc">Attribution analytics close the loop</div>
+                </div>
+            </div>
+
+            <p class="description">
+                The Switchboard sits between your data sources and your revenue. We enrich raw prospect data with 90GB+ of intelligence, score it with proprietary ML models, segment by risk tier and carrier match, route to the optimal buyer in real-time, and close the loop with attribution analytics. All in under 250 milliseconds.
+            </p>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ CAPABILITIES ═══════════════════ -->
+    <section id="solutions" class="capabilities section-pad">
+        <div class="container">
+            <div style="text-align: center;">
+                <div class="overline">Capabilities</div>
+                <h2>Everything You Need. Nothing You Don't.</h2>
+            </div>
+
+            <div class="cap-grid">
+                <!-- 1. Data Enrichment -->
+                <div class="cap-card">
+                    <div class="cap-icon">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7" stroke-linecap="round"/><ellipse cx="12" cy="7" rx="8" ry="4"/><path d="M4 12c0 2.21 3.582 4 8 4s8-1.79 8-4" stroke-linecap="round"/></svg>
+                    </div>
+                    <h3>Data Enrichment</h3>
+                    <p>Transform sparse prospect data into rich intelligence profiles. We append demographic, behavioral, and risk signals from our proprietary data lake.</p>
+                    <span class="cap-metric">90GB+ Data</span>
+                </div>
+                <!-- 2. Risk Segmentation -->
+                <div class="cap-card">
+                    <div class="cap-icon">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>Risk Segmentation</h3>
+                    <p>Automatically classify every opportunity by risk tier, carrier fit, and conversion probability. No more guesswork on prospect quality.</p>
+                    <span class="cap-metric">97% Accuracy</span>
+                </div>
+                <!-- 3. Quality Scoring -->
+                <div class="cap-card">
+                    <div class="cap-icon">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>Quality Scoring</h3>
+                    <p>Our ML-powered scoring engine evaluates every signal to predict close probability. Stop wasting time on dead ends.</p>
+                    <span class="cap-metric">3x Fewer Dead Ends</span>
+                </div>
+            </div>
+            <div class="cap-grid-bottom">
+                <!-- 4. Performance Analytics -->
+                <div class="cap-card">
+                    <div class="cap-icon">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>Performance Analytics</h3>
+                    <p>Full-funnel attribution from first touch to close. Know exactly which sources, segments, and routes drive real revenue.</p>
+                    <span class="cap-metric">True ROI</span>
+                </div>
+                <!-- 5. Decision Engine -->
+                <div class="cap-card">
+                    <div class="cap-icon">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>Decision Engine</h3>
+                    <p>Rules-based and ML-powered routing decisions in real-time. Every opportunity matched to its optimal buyer before anyone else.</p>
+                    <span class="cap-metric">&lt;250ms</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ RESULTS ═══════════════════ -->
+    <section class="results section-pad">
+        <div class="container">
+            <div style="text-align: center;">
+                <div class="overline" style="color: var(--blue-500);">Results</div>
+                <h2>The Numbers Speak for Themselves</h2>
+            </div>
+            <div class="results-grid">
+                <div class="result-card" x-data="{ shown: false, val: 0 }" x-intersect.once="shown = true; let end = 340; let f = setInterval(() => { val += 7; if(val >= end) { val = end; clearInterval(f); } }, 16)">
+                    <div class="result-number" x-text="shown ? val + '%' : '0%'">0%</div>
+                    <div class="result-label">Average ROI Lift</div>
+                </div>
+                <div class="result-card" x-data="{ shown: false, val: 0 }" x-intersect.once="shown = true; let end = 47; let f = setInterval(() => { val += 1; if(val >= end) { val = end; clearInterval(f); } }, 30)">
+                    <div class="result-number" x-text="shown ? val + '%' : '0%'">0%</div>
+                    <div class="result-label">Increase in Close Rates</div>
+                </div>
+                <div class="result-card" x-data="{ shown: false, val: 0 }" x-intersect.once="shown = true; let end = 10; let f = setInterval(() => { val += 1; if(val >= end) { val = end; clearInterval(f); } }, 80)">
+                    <div class="result-number" x-text="shown ? val + 'M+' : '0'">0</div>
+                    <div class="result-label">Opportunities Processed</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-number">&lt;250ms</div>
+                    <div class="result-label">Decision Latency</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ TESTIMONIAL ═══════════════════ -->
+    <section class="testimonial section-pad">
+        <div class="container">
+            <div style="text-align: center;">
+                <div class="overline">What Our Partners Say</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-quote">
+                    The Switchboard transformed how we acquire and route insurance opportunities. Their intelligence layer gave us visibility we never had before &mdash; close rates up 47%, and we finally know which sources actually drive revenue.
+                </div>
+                <div class="testimonial-avatar">JM</div>
+                <div class="testimonial-name">James Mitchell</div>
+                <div class="testimonial-title">VP of Growth, National General Insurance</div>
+                <div class="testimonial-progress">
+                    <div class="testimonial-dot active"></div>
+                    <div class="testimonial-dot"></div>
+                    <div class="testimonial-dot"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ CASE STUDIES ═══════════════════ -->
+    <section class="case-studies section-pad">
+        <div class="container">
+            <div style="text-align: center;">
+                <div class="overline" style="color: var(--blue-500);">Case Studies</div>
+                <h2>Proven Results, Real Partners</h2>
+            </div>
+            <div class="cases-grid">
+                <div class="case-card">
+                    <div class="case-metric-strip">
+                        <strong>+340% ROI</strong>
+                        <span>Within 90 Days</span>
+                    </div>
+                    <div class="case-body">
+                        <h3>National Carrier Scales Profitably</h3>
+                        <p>A top-10 national carrier used The Switchboard's intelligence layer to overhaul their opportunity routing. Risk-scored segmentation eliminated unprofitable channels and tripled their return on acquisition spend.</p>
+                        <a href="#" class="case-link">
+                            Read the Full Story
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5-5-5-5"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="case-card">
+                    <div class="case-metric-strip">
+                        <strong>+47% Close Rate</strong>
+                        <span>Year over Year</span>
+                    </div>
+                    <div class="case-body">
+                        <h3>Regional Agency Network Transforms</h3>
+                        <p>A 200-agent regional network deployed The Switchboard to score and route every inbound opportunity. Agents now receive pre-qualified, risk-tiered prospects matched to their specific carrier appointments.</p>
+                        <a href="#" class="case-link">
+                            Read the Full Story
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5-5-5-5"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ FINAL CTA ═══════════════════ -->
+    <section id="demo" class="final-cta section-pad">
+        <div class="container" style="position: relative; z-index: 1;">
+            <div class="overline" style="text-align: center;">Get Started</div>
+            <h2>Ready to Make Every Opportunity Count?</h2>
+            <p>See how The Switchboard turns raw insurance data into profitable growth. Book a personalized demo today.</p>
+            <div class="hero-buttons" style="margin-bottom: 32px;">
+                <a href="#" class="btn-primary">
+                    Request a Demo
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5-5-5-5"/></svg>
+                </a>
+                <a href="#" class="btn-secondary">Talk to Our Team</a>
+            </div>
+            <div class="trust-checks">
+                <div class="trust-check">
+                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    No long-term contracts
+                </div>
+                <div class="trust-check">
+                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Live in under 2 weeks
+                </div>
+                <div class="trust-check">
+                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    SOC 2 compliant
+                </div>
+                <div class="trust-check">
+                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Dedicated success manager
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ FOOTER ═══════════════════ -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">The <span>Switchboard</span></a>
+                    <p>The intelligence layer behind profitable insurance growth. Enrich, score, segment, route, and analyze &mdash; all in real-time.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#">Data Enrichment</a></li>
+                        <li><a href="#">Risk Segmentation</a></li>
+                        <li><a href="#">Quality Scoring</a></li>
+                        <li><a href="#">Decision Engine</a></li>
+                        <li><a href="#">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Case Studies</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">Status Page</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 The Switchboard. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Security</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ═══════════════════ INTERSECTION OBSERVER ═══════════════════ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
