@@ -23,9 +23,17 @@ try
         .WriteTo.Console()
         .WriteTo.Seq(context.Configuration["Seq:ServerUrl"] ?? "http://localhost:5341"));
 
-    // Database
+    // Database (optional — app starts without it for design review deployments)
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    var hasDatabase = !string.IsNullOrEmpty(connectionString);
+
     builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    {
+        if (hasDatabase)
+            options.UseNpgsql(connectionString);
+        else
+            options.UseInMemoryDatabase("SwitchboardDesignReview");
+    });
 
     // Identity (admin auth)
     builder.Services.AddIdentity<AdminUser, IdentityRole>(options =>
@@ -71,8 +79,9 @@ try
     builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
     // Health checks
-    builder.Services.AddHealthChecks()
-        .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ?? "");
+    var healthChecks = builder.Services.AddHealthChecks();
+    if (hasDatabase)
+        healthChecks.AddNpgSql(connectionString!);
 
     var app = builder.Build();
 
