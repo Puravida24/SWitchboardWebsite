@@ -17,8 +17,9 @@ tailwind.config = {
       },
       colors: {
         cream: '#faf9f7',
-        charcoal: '#1a1a1a',
+        charcoal: '#1a1715',
         signal: '#2563eb',
+        gold: '#92673a',
       }
     }
   }
@@ -26,841 +27,1083 @@ tailwind.config = {
 </script>
 <style>
 *, *::before, *::after { box-sizing: border-box; }
-body { font-family: 'Inter', sans-serif; margin: 0; background: #faf9f7; color: #1a1a1a; overflow-x: hidden; }
+body { font-family: 'Inter', sans-serif; margin: 0; background: #faf9f7; color: #1a1715; overflow-x: hidden; }
 .serif { font-family: 'Instrument Serif', serif; }
 
-/* ===== EDITORIAL BASE ===== */
-.pill-btn {
-  background: #1a1a1a; color: #faf9f7;
-  border-radius: 100px;
-  transition: all 0.25s ease;
+/* ===== NOISE TEXTURE OVERLAY ===== */
+.noise-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  pointer-events: none;
+  z-index: 0;
 }
-.pill-btn:hover { background: #333; transform: translateY(-1px); }
+.noise-overlay > * { position: relative; z-index: 1; }
+
+/* ===== LIGHT SECTION ===== */
+.section-light {
+  background: linear-gradient(180deg, #faf9f7 0%, #f5f0eb 50%, #efe8e0 100%);
+  position: relative;
+}
+
+/* ===== DARK SECTION ===== */
+.section-dark {
+  background: linear-gradient(135deg, #1a1715 0%, #1c1917 50%, #211f1c 100%);
+  color: #faf9f7;
+  position: relative;
+}
+
+/* ===== PREMIUM BUTTONS ===== */
+.pill-btn {
+  background: linear-gradient(135deg, #1a1715 0%, #333028 100%);
+  color: #faf9f7;
+  border-radius: 100px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+.pill-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 100px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+.pill-btn:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+  transform: translateY(-2px);
+}
 
 .outline-pill {
-  border: 1px solid #1a1a1a; color: #1a1a1a;
+  border: 1px solid rgba(26,23,21,0.2);
+  color: #1a1715;
   border-radius: 100px;
-  transition: all 0.25s ease;
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.outline-pill:hover { background: #1a1a1a; color: #faf9f7; }
-
-.section-dark { background: #1a1a1a; color: #faf9f7; }
-
-.editorial-card {
-  border-top: 1px solid rgba(26,26,26,0.08);
-  padding-top: 32px;
-  transition: all 0.3s ease;
-}
-.editorial-card:hover { padding-left: 12px; }
-
-.editorial-card-dark {
-  border-top: 1px solid rgba(250,249,247,0.1);
-  padding-top: 32px;
-  transition: all 0.3s ease;
-}
-.editorial-card-dark:hover { padding-left: 12px; }
-
-/* ===== TECH ANIMATIONS ===== */
-@keyframes nodePulse {
-  0%, 100% { box-shadow: 0 0 4px rgba(37,99,235,0.4); }
-  50% { box-shadow: 0 0 12px rgba(37,99,235,0.8); }
-}
-.node-pulse {
-  animation: nodePulse 3s ease-in-out infinite;
+.outline-pill:hover {
+  background: linear-gradient(135deg, #1a1715 0%, #333028 100%);
+  color: #faf9f7;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  border-color: transparent;
+  transform: translateY(-2px);
 }
 
-@keyframes dashFlow {
-  to { stroke-dashoffset: -24; }
+/* ===== PREMIUM CARDS (Light) ===== */
+.card-premium {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.trace-animated {
-  stroke-dasharray: 8 16;
-  animation: dashFlow 1.5s linear infinite;
-}
-
-@keyframes flowDot {
-  0% { offset-distance: 0%; opacity: 0; }
-  5% { opacity: 1; }
-  95% { opacity: 1; }
-  100% { offset-distance: 100%; opacity: 0; }
+.card-premium:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.1), 0 32px 64px rgba(0,0,0,0.08);
 }
 
-@keyframes subtlePulse {
-  0%, 100% { opacity: 0.06; }
-  50% { opacity: 0.12; }
+/* ===== GLASSMORPHIC CARDS (Dark) ===== */
+.card-glass {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-glass:hover {
+  border-color: rgba(255,255,255,0.15);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+  transform: translateY(-4px);
 }
 
-@keyframes countUp343 {
-  0% { content: "0M"; }
-  100% { content: "343M"; }
+/* ===== GLOW NODE ===== */
+.glow-node {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #3b82f6 0%, #2563eb 50%, transparent 70%);
+  box-shadow: 0 0 12px rgba(59,130,246,0.8), 0 0 30px rgba(59,130,246,0.4), 0 0 60px rgba(59,130,246,0.1);
+}
+.glow-node-green {
+  background: radial-gradient(circle, #34d399 0%, #10b981 50%, transparent 70%);
+  box-shadow: 0 0 12px rgba(52,211,153,0.8), 0 0 30px rgba(52,211,153,0.4), 0 0 60px rgba(52,211,153,0.1);
+}
+.glow-node-gold {
+  background: radial-gradient(circle, #d4a574 0%, #92673a 50%, transparent 70%);
+  box-shadow: 0 0 12px rgba(146,103,58,0.8), 0 0 30px rgba(146,103,58,0.4);
 }
 
+/* ===== MARQUEE ===== */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+.marquee-track { animation: marquee 30s linear infinite; }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ===== PULSE GLOW ===== */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
+.pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
 
-@keyframes flowHorizontal {
-  0% { transform: translateX(0); opacity: 0; }
+/* ===== FLOW DOT ===== */
+@keyframes flowDot {
+  0% { offset-distance: 0%; opacity: 0; }
   10% { opacity: 1; }
   90% { opacity: 1; }
-  100% { transform: translateX(var(--flow-distance, 800px)); opacity: 0; }
+  100% { offset-distance: 100%; opacity: 0; }
 }
 
-@keyframes gauge {
-  0% { stroke-dashoffset: 126; }
-  50% { stroke-dashoffset: 30; }
-  100% { stroke-dashoffset: 126; }
+/* ===== STAT COUNTER ===== */
+@keyframes countPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+.stat-pulse { animation: countPulse 4s ease-in-out infinite; }
+
+/* ===== FLOWING PARTICLES on SVG paths ===== */
+@keyframes dashFlow {
+  to { stroke-dashoffset: -20; }
+}
+.flow-line {
+  stroke-dasharray: 4 16;
+  animation: dashFlow 1.5s linear infinite;
 }
 
+/* ===== GAUGE ARC ANIMATION ===== */
+@keyframes gaugeGrow {
+  from { stroke-dashoffset: 126; }
+  to { stroke-dashoffset: 38; }
+}
+.gauge-arc {
+  stroke-dasharray: 126;
+  stroke-dashoffset: 38;
+  animation: gaugeGrow 2s ease-out;
+}
+
+/* ===== BAR CHART GROW ===== */
 @keyframes barGrow {
-  0%, 100% { transform: scaleY(0.3); }
-  50% { transform: scaleY(1); }
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
 }
 
-@keyframes convergeLeft {
-  0% { transform: translateX(-100vw); opacity: 0; }
-  100% { transform: translateX(0); opacity: 0.15; }
+/* ===== ARROW TRAIL ===== */
+@keyframes arrowSlide {
+  0% { transform: translateX(-8px); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(8px); opacity: 0; }
 }
 
-@keyframes convergeRight {
-  0% { transform: translateX(100vw); opacity: 0; }
-  100% { transform: translateX(0); opacity: 0.15; }
+/* ===== CTA CIRCUIT TRACES ===== */
+@keyframes traceDot {
+  0% { offset-distance: 0%; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
 }
 
-/* Hero split */
-.editorial-hero {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  min-height: 100vh;
-  align-items: center;
+/* ===== HERO SVG ANIMATIONS ===== */
+@keyframes svgNodePulse {
+  0%, 100% { r: 6; opacity: 1; }
+  50% { r: 8; opacity: 0.7; }
 }
+@keyframes particleFlow1 {
+  0% { offset-distance: 0%; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+/* ===== DIVIDER SIGNAL DOTS ===== */
+@keyframes signalPulse1 { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }
+@keyframes signalPulse2 { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.7)} }
+@keyframes signalPulse3 { 0%,100%{opacity:0.7;transform:scale(0.9)} 50%{opacity:1;transform:scale(1.3)} }
+@keyframes signalPulse4 { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  .editorial-hero {
-    grid-template-columns: 1fr;
-    min-height: auto;
-    padding-top: 120px;
-  }
+  .hero-split { flex-direction: column !important; }
+  .hero-divider { width: 100% !important; height: 2px !important; flex-direction: row !important; margin: 2rem 0 !important; }
+  .hero-divider .divider-line { width: 100% !important; height: 2px !important; }
+  .hero-divider .signal-dot { margin: 0 8px !important; }
+  .stats-grid { grid-template-columns: 1fr 1fr !important; }
+  .cap-card-grid { grid-template-columns: 1fr !important; }
+  .case-grid { grid-template-columns: 1fr !important; }
 }
-
-/* Marquee */
-.marquee-wrap { overflow: hidden; white-space: nowrap; }
-.marquee-text {
-  display: inline-block;
-  animation: marquee 45s linear infinite;
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr !important; }
 }
-
-/* Image placeholder */
-.img-placeholder {
-  background: #e8e5e0;
-  border-radius: 8px;
-  aspect-ratio: 4/3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #aaa;
-  font-size: 13px;
-}
-
-/* Switchboard SVG lines */
-.switchboard-line {
-  stroke: rgba(37,99,235,0.35);
-  stroke-width: 1.5;
-  fill: none;
-  stroke-dasharray: 6 10;
-  animation: dashFlow 2s linear infinite;
-}
-.switchboard-line-2 { animation-delay: -0.7s; }
-.switchboard-line-3 { animation-delay: -1.4s; }
-
-.switchboard-node {
-  fill: #2563eb;
-  filter: drop-shadow(0 0 4px rgba(37,99,235,0.6));
-}
-.switchboard-node-green {
-  fill: #059669;
-  filter: drop-shadow(0 0 4px rgba(5,150,105,0.6));
-}
-
-/* Circuit vertical line for capabilities */
-.circuit-vertical {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-}
-
-/* Stat background vizzes */
-.stat-viz {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.06;
-  animation: subtlePulse 4s ease-in-out infinite;
-}
-
-/* Alpine cloak */
-[x-cloak] { display: none !important; }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #faf9f7; }
-::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
 </style>
 </head>
 <body>
 
-<!-- ============================================ -->
-<!-- HEADER -->
-<!-- ============================================ -->
-<header class="fixed top-0 w-full z-50 bg-[#faf9f7]/90 backdrop-blur-xl" style="height: 72px;">
-  <div class="max-w-7xl mx-auto flex items-center justify-between h-full px-8">
-    <a href="#" class="serif text-2xl tracking-tight">The Switchboard</a>
-    <nav class="hidden md:flex items-center gap-8 text-sm text-neutral-500 font-normal">
-      <a href="#" class="hover:text-charcoal transition-colors duration-200">Platform</a>
-      <a href="#" class="hover:text-charcoal transition-colors duration-200">Solutions</a>
-      <a href="#" class="hover:text-charcoal transition-colors duration-200">Industries</a>
-      <a href="#" class="hover:text-charcoal transition-colors duration-200">About</a>
-      <a href="#" class="hover:text-charcoal transition-colors duration-200">Journal</a>
+<!-- ===================================================================
+     HEADER
+     =================================================================== -->
+<header style="position:fixed;top:0;left:0;right:0;z-index:100;
+  background: linear-gradient(180deg, rgba(250,249,247,0.95) 0%, rgba(245,240,235,0.9) 100%);
+  backdrop-filter: blur(20px) saturate(1.2);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
+  border-bottom: 1px solid rgba(0,0,0,0.04);">
+  <div style="max-width:1280px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;">
+    <!-- Logo -->
+    <a href="#" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
+      <div style="width:36px;height:36px;border-radius:10px;
+        background:linear-gradient(135deg,#1a1715 0%,#333028 100%);
+        box-shadow:0 2px 8px rgba(0,0,0,0.2);
+        display:flex;align-items:center;justify-content:center;">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle cx="4" cy="4" r="2" fill="#3b82f6" opacity="0.9"/>
+          <circle cx="14" cy="4" r="2" fill="#34d399" opacity="0.9"/>
+          <circle cx="4" cy="14" r="2" fill="#92673a" opacity="0.9"/>
+          <circle cx="14" cy="14" r="2" fill="#3b82f6" opacity="0.9"/>
+          <rect x="7.5" y="7.5" width="3" height="3" rx="0.75" fill="white" opacity="0.9"/>
+          <line x1="6" y1="4" x2="7.5" y2="8" stroke="white" stroke-width="0.5" opacity="0.4"/>
+          <line x1="12" y1="4" x2="10.5" y2="8" stroke="white" stroke-width="0.5" opacity="0.4"/>
+          <line x1="6" y1="14" x2="7.5" y2="10" stroke="white" stroke-width="0.5" opacity="0.4"/>
+          <line x1="12" y1="14" x2="10.5" y2="10" stroke="white" stroke-width="0.5" opacity="0.4"/>
+        </svg>
+      </div>
+      <span class="serif" style="font-size:22px;color:#1a1715;letter-spacing:-0.02em;">The Switchboard</span>
+    </a>
+    <!-- Nav -->
+    <nav style="display:flex;align-items:center;gap:32px;" class="hidden md:flex">
+      <a href="#capabilities" style="text-decoration:none;color:#1a1715;font-size:14px;font-weight:500;opacity:0.7;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">Capabilities</a>
+      <a href="#how-it-works" style="text-decoration:none;color:#1a1715;font-size:14px;font-weight:500;opacity:0.7;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">How It Works</a>
+      <a href="#results" style="text-decoration:none;color:#1a1715;font-size:14px;font-weight:500;opacity:0.7;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">Results</a>
+      <a href="#case-studies" style="text-decoration:none;color:#1a1715;font-size:14px;font-weight:500;opacity:0.7;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">Case Studies</a>
+      <a href="#cta" class="pill-btn" style="padding:10px 24px;font-size:14px;font-weight:600;text-decoration:none;">Get Started</a>
     </nav>
-    <a href="#" class="pill-btn px-6 py-2.5 text-sm font-medium hidden md:inline-block">Book a Demo</a>
-    <!-- Mobile hamburger -->
-    <button class="md:hidden p-2" x-data x-on:click="$dispatch('toggle-mobile-nav')">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
-    </button>
   </div>
-  <!-- Mobile nav -->
-  <div x-data="{ open: false }" @toggle-mobile-nav.window="open = !open" x-show="open" x-cloak x-transition
-    class="md:hidden bg-[#faf9f7] border-t border-charcoal/[0.06] px-8 py-6">
-    <div class="flex flex-col gap-4 text-sm text-neutral-500 font-normal">
-      <a href="#" @click="open = false" class="hover:text-charcoal transition-colors duration-200">Platform</a>
-      <a href="#" @click="open = false" class="hover:text-charcoal transition-colors duration-200">Solutions</a>
-      <a href="#" @click="open = false" class="hover:text-charcoal transition-colors duration-200">Industries</a>
-      <a href="#" @click="open = false" class="hover:text-charcoal transition-colors duration-200">About</a>
-      <a href="#" @click="open = false" class="hover:text-charcoal transition-colors duration-200">Journal</a>
-      <a href="#" @click="open = false" class="pill-btn px-6 py-2.5 text-sm font-medium text-center mt-2">Book a Demo</a>
-    </div>
-  </div>
-  <div class="absolute bottom-0 left-0 w-full h-px bg-charcoal/[0.06]"></div>
 </header>
 
-
-<!-- ============================================ -->
-<!-- HERO -->
-<!-- ============================================ -->
-<section class="editorial-hero px-8">
-
-  <!-- LEFT: Editorial content -->
-  <div class="max-w-xl ml-auto pr-8 md:pr-16 py-16 md:py-0">
-    <div class="text-xs uppercase tracking-[0.25em] text-signal font-semibold mb-8">Insurance Intelligence Platform</div>
-    <h1 class="serif text-5xl md:text-7xl leading-[1.05] mb-8" style="font-weight: 400;">The precision layer<br>for insurance.</h1>
-    <p class="text-lg leading-relaxed text-neutral-400 max-w-md mb-10">Every prospect enriched with 343 million records. Scored in under 5 milliseconds. Routed to the highest-value buyer.</p>
-    <div class="flex flex-wrap gap-4">
-      <a href="#" class="pill-btn px-8 py-3.5 text-sm font-medium">Book a Demo</a>
-      <a href="#" class="outline-pill px-8 py-3.5 text-sm font-medium">Our Approach &rarr;</a>
-    </div>
-  </div>
-
-  <!-- VERTICAL DIVIDER with signal dots -->
-  <div class="hidden md:flex flex-col items-center justify-center" style="height: 60vh; width: 20px;">
-    <div class="w-px bg-charcoal h-full relative">
-      <!-- Signal dots along the divider -->
-      <div class="absolute left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-signal node-pulse" style="top: 15%;"></div>
-      <div class="absolute left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-signal node-pulse" style="top: 40%; animation-delay: -1s;"></div>
-      <div class="absolute left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-signal node-pulse" style="top: 65%; animation-delay: -2s;"></div>
-      <div class="absolute left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-signal node-pulse" style="top: 88%; animation-delay: -0.5s;"></div>
-    </div>
-  </div>
-
-  <!-- RIGHT: Switchboard Visualization -->
-  <div class="max-w-xl mr-auto pl-8 md:pl-16 py-16 md:py-0">
-
-    <!-- SVG Switchboard -->
-    <div class="relative mb-12" style="width: 100%; max-width: 420px;">
-      <svg viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
-        <!-- Input labels -->
-        <text x="12" y="55" fill="#1a1a1a" font-family="Inter" font-size="11" font-weight="500">Forms</text>
-        <text x="12" y="125" fill="#1a1a1a" font-family="Inter" font-size="11" font-weight="500">APIs</text>
-        <text x="12" y="195" fill="#1a1a1a" font-family="Inter" font-size="11" font-weight="500">Partners</text>
-
-        <!-- Input dots -->
-        <circle cx="58" cy="52" r="4" class="switchboard-node"/>
-        <circle cx="58" cy="122" r="4" class="switchboard-node"/>
-        <circle cx="58" cy="192" r="4" class="switchboard-node"/>
-
-        <!-- Central switchboard box -->
-        <rect x="140" y="40" width="140" height="160" rx="6" fill="none" stroke="#1a1a1a" stroke-width="1" opacity="0.15"/>
-        <rect x="142" y="42" width="136" height="156" rx="5" fill="#faf9f7"/>
-        <!-- Inner animation lines -->
-        <line x1="160" y1="80" x2="260" y2="80" stroke="rgba(37,99,235,0.12)" stroke-width="1" class="trace-animated"/>
-        <line x1="160" y1="105" x2="260" y2="105" stroke="rgba(37,99,235,0.08)" stroke-width="1" class="trace-animated" style="animation-delay:-0.5s"/>
-        <line x1="160" y1="130" x2="260" y2="130" stroke="rgba(37,99,235,0.12)" stroke-width="1" class="trace-animated" style="animation-delay:-1s"/>
-        <line x1="160" y1="155" x2="260" y2="155" stroke="rgba(37,99,235,0.08)" stroke-width="1" class="trace-animated" style="animation-delay:-1.5s"/>
-        <!-- Label -->
-        <text x="210" y="122" fill="#1a1a1a" font-family="Instrument Serif" font-size="12" text-anchor="middle" opacity="0.4">THE SWITCHBOARD</text>
-
-        <!-- Connection lines: inputs to box -->
-        <path d="M 62 52 C 100 52, 110 70, 140 70" class="switchboard-line"/>
-        <path d="M 62 122 C 100 122, 110 120, 140 120" class="switchboard-line switchboard-line-2"/>
-        <path d="M 62 192 C 100 192, 110 170, 140 170" class="switchboard-line switchboard-line-3"/>
-
-        <!-- Connection lines: box to outputs -->
-        <path d="M 280 70 C 310 70, 320 55, 362 55" class="switchboard-line"/>
-        <path d="M 280 120 C 310 120, 320 125, 362 125" class="switchboard-line switchboard-line-2"/>
-        <path d="M 280 170 C 310 170, 320 195, 362 195" class="switchboard-line switchboard-line-3"/>
-
-        <!-- Output dots -->
-        <circle cx="362" cy="55" r="4" class="switchboard-node"/>
-        <circle cx="362" cy="125" r="4" class="switchboard-node"/>
-        <circle cx="362" cy="195" r="4" class="switchboard-node-green"/>
-
-        <!-- Output labels -->
-        <text x="374" y="58" fill="#1a1a1a" font-family="Inter" font-size="11" font-weight="500">Tier 1</text>
-        <text x="374" y="128" fill="#1a1a1a" font-family="Inter" font-size="11" font-weight="500">Tier 2</text>
-        <text x="374" y="198" fill="#059669" font-family="Inter" font-size="11" font-weight="500">Analytics</text>
-      </svg>
-    </div>
-
-    <!-- Stats row -->
-    <div class="flex items-baseline gap-8 md:gap-12">
-      <div>
-        <div class="serif text-4xl md:text-5xl">340%</div>
-        <div class="text-xs text-neutral-400 mt-1">ROI increase</div>
-      </div>
-      <div class="w-px h-8 bg-charcoal/10"></div>
-      <div>
-        <div class="serif text-4xl md:text-5xl">&lt; 5ms</div>
-        <div class="text-xs text-neutral-400 mt-1">Scoring speed</div>
-      </div>
-      <div class="w-px h-8 bg-charcoal/10"></div>
-      <div>
-        <div class="serif text-4xl md:text-5xl">343M</div>
-        <div class="text-xs text-neutral-400 mt-1">Data records</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ============================================ -->
-<!-- EDITORIAL MARQUEE -->
-<!-- ============================================ -->
-<section class="border-y border-charcoal/[0.08] py-6 overflow-hidden">
-  <div class="marquee-wrap">
-    <div class="marquee-text">
-      <span class="serif text-6xl md:text-8xl text-charcoal/[0.08] select-none">
-        Enrich <span class="inline-block w-2.5 h-2.5 rounded-full bg-signal/30 align-middle mx-6 relative -top-1"></span>
-        Score <span class="inline-block w-2.5 h-2.5 rounded-full bg-signal/30 align-middle mx-6 relative -top-1"></span>
-        Segment <span class="inline-block w-2.5 h-2.5 rounded-full bg-signal/30 align-middle mx-6 relative -top-1"></span>
-        Route <span class="inline-block w-2.5 h-2.5 rounded-full bg-signal/30 align-middle mx-6 relative -top-1"></span>
-        Analyze <span class="inline-block w-3 h-3 rounded-full bg-signal/20 align-middle mx-10 relative -top-1"></span>
-        Enrich <span class="inline-block w-2.5 h-2.5 rounded-full bg-signal/30 align-middle mx-6 relative -top-1"></span>
-        Score <span class="inline-block w-2.5 h-2.5 rounded-full bg-signal/30 align-middle mx-6 relative -top-1"></span>
-        Segment <span class="inline-block w-2.5 h-2.5 rounded-full bg-signal/30 align-middle mx-6 relative -top-1"></span>
-        Route <span class="inline-block w-2.5 h-2.5 rounded-full bg-signal/30 align-middle mx-6 relative -top-1"></span>
-        Analyze <span class="inline-block w-3 h-3 rounded-full bg-signal/20 align-middle mx-10 relative -top-1"></span>
-      </span>
-    </div>
-  </div>
-</section>
-
-
-<!-- ============================================ -->
-<!-- CAPABILITIES -->
-<!-- ============================================ -->
-<section class="py-24 md:py-32 px-8" x-data="{ shown: false }" x-intersect.once="shown = true">
-  <div class="max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
-
-      <!-- Left: Editorial headline -->
-      <div class="lg:col-span-4 lg:sticky lg:top-32 lg:self-start">
-        <div class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-4">Platform</div>
-        <h2 class="serif text-5xl md:text-6xl leading-[1.1] mb-6">Five connected<br>engines.</h2>
-        <p class="text-neutral-400 leading-relaxed max-w-sm">A unified intelligence pipeline that enriches, scores, segments, routes, and analyzes every opportunity in real time.</p>
-      </div>
-
-      <!-- Right: Capability cards with circuit path -->
-      <div class="lg:col-span-8 relative">
-
-        <!-- Vertical circuit line -->
-        <div class="absolute left-0 top-0 bottom-0 w-px bg-signal/20 hidden lg:block" style="left: -1px;">
-          <!-- Connection nodes -->
-          <div class="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-signal node-pulse" style="top: 8%;"></div>
-          <div class="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-signal node-pulse" style="top: 28%; animation-delay: -0.6s;"></div>
-          <div class="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-signal node-pulse" style="top: 48%; animation-delay: -1.2s;"></div>
-          <div class="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-signal node-pulse" style="top: 68%; animation-delay: -1.8s;"></div>
-          <div class="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-signal node-pulse" style="top: 88%; animation-delay: -2.4s;"></div>
+<!-- ===================================================================
+     HERO
+     =================================================================== -->
+<section class="section-light noise-overlay" style="padding:140px 32px 80px;min-height:100vh;display:flex;flex-direction:column;justify-content:center;">
+  <div style="max-width:1280px;margin:0 auto;width:100%;">
+    <!-- Split layout -->
+    <div class="hero-split" style="display:flex;align-items:center;gap:0;">
+      <!-- LEFT: Editorial copy -->
+      <div style="flex:1;padding-right:0;">
+        <div style="margin-bottom:24px;">
+          <span style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;
+            background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.12);font-size:12px;font-weight:600;
+            color:#2563eb;letter-spacing:0.08em;text-transform:uppercase;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#2563eb;box-shadow:0 0 8px rgba(37,99,235,0.6);"></span>
+            Insurance Intelligence Platform
+          </span>
         </div>
+        <h1 class="serif" style="font-size:clamp(48px,5.5vw,84px);line-height:1.0;margin:0 0 24px;letter-spacing:-0.03em;
+          color:#1a1715;text-shadow:0 0 40px rgba(0,0,0,0.04);">
+          Every Signal,<br/>
+          <span style="color:#92673a;">Scored & Routed</span><br/>
+          in Real Time
+        </h1>
+        <p style="font-size:18px;line-height:1.7;color:rgba(26,23,21,0.65);max-width:480px;margin:0 0 36px;">
+          The Switchboard enriches, scores, segments, and routes insurance opportunities the instant they arrive.
+          No guesswork. No wasted spend. Just precision intelligence.
+        </p>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <a href="#cta" class="pill-btn" style="padding:16px 36px;font-size:16px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+            See It in Action
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+          <a href="#capabilities" class="outline-pill" style="padding:16px 36px;font-size:16px;font-weight:600;text-decoration:none;">
+            Explore Capabilities
+          </a>
+        </div>
+      </div>
 
-        <!-- Cards -->
-        <div class="space-y-0 lg:pl-12">
+      <!-- DIVIDER: Gradient line with 4 glowing signal dots -->
+      <div class="hero-divider" style="display:flex;flex-direction:column;align-items:center;gap:0;padding:0 40px;position:relative;min-height:400px;justify-content:center;">
+        <div class="divider-line" style="width:2px;height:100%;position:absolute;
+          background:linear-gradient(180deg,transparent 0%,#92673a 20%,#2563eb 50%,#92673a 80%,transparent 100%);
+          border-radius:2px;"></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:80px;position:relative;z-index:2;">
+          <div class="signal-dot" style="width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#d4a574,#92673a);
+            box-shadow:0 0 10px rgba(146,103,58,0.8),0 0 25px rgba(146,103,58,0.4);
+            animation:signalPulse1 2.5s ease-in-out infinite;"></div>
+          <div class="signal-dot" style="width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#60a5fa,#2563eb);
+            box-shadow:0 0 10px rgba(37,99,235,0.8),0 0 25px rgba(37,99,235,0.4);
+            animation:signalPulse2 3s ease-in-out infinite;"></div>
+          <div class="signal-dot" style="width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#60a5fa,#2563eb);
+            box-shadow:0 0 10px rgba(37,99,235,0.8),0 0 25px rgba(37,99,235,0.4);
+            animation:signalPulse3 2s ease-in-out infinite;"></div>
+          <div class="signal-dot" style="width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#d4a574,#92673a);
+            box-shadow:0 0 10px rgba(146,103,58,0.8),0 0 25px rgba(146,103,58,0.4);
+            animation:signalPulse4 3.5s ease-in-out infinite;"></div>
+        </div>
+      </div>
 
-          <!-- 01 Enrichment -->
-          <div class="editorial-card pb-10" x-show="shown" x-transition.duration.500ms>
-            <div class="flex items-start justify-between gap-8">
-              <div class="flex-1">
-                <div class="text-xs text-neutral-300 font-mono mb-3">01</div>
-                <h3 class="serif text-3xl mb-3">Enrichment</h3>
-                <p class="text-neutral-400 text-sm leading-relaxed max-w-md">Every incoming opportunity is matched against 343 million consumer and property records, appending 85+ data attributes in real time.</p>
-              </div>
-              <!-- Micro-viz: data counter -->
-              <div class="hidden md:flex flex-col items-end" x-data="{ count: 0 }" x-init="setInterval(() => count = (count + 1) % 344, 30)" >
-                <div class="text-signal font-mono text-2xl font-light" x-text="count + 'M+'"></div>
-                <div class="text-[10px] text-neutral-300 mt-1">records matched</div>
-              </div>
-            </div>
-          </div>
+      <!-- RIGHT: Switchboard SVG Visualization -->
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+        <div style="position:relative;width:100%;max-width:520px;">
+          <!-- Radial glow behind -->
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;
+            background:radial-gradient(circle,rgba(37,99,235,0.08) 0%,rgba(37,99,235,0.02) 40%,transparent 70%);
+            pointer-events:none;"></div>
+          <svg viewBox="0 0 480 380" fill="none" style="width:100%;filter:drop-shadow(0 8px 32px rgba(0,0,0,0.1));">
+            <!-- Connection paths with gradient strokes -->
+            <defs>
+              <linearGradient id="pathGrad1" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.15"/>
+              </linearGradient>
+              <linearGradient id="pathGrad2" x1="1" y1="0" x2="0" y2="0">
+                <stop offset="0%" stop-color="#34d399" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#34d399" stop-opacity="0.15"/>
+              </linearGradient>
+              <linearGradient id="pathGradGold" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#92673a" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="#92673a" stop-opacity="0.1"/>
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="glowStrong">
+                <feGaussianBlur stdDeviation="6" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
 
-          <!-- 02 Scoring -->
-          <div class="editorial-card pb-10" x-show="shown" x-transition.duration.700ms>
-            <div class="flex items-start justify-between gap-8">
-              <div class="flex-1">
-                <div class="text-xs text-neutral-300 font-mono mb-3">02</div>
-                <h3 class="serif text-3xl mb-3">Scoring</h3>
-                <p class="text-neutral-400 text-sm leading-relaxed max-w-md">Proprietary ML models assign a conversion probability score to every opportunity in under 5 milliseconds, enabling instant decisioning.</p>
-              </div>
-              <!-- Micro-viz: gauge -->
-              <div class="hidden md:block">
-                <svg width="56" height="56" viewBox="0 0 56 56">
-                  <circle cx="28" cy="28" r="20" fill="none" stroke="rgba(37,99,235,0.1)" stroke-width="3"/>
-                  <circle cx="28" cy="28" r="20" fill="none" stroke="#2563eb" stroke-width="3" stroke-dasharray="126" stroke-dashoffset="30" stroke-linecap="round" transform="rotate(-90 28 28)" style="animation: gauge 4s ease-in-out infinite;"/>
-                  <text x="28" y="32" text-anchor="middle" fill="#2563eb" font-family="Inter" font-size="10" font-weight="600">92</text>
-                </svg>
-              </div>
-            </div>
-          </div>
+            <!-- Input connection lines -->
+            <path d="M60 70 C140 70, 140 150, 190 150" stroke="url(#pathGrad1)" stroke-width="1.5" fill="none"/>
+            <path d="M60 190 C140 190, 140 190, 190 190" stroke="url(#pathGrad1)" stroke-width="1.5" fill="none"/>
+            <path d="M60 310 C140 310, 140 230, 190 230" stroke="url(#pathGradGold)" stroke-width="1.5" fill="none"/>
 
-          <!-- 03 Segmentation -->
-          <div class="editorial-card pb-10" x-show="shown" x-transition.duration.900ms>
-            <div class="flex items-start justify-between gap-8">
-              <div class="flex-1">
-                <div class="text-xs text-neutral-300 font-mono mb-3">03</div>
-                <h3 class="serif text-3xl mb-3">Segmentation</h3>
-                <p class="text-neutral-400 text-sm leading-relaxed max-w-md">Opportunities are automatically categorized into buyer-defined tiers based on score thresholds, geography, and policy type.</p>
-              </div>
-              <!-- Micro-viz: tier badges -->
-              <div class="hidden md:flex flex-col gap-1.5 items-end">
-                <span class="text-[10px] font-medium px-3 py-1 rounded-full bg-signal/10 text-signal">Tier 1</span>
-                <span class="text-[10px] font-medium px-3 py-1 rounded-full bg-signal/[0.06] text-signal/70">Tier 2</span>
-                <span class="text-[10px] font-medium px-3 py-1 rounded-full bg-neutral-100 text-neutral-400">Tier 3</span>
-              </div>
-            </div>
-          </div>
+            <!-- Flowing particles on input paths -->
+            <circle r="2.5" fill="#3b82f6" filter="url(#glow)">
+              <animateMotion dur="3s" repeatCount="indefinite" path="M60 70 C140 70, 140 150, 190 150"/>
+              <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2.5" fill="#3b82f6" filter="url(#glow)">
+              <animateMotion dur="2.5s" repeatCount="indefinite" path="M60 190 C140 190, 140 190, 190 190"/>
+              <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2.5" fill="#92673a" filter="url(#glow)">
+              <animateMotion dur="3.5s" repeatCount="indefinite" path="M60 310 C140 310, 140 230, 190 230"/>
+              <animate attributeName="opacity" values="0;1;1;0" dur="3.5s" repeatCount="indefinite"/>
+            </circle>
 
-          <!-- 04 Routing -->
-          <div class="editorial-card pb-10" x-show="shown" x-transition.duration.1100ms>
-            <div class="flex items-start justify-between gap-8">
-              <div class="flex-1">
-                <div class="text-xs text-neutral-300 font-mono mb-3">04</div>
-                <h3 class="serif text-3xl mb-3">Routing</h3>
-                <p class="text-neutral-400 text-sm leading-relaxed max-w-md">Scored and segmented opportunities are distributed to the highest-value buyer using configurable routing rules and real-time auction logic.</p>
-              </div>
-              <!-- Micro-viz: flow arrow -->
-              <div class="hidden md:flex items-center gap-2">
-                <svg width="80" height="24" viewBox="0 0 80 24">
-                  <line x1="0" y1="12" x2="65" y2="12" stroke="rgba(37,99,235,0.3)" stroke-width="1.5" class="trace-animated"/>
-                  <circle cx="4" cy="12" r="3" fill="#2563eb" class="node-pulse" style="animation-delay: 0s;"/>
-                  <polygon points="68,6 80,12 68,18" fill="#2563eb" opacity="0.6"/>
-                </svg>
-              </div>
-            </div>
-          </div>
+            <!-- Output connection lines -->
+            <path d="M340 150 C390 150, 390 70, 430 70" stroke="url(#pathGrad2)" stroke-width="1.5" fill="none"/>
+            <path d="M340 190 C390 190, 390 190, 430 190" stroke="url(#pathGrad2)" stroke-width="1.5" fill="none"/>
+            <path d="M340 230 C390 230, 390 310, 430 310" stroke="url(#pathGrad2)" stroke-width="1.5" fill="none"/>
 
-          <!-- 05 Analytics -->
-          <div class="editorial-card pb-10" x-show="shown" x-transition.duration.1300ms>
-            <div class="flex items-start justify-between gap-8">
-              <div class="flex-1">
-                <div class="text-xs text-neutral-300 font-mono mb-3">05</div>
-                <h3 class="serif text-3xl mb-3">Analytics</h3>
-                <p class="text-neutral-400 text-sm leading-relaxed max-w-md">Every touchpoint tracked and visualized: conversion rates, buyer performance, revenue attribution, and pipeline health, all in real time.</p>
-              </div>
-              <!-- Micro-viz: bar chart -->
-              <div class="hidden md:flex items-end gap-1 h-10">
-                <div class="w-1.5 bg-signal/20 rounded-full" style="height:40%; animation: barGrow 3s ease-in-out infinite;"></div>
-                <div class="w-1.5 bg-signal/30 rounded-full" style="height:70%; animation: barGrow 3s ease-in-out infinite 0.3s;"></div>
-                <div class="w-1.5 bg-signal/50 rounded-full" style="height:100%; animation: barGrow 3s ease-in-out infinite 0.6s;"></div>
-                <div class="w-1.5 bg-signal/40 rounded-full" style="height:55%; animation: barGrow 3s ease-in-out infinite 0.9s;"></div>
-                <div class="w-1.5 bg-signal/60 rounded-full" style="height:85%; animation: barGrow 3s ease-in-out infinite 1.2s;"></div>
-              </div>
-            </div>
-          </div>
+            <!-- Flowing particles on output paths -->
+            <circle r="2.5" fill="#34d399" filter="url(#glow)">
+              <animateMotion dur="2.8s" repeatCount="indefinite" path="M340 150 C390 150, 390 70, 430 70"/>
+              <animate attributeName="opacity" values="0;1;1;0" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2.5" fill="#34d399" filter="url(#glow)">
+              <animateMotion dur="3.2s" repeatCount="indefinite" path="M340 190 C390 190, 390 190, 430 190"/>
+              <animate attributeName="opacity" values="0;1;1;0" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2.5" fill="#3b82f6" filter="url(#glow)">
+              <animateMotion dur="3s" repeatCount="indefinite" path="M340 230 C390 230, 390 310, 430 310"/>
+              <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite"/>
+            </circle>
 
+            <!-- Input glow nodes -->
+            <circle cx="50" cy="70" r="6" fill="#3b82f6" filter="url(#glowStrong)" opacity="0.9">
+              <animate attributeName="r" values="6;8;6" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="50" cy="70" r="16" fill="none" stroke="#3b82f6" stroke-width="0.5" opacity="0.2">
+              <animate attributeName="r" values="16;22;16" dur="3s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.2;0.05;0.2" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <text x="50" y="50" text-anchor="middle" fill="#3b82f6" font-family="Inter" font-size="9" font-weight="600" opacity="0.7">FORM</text>
+
+            <circle cx="50" cy="190" r="6" fill="#3b82f6" filter="url(#glowStrong)" opacity="0.9">
+              <animate attributeName="r" values="6;8;6" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="50" cy="190" r="16" fill="none" stroke="#3b82f6" stroke-width="0.5" opacity="0.2">
+              <animate attributeName="r" values="16;22;16" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.2;0.05;0.2" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <text x="50" y="170" text-anchor="middle" fill="#3b82f6" font-family="Inter" font-size="9" font-weight="600" opacity="0.7">API</text>
+
+            <circle cx="50" cy="310" r="6" fill="#92673a" filter="url(#glowStrong)" opacity="0.9">
+              <animate attributeName="r" values="6;8;6" dur="3.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="50" cy="310" r="16" fill="none" stroke="#92673a" stroke-width="0.5" opacity="0.2">
+              <animate attributeName="r" values="16;22;16" dur="3.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.2;0.05;0.2" dur="3.5s" repeatCount="indefinite"/>
+            </circle>
+            <text x="50" y="290" text-anchor="middle" fill="#92673a" font-family="Inter" font-size="9" font-weight="600" opacity="0.7">CALL</text>
+
+            <!-- Central Switchboard Panel (glassmorphic) -->
+            <rect x="180" y="120" width="170" height="140" rx="16"
+              fill="rgba(26,23,21,0.85)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+            <rect x="180" y="120" width="170" height="140" rx="16"
+              fill="url(#panelGrad)" opacity="0.5"/>
+            <defs>
+              <linearGradient id="panelGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.06)"/>
+                <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+              </linearGradient>
+            </defs>
+            <!-- Inner glow line at top -->
+            <line x1="196" y1="121" x2="334" y2="121" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+            <text x="265" y="148" text-anchor="middle" fill="#faf9f7" font-family="Inter" font-size="8" font-weight="700" letter-spacing="3" opacity="0.6">SWITCHBOARD</text>
+
+            <!-- Processing labels inside panel -->
+            <g opacity="0.5">
+              <rect x="198" y="162" width="56" height="18" rx="4" fill="rgba(59,130,246,0.15)" stroke="rgba(59,130,246,0.3)" stroke-width="0.5"/>
+              <text x="226" y="174" text-anchor="middle" fill="#60a5fa" font-family="Inter" font-size="7" font-weight="600">ENRICH</text>
+
+              <rect x="262" y="162" width="56" height="18" rx="4" fill="rgba(52,211,153,0.15)" stroke="rgba(52,211,153,0.3)" stroke-width="0.5"/>
+              <text x="290" y="174" text-anchor="middle" fill="#34d399" font-family="Inter" font-size="7" font-weight="600">SCORE</text>
+
+              <rect x="198" y="188" width="56" height="18" rx="4" fill="rgba(146,103,58,0.15)" stroke="rgba(146,103,58,0.3)" stroke-width="0.5"/>
+              <text x="226" y="200" text-anchor="middle" fill="#d4a574" font-family="Inter" font-size="7" font-weight="600">SEGMENT</text>
+
+              <rect x="262" y="188" width="56" height="18" rx="4" fill="rgba(167,139,250,0.15)" stroke="rgba(167,139,250,0.3)" stroke-width="0.5"/>
+              <text x="290" y="200" text-anchor="middle" fill="#a78bfa" font-family="Inter" font-size="7" font-weight="600">ROUTE</text>
+            </g>
+
+            <!-- Inner animated signal -->
+            <circle cx="265" cy="230" r="3" fill="#3b82f6" opacity="0.5">
+              <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2s" repeatCount="indefinite"/>
+            </circle>
+
+            <!-- Output glow nodes -->
+            <circle cx="440" cy="70" r="6" fill="#34d399" filter="url(#glowStrong)" opacity="0.9">
+              <animate attributeName="r" values="6;8;6" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="440" cy="70" r="16" fill="none" stroke="#34d399" stroke-width="0.5" opacity="0.2">
+              <animate attributeName="r" values="16;22;16" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+            <text x="440" y="50" text-anchor="middle" fill="#34d399" font-family="Inter" font-size="9" font-weight="600" opacity="0.7">BUYER A</text>
+
+            <circle cx="440" cy="190" r="6" fill="#34d399" filter="url(#glowStrong)" opacity="0.9">
+              <animate attributeName="r" values="6;8;6" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="440" cy="190" r="16" fill="none" stroke="#34d399" stroke-width="0.5" opacity="0.2">
+              <animate attributeName="r" values="16;22;16" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+            <text x="440" y="170" text-anchor="middle" fill="#34d399" font-family="Inter" font-size="9" font-weight="600" opacity="0.7">BUYER B</text>
+
+            <circle cx="440" cy="310" r="6" fill="#3b82f6" filter="url(#glowStrong)" opacity="0.9">
+              <animate attributeName="r" values="6;8;6" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="440" cy="310" r="16" fill="none" stroke="#3b82f6" stroke-width="0.5" opacity="0.2">
+              <animate attributeName="r" values="16;22;16" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <text x="440" y="290" text-anchor="middle" fill="#3b82f6" font-family="Inter" font-size="9" font-weight="600" opacity="0.7">BUYER C</text>
+          </svg>
         </div>
       </div>
     </div>
-  </div>
-</section>
 
-
-<!-- ============================================ -->
-<!-- HOW IT WORKS -->
-<!-- ============================================ -->
-<section class="section-dark py-24 md:py-32 px-8 relative overflow-hidden">
-
-  <!-- Background circuit trace connecting steps -->
-  <svg class="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
-    <line x1="10%" y1="60%" x2="90%" y2="60%" stroke="rgba(37,99,235,0.08)" stroke-width="1"/>
-    <!-- Flowing dots -->
-    <circle r="3" fill="#2563eb" opacity="0.4">
-      <animate attributeName="cx" from="10%" to="90%" dur="6s" repeatCount="indefinite"/>
-      <animate attributeName="cy" values="60%;59%;60%;61%;60%" dur="6s" repeatCount="indefinite"/>
-    </circle>
-    <circle r="2" fill="#3b82f6" opacity="0.3">
-      <animate attributeName="cx" from="10%" to="90%" dur="6s" begin="2s" repeatCount="indefinite"/>
-      <animate attributeName="cy" values="60%;61%;60%;59%;60%" dur="6s" begin="2s" repeatCount="indefinite"/>
-    </circle>
-    <circle r="2.5" fill="#2563eb" opacity="0.25">
-      <animate attributeName="cx" from="10%" to="90%" dur="6s" begin="4s" repeatCount="indefinite"/>
-      <animate attributeName="cy" values="60%;60%;61%;60%;59%" dur="6s" begin="4s" repeatCount="indefinite"/>
-    </circle>
-  </svg>
-
-  <div class="max-w-7xl mx-auto relative z-10">
-    <div class="text-xs uppercase tracking-[0.2em] text-cream/40 mb-4">Process</div>
-    <h2 class="serif text-5xl md:text-6xl text-cream leading-[1.1] mb-20">From noise to signal.</h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
-
-      <div class="editorial-card-dark">
-        <div class="serif text-6xl text-cream/10 mb-4">01</div>
-        <h3 class="serif text-2xl text-cream mb-3">Ingest</h3>
-        <p class="text-sm text-cream/40 leading-relaxed">Raw opportunity data flows in from forms, API integrations, and partner networks. Every record is captured and timestamped.</p>
+    <!-- Hero Stats -->
+    <div style="display:flex;justify-content:center;gap:64px;margin-top:72px;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div class="serif stat-pulse" style="font-size:48px;color:#92673a;text-shadow:0 0 30px rgba(146,103,58,0.15);">2.4M+</div>
+        <div style="font-size:13px;color:rgba(26,23,21,0.5);font-weight:500;margin-top:4px;letter-spacing:0.05em;text-transform:uppercase;">Opportunities Routed</div>
       </div>
-
-      <div class="editorial-card-dark">
-        <div class="serif text-6xl text-cream/10 mb-4">02</div>
-        <h3 class="serif text-2xl text-cream mb-3">Enrich &amp; Score</h3>
-        <p class="text-sm text-cream/40 leading-relaxed">Each record is matched against 343M+ data points and scored using proprietary ML models. Under 5ms, end to end.</p>
+      <div style="width:1px;background:linear-gradient(180deg,transparent,rgba(146,103,58,0.3),transparent);"></div>
+      <div style="text-align:center;">
+        <div class="serif stat-pulse" style="font-size:48px;color:#92673a;text-shadow:0 0 30px rgba(146,103,58,0.15);animation-delay:0.5s;">47ms</div>
+        <div style="font-size:13px;color:rgba(26,23,21,0.5);font-weight:500;margin-top:4px;letter-spacing:0.05em;text-transform:uppercase;">Average Response Time</div>
       </div>
-
-      <div class="editorial-card-dark">
-        <div class="serif text-6xl text-cream/10 mb-4">03</div>
-        <h3 class="serif text-2xl text-cream mb-3">Segment &amp; Route</h3>
-        <p class="text-sm text-cream/40 leading-relaxed">Scored opportunities are tiered and routed to the highest-value buyer through configurable rules and real-time auction logic.</p>
+      <div style="width:1px;background:linear-gradient(180deg,transparent,rgba(146,103,58,0.3),transparent);"></div>
+      <div style="text-align:center;">
+        <div class="serif stat-pulse" style="font-size:48px;color:#92673a;text-shadow:0 0 30px rgba(146,103,58,0.15);animation-delay:1s;">99.97%</div>
+        <div style="font-size:13px;color:rgba(26,23,21,0.5);font-weight:500;margin-top:4px;letter-spacing:0.05em;text-transform:uppercase;">Uptime Reliability</div>
       </div>
-
-      <div class="editorial-card-dark">
-        <div class="serif text-6xl text-cream/10 mb-4">04</div>
-        <h3 class="serif text-2xl text-cream mb-3">Measure</h3>
-        <p class="text-sm text-cream/40 leading-relaxed">Full-funnel analytics track every conversion, buyer outcome, and revenue event. Continuous feedback loops optimize performance.</p>
-      </div>
-
     </div>
   </div>
 </section>
 
+<!-- ===================================================================
+     MARQUEE
+     =================================================================== -->
+<div style="overflow:hidden;padding:40px 0;position:relative;
+  background:linear-gradient(180deg,#efe8e0 0%,#faf9f7 100%);
+  border-top:1px solid transparent;border-image:linear-gradient(90deg,transparent,rgba(146,103,58,0.2),rgba(37,99,235,0.2),rgba(146,103,58,0.2),transparent) 1;
+  border-bottom:1px solid transparent;border-image:linear-gradient(90deg,transparent,rgba(146,103,58,0.2),rgba(37,99,235,0.2),rgba(146,103,58,0.2),transparent) 1;">
+  <div class="marquee-track" style="display:flex;gap:64px;width:max-content;white-space:nowrap;">
+    <span class="serif" style="font-size:28px;color:rgba(26,23,21,0.12);text-shadow:0 0 20px rgba(0,0,0,0.02);">Enrich &bull; Score &bull; Segment &bull; Route &bull; Analyze &bull; Intelligence Layer &bull; Real-Time Decisions &bull; Precision Matching &bull;</span>
+    <span class="serif" style="font-size:28px;color:rgba(26,23,21,0.12);text-shadow:0 0 20px rgba(0,0,0,0.02);">Enrich &bull; Score &bull; Segment &bull; Route &bull; Analyze &bull; Intelligence Layer &bull; Real-Time Decisions &bull; Precision Matching &bull;</span>
+  </div>
+</div>
 
-<!-- ============================================ -->
-<!-- TESTIMONIAL -->
-<!-- ============================================ -->
-<section class="py-24 md:py-32 px-8">
-  <div class="max-w-4xl mx-auto">
-    <div class="relative pl-10 md:pl-16">
+<!-- ===================================================================
+     CAPABILITIES
+     =================================================================== -->
+<section id="capabilities" class="section-light noise-overlay" style="padding:120px 32px;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:72px;">
+      <span style="display:inline-block;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#92673a;margin-bottom:16px;">What We Do</span>
+      <h2 class="serif" style="font-size:clamp(36px,4vw,56px);margin:0;letter-spacing:-0.02em;text-shadow:0 0 40px rgba(0,0,0,0.03);">
+        Five Pillars of<br/>Insurance Intelligence
+      </h2>
+    </div>
 
-      <!-- Circuit trace accent (instead of simple border) -->
-      <div class="absolute left-0 top-0 h-full w-px bg-signal/20">
-        <div class="absolute left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-signal node-pulse -top-1"></div>
-        <div class="absolute left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-signal/40" style="top: 50%;"></div>
-        <div class="absolute left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-signal/20" style="top: 100%;"></div>
+    <div style="position:relative;">
+      <!-- Vertical connecting line on left -->
+      <div style="position:absolute;left:28px;top:40px;bottom:40px;width:2px;
+        background:linear-gradient(180deg,transparent,rgba(37,99,235,0.2) 10%,rgba(37,99,235,0.2) 90%,transparent);
+        display:none;" class="md:block" id="capLine"></div>
+      <style>@media(min-width:768px){#capLine{display:block!important;}}</style>
+
+      <div class="cap-card-grid" style="display:grid;grid-template-columns:1fr;gap:28px;">
+
+        <!-- Card 1: Enrichment -->
+        <div style="display:flex;gap:24px;align-items:flex-start;">
+          <div style="flex-shrink:0;width:56px;display:flex;flex-direction:column;align-items:center;padding-top:28px;" class="hidden md:flex">
+            <div class="glow-node"></div>
+          </div>
+          <div class="card-premium" style="flex:1;padding:36px;display:flex;gap:32px;align-items:center;flex-wrap:wrap;">
+            <div style="flex:1;min-width:260px;">
+              <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <span class="serif" style="font-size:32px;color:#92673a;text-shadow:0 0 20px rgba(146,103,58,0.15);">01</span>
+                <span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(26,23,21,0.4);">Enrichment</span>
+              </div>
+              <h3 class="serif" style="font-size:28px;margin:0 0 12px;letter-spacing:-0.01em;">Data Enrichment Engine</h3>
+              <p style="font-size:15px;line-height:1.7;color:rgba(26,23,21,0.6);margin:0;">
+                Append 40+ data points to every incoming opportunity in real time.
+                Demographics, property data, policy history, credit indicators, and behavioral signals.
+              </p>
+            </div>
+            <!-- Micro-viz: animated counter -->
+            <div style="flex-shrink:0;width:100px;height:100px;border-radius:16px;
+              background:linear-gradient(135deg,#1a1715 0%,#2d2926 100%);
+              box-shadow:0 4px 16px rgba(0,0,0,0.15);
+              display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+              <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(59,130,246,0.1),transparent 60%);"></div>
+              <div x-data="{count:0}" x-init="setInterval(()=>{count=Math.floor(Math.random()*40)+1},800)"
+                style="font-size:28px;font-weight:800;color:#3b82f6;text-shadow:0 0 20px rgba(59,130,246,0.5);position:relative;"
+                x-text="count + '+'">40+</div>
+              <div style="font-size:8px;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;position:relative;">Fields</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Scoring -->
+        <div style="display:flex;gap:24px;align-items:flex-start;">
+          <div style="flex-shrink:0;width:56px;display:flex;flex-direction:column;align-items:center;padding-top:28px;" class="hidden md:flex">
+            <div class="glow-node"></div>
+          </div>
+          <div class="card-premium" style="flex:1;padding:36px;display:flex;gap:32px;align-items:center;flex-wrap:wrap;">
+            <div style="flex:1;min-width:260px;">
+              <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <span class="serif" style="font-size:32px;color:#92673a;text-shadow:0 0 20px rgba(146,103,58,0.15);">02</span>
+                <span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(26,23,21,0.4);">Risk Scoring</span>
+              </div>
+              <h3 class="serif" style="font-size:28px;margin:0 0 12px;letter-spacing:-0.01em;">Predictive Risk Scoring</h3>
+              <p style="font-size:15px;line-height:1.7;color:rgba(26,23,21,0.6);margin:0;">
+                Every opportunity receives a proprietary quality score based on 200+ signals.
+                Buyers only pay for what meets their threshold.
+              </p>
+            </div>
+            <!-- Micro-viz: gauge arc -->
+            <div style="flex-shrink:0;width:100px;height:100px;border-radius:16px;
+              background:linear-gradient(135deg,#1a1715 0%,#2d2926 100%);
+              box-shadow:0 4px 16px rgba(0,0,0,0.15);
+              display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+              <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 60%,rgba(52,211,153,0.1),transparent 60%);"></div>
+              <svg width="64" height="48" viewBox="0 0 64 48" style="position:relative;">
+                <path d="M8 44 A28 28 0 0 1 56 44" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5" stroke-linecap="round"/>
+                <path d="M8 44 A28 28 0 0 1 56 44" fill="none" stroke="url(#gaugeGrad)" stroke-width="5" stroke-linecap="round"
+                  class="gauge-arc"/>
+                <defs>
+                  <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#3b82f6"/>
+                    <stop offset="100%" stop-color="#34d399"/>
+                  </linearGradient>
+                </defs>
+                <text x="32" y="38" text-anchor="middle" fill="white" font-family="Inter" font-size="14" font-weight="800">92</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Segmentation -->
+        <div style="display:flex;gap:24px;align-items:flex-start;">
+          <div style="flex-shrink:0;width:56px;display:flex;flex-direction:column;align-items:center;padding-top:28px;" class="hidden md:flex">
+            <div class="glow-node"></div>
+          </div>
+          <div class="card-premium" style="flex:1;padding:36px;display:flex;gap:32px;align-items:center;flex-wrap:wrap;">
+            <div style="flex:1;min-width:260px;">
+              <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <span class="serif" style="font-size:32px;color:#92673a;text-shadow:0 0 20px rgba(146,103,58,0.15);">03</span>
+                <span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(26,23,21,0.4);">Segmentation</span>
+              </div>
+              <h3 class="serif" style="font-size:28px;margin:0 0 12px;letter-spacing:-0.01em;">Intelligent Segmentation</h3>
+              <p style="font-size:15px;line-height:1.7;color:rgba(26,23,21,0.6);margin:0;">
+                Automatically classify opportunities into buyer-defined tiers. Premium, standard, and nurture tracks ensure every prospect finds the right home.
+              </p>
+            </div>
+            <!-- Micro-viz: tier badges -->
+            <div style="flex-shrink:0;width:100px;height:100px;border-radius:16px;
+              background:linear-gradient(135deg,#1a1715 0%,#2d2926 100%);
+              box-shadow:0 4px 16px rgba(0,0,0,0.15);
+              display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;position:relative;overflow:hidden;">
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,#fbbf24,#d97706);box-shadow:0 0 8px rgba(251,191,36,0.6);"></div>
+                <span style="font-size:8px;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:0.05em;">PREMIUM</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,#60a5fa,#2563eb);box-shadow:0 0 8px rgba(59,130,246,0.6);"></div>
+                <span style="font-size:8px;font-weight:700;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">STANDARD</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,#a78bfa,#7c3aed);box-shadow:0 0 8px rgba(167,139,250,0.6);"></div>
+                <span style="font-size:8px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:0.05em;">NURTURE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Routing -->
+        <div style="display:flex;gap:24px;align-items:flex-start;">
+          <div style="flex-shrink:0;width:56px;display:flex;flex-direction:column;align-items:center;padding-top:28px;" class="hidden md:flex">
+            <div class="glow-node"></div>
+          </div>
+          <div class="card-premium" style="flex:1;padding:36px;display:flex;gap:32px;align-items:center;flex-wrap:wrap;">
+            <div style="flex:1;min-width:260px;">
+              <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <span class="serif" style="font-size:32px;color:#92673a;text-shadow:0 0 20px rgba(146,103,58,0.15);">04</span>
+                <span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(26,23,21,0.4);">Routing</span>
+              </div>
+              <h3 class="serif" style="font-size:28px;margin:0 0 12px;letter-spacing:-0.01em;">Precision Routing</h3>
+              <p style="font-size:15px;line-height:1.7;color:rgba(26,23,21,0.6);margin:0;">
+                Rule-based distribution delivers every opportunity to the right buyer at the right time.
+                Capacity caps, geo-targeting, and real-time bidding built in.
+              </p>
+            </div>
+            <!-- Micro-viz: animated arrow -->
+            <div style="flex-shrink:0;width:100px;height:100px;border-radius:16px;
+              background:linear-gradient(135deg,#1a1715 0%,#2d2926 100%);
+              box-shadow:0 4px 16px rgba(0,0,0,0.15);
+              display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+              <div style="position:absolute;inset:0;background:radial-gradient(circle at 70% 50%,rgba(52,211,153,0.08),transparent 60%);"></div>
+              <svg width="56" height="24" viewBox="0 0 56 24" style="position:relative;">
+                <line x1="0" y1="12" x2="44" y2="12" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-linecap="round"/>
+                <line x1="0" y1="12" x2="32" y2="12" stroke="url(#arrowGrad)" stroke-width="2" stroke-linecap="round">
+                  <animate attributeName="x2" values="10;44;10" dur="2s" repeatCount="indefinite"/>
+                </line>
+                <polygon points="48,12 38,6 38,18" fill="#34d399" opacity="0.9">
+                  <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+                </polygon>
+                <defs>
+                  <linearGradient id="arrowGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="transparent"/>
+                    <stop offset="100%" stop-color="#34d399"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Analytics -->
+        <div style="display:flex;gap:24px;align-items:flex-start;">
+          <div style="flex-shrink:0;width:56px;display:flex;flex-direction:column;align-items:center;padding-top:28px;" class="hidden md:flex">
+            <div class="glow-node"></div>
+          </div>
+          <div class="card-premium" style="flex:1;padding:36px;display:flex;gap:32px;align-items:center;flex-wrap:wrap;">
+            <div style="flex:1;min-width:260px;">
+              <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <span class="serif" style="font-size:32px;color:#92673a;text-shadow:0 0 20px rgba(146,103,58,0.15);">05</span>
+                <span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(26,23,21,0.4);">Analytics</span>
+              </div>
+              <h3 class="serif" style="font-size:28px;margin:0 0 12px;letter-spacing:-0.01em;">Performance Analytics</h3>
+              <p style="font-size:15px;line-height:1.7;color:rgba(26,23,21,0.6);margin:0;">
+                Real-time dashboards track conversion, quality, and revenue by source, buyer, and segment.
+                Every dollar accountable.
+              </p>
+            </div>
+            <!-- Micro-viz: bar chart -->
+            <div style="flex-shrink:0;width:100px;height:100px;border-radius:16px;
+              background:linear-gradient(135deg,#1a1715 0%,#2d2926 100%);
+              box-shadow:0 4px 16px rgba(0,0,0,0.15);
+              display:flex;align-items:flex-end;justify-content:center;gap:4px;padding:0 16px 16px;position:relative;overflow:hidden;">
+              <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 80%,rgba(59,130,246,0.08),transparent 60%);"></div>
+              <div style="width:10px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#3b82f6,#2563eb);height:28px;box-shadow:0 0 8px rgba(59,130,246,0.3);position:relative;transform-origin:bottom;animation:barGrow 1.5s ease-out both;"></div>
+              <div style="width:10px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#60a5fa,#3b82f6);height:48px;box-shadow:0 0 8px rgba(59,130,246,0.3);position:relative;transform-origin:bottom;animation:barGrow 1.5s ease-out 0.2s both;"></div>
+              <div style="width:10px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#34d399,#10b981);height:36px;box-shadow:0 0 8px rgba(52,211,153,0.3);position:relative;transform-origin:bottom;animation:barGrow 1.5s ease-out 0.4s both;"></div>
+              <div style="width:10px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#93c5fd,#60a5fa);height:58px;box-shadow:0 0 8px rgba(59,130,246,0.3);position:relative;transform-origin:bottom;animation:barGrow 1.5s ease-out 0.6s both;"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
+    </div>
+  </div>
+</section>
 
-      <blockquote>
-        <p class="serif text-3xl md:text-5xl leading-[1.25] mb-8">"The Switchboard transformed our acquisition economics overnight. We went from guessing to knowing."</p>
-        <footer class="flex items-center gap-4">
-          <div class="w-10 h-10 rounded-full bg-neutral-200 flex items-center justify-center text-xs text-neutral-400">VP</div>
+<!-- ===================================================================
+     HOW IT WORKS
+     =================================================================== -->
+<section id="how-it-works" class="section-dark noise-overlay" style="padding:120px 32px;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:72px;">
+      <span style="display:inline-block;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#92673a;margin-bottom:16px;">The Process</span>
+      <h2 class="serif" style="font-size:clamp(36px,4vw,56px);margin:0;letter-spacing:-0.02em;text-shadow:0 0 40px rgba(59,130,246,0.08);">
+        From Signal to Sale<br/>in Milliseconds
+      </h2>
+    </div>
+
+    <!-- Steps with connecting line -->
+    <div style="position:relative;">
+      <!-- Connecting gradient line -->
+      <div style="position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:2px;
+        background:linear-gradient(180deg,transparent 0%,rgba(37,99,235,0.3) 10%,rgba(37,99,235,0.3) 90%,transparent 100%);
+        display:none;" class="md:block" id="howLine"></div>
+      <style>@media(min-width:768px){#howLine{display:block!important;}}</style>
+
+      <!-- Animated dots on the line -->
+      <div style="position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:2px;overflow:hidden;display:none;" class="md:block" id="howDots">
+        <div style="width:4px;height:4px;border-radius:50%;background:#3b82f6;box-shadow:0 0 8px rgba(59,130,246,0.8);
+          position:absolute;left:-1px;animation:flowDown 4s linear infinite;">
+        </div>
+        <div style="width:4px;height:4px;border-radius:50%;background:#3b82f6;box-shadow:0 0 8px rgba(59,130,246,0.8);
+          position:absolute;left:-1px;animation:flowDown 4s linear infinite 2s;">
+        </div>
+      </div>
+      <style>
+        @media(min-width:768px){#howDots{display:block!important;}}
+        @keyframes flowDown { 0%{top:-10px;opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{top:100%;opacity:0} }
+      </style>
+
+      <div style="display:grid;grid-template-columns:1fr;gap:48px;">
+        <!-- Step 1 -->
+        <div style="display:flex;justify-content:center;">
+          <div class="card-glass" style="max-width:540px;width:100%;padding:40px;text-align:center;position:relative;">
+            <div class="serif" style="font-size:64px;color:#92673a;text-shadow:0 0 40px rgba(146,103,58,0.2);line-height:1;margin-bottom:12px;">1</div>
+            <h3 class="serif" style="font-size:28px;margin:0 0 12px;">Opportunity Arrives</h3>
+            <p style="font-size:15px;line-height:1.7;color:rgba(250,249,247,0.5);margin:0;">
+              A shopper submits a form, calls in, or triggers an API event. The signal enters the Switchboard.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div style="display:flex;justify-content:center;">
+          <div class="card-glass" style="max-width:540px;width:100%;padding:40px;text-align:center;position:relative;">
+            <div class="serif" style="font-size:64px;color:#92673a;text-shadow:0 0 40px rgba(146,103,58,0.2);line-height:1;margin-bottom:12px;">2</div>
+            <h3 class="serif" style="font-size:28px;margin:0 0 12px;">Enrich & Score</h3>
+            <p style="font-size:15px;line-height:1.7;color:rgba(250,249,247,0.5);margin:0;">
+              40+ data points appended instantly. A proprietary quality score assigns value based on 200+ signals.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div style="display:flex;justify-content:center;">
+          <div class="card-glass" style="max-width:540px;width:100%;padding:40px;text-align:center;position:relative;">
+            <div class="serif" style="font-size:64px;color:#92673a;text-shadow:0 0 40px rgba(146,103,58,0.2);line-height:1;margin-bottom:12px;">3</div>
+            <h3 class="serif" style="font-size:28px;margin:0 0 12px;">Segment & Route</h3>
+            <p style="font-size:15px;line-height:1.7;color:rgba(250,249,247,0.5);margin:0;">
+              Rules-based engine matches opportunity to buyer. Geo, capacity, bid price, and quality thresholds all factor in.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div style="display:flex;justify-content:center;">
+          <div class="card-glass" style="max-width:540px;width:100%;padding:40px;text-align:center;position:relative;">
+            <div class="serif" style="font-size:64px;color:#92673a;text-shadow:0 0 40px rgba(146,103,58,0.2);line-height:1;margin-bottom:12px;">4</div>
+            <h3 class="serif" style="font-size:28px;margin:0 0 12px;">Deliver & Optimize</h3>
+            <p style="font-size:15px;line-height:1.7;color:rgba(250,249,247,0.5);margin:0;">
+              Opportunity delivered via ping-post, webhook, or direct CRM injection. Analytics loop feeds continuous improvement.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     TESTIMONIAL
+     =================================================================== -->
+<section class="section-light noise-overlay" style="padding:120px 32px;">
+  <div style="max-width:800px;margin:0 auto;">
+    <div class="card-premium" style="padding:56px;position:relative;overflow:hidden;">
+      <!-- Gold accent line on left -->
+      <div style="position:absolute;left:0;top:32px;bottom:32px;width:4px;
+        background:linear-gradient(180deg,transparent,#92673a 20%,#d4a574 50%,#92673a 80%,transparent);
+        border-radius:4px;"></div>
+      <!-- Large decorative quote -->
+      <div class="serif" style="position:absolute;top:24px;left:40px;font-size:120px;color:rgba(146,103,58,0.07);line-height:1;pointer-events:none;">&ldquo;</div>
+      <div style="padding-left:32px;position:relative;">
+        <p class="serif" style="font-size:clamp(22px,2.5vw,30px);line-height:1.5;color:#1a1715;margin:0 0 32px;text-shadow:0 0 30px rgba(0,0,0,0.03);">
+          The Switchboard transformed how we acquire customers. Conversion rates doubled in the first quarter, and the quality scoring alone pays for itself ten times over.
+        </p>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="width:48px;height:48px;border-radius:50%;
+            background:linear-gradient(135deg,#92673a,#d4a574);
+            box-shadow:0 2px 8px rgba(146,103,58,0.3);
+            display:flex;align-items:center;justify-content:center;">
+            <span style="color:white;font-weight:700;font-size:16px;">MR</span>
+          </div>
           <div>
-            <div class="font-medium text-sm">VP of Customer Acquisition</div>
-            <div class="text-xs text-neutral-400">Top 10 National Insurance Carrier</div>
+            <div style="font-weight:600;font-size:15px;color:#1a1715;">Michael Rivera</div>
+            <div style="font-size:13px;color:rgba(26,23,21,0.5);">VP of Acquisition, National Auto Shield</div>
           </div>
-        </footer>
-      </blockquote>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- ===================================================================
+     STATS
+     =================================================================== -->
+<section id="results" class="section-dark noise-overlay" style="padding:120px 32px;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:64px;">
+      <span style="display:inline-block;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#92673a;margin-bottom:16px;">The Numbers</span>
+      <h2 class="serif" style="font-size:clamp(36px,4vw,56px);margin:0;letter-spacing:-0.02em;text-shadow:0 0 40px rgba(59,130,246,0.08);">
+        Outcomes That Speak
+      </h2>
+    </div>
 
-<!-- ============================================ -->
-<!-- BY THE NUMBERS -->
-<!-- ============================================ -->
-<section class="section-dark py-24 md:py-32 px-8 relative overflow-hidden">
-  <div class="max-w-7xl mx-auto">
-    <div class="text-xs uppercase tracking-[0.2em] text-cream/40 mb-16">By the numbers</div>
-
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-
+    <div class="stats-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
       <!-- Stat 1 -->
-      <div class="relative">
-        <!-- Background viz: pulse wave -->
-        <div class="stat-viz">
-          <svg width="120" height="40" viewBox="0 0 120 40">
-            <polyline points="0,20 15,20 20,5 25,35 30,15 35,25 40,20 120,20" fill="none" stroke="#2563eb" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <div class="relative z-10">
-          <div class="serif text-5xl md:text-7xl text-cream">340%</div>
-          <div class="text-sm text-cream/40 mt-2">average ROI increase</div>
-        </div>
+      <div class="card-glass" style="padding:36px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(59,130,246,0.06),transparent 70%);pointer-events:none;"></div>
+        <div class="serif stat-pulse" style="font-size:48px;color:#faf9f7;text-shadow:0 0 40px rgba(59,130,246,0.3);position:relative;">3.2x</div>
+        <div style="font-size:13px;color:rgba(250,249,247,0.45);font-weight:500;margin-top:8px;position:relative;">Conversion Lift</div>
       </div>
-
       <!-- Stat 2 -->
-      <div class="relative">
-        <div class="stat-viz" style="animation-delay: -1s;">
-          <svg width="80" height="40" viewBox="0 0 80 40">
-            <rect x="5" y="20" width="8" height="20" fill="#2563eb" rx="1"/>
-            <rect x="20" y="10" width="8" height="30" fill="#2563eb" rx="1"/>
-            <rect x="35" y="5" width="8" height="35" fill="#2563eb" rx="1"/>
-            <rect x="50" y="15" width="8" height="25" fill="#2563eb" rx="1"/>
-            <rect x="65" y="8" width="8" height="32" fill="#2563eb" rx="1"/>
-          </svg>
-        </div>
-        <div class="relative z-10">
-          <div class="serif text-5xl md:text-7xl text-cream">&lt; 5ms</div>
-          <div class="text-sm text-cream/40 mt-2">scoring latency</div>
-        </div>
+      <div class="card-glass" style="padding:36px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(59,130,246,0.06),transparent 70%);pointer-events:none;"></div>
+        <div class="serif stat-pulse" style="font-size:48px;color:#faf9f7;text-shadow:0 0 40px rgba(59,130,246,0.3);position:relative;animation-delay:0.3s;">68%</div>
+        <div style="font-size:13px;color:rgba(250,249,247,0.45);font-weight:500;margin-top:8px;position:relative;">Waste Reduction</div>
       </div>
-
       <!-- Stat 3 -->
-      <div class="relative">
-        <div class="stat-viz" style="animation-delay: -2s;">
-          <svg width="60" height="60" viewBox="0 0 60 60">
-            <circle cx="30" cy="30" r="25" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="100 60"/>
-          </svg>
-        </div>
-        <div class="relative z-10">
-          <div class="serif text-5xl md:text-7xl text-cream">343M</div>
-          <div class="text-sm text-cream/40 mt-2">enrichment records</div>
-        </div>
+      <div class="card-glass" style="padding:36px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(59,130,246,0.06),transparent 70%);pointer-events:none;"></div>
+        <div class="serif stat-pulse" style="font-size:48px;color:#faf9f7;text-shadow:0 0 40px rgba(59,130,246,0.3);position:relative;animation-delay:0.6s;">$4.7M</div>
+        <div style="font-size:13px;color:rgba(250,249,247,0.45);font-weight:500;margin-top:8px;position:relative;">Revenue Routed Monthly</div>
       </div>
-
       <!-- Stat 4 -->
-      <div class="relative">
-        <div class="stat-viz" style="animation-delay: -3s;">
-          <svg width="80" height="40" viewBox="0 0 80 40">
-            <polyline points="0,35 20,28 40,15 60,10 80,5" fill="none" stroke="#2563eb" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <div class="relative z-10">
-          <div class="serif text-5xl md:text-7xl text-cream">97%</div>
-          <div class="text-sm text-cream/40 mt-2">match accuracy</div>
-        </div>
+      <div class="card-glass" style="padding:36px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(59,130,246,0.06),transparent 70%);pointer-events:none;"></div>
+        <div class="serif stat-pulse" style="font-size:48px;color:#faf9f7;text-shadow:0 0 40px rgba(59,130,246,0.3);position:relative;animation-delay:0.9s;">14</div>
+        <div style="font-size:13px;color:rgba(250,249,247,0.45);font-weight:500;margin-top:8px;position:relative;">Days to Full Integration</div>
       </div>
-
     </div>
   </div>
 </section>
 
-
-<!-- ============================================ -->
-<!-- CASE STUDIES -->
-<!-- ============================================ -->
-<section class="py-24 md:py-32 px-8">
-  <div class="max-w-7xl mx-auto">
-    <div class="flex items-end justify-between mb-16">
-      <div>
-        <div class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-4">Case Studies</div>
-        <h2 class="serif text-5xl md:text-6xl leading-[1.1]">Proven at scale.</h2>
-      </div>
-      <a href="#" class="outline-pill px-6 py-2.5 text-sm font-medium hidden md:inline-block">View All &rarr;</a>
+<!-- ===================================================================
+     CASE STUDIES
+     =================================================================== -->
+<section id="case-studies" class="section-light noise-overlay" style="padding:120px 32px;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:72px;">
+      <span style="display:inline-block;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#92673a;margin-bottom:16px;">Case Studies</span>
+      <h2 class="serif" style="font-size:clamp(36px,4vw,56px);margin:0;letter-spacing:-0.02em;text-shadow:0 0 40px rgba(0,0,0,0.03);">
+        Proven Results,<br/>Real Partners
+      </h2>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-      <article class="group cursor-pointer">
-        <div class="img-placeholder mb-6 group-hover:bg-neutral-300 transition-colors duration-300">
-          <span>Case Study Image</span>
+    <div class="case-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
+      <!-- Case 1 -->
+      <div class="card-premium" style="overflow:hidden;position:relative;">
+        <!-- Dark gradient header -->
+        <div style="height:200px;position:relative;
+          background:linear-gradient(135deg,#1a1715 0%,#2d2926 50%,#1a1715 100%);
+          display:flex;align-items:center;justify-content:center;">
+          <div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(37,99,235,0.1),transparent 60%);"></div>
+          <span class="serif" style="font-size:32px;color:rgba(255,255,255,0.15);position:relative;">Auto Insurance</span>
         </div>
-        <div class="text-xs uppercase tracking-[0.15em] text-neutral-400 mb-2">Auto Insurance</div>
-        <h3 class="serif text-2xl mb-2 group-hover:pl-2 transition-all duration-300">How a top-5 carrier increased conversion 340%</h3>
-        <p class="text-sm text-neutral-400">Real-time enrichment and scoring transformed their acquisition funnel from reactive to predictive.</p>
-      </article>
-
-      <article class="group cursor-pointer">
-        <div class="img-placeholder mb-6 group-hover:bg-neutral-300 transition-colors duration-300">
-          <span>Case Study Image</span>
+        <!-- Floating metric badge -->
+        <div style="position:absolute;top:176px;right:24px;z-index:2;
+          background:white;border-radius:14px;padding:12px 20px;
+          box-shadow:0 4px 16px rgba(0,0,0,0.1),0 16px 48px rgba(0,0,0,0.08);
+          display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;font-weight:600;color:rgba(26,23,21,0.5);text-transform:uppercase;letter-spacing:0.05em;">Conversion</span>
+          <span class="serif" style="font-size:24px;color:#92673a;text-shadow:0 0 15px rgba(146,103,58,0.15);">+142%</span>
         </div>
-        <div class="text-xs uppercase tracking-[0.15em] text-neutral-400 mb-2">Health Insurance</div>
-        <h3 class="serif text-2xl mb-2 group-hover:pl-2 transition-all duration-300">Reducing cost-per-acquisition by 62% in 90 days</h3>
-        <p class="text-sm text-neutral-400">Intelligent segmentation eliminated wasted spend on low-intent prospects.</p>
-      </article>
-
-      <article class="group cursor-pointer">
-        <div class="img-placeholder mb-6 group-hover:bg-neutral-300 transition-colors duration-300">
-          <span>Case Study Image</span>
+        <div style="padding:32px;">
+          <h3 class="serif" style="font-size:24px;margin:0 0 8px;">National Auto Shield</h3>
+          <p style="font-size:14px;line-height:1.7;color:rgba(26,23,21,0.55);margin:0 0 20px;">
+            Replaced manual distribution with Switchboard intelligence. Conversion rates more than doubled while cost-per-acquisition dropped 38%.
+          </p>
+          <a href="#" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#2563eb;text-decoration:none;transition:gap 0.2s;" onmouseover="this.style.gap='10px'" onmouseout="this.style.gap='6px'">
+            Read Full Story
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+          </a>
         </div>
-        <div class="text-xs uppercase tracking-[0.15em] text-neutral-400 mb-2">Commercial Lines</div>
-        <h3 class="serif text-2xl mb-2 group-hover:pl-2 transition-all duration-300">From 48-hour response to real-time routing</h3>
-        <p class="text-sm text-neutral-400">Automated routing rules matched opportunities to underwriters in milliseconds, not days.</p>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-
-<!-- ============================================ -->
-<!-- INDUSTRIES -->
-<!-- ============================================ -->
-<section class="section-dark py-24 md:py-32 px-8">
-  <div class="max-w-7xl mx-auto">
-    <div class="text-xs uppercase tracking-[0.2em] text-cream/40 mb-4">Industries</div>
-    <h2 class="serif text-5xl md:text-6xl text-cream leading-[1.1] mb-16">Built for insurance.</h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-      <div class="editorial-card-dark group cursor-pointer pb-8">
-        <div class="flex items-center gap-4 mb-4">
-          <!-- Circuit node icon -->
-          <div class="w-8 h-8 rounded-full border border-signal/30 flex items-center justify-center">
-            <div class="w-3 h-3 rounded-full bg-signal node-pulse"></div>
-          </div>
-          <h3 class="serif text-2xl text-cream">Auto</h3>
-        </div>
-        <p class="text-sm text-cream/40 leading-relaxed">High-volume, high-velocity. Real-time scoring and routing for the most competitive line in the market.</p>
       </div>
 
-      <div class="editorial-card-dark group cursor-pointer pb-8">
-        <div class="flex items-center gap-4 mb-4">
-          <div class="w-8 h-8 rounded-full border border-signal/30 flex items-center justify-center">
-            <div class="w-3 h-3 rounded-full bg-signal node-pulse" style="animation-delay: -1s;"></div>
-          </div>
-          <h3 class="serif text-2xl text-cream">Health</h3>
+      <!-- Case 2 -->
+      <div class="card-premium" style="overflow:hidden;position:relative;">
+        <!-- Dark gradient header -->
+        <div style="height:200px;position:relative;
+          background:linear-gradient(135deg,#1a1715 0%,#2d2926 50%,#1a1715 100%);
+          display:flex;align-items:center;justify-content:center;">
+          <div style="position:absolute;inset:0;background:radial-gradient(circle at 70% 60%,rgba(146,103,58,0.1),transparent 60%);"></div>
+          <span class="serif" style="font-size:32px;color:rgba(255,255,255,0.15);position:relative;">Home Insurance</span>
         </div>
-        <p class="text-sm text-cream/40 leading-relaxed">Compliance-aware enrichment and segmentation tuned for ACA, Medicare, and ancillary health products.</p>
-      </div>
-
-      <div class="editorial-card-dark group cursor-pointer pb-8">
-        <div class="flex items-center gap-4 mb-4">
-          <div class="w-8 h-8 rounded-full border border-signal/30 flex items-center justify-center">
-            <div class="w-3 h-3 rounded-full bg-signal node-pulse" style="animation-delay: -2s;"></div>
-          </div>
-          <h3 class="serif text-2xl text-cream">Commercial</h3>
+        <!-- Floating metric badge -->
+        <div style="position:absolute;top:176px;right:24px;z-index:2;
+          background:white;border-radius:14px;padding:12px 20px;
+          box-shadow:0 4px 16px rgba(0,0,0,0.1),0 16px 48px rgba(0,0,0,0.08);
+          display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;font-weight:600;color:rgba(26,23,21,0.5);text-transform:uppercase;letter-spacing:0.05em;">ROI</span>
+          <span class="serif" style="font-size:24px;color:#92673a;text-shadow:0 0 15px rgba(146,103,58,0.15);">+310%</span>
         </div>
-        <p class="text-sm text-cream/40 leading-relaxed">Complex risk profiles matched to the right underwriter with intelligent routing and full attribution tracking.</p>
+        <div style="padding:32px;">
+          <h3 class="serif" style="font-size:24px;margin:0 0 8px;">Heritage Home Partners</h3>
+          <p style="font-size:14px;line-height:1.7;color:rgba(26,23,21,0.55);margin:0 0 20px;">
+            Segmentation engine identified a premium tier they were undervaluing. Revenue per opportunity increased 3.1x in 90 days.
+          </p>
+          <a href="#" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#2563eb;text-decoration:none;transition:gap 0.2s;" onmouseover="this.style.gap='10px'" onmouseout="this.style.gap='6px'">
+            Read Full Story
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+          </a>
+        </div>
       </div>
-
     </div>
   </div>
 </section>
 
+<!-- ===================================================================
+     CTA
+     =================================================================== -->
+<section id="cta" class="section-dark noise-overlay" style="padding:140px 32px;position:relative;overflow:hidden;">
+  <!-- Radial glow spotlight -->
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:600px;
+    background:radial-gradient(ellipse,rgba(37,99,235,0.08) 0%,rgba(37,99,235,0.02) 40%,transparent 70%);
+    pointer-events:none;"></div>
 
-<!-- ============================================ -->
-<!-- FINAL CTA -->
-<!-- ============================================ -->
-<section class="py-32 md:py-44 px-8 relative overflow-hidden">
-
-  <!-- Converging circuit traces -->
-  <svg class="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
-    <!-- Left traces -->
-    <line x1="0" y1="30%" x2="50%" y2="50%" stroke="rgba(37,99,235,0.08)" stroke-width="1"/>
-    <line x1="0" y1="50%" x2="50%" y2="50%" stroke="rgba(37,99,235,0.06)" stroke-width="1"/>
-    <line x1="0" y1="70%" x2="50%" y2="50%" stroke="rgba(37,99,235,0.08)" stroke-width="1"/>
-    <!-- Right traces -->
-    <line x1="100%" y1="30%" x2="50%" y2="50%" stroke="rgba(37,99,235,0.08)" stroke-width="1"/>
-    <line x1="100%" y1="50%" x2="50%" y2="50%" stroke="rgba(37,99,235,0.06)" stroke-width="1"/>
-    <line x1="100%" y1="70%" x2="50%" y2="50%" stroke="rgba(37,99,235,0.08)" stroke-width="1"/>
-    <!-- Center node -->
-    <circle cx="50%" cy="50%" r="6" fill="#2563eb" opacity="0.15">
-      <animate attributeName="r" values="6;10;6" dur="3s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0.15;0.3;0.15" dur="3s" repeatCount="indefinite"/>
+  <!-- Circuit traces from edges -->
+  <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0.15;" preserveAspectRatio="none">
+    <!-- Left trace -->
+    <line x1="0" y1="50%" x2="35%" y2="50%" stroke="rgba(37,99,235,0.4)" stroke-width="1"/>
+    <circle r="3" fill="#3b82f6">
+      <animateMotion dur="4s" repeatCount="indefinite" path="M0,0 L300,0"/>
+      <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite"/>
     </circle>
-    <!-- Flowing dots toward center from left -->
-    <circle r="2" fill="#2563eb" opacity="0.3">
-      <animate attributeName="cx" from="0%" to="50%" dur="4s" repeatCount="indefinite"/>
-      <animate attributeName="cy" from="30%" to="50%" dur="4s" repeatCount="indefinite"/>
-    </circle>
-    <circle r="2" fill="#2563eb" opacity="0.3">
-      <animate attributeName="cx" from="0%" to="50%" dur="4s" begin="1.3s" repeatCount="indefinite"/>
-      <animate attributeName="cy" from="70%" to="50%" dur="4s" begin="1.3s" repeatCount="indefinite"/>
-    </circle>
-    <!-- Flowing dots toward center from right -->
-    <circle r="2" fill="#2563eb" opacity="0.3">
-      <animate attributeName="cx" from="100%" to="50%" dur="4s" begin="0.7s" repeatCount="indefinite"/>
-      <animate attributeName="cy" from="30%" to="50%" dur="4s" begin="0.7s" repeatCount="indefinite"/>
-    </circle>
-    <circle r="2" fill="#2563eb" opacity="0.3">
-      <animate attributeName="cx" from="100%" to="50%" dur="4s" begin="2s" repeatCount="indefinite"/>
-      <animate attributeName="cy" from="70%" to="50%" dur="4s" begin="2s" repeatCount="indefinite"/>
-    </circle>
+    <!-- Right trace -->
+    <line x1="100%" y1="50%" x2="65%" y2="50%" stroke="rgba(37,99,235,0.4)" stroke-width="1"/>
+    <!-- Top trace -->
+    <line x1="50%" y1="0" x2="50%" y2="30%" stroke="rgba(146,103,58,0.3)" stroke-width="1"/>
+    <!-- Bottom trace -->
+    <line x1="50%" y1="100%" x2="50%" y2="70%" stroke="rgba(146,103,58,0.3)" stroke-width="1"/>
   </svg>
 
-  <div class="max-w-3xl mx-auto text-center relative z-10">
-    <h2 class="serif text-6xl md:text-8xl leading-[1.05] mb-8">Let's talk.</h2>
-    <p class="text-lg text-neutral-400 mb-10 max-w-lg mx-auto">See what your acquisition data looks like when every opportunity is enriched, scored, and routed in real time.</p>
-    <div class="flex justify-center gap-4">
-      <a href="#" class="pill-btn px-10 py-4 text-base font-medium">Book a Demo</a>
-      <a href="#" class="outline-pill px-10 py-4 text-base font-medium">Contact Sales &rarr;</a>
+  <div style="max-width:800px;margin:0 auto;text-align:center;position:relative;">
+    <h2 class="serif" style="font-size:clamp(40px,5vw,72px);margin:0 0 24px;letter-spacing:-0.03em;
+      text-shadow:0 0 60px rgba(59,130,246,0.15);line-height:1.05;">
+      Ready to Turn Every<br/>
+      <span style="color:#92673a;">Signal Into Revenue?</span>
+    </h2>
+    <p style="font-size:18px;line-height:1.7;color:rgba(250,249,247,0.5);max-width:560px;margin:0 auto 40px;">
+      Join the carriers and agencies that trust The Switchboard to enrich, score, and route their most valuable opportunities.
+    </p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="#" style="display:inline-flex;align-items:center;gap:8px;padding:18px 40px;border-radius:100px;
+        background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);
+        color:white;font-size:16px;font-weight:700;text-decoration:none;
+        box-shadow:0 4px 12px rgba(37,99,235,0.4),0 16px 48px rgba(37,99,235,0.2),inset 0 1px 0 rgba(255,255,255,0.1);
+        transition:all 0.3s cubic-bezier(0.4,0,0.2,1);"
+        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(37,99,235,0.5),0 24px 64px rgba(37,99,235,0.3),inset 0 1px 0 rgba(255,255,255,0.15)'"
+        onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(37,99,235,0.4),0 16px 48px rgba(37,99,235,0.2),inset 0 1px 0 rgba(255,255,255,0.1)'">
+        Schedule a Demo
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </a>
+      <a href="#" style="display:inline-flex;align-items:center;gap:8px;padding:18px 40px;border-radius:100px;
+        border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);
+        font-size:16px;font-weight:600;text-decoration:none;
+        background:rgba(255,255,255,0.03);backdrop-filter:blur(12px);
+        box-shadow:0 2px 8px rgba(0,0,0,0.2);
+        transition:all 0.3s cubic-bezier(0.4,0,0.2,1);"
+        onmouseover="this.style.borderColor='rgba(255,255,255,0.3)';this.style.color='white';this.style.transform='translateY(-2px)'"
+        onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='rgba(255,255,255,0.8)';this.style.transform='translateY(0)'">
+        View Documentation
+      </a>
     </div>
   </div>
 </section>
 
-
-<!-- ============================================ -->
-<!-- FOOTER -->
-<!-- ============================================ -->
-<footer class="section-dark py-16 px-8 border-t border-cream/[0.06]">
-  <div class="max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
-
-      <!-- Logo + description -->
-      <div class="md:col-span-4">
-        <div class="serif text-2xl text-cream mb-4">The Switchboard</div>
-        <p class="text-sm text-cream/40 leading-relaxed max-w-xs">The intelligence layer for insurance customer acquisition. Enrich. Score. Route. Analyze.</p>
+<!-- ===================================================================
+     FOOTER
+     =================================================================== -->
+<footer style="background:linear-gradient(180deg,#211f1c 0%,#18160f 100%);color:rgba(250,249,247,0.5);padding:80px 32px 40px;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:64px;" class="md:grid-cols-4">
+      <!-- Brand -->
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:32px;height:32px;border-radius:8px;
+            background:linear-gradient(135deg,#2d2926 0%,#3d3830 100%);
+            box-shadow:0 2px 8px rgba(0,0,0,0.3);
+            display:flex;align-items:center;justify-content:center;">
+            <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+              <circle cx="4" cy="4" r="2" fill="#3b82f6" opacity="0.8"/>
+              <circle cx="14" cy="4" r="2" fill="#34d399" opacity="0.8"/>
+              <circle cx="4" cy="14" r="2" fill="#92673a" opacity="0.8"/>
+              <circle cx="14" cy="14" r="2" fill="#3b82f6" opacity="0.8"/>
+              <rect x="7.5" y="7.5" width="3" height="3" rx="0.75" fill="white" opacity="0.7"/>
+            </svg>
+          </div>
+          <span class="serif" style="font-size:18px;color:#faf9f7;">The Switchboard</span>
+        </div>
+        <p style="font-size:14px;line-height:1.7;max-width:280px;">
+          The insurance industry's intelligence layer. Enrich, score, segment, and route every opportunity in real time.
+        </p>
       </div>
-
-      <!-- Nav columns -->
-      <div class="md:col-span-2">
-        <div class="text-xs uppercase tracking-[0.15em] text-cream/30 mb-4">Platform</div>
-        <div class="space-y-3">
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Enrichment</a>
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Scoring</a>
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Routing</a>
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Analytics</a>
+      <!-- Platform -->
+      <div>
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,249,247,0.3);margin-bottom:20px;">Platform</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">Enrichment</a>
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">Scoring</a>
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">Segmentation</a>
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">Routing</a>
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">Analytics</a>
         </div>
       </div>
-
-      <div class="md:col-span-2">
-        <div class="text-xs uppercase tracking-[0.15em] text-cream/30 mb-4">Industries</div>
-        <div class="space-y-3">
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Auto</a>
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Health</a>
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Commercial</a>
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Life</a>
+      <!-- Company -->
+      <div>
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,249,247,0.3);margin-bottom:20px;">Company</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">About</a>
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">Blog</a>
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">Careers</a>
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">Contact</a>
         </div>
       </div>
-
-      <div class="md:col-span-2">
-        <div class="text-xs uppercase tracking-[0.15em] text-cream/30 mb-4">Company</div>
-        <div class="space-y-3">
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">About</a>
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Journal</a>
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Careers</a>
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Contact</a>
+      <!-- Legal -->
+      <div>
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,249,247,0.3);margin-bottom:20px;">Legal</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">Privacy</a>
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">Terms</a>
+          <a href="#" style="color:#92673a;text-decoration:none;font-size:14px;transition:color 0.2s;" onmouseover="this.style.color='#d4a574'" onmouseout="this.style.color='#92673a'">TCPA Compliance</a>
         </div>
       </div>
-
-      <div class="md:col-span-2">
-        <div class="text-xs uppercase tracking-[0.15em] text-cream/30 mb-4">Legal</div>
-        <div class="space-y-3">
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Privacy</a>
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Terms</a>
-          <a href="#" class="block text-sm text-cream/50 hover:text-cream transition-colors">Compliance</a>
-        </div>
-      </div>
-
     </div>
-
-    <div class="border-t border-cream/[0.06] pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="text-xs text-cream/30">&copy; 2026 The Switchboard. All rights reserved.</div>
-      <div class="flex items-center gap-2">
-        <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-        <span class="text-xs text-cream/30">All systems operational</span>
+    <!-- Bottom bar -->
+    <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <div style="font-size:13px;color:rgba(250,249,247,0.3);">&copy; 2026 The Switchboard. All rights reserved.</div>
+      <div style="display:flex;gap:20px;">
+        <a href="#" style="color:rgba(250,249,247,0.3);transition:color 0.2s;" onmouseover="this.style.color='#92673a'" onmouseout="this.style.color='rgba(250,249,247,0.3)'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+        </a>
+        <a href="#" style="color:rgba(250,249,247,0.3);transition:color 0.2s;" onmouseover="this.style.color='#92673a'" onmouseout="this.style.color='rgba(250,249,247,0.3)'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
       </div>
     </div>
   </div>

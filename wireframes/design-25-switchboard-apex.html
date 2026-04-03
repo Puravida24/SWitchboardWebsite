@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Switchboard — Insurance Intelligence Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            serif: ['Instrument Serif', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; margin: 0; }
+
+    /* ===== NOISE OVERLAY ===== */
+    .noise-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+    .noise-overlay { position: relative; }
+    .noise-overlay > * { position: relative; z-index: 1; }
+
+    /* ===== RICH DARK GRADIENT ===== */
+    .bg-deep-dark {
+      background: linear-gradient(135deg, #030818 0%, #0a1628 30%, #0d1f3c 60%, #071230 100%);
+    }
+
+    /* ===== GLASS CARD ===== */
+    .glass-card {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .glass-card-strong {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    /* ===== GLOW NODES ===== */
+    .glow-blue {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: radial-gradient(circle, #60a5fa 0%, #3b82f6 40%, #2563eb 70%, transparent 100%);
+      box-shadow: 0 0 8px rgba(59,130,246,0.9), 0 0 20px rgba(59,130,246,0.5), 0 0 40px rgba(59,130,246,0.15);
+    }
+    .glow-green {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: radial-gradient(circle, #6ee7b7 0%, #10b981 40%, #059669 70%, transparent 100%);
+      box-shadow: 0 0 8px rgba(16,185,129,0.9), 0 0 20px rgba(16,185,129,0.5), 0 0 40px rgba(16,185,129,0.15);
+    }
+    .glow-amber {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: radial-gradient(circle, #fcd34d 0%, #f59e0b 40%, #d97706 70%, transparent 100%);
+      box-shadow: 0 0 8px rgba(245,158,11,0.9), 0 0 20px rgba(245,158,11,0.5), 0 0 40px rgba(245,158,11,0.15);
+    }
+    .glow-purple {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: radial-gradient(circle, #c084fc 0%, #a855f7 40%, #7c3aed 70%, transparent 100%);
+      box-shadow: 0 0 8px rgba(168,85,247,0.9), 0 0 20px rgba(168,85,247,0.5), 0 0 40px rgba(168,85,247,0.15);
+    }
+
+    /* ===== PULSE ANIMATION ===== */
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.3); }
+    }
+    .animate-pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
+
+    /* ===== FLOW DOT ANIMATION ===== */
+    @keyframes flowDot {
+      0% { offset-distance: 0%; opacity: 0; }
+      5% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+
+    /* ===== GRADIENT BUTTONS ===== */
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+      box-shadow: 0 4px 15px rgba(37,99,235,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 6px 25px rgba(37,99,235,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+      transition: all 0.3s ease;
+    }
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%);
+      border-color: rgba(255,255,255,0.25);
+      transform: translateY(-1px);
+    }
+
+    /* ===== ANIMATED GRID IN SWITCHBOARD ===== */
+    .grid-pattern {
+      background-image:
+        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* ===== COUNT-UP NUMBER ===== */
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== FLOATING CARD HOVER ===== */
+    .float-card {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .float-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    /* ===== LIGHT SECTION CARDS ===== */
+    .light-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.04);
+      border: 1px solid rgba(0,0,0,0.04);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .light-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1), 0 20px 60px rgba(0,0,0,0.06);
+    }
+
+    /* ===== SVG FLOW DOTS ===== */
+    .flow-dot-1 { offset-path: path('M0,0 C80,-30 160,30 240,0 C320,-30 400,30 480,0'); animation: flowDot 4s linear infinite; }
+    .flow-dot-2 { offset-path: path('M0,0 C80,30 160,-30 240,0 C320,30 400,-30 480,0'); animation: flowDot 3.5s linear infinite 0.8s; }
+    .flow-dot-3 { offset-path: path('M0,0 C60,-20 120,20 180,0 C240,-20 300,20 360,0'); animation: flowDot 3s linear infinite 1.5s; }
+
+    /* ===== SPOTLIGHT ===== */
+    .spotlight {
+      background: radial-gradient(ellipse 600px 400px at 50% 40%, rgba(37,99,235,0.12) 0%, transparent 70%);
+    }
+
+    /* ===== SMOOTH SCROLL ===== */
+    html { scroll-behavior: smooth; }
+
+    /* ===== SWITCHBOARD VIZ RESPONSIVE ===== */
+    @media (max-width: 1023px) {
+      .viz-desktop { display: none !important; }
+      .viz-mobile { display: block !important; }
+    }
+    @media (min-width: 1024px) {
+      .viz-desktop { display: grid !important; }
+      .viz-mobile { display: none !important; }
+    }
+
+    /* ===== STEP CONNECTOR LINE ===== */
+    .step-connector {
+      background: linear-gradient(90deg, rgba(59,130,246,0.5), rgba(16,185,129,0.5));
+      height: 2px;
+      position: relative;
+    }
+    .step-connector::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #3b82f6;
+      box-shadow: 0 0 8px rgba(59,130,246,0.8);
+      animation: travelDot 2.5s linear infinite;
+    }
+    @keyframes travelDot {
+      0% { left: 0%; }
+      100% { left: 100%; }
+    }
+
+    /* ===== RADIAL GLOW BACKGROUNDS ===== */
+    .radial-glow-blue {
+      background: radial-gradient(ellipse 800px 500px at 50% 50%, rgba(37,99,235,0.08) 0%, transparent 70%);
+    }
+    .radial-glow-green {
+      background: radial-gradient(ellipse 600px 400px at 70% 50%, rgba(16,185,129,0.06) 0%, transparent 70%);
+    }
+
+    /* ===== TEXT GLOW ===== */
+    .text-glow {
+      text-shadow: 0 0 40px rgba(255,255,255,0.15), 0 0 80px rgba(59,130,246,0.1);
+    }
+
+    /* ===== OVERLINE STYLES ===== */
+    .overline {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body class="bg-gray-950 text-white antialiased overflow-x-hidden">
+
+  <!-- ============================================================ -->
+  <!-- HEADER / NAV -->
+  <!-- ============================================================ -->
+  <header class="fixed top-0 left-0 right-0 z-50" x-data="{ mobileOpen: false }">
+    <div class="glass-card border-t-0 border-l-0 border-r-0" style="border-top:none; border-left:none; border-right:none; border-radius:0;">
+      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #2563eb, #7c3aed);">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="4" cy="4" r="1.8" fill="white" opacity="0.9"/><circle cx="9" cy="4" r="1.8" fill="white" opacity="0.9"/><circle cx="14" cy="4" r="1.8" fill="white" opacity="0.9"/><circle cx="4" cy="9" r="1.8" fill="white" opacity="0.5"/><circle cx="9" cy="9" r="2.2" fill="white"/><circle cx="14" cy="9" r="1.8" fill="white" opacity="0.5"/><circle cx="4" cy="14" r="1.8" fill="white" opacity="0.9"/><circle cx="9" cy="14" r="1.8" fill="white" opacity="0.9"/><circle cx="14" cy="14" r="1.8" fill="white" opacity="0.9"/></svg>
+          </div>
+          <span class="text-white font-bold text-lg tracking-tight">The Switchboard</span>
+        </a>
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="#capabilities" class="text-sm text-gray-400 hover:text-white transition-colors">Platform</a>
+          <a href="#how-it-works" class="text-sm text-gray-400 hover:text-white transition-colors">How It Works</a>
+          <a href="#case-studies" class="text-sm text-gray-400 hover:text-white transition-colors">Results</a>
+          <a href="#cta" class="text-sm text-gray-400 hover:text-white transition-colors">Pricing</a>
+          <a href="#cta" class="btn-primary text-sm font-semibold text-white px-5 py-2 rounded-lg">Get Started</a>
+        </nav>
+        <!-- Mobile toggle -->
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden text-white">
+          <svg x-show="!mobileOpen" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg x-show="mobileOpen" x-cloak width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M6 18L18 6"/></svg>
+        </button>
+      </div>
+      <!-- Mobile menu -->
+      <div x-show="mobileOpen" x-transition class="md:hidden px-6 pb-4 border-t border-white/5">
+        <a href="#capabilities" class="block py-2 text-gray-400 hover:text-white">Platform</a>
+        <a href="#how-it-works" class="block py-2 text-gray-400 hover:text-white">How It Works</a>
+        <a href="#case-studies" class="block py-2 text-gray-400 hover:text-white">Results</a>
+        <a href="#cta" class="block py-2 text-gray-400 hover:text-white">Pricing</a>
+        <a href="#cta" class="btn-primary block text-center text-sm font-semibold text-white px-5 py-2.5 rounded-lg mt-3">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ============================================================ -->
+  <!-- HERO SECTION -->
+  <!-- ============================================================ -->
+  <section class="bg-deep-dark noise-overlay relative min-h-screen flex flex-col justify-center pt-20 pb-16 overflow-hidden">
+    <!-- Radial glows -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-[10%] left-[20%] w-[600px] h-[600px] rounded-full" style="background: radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%);"></div>
+      <div class="absolute top-[30%] right-[15%] w-[500px] h-[500px] rounded-full" style="background: radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 70%);"></div>
+      <div class="absolute bottom-[10%] left-[40%] w-[400px] h-[400px] rounded-full" style="background: radial-gradient(circle, rgba(168,85,247,0.04) 0%, transparent 70%);"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 w-full relative z-10">
+      <!-- Overline -->
+      <div class="flex items-center gap-2.5 mb-6">
+        <div class="glow-blue animate-pulse-glow"></div>
+        <span class="overline text-blue-400">Insurance Intelligence Platform</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.05] tracking-tight text-glow max-w-3xl mb-5">
+        Every Connection.<br><span class="font-serif italic font-normal" style="background: linear-gradient(135deg, #60a5fa, #a78bfa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Optimized.</span>
+      </h1>
+
+      <!-- Subtext -->
+      <p class="text-lg text-gray-400 max-w-xl mb-8 leading-relaxed">
+        The intelligence layer that enriches, scores, and routes every insurance opportunity in real time — so every connection reaches its highest-value destination.
+      </p>
+
+      <!-- Buttons -->
+      <div class="flex flex-wrap gap-4 mb-16">
+        <a href="#cta" class="btn-primary text-white font-semibold px-7 py-3.5 rounded-xl text-base">
+          See It In Action
+        </a>
+        <a href="#how-it-works" class="btn-secondary text-white font-semibold px-7 py-3.5 rounded-xl text-base">
+          How It Works
+        </a>
+      </div>
+
+
+      <!-- ===== SWITCHBOARD VISUALIZATION (DESKTOP) ===== -->
+      <div class="viz-desktop hidden lg:grid grid-cols-[200px_1fr_200px] gap-6 items-center" style="min-height: 420px;">
+
+        <!-- LEFT: DATA SOURCES -->
+        <div class="flex flex-col gap-3">
+          <div class="overline text-blue-400 mb-1 text-center">Data Sources</div>
+          <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3 group hover:border-blue-500/30 transition-all" id="src-1">
+            <div class="glow-blue animate-pulse-glow flex-shrink-0"></div>
+            <span class="text-sm text-gray-300 font-medium">Web Forms</span>
+          </div>
+          <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3 group hover:border-blue-500/30 transition-all" id="src-2">
+            <div class="glow-blue animate-pulse-glow" style="animation-delay: 0.4s;"></div>
+            <span class="text-sm text-gray-300 font-medium">Partner APIs</span>
+          </div>
+          <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3 group hover:border-blue-500/30 transition-all" id="src-3">
+            <div class="glow-blue animate-pulse-glow" style="animation-delay: 0.8s;"></div>
+            <span class="text-sm text-gray-300 font-medium">Call Tracking</span>
+          </div>
+          <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3 group hover:border-blue-500/30 transition-all" id="src-4">
+            <div class="glow-blue animate-pulse-glow" style="animation-delay: 1.2s;"></div>
+            <span class="text-sm text-gray-300 font-medium">Aggregators</span>
+          </div>
+          <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3 group hover:border-blue-500/30 transition-all" id="src-5">
+            <div class="glow-blue animate-pulse-glow" style="animation-delay: 1.6s;"></div>
+            <span class="text-sm text-gray-300 font-medium">Direct Upload</span>
+          </div>
+        </div>
+
+        <!-- CENTER: THE SWITCHBOARD -->
+        <div class="glass-card-strong rounded-2xl p-6 relative overflow-hidden" style="border-color: rgba(59,130,246,0.15); box-shadow: 0 0 60px rgba(37,99,235,0.08), 0 12px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);">
+          <!-- Grid pattern bg -->
+          <div class="absolute inset-0 grid-pattern opacity-60"></div>
+          <!-- Radial inner glow -->
+          <div class="absolute inset-0" style="background: radial-gradient(ellipse at 50% 50%, rgba(37,99,235,0.06) 0%, transparent 70%);"></div>
+
+          <div class="relative z-10">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8">
+              <div>
+                <div class="overline text-blue-400 mb-0.5">The Switchboard</div>
+                <div class="text-xs text-gray-500">Real-time Processing Pipeline</div>
+              </div>
+              <div class="flex items-center gap-2 glass-card rounded-full px-3 py-1.5">
+                <div class="w-2 h-2 rounded-full bg-emerald-400" style="box-shadow: 0 0 6px rgba(52,211,153,0.8);animation: pulse-glow 1.5s ease-in-out infinite;"></div>
+                <span class="text-xs font-mono text-emerald-400 font-semibold">1,247 ops/sec</span>
+              </div>
+            </div>
+
+            <!-- Processing Pipeline Nodes -->
+            <div class="flex items-center justify-between gap-2">
+              <!-- ENRICH -->
+              <div class="flex flex-col items-center gap-2 flex-1">
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center relative" style="background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.05)); border: 1px solid rgba(59,130,246,0.3); box-shadow: 0 0 20px rgba(59,130,246,0.15), 0 4px 12px rgba(0,0,0,0.3);">
+                  <svg width="24" height="24" fill="none" stroke="#60a5fa" stroke-width="1.5"><path d="M12 3v18M3 12h18M7.5 7.5l9 9M16.5 7.5l-9 9"/></svg>
+                  <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-blue-400" style="box-shadow: 0 0 6px rgba(96,165,250,0.8); animation: pulse-glow 2s ease-in-out infinite;"></div>
+                </div>
+                <span class="text-xs font-bold text-blue-300 tracking-wide">ENRICH</span>
+              </div>
+
+              <!-- Arrow -->
+              <div class="flex-shrink-0 relative h-0.5 w-8 lg:w-12" style="background: linear-gradient(90deg, rgba(59,130,246,0.5), rgba(99,102,241,0.5));">
+                <div class="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-blue-400" style="box-shadow: 0 0 4px rgba(96,165,250,0.8); animation: travelDot 1.8s linear infinite;"></div>
+              </div>
+
+              <!-- SCORE -->
+              <div class="flex flex-col items-center gap-2 flex-1">
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center relative" style="background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(99,102,241,0.05)); border: 1px solid rgba(99,102,241,0.3); box-shadow: 0 0 20px rgba(99,102,241,0.15), 0 4px 12px rgba(0,0,0,0.3);">
+                  <svg width="24" height="24" fill="none" stroke="#818cf8" stroke-width="1.5"><path d="M9 19V13a1 1 0 011-1h1a1 1 0 011 1v6M5 19v-4a1 1 0 011-1h1a1 1 0 011 1v4M13 19V9a1 1 0 011-1h1a1 1 0 011 1v10M17 19V5a1 1 0 011-1h1a1 1 0 011 1v14M3 21h20"/></svg>
+                  <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-indigo-400" style="box-shadow: 0 0 6px rgba(129,140,248,0.8); animation: pulse-glow 2s ease-in-out infinite 0.3s;"></div>
+                </div>
+                <span class="text-xs font-bold text-indigo-300 tracking-wide">SCORE</span>
+              </div>
+
+              <!-- Arrow -->
+              <div class="flex-shrink-0 relative h-0.5 w-8 lg:w-12" style="background: linear-gradient(90deg, rgba(99,102,241,0.5), rgba(168,85,247,0.5));">
+                <div class="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-indigo-400" style="box-shadow: 0 0 4px rgba(129,140,248,0.8); animation: travelDot 2.1s linear infinite 0.5s;"></div>
+              </div>
+
+              <!-- SEGMENT -->
+              <div class="flex flex-col items-center gap-2 flex-1">
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center relative" style="background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(168,85,247,0.05)); border: 1px solid rgba(168,85,247,0.3); box-shadow: 0 0 20px rgba(168,85,247,0.15), 0 4px 12px rgba(0,0,0,0.3);">
+                  <svg width="24" height="24" fill="none" stroke="#c084fc" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="16" r="3"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/></svg>
+                  <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-purple-400" style="box-shadow: 0 0 6px rgba(192,132,252,0.8); animation: pulse-glow 2s ease-in-out infinite 0.6s;"></div>
+                </div>
+                <span class="text-xs font-bold text-purple-300 tracking-wide">SEGMENT</span>
+              </div>
+
+              <!-- Arrow -->
+              <div class="flex-shrink-0 relative h-0.5 w-8 lg:w-12" style="background: linear-gradient(90deg, rgba(168,85,247,0.5), rgba(16,185,129,0.5));">
+                <div class="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-purple-400" style="box-shadow: 0 0 4px rgba(192,132,252,0.8); animation: travelDot 1.6s linear infinite 1s;"></div>
+              </div>
+
+              <!-- ROUTE -->
+              <div class="flex flex-col items-center gap-2 flex-1">
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center relative" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.05)); border: 1px solid rgba(16,185,129,0.3); box-shadow: 0 0 20px rgba(16,185,129,0.15), 0 4px 12px rgba(0,0,0,0.3);">
+                  <svg width="24" height="24" fill="none" stroke="#6ee7b7" stroke-width="1.5"><path d="M12 3l0 4M12 7l-5 5M12 7l5 5M7 12l0 5M17 12l0 5M12 7l0 10"/></svg>
+                  <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400" style="box-shadow: 0 0 6px rgba(110,231,183,0.8); animation: pulse-glow 2s ease-in-out infinite 0.9s;"></div>
+                </div>
+                <span class="text-xs font-bold text-emerald-300 tracking-wide">ROUTE</span>
+              </div>
+
+              <!-- Arrow -->
+              <div class="flex-shrink-0 relative h-0.5 w-8 lg:w-12" style="background: linear-gradient(90deg, rgba(16,185,129,0.5), rgba(6,182,212,0.5));">
+                <div class="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400" style="box-shadow: 0 0 4px rgba(110,231,183,0.8); animation: travelDot 2.3s linear infinite 1.3s;"></div>
+              </div>
+
+              <!-- ANALYZE -->
+              <div class="flex flex-col items-center gap-2 flex-1">
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center relative" style="background: linear-gradient(135deg, rgba(6,182,212,0.2), rgba(6,182,212,0.05)); border: 1px solid rgba(6,182,212,0.3); box-shadow: 0 0 20px rgba(6,182,212,0.15), 0 4px 12px rgba(0,0,0,0.3);">
+                  <svg width="24" height="24" fill="none" stroke="#67e8f9" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-5"/><circle cx="19" cy="8" r="1.5" fill="#67e8f9"/></svg>
+                  <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-cyan-400" style="box-shadow: 0 0 6px rgba(103,232,249,0.8); animation: pulse-glow 2s ease-in-out infinite 1.2s;"></div>
+                </div>
+                <span class="text-xs font-bold text-cyan-300 tracking-wide">ANALYZE</span>
+              </div>
+            </div>
+
+            <!-- Processing metrics bar -->
+            <div class="flex items-center justify-between mt-8 pt-4 border-t border-white/5">
+              <div class="flex items-center gap-6">
+                <div class="flex items-center gap-1.5">
+                  <div class="w-1.5 h-1.5 rounded-full bg-blue-400" style="box-shadow: 0 0 4px rgba(96,165,250,0.6);"></div>
+                  <span class="text-[11px] text-gray-500 font-mono">Enrichment: <span class="text-blue-400">98.7%</span></span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <div class="w-1.5 h-1.5 rounded-full bg-emerald-400" style="box-shadow: 0 0 4px rgba(52,211,153,0.6);"></div>
+                  <span class="text-[11px] text-gray-500 font-mono">Routing: <span class="text-emerald-400">99.2%</span></span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <div class="w-1.5 h-1.5 rounded-full bg-purple-400" style="box-shadow: 0 0 4px rgba(192,132,252,0.6);"></div>
+                  <span class="text-[11px] text-gray-500 font-mono">Accuracy: <span class="text-purple-400">96.4%</span></span>
+                </div>
+              </div>
+              <span class="text-[11px] text-gray-600 font-mono">Latency: 12ms avg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: DESTINATIONS -->
+        <div class="flex flex-col gap-3">
+          <div class="overline text-emerald-400 mb-1 text-center">Destinations</div>
+          <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3 hover:border-emerald-500/30 transition-all" id="dst-1">
+            <div class="glow-green animate-pulse-glow"></div>
+            <span class="text-sm text-gray-300 font-medium">Tier 1 Premium</span>
+          </div>
+          <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3 hover:border-emerald-500/30 transition-all" id="dst-2">
+            <div class="glow-green animate-pulse-glow" style="animation-delay: 0.5s;"></div>
+            <span class="text-sm text-gray-300 font-medium">Tier 2 Standard</span>
+          </div>
+          <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3 hover:border-amber-500/30 transition-all" id="dst-3">
+            <div class="glow-amber animate-pulse-glow" style="animation-delay: 1s;"></div>
+            <span class="text-sm text-gray-300 font-medium">Tier 3 Volume</span>
+          </div>
+          <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3 hover:border-blue-500/30 transition-all" id="dst-4">
+            <div class="glow-blue animate-pulse-glow" style="animation-delay: 1.5s;"></div>
+            <span class="text-sm text-gray-300 font-medium">Analytics</span>
+          </div>
+          <div class="glass-card rounded-xl px-4 py-3 flex items-center gap-3 hover:border-blue-500/30 transition-all" id="dst-5">
+            <div class="glow-blue animate-pulse-glow" style="animation-delay: 2s;"></div>
+            <span class="text-sm text-gray-300 font-medium">CRM Sync</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SVG CONNECTION LINES OVERLAY (DESKTOP) -->
+      <svg class="viz-desktop absolute inset-0 pointer-events-none" style="z-index: 2; display: none;" width="100%" height="100%" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="grad-blue-green" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="rgba(59,130,246,0.4)"/>
+            <stop offset="100%" stop-color="rgba(16,185,129,0.4)"/>
+          </linearGradient>
+          <linearGradient id="grad-blue-blue" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="rgba(59,130,246,0.35)"/>
+            <stop offset="100%" stop-color="rgba(99,102,241,0.35)"/>
+          </linearGradient>
+          <filter id="glow-line">
+            <feGaussianBlur stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+      </svg>
+
+
+      <!-- ===== MOBILE VISUALIZATION ===== -->
+      <div class="viz-mobile hidden">
+        <div class="glass-card-strong rounded-2xl p-5 mb-6" style="border-color: rgba(59,130,246,0.15);">
+          <div class="flex items-center justify-between mb-5">
+            <div class="overline text-blue-400">The Switchboard</div>
+            <div class="flex items-center gap-2 glass-card rounded-full px-3 py-1">
+              <div class="w-2 h-2 rounded-full bg-emerald-400" style="box-shadow: 0 0 6px rgba(52,211,153,0.8);animation: pulse-glow 1.5s ease-in-out infinite;"></div>
+              <span class="text-[11px] font-mono text-emerald-400 font-semibold">1,247 ops/sec</span>
+            </div>
+          </div>
+
+          <!-- Vertical flow -->
+          <div class="flex flex-col items-center gap-1">
+            <!-- Sources summary -->
+            <div class="glass-card rounded-xl px-4 py-2.5 w-full flex items-center gap-3 mb-2">
+              <div class="glow-blue animate-pulse-glow"></div>
+              <span class="text-sm text-gray-300 font-medium">5 Data Sources Connected</span>
+            </div>
+
+            <div class="w-0.5 h-4" style="background: linear-gradient(to bottom, rgba(59,130,246,0.5), rgba(99,102,241,0.5));"></div>
+
+            <!-- Pipeline stages -->
+            <div class="flex flex-wrap justify-center gap-2 w-full">
+              <div class="flex items-center gap-1.5 glass-card rounded-lg px-3 py-2">
+                <div class="w-2 h-2 rounded-full bg-blue-400" style="box-shadow: 0 0 4px rgba(96,165,250,0.6);"></div>
+                <span class="text-xs font-bold text-blue-300">ENRICH</span>
+              </div>
+              <div class="flex items-center gap-1.5 glass-card rounded-lg px-3 py-2">
+                <div class="w-2 h-2 rounded-full bg-indigo-400" style="box-shadow: 0 0 4px rgba(129,140,248,0.6);"></div>
+                <span class="text-xs font-bold text-indigo-300">SCORE</span>
+              </div>
+              <div class="flex items-center gap-1.5 glass-card rounded-lg px-3 py-2">
+                <div class="w-2 h-2 rounded-full bg-purple-400" style="box-shadow: 0 0 4px rgba(192,132,252,0.6);"></div>
+                <span class="text-xs font-bold text-purple-300">SEGMENT</span>
+              </div>
+              <div class="flex items-center gap-1.5 glass-card rounded-lg px-3 py-2">
+                <div class="w-2 h-2 rounded-full bg-emerald-400" style="box-shadow: 0 0 4px rgba(110,231,183,0.6);"></div>
+                <span class="text-xs font-bold text-emerald-300">ROUTE</span>
+              </div>
+              <div class="flex items-center gap-1.5 glass-card rounded-lg px-3 py-2">
+                <div class="w-2 h-2 rounded-full bg-cyan-400" style="box-shadow: 0 0 4px rgba(103,232,249,0.6);"></div>
+                <span class="text-xs font-bold text-cyan-300">ANALYZE</span>
+              </div>
+            </div>
+
+            <div class="w-0.5 h-4" style="background: linear-gradient(to bottom, rgba(168,85,247,0.5), rgba(16,185,129,0.5));"></div>
+
+            <!-- Destinations summary -->
+            <div class="glass-card rounded-xl px-4 py-2.5 w-full flex items-center gap-3 mt-2">
+              <div class="glow-green animate-pulse-glow"></div>
+              <span class="text-sm text-gray-300 font-medium">5 Destinations Routing</span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
+            <span class="text-[11px] text-gray-500 font-mono">Enrichment: <span class="text-blue-400">98.7%</span></span>
+            <span class="text-[11px] text-gray-500 font-mono">Routing: <span class="text-emerald-400">99.2%</span></span>
+            <span class="text-[11px] text-gray-500 font-mono">12ms avg</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================ -->
+  <!-- STATS SECTION -->
+  <!-- ============================================================ -->
+  <section class="bg-deep-dark noise-overlay relative py-20 border-t border-white/5" x-data="{ shown: false }" x-intersect.once="shown = true">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <!-- Stat 1 -->
+        <div class="glass-card-strong rounded-2xl p-6 text-center relative overflow-hidden group">
+          <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 0%, rgba(59,130,246,0.08) 0%, transparent 60%);"></div>
+          <div class="relative">
+            <div class="text-4xl lg:text-5xl font-extrabold mb-1" style="background: linear-gradient(135deg, #60a5fa, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+              <span x-text="shown ? '2.4M' : '0'" x-transition></span>+
+            </div>
+            <div class="text-sm text-gray-400 font-medium">Opportunities Processed</div>
+            <div class="text-xs text-gray-600 mt-1">Monthly average</div>
+          </div>
+        </div>
+        <!-- Stat 2 -->
+        <div class="glass-card-strong rounded-2xl p-6 text-center relative overflow-hidden">
+          <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 0%, rgba(16,185,129,0.08) 0%, transparent 60%);"></div>
+          <div class="relative">
+            <div class="text-4xl lg:text-5xl font-extrabold mb-1" style="background: linear-gradient(135deg, #6ee7b7, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+              <span x-text="shown ? '34' : '0'" x-transition></span>%
+            </div>
+            <div class="text-sm text-gray-400 font-medium">Revenue Increase</div>
+            <div class="text-xs text-gray-600 mt-1">Avg. client first 90 days</div>
+          </div>
+        </div>
+        <!-- Stat 3 -->
+        <div class="glass-card-strong rounded-2xl p-6 text-center relative overflow-hidden">
+          <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 0%, rgba(168,85,247,0.08) 0%, transparent 60%);"></div>
+          <div class="relative">
+            <div class="text-4xl lg:text-5xl font-extrabold mb-1" style="background: linear-gradient(135deg, #c084fc, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+              <span x-text="shown ? '12' : '0'" x-transition></span>ms
+            </div>
+            <div class="text-sm text-gray-400 font-medium">Average Latency</div>
+            <div class="text-xs text-gray-600 mt-1">Real-time processing</div>
+          </div>
+        </div>
+        <!-- Stat 4 -->
+        <div class="glass-card-strong rounded-2xl p-6 text-center relative overflow-hidden">
+          <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 0%, rgba(6,182,212,0.08) 0%, transparent 60%);"></div>
+          <div class="relative">
+            <div class="text-4xl lg:text-5xl font-extrabold mb-1" style="background: linear-gradient(135deg, #67e8f9, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+              <span x-text="shown ? '99.9' : '0'" x-transition></span>%
+            </div>
+            <div class="text-sm text-gray-400 font-medium">Uptime SLA</div>
+            <div class="text-xs text-gray-600 mt-1">Enterprise reliability</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================ -->
+  <!-- CAPABILITIES SECTION (LIGHT) -->
+  <!-- ============================================================ -->
+  <section id="capabilities" class="relative py-24" style="background: linear-gradient(180deg, #f8fafc 0%, #f0f4f8 50%, #e8eef5 100%);">
+    <div class="max-w-7xl mx-auto px-6">
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <div class="overline text-blue-600 mb-3 flex items-center justify-center gap-2">
+          <div class="w-2 h-2 rounded-full bg-blue-500" style="box-shadow: 0 0 6px rgba(59,130,246,0.6);"></div>
+          Platform Capabilities
+        </div>
+        <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">
+          One Platform. <span class="font-serif italic font-normal text-blue-600">Complete Control.</span>
+        </h2>
+        <p class="text-lg text-gray-500 max-w-2xl mx-auto">
+          No competitor does all five. The Switchboard is the only platform that enriches, scores, segments, routes, and analyzes — in a single pipeline.
+        </p>
+      </div>
+
+      <!-- Cards -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <!-- Card 1: Enrich -->
+        <div class="light-card float-card rounded-2xl p-8">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 4px 12px rgba(37,99,235,0.3);">
+            <svg width="24" height="24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 3v18M3 12h18M7.5 7.5l9 9M16.5 7.5l-9 9"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Data Enrichment</h3>
+          <p class="text-gray-500 leading-relaxed text-sm">
+            Append 40+ data points to every opportunity in milliseconds. Phone validation, address verification, demographic scoring, and intent signals — all before routing.
+          </p>
+        </div>
+
+        <!-- Card 2: Score -->
+        <div class="light-card float-card rounded-2xl p-8">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); box-shadow: 0 4px 12px rgba(109,40,217,0.3);">
+            <svg width="24" height="24" fill="none" stroke="white" stroke-width="1.5"><path d="M9 19V13a1 1 0 011-1h1a1 1 0 011 1v6M5 19v-4a1 1 0 011-1h1a1 1 0 011 1v4M13 19V9a1 1 0 011-1h1a1 1 0 011 1v10M17 19V5a1 1 0 011-1h1a1 1 0 011 1v14"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Risk-Intelligent Scoring</h3>
+          <p class="text-gray-500 leading-relaxed text-sm">
+            ML-powered scoring models trained on millions of insurance transactions. Every opportunity gets a quality score, fraud probability, and conversion likelihood in real time.
+          </p>
+        </div>
+
+        <!-- Card 3: Segment -->
+        <div class="light-card float-card rounded-2xl p-8">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background: linear-gradient(135deg, #a855f7, #7c3aed); box-shadow: 0 4px 12px rgba(124,58,237,0.3);">
+            <svg width="24" height="24" fill="none" stroke="white" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="16" r="3"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Smart Segmentation</h3>
+          <p class="text-gray-500 leading-relaxed text-sm">
+            Auto-segment by line of business, geography, risk profile, and buyer readiness. Create custom segments with drag-and-drop rules — no engineering required.
+          </p>
+        </div>
+
+        <!-- Card 4: Route -->
+        <div class="light-card float-card rounded-2xl p-8">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 12px rgba(5,150,105,0.3);">
+            <svg width="24" height="24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 3l0 4M12 7l-5 5M12 7l5 5M7 12l0 5M17 12l0 5M12 7l0 10"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Intelligent Routing</h3>
+          <p class="text-gray-500 leading-relaxed text-sm">
+            Route each opportunity to its highest-value buyer based on score, capacity, bid price, and historical performance. Supports ping-post, direct post, and real-time bidding.
+          </p>
+        </div>
+
+        <!-- Card 5: Analyze -->
+        <div class="light-card float-card rounded-2xl p-8 md:col-span-2 lg:col-span-1">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background: linear-gradient(135deg, #06b6d4, #0891b2); box-shadow: 0 4px 12px rgba(8,145,178,0.3);">
+            <svg width="24" height="24" fill="none" stroke="white" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-5"/><circle cx="19" cy="8" r="1.5" fill="white"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Revenue Analytics</h3>
+          <p class="text-gray-500 leading-relaxed text-sm">
+            Real-time dashboards with source ROI, buyer performance, conversion funnels, and revenue attribution. Know exactly which sources and routes generate the most revenue.
+          </p>
+        </div>
+
+        <!-- Bonus card: Integration -->
+        <div class="light-card float-card rounded-2xl p-8 lg:col-span-1">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(217,119,6,0.3);">
+            <svg width="24" height="24" fill="none" stroke="white" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Seamless Integration</h3>
+          <p class="text-gray-500 leading-relaxed text-sm">
+            Connect to any CRM, dialer, or downstream system. RESTful APIs, webhook events, and pre-built integrations get you live in days, not months.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================ -->
+  <!-- HOW IT WORKS (DARK) -->
+  <!-- ============================================================ -->
+  <section id="how-it-works" class="bg-deep-dark noise-overlay relative py-24 overflow-hidden">
+    <!-- Ambient glows -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full" style="background: radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%);"></div>
+      <div class="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] rounded-full" style="background: radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 70%);"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <div class="overline text-blue-400 mb-3 flex items-center justify-center gap-2">
+          <div class="w-2 h-2 rounded-full bg-blue-400" style="box-shadow: 0 0 6px rgba(96,165,250,0.6);"></div>
+          Process
+        </div>
+        <h2 class="text-4xl lg:text-5xl font-extrabold text-white mb-4 text-glow">
+          From Ingestion to <span class="font-serif italic font-normal" style="background: linear-gradient(135deg, #60a5fa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Revenue</span>
+        </h2>
+        <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+          Four steps. Milliseconds. Every opportunity maximized.
+        </p>
+      </div>
+
+      <!-- Steps -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Step 1 -->
+        <div class="glass-card-strong rounded-2xl p-7 relative group">
+          <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style="background: radial-gradient(circle at 50% 30%, rgba(59,130,246,0.1) 0%, transparent 60%);"></div>
+          <div class="relative">
+            <div class="text-6xl font-extrabold mb-4" style="background: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(59,130,246,0.1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">01</div>
+            <h3 class="text-lg font-bold text-white mb-2">Ingest</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">
+              Data flows in from any source — web forms, APIs, call tracking, aggregators — through a single unified endpoint. No custom integrations needed.
+            </p>
+          </div>
+        </div>
+        <!-- Connector (hidden on mobile) -->
+
+        <!-- Step 2 -->
+        <div class="glass-card-strong rounded-2xl p-7 relative group">
+          <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style="background: radial-gradient(circle at 50% 30%, rgba(99,102,241,0.1) 0%, transparent 60%);"></div>
+          <div class="relative">
+            <div class="text-6xl font-extrabold mb-4" style="background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(99,102,241,0.1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">02</div>
+            <h3 class="text-lg font-bold text-white mb-2">Enrich + Score</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">
+              Instantly append 40+ data points. ML models score for quality, fraud risk, and conversion probability. Every opportunity is profiled in under 12ms.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="glass-card-strong rounded-2xl p-7 relative group">
+          <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style="background: radial-gradient(circle at 50% 30%, rgba(16,185,129,0.1) 0%, transparent 60%);"></div>
+          <div class="relative">
+            <div class="text-6xl font-extrabold mb-4" style="background: linear-gradient(135deg, rgba(16,185,129,0.3), rgba(16,185,129,0.1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">03</div>
+            <h3 class="text-lg font-bold text-white mb-2">Route</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">
+              Intelligent routing matches every opportunity to the highest-value buyer. Supports ping-post, real-time bidding, and weighted distribution.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="glass-card-strong rounded-2xl p-7 relative group">
+          <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style="background: radial-gradient(circle at 50% 30%, rgba(6,182,212,0.1) 0%, transparent 60%);"></div>
+          <div class="relative">
+            <div class="text-6xl font-extrabold mb-4" style="background: linear-gradient(135deg, rgba(6,182,212,0.3), rgba(6,182,212,0.1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">04</div>
+            <h3 class="text-lg font-bold text-white mb-2">Analyze + Optimize</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">
+              Real-time dashboards reveal source ROI, buyer performance, and revenue attribution. Continuous feedback loops automatically optimize routing rules.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Animated connecting line (desktop) -->
+      <div class="hidden lg:block relative h-1 mx-8 mt-[-90px] mb-12" style="z-index:0;">
+        <div class="absolute inset-0 rounded-full" style="background: linear-gradient(90deg, rgba(59,130,246,0.3), rgba(99,102,241,0.3), rgba(16,185,129,0.3), rgba(6,182,212,0.3)); filter: blur(1px);"></div>
+        <div class="absolute top-[-2px] w-2 h-2 rounded-full bg-blue-400" style="box-shadow: 0 0 8px rgba(96,165,250,0.9); animation: travelDot 4s linear infinite;"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================ -->
+  <!-- TESTIMONIAL -->
+  <!-- ============================================================ -->
+  <section class="relative py-24 overflow-hidden" style="background: linear-gradient(135deg, #071230 0%, #0d1f3c 50%, #0a1628 100%);">
+    <!-- Noise -->
+    <div class="absolute inset-0 pointer-events-none" style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E&quot;);"></div>
+    <!-- Radial glow -->
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 700px 500px at 50% 50%, rgba(37,99,235,0.06) 0%, transparent 70%);"></div>
+
+    <div class="max-w-4xl mx-auto px-6 relative z-10">
+      <div class="glass-card-strong rounded-3xl p-10 lg:p-14 text-center relative overflow-hidden">
+        <!-- Inner glow -->
+        <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 20%, rgba(59,130,246,0.05) 0%, transparent 50%);"></div>
+
+        <div class="relative">
+          <!-- Quote mark -->
+          <div class="text-6xl font-serif text-blue-500/20 mb-4 leading-none">"</div>
+
+          <blockquote class="text-xl lg:text-2xl text-gray-200 font-medium leading-relaxed mb-8 max-w-3xl mx-auto">
+            The Switchboard transformed our operation overnight. We went from manually sorting opportunities in spreadsheets to an automated pipeline that increased our revenue 41% in the first quarter. The scoring accuracy alone paid for itself in week one.
+          </blockquote>
+
+          <div class="flex items-center justify-center gap-4">
+            <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-white" style="background: linear-gradient(135deg, #2563eb, #7c3aed);">
+              MR
+            </div>
+            <div class="text-left">
+              <div class="text-white font-semibold">Michael Rodriguez</div>
+              <div class="text-sm text-gray-400">VP Operations, Pinnacle Insurance Group</div>
+            </div>
+          </div>
+
+          <!-- Star rating -->
+          <div class="flex items-center justify-center gap-1 mt-5">
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================ -->
+  <!-- CASE STUDIES -->
+  <!-- ============================================================ -->
+  <section id="case-studies" class="relative py-24" style="background: linear-gradient(180deg, #f0f4f8 0%, #f8fafc 50%, #f0f4f8 100%);">
+    <div class="max-w-7xl mx-auto px-6">
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <div class="overline text-blue-600 mb-3 flex items-center justify-center gap-2">
+          <div class="w-2 h-2 rounded-full bg-blue-500" style="box-shadow: 0 0 6px rgba(59,130,246,0.6);"></div>
+          Results
+        </div>
+        <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">
+          Proven <span class="font-serif italic font-normal text-blue-600">Impact</span>
+        </h2>
+        <p class="text-lg text-gray-500 max-w-2xl mx-auto">
+          Real results from real insurance operations.
+        </p>
+      </div>
+
+      <!-- Cards -->
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Case Study 1 -->
+        <div class="bg-white rounded-2xl overflow-hidden float-card" style="box-shadow: 0 4px 20px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.04);">
+          <!-- Dark header -->
+          <div class="p-8 relative overflow-hidden" style="background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 100%);">
+            <div class="absolute inset-0" style="background: radial-gradient(circle at 80% 30%, rgba(59,130,246,0.1) 0%, transparent 50%);"></div>
+            <div class="relative">
+              <div class="overline text-blue-400 mb-2">Case Study</div>
+              <h3 class="text-xl font-bold text-white mb-1">National Auto Insurance Carrier</h3>
+              <p class="text-sm text-gray-400">Multi-state auto insurance distribution</p>
+            </div>
+            <!-- Floating metric -->
+            <div class="absolute top-6 right-6 glass-card rounded-xl px-4 py-2 text-center">
+              <div class="text-2xl font-extrabold" style="background: linear-gradient(135deg, #6ee7b7, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">+41%</div>
+              <div class="text-[10px] text-gray-400 font-medium">Revenue</div>
+            </div>
+          </div>
+          <!-- Body -->
+          <div class="p-8">
+            <div class="grid grid-cols-3 gap-4 mb-6">
+              <div class="text-center">
+                <div class="text-2xl font-bold text-gray-900">87%</div>
+                <div class="text-xs text-gray-500">Contact Rate</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-gray-900">3.2x</div>
+                <div class="text-xs text-gray-500">ROI</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-gray-900">14 days</div>
+                <div class="text-xs text-gray-500">To Go Live</div>
+              </div>
+            </div>
+            <p class="text-sm text-gray-500 leading-relaxed">
+              Replaced manual opportunity routing with The Switchboard's intelligent pipeline. Enrichment and scoring eliminated 62% of low-quality opportunities before they reached agents, while smart routing increased premium conversion rates by 41%.
+            </p>
+          </div>
+        </div>
+
+        <!-- Case Study 2 -->
+        <div class="bg-white rounded-2xl overflow-hidden float-card" style="box-shadow: 0 4px 20px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.04);">
+          <!-- Dark header -->
+          <div class="p-8 relative overflow-hidden" style="background: linear-gradient(135deg, #071230 0%, #0d1f3c 100%);">
+            <div class="absolute inset-0" style="background: radial-gradient(circle at 20% 70%, rgba(16,185,129,0.1) 0%, transparent 50%);"></div>
+            <div class="relative">
+              <div class="overline text-emerald-400 mb-2">Case Study</div>
+              <h3 class="text-xl font-bold text-white mb-1">Regional Health Insurance Marketplace</h3>
+              <p class="text-sm text-gray-400">Medicare supplement + ACA distribution</p>
+            </div>
+            <!-- Floating metric -->
+            <div class="absolute top-6 right-6 glass-card rounded-xl px-4 py-2 text-center">
+              <div class="text-2xl font-extrabold" style="background: linear-gradient(135deg, #67e8f9, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">-58%</div>
+              <div class="text-[10px] text-gray-400 font-medium">Bad Traffic</div>
+            </div>
+          </div>
+          <!-- Body -->
+          <div class="p-8">
+            <div class="grid grid-cols-3 gap-4 mb-6">
+              <div class="text-center">
+                <div class="text-2xl font-bold text-gray-900">96%</div>
+                <div class="text-xs text-gray-500">Accuracy</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-gray-900">5.1x</div>
+                <div class="text-xs text-gray-500">ROI</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-gray-900">7 days</div>
+                <div class="text-xs text-gray-500">To Go Live</div>
+              </div>
+            </div>
+            <p class="text-sm text-gray-500 leading-relaxed">
+              Fraud detection and quality scoring reduced bad traffic by 58%. Real-time analytics revealed which sources delivered the highest-converting shoppers, enabling budget reallocation that drove a 5.1x return on spend.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================ -->
+  <!-- CTA SECTION -->
+  <!-- ============================================================ -->
+  <section id="cta" class="bg-deep-dark noise-overlay relative py-24 overflow-hidden">
+    <!-- Spotlight glow -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[600px]" style="background: radial-gradient(ellipse, rgba(37,99,235,0.1) 0%, rgba(37,99,235,0.03) 40%, transparent 70%);"></div>
+    </div>
+
+    <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+      <div class="overline text-blue-400 mb-4 flex items-center justify-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-blue-400" style="box-shadow: 0 0 6px rgba(96,165,250,0.6);"></div>
+        Get Started
+      </div>
+      <h2 class="text-4xl lg:text-5xl font-extrabold text-white mb-5 text-glow">
+        Ready to Optimize Every <span class="font-serif italic font-normal" style="background: linear-gradient(135deg, #60a5fa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Connection?</span>
+      </h2>
+      <p class="text-lg text-gray-400 mb-10 max-w-xl mx-auto">
+        See how The Switchboard can transform your insurance distribution operation. Schedule a live demo with our team.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#" class="btn-primary text-white font-semibold px-8 py-4 rounded-xl text-lg w-full sm:w-auto">
+          Schedule a Demo
+        </a>
+        <a href="#" class="btn-secondary text-white font-semibold px-8 py-4 rounded-xl text-lg w-full sm:w-auto">
+          View Documentation
+        </a>
+      </div>
+      <p class="text-xs text-gray-600 mt-6">No commitment required. Live in under 14 days.</p>
+    </div>
+  </section>
+
+
+  <!-- ============================================================ -->
+  <!-- FOOTER -->
+  <!-- ============================================================ -->
+  <footer class="relative py-16" style="background: linear-gradient(180deg, #030818 0%, #020612 100%);">
+    <div class="absolute inset-0 pointer-events-none" style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E&quot;);"></div>
+
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="grid md:grid-cols-4 gap-10 mb-12">
+        <!-- Brand -->
+        <div class="md:col-span-1">
+          <a href="#" class="flex items-center gap-2.5 mb-4">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #2563eb, #7c3aed);">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="4" cy="4" r="1.8" fill="white" opacity="0.9"/><circle cx="9" cy="4" r="1.8" fill="white" opacity="0.9"/><circle cx="14" cy="4" r="1.8" fill="white" opacity="0.9"/><circle cx="4" cy="9" r="1.8" fill="white" opacity="0.5"/><circle cx="9" cy="9" r="2.2" fill="white"/><circle cx="14" cy="9" r="1.8" fill="white" opacity="0.5"/><circle cx="4" cy="14" r="1.8" fill="white" opacity="0.9"/><circle cx="9" cy="14" r="1.8" fill="white" opacity="0.9"/><circle cx="14" cy="14" r="1.8" fill="white" opacity="0.9"/></svg>
+            </div>
+            <span class="text-white font-bold text-lg">The Switchboard</span>
+          </a>
+          <p class="text-sm text-gray-500 leading-relaxed">
+            The intelligence layer for insurance distribution. Enrich, score, route, and analyze every opportunity in real time.
+          </p>
+        </div>
+
+        <!-- Platform -->
+        <div>
+          <h4 class="text-sm font-semibold text-white mb-4">Platform</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Data Enrichment</a></li>
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Scoring Engine</a></li>
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Smart Routing</a></li>
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Analytics</a></li>
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Integrations</a></li>
+          </ul>
+        </div>
+
+        <!-- Company -->
+        <div>
+          <h4 class="text-sm font-semibold text-white mb-4">Company</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">About</a></li>
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Careers</a></li>
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Blog</a></li>
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal -->
+        <div>
+          <h4 class="text-sm font-semibold text-white mb-4">Legal</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Security</a></li>
+            <li><a href="#" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Compliance</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-gray-600">&copy; 2026 The Switchboard. All rights reserved.</p>
+        <div class="flex items-center gap-1.5">
+          <div class="w-1.5 h-1.5 rounded-full bg-emerald-500" style="box-shadow: 0 0 4px rgba(16,185,129,0.6);"></div>
+          <span class="text-xs text-gray-600">All systems operational</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
