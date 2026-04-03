@@ -29,8 +29,10 @@ try
             configuration.WriteTo.Seq(seqUrl);
     });
 
-    // Database (optional — app starts without it for design review deployments)
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    // Database (optional — uses InMemory when DATABASE_URL or PG is not available)
+    var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+        ?? Environment.GetEnvironmentVariable("DATABASE_PRIVATE_URL")
+        ?? (builder.Environment.IsDevelopment() ? builder.Configuration.GetConnectionString("DefaultConnection") : null);
     var hasDatabase = !string.IsNullOrEmpty(connectionString);
 
     builder.Services.AddDbContext<AppDbContext>(options =>
