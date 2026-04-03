@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Switchboard — Design Review</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: #030818; color: white; min-height: 100vh; }
+.container { max-width: 1200px; margin: 0 auto; padding: 60px 24px; }
+h1 { font-size: 48px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
+.subtitle { color: rgba(255,255,255,0.5); font-size: 18px; margin-bottom: 48px; }
+.section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #2563eb; margin-bottom: 20px; margin-top: 48px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+a.card { display: block; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 28px; text-decoration: none; color: white; transition: all 0.2s; }
+a.card:hover { background: rgba(255,255,255,0.06); border-color: rgba(37,99,235,0.3); transform: translateY(-2px); }
+.card-num { font-size: 13px; color: #2563eb; font-weight: 600; margin-bottom: 8px; }
+.card-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.card-desc { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+.badge { display: inline-block; background: rgba(37,99,235,0.15); color: #60a5fa; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; margin-top: 12px; }
+.badge.green { background: rgba(5,150,105,0.15); color: #34d399; }
+.badge.amber { background: rgba(217,119,6,0.15); color: #fbbf24; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+<h1>The Switchboard</h1>
+<p class="subtitle">Homepage Design Review — Pick your favorites, mix and match elements</p>
+
+<div class="section-title">Original Explorations (1-10)</div>
+<div class="grid">
+  <a class="card" href="wireframes/design-01-dark-intelligence.html"><div class="card-num">Design 01</div><div class="card-title">Dark Intelligence</div><div class="card-desc">Dark bg, animated network, blue accents, data-rich.</div><span class="badge">Original</span></a>
+  <a class="card" href="wireframes/design-02-aurora-gradient.html"><div class="card-num">Design 02</div><div class="card-title">Aurora Gradient</div><div class="card-desc">Gradient backgrounds, colorful aurora effects.</div><span class="badge">Original</span></a>
+  <a class="card" href="wireframes/design-03-clean-white.html"><div class="card-num">Design 03</div><div class="card-title">Clean White</div><div class="card-desc">Light, minimal, Apple-inspired whitespace.</div><span class="badge">Original</span></a>
+  <a class="card" href="wireframes/design-04-neon-pulse.html"><div class="card-num">Design 04</div><div class="card-title">Neon Pulse</div><div class="card-desc">Vibrant neon accents on dark backgrounds.</div><span class="badge">Original</span></a>
+  <a class="card" href="wireframes/design-05-editorial.html"><div class="card-num">Design 05</div><div class="card-title">Editorial</div><div class="card-desc">Serif typography, split layouts, magazine feel.</div><span class="badge">Original</span></a>
+  <a class="card" href="wireframes/design-06-split-contrast.html"><div class="card-num">Design 06</div><div class="card-title">Split Contrast</div><div class="card-desc">Bold dark/light split sections.</div><span class="badge">Original</span></a>
+  <a class="card" href="wireframes/design-07-warm-premium.html"><div class="card-num">Design 07</div><div class="card-title">Warm Premium</div><div class="card-desc">Warm tones, premium feel, earthy accents.</div><span class="badge">Original</span></a>
+  <a class="card" href="wireframes/design-08-brutalist.html"><div class="card-num">Design 08</div><div class="card-title">Brutalist</div><div class="card-desc">Raw, bold, unconventional typography.</div><span class="badge">Original</span></a>
+  <a class="card" href="wireframes/design-09-frosted-layers.html"><div class="card-num">Design 09</div><div class="card-title">Frosted Layers</div><div class="card-desc">Glassmorphism, layered depth, blur effects.</div><span class="badge">Original</span></a>
+  <a class="card" href="wireframes/design-10-cyber-grid.html"><div class="card-num">Design 10</div><div class="card-title">Cyber Grid</div><div class="card-desc">Grid patterns, cyber aesthetic, tech-forward.</div><span class="badge">Original</span></a>
+</div>
+
+<div class="section-title">Research-Driven (11-13) — Built from 14 inspiration site analyses</div>
+<div class="grid">
+  <a class="card" href="wireframes/design-11-command-center.html"><div class="card-num">Design 11</div><div class="card-title">Command Center</div><div class="card-desc">Mission control energy. Animated network graph, 3-quote carousel, data-rich hero. Inspired by Linear + Scale AI.</div><span class="badge green">Recommended</span></a>
+  <a class="card" href="wireframes/design-12-glass-prestige.html"><div class="card-num">Design 12</div><div class="card-title">Glass Prestige</div><div class="card-desc">Apple-style centered hero. Floating glassmorphic dashboard mockup with live clock, conic gauge, data table. Premium restraint.</div><span class="badge green">Recommended</span></a>
+  <a class="card" href="wireframes/design-13-signal-grid.html"><div class="card-num">Design 13</div><div class="card-title">Signal Grid</div><div class="card-desc">Bold editorial typography (72px). Massive background numbers. Blue accent CTA strip. Bloomberg meets Linear.</div><span class="badge green">Recommended</span></a>
+</div>
+
+<div class="section-title">Switchboard Concept (14-16) — Built around the switchboard metaphor + real tech</div>
+<div class="grid">
+  <a class="card" href="wireframes/design-14-patch-panel.html"><div class="card-num">Design 14</div><div class="card-title">The Patch Panel</div><div class="card-desc">SVG switchboard visualization — animated patch cords routing data from inputs (Web Forms, APIs) through THE SWITCHBOARD to outputs (Tier 1/2/3 Buyers). The metaphor made visual.</div><span class="badge amber">Switchboard Concept</span></a>
+  <a class="card" href="wireframes/design-15-circuit-traces.html"><div class="card-num">Design 15</div><div class="card-title">Circuit Traces</div><div class="card-desc">PCB circuit board aesthetic. Every section connected by circuit traces with animated flowing dots. IC chip capability cards. "Broken traces vs complete circuit" comparison.</div><span class="badge amber">Switchboard Concept</span></a>
+  <a class="card" href="wireframes/design-16-the-operator.html"><div class="card-num">Design 16</div><div class="card-title">The Operator</div><div class="card-desc">Split-screen hero: chaotic raw data fragments (left) → clean organized intelligence badges (right). Glowing center divider = THE SWITCHBOARD. Before/after transformation in 3 seconds.</div><span class="badge amber">Switchboard Concept</span></a>
+</div>
+
+</div>
+</body>
+</html>
