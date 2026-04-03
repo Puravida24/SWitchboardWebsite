@@ -16,12 +16,18 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Host.UseSerilog((context, services, configuration) => configuration
-        .ReadFrom.Configuration(context.Configuration)
-        .ReadFrom.Services(services)
-        .Enrich.FromLogContext()
-        .WriteTo.Console()
-        .WriteTo.Seq(context.Configuration["Seq:ServerUrl"] ?? "http://localhost:5341"));
+    builder.Host.UseSerilog((context, services, configuration) =>
+    {
+        configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services)
+            .Enrich.FromLogContext()
+            .WriteTo.Console();
+
+        var seqUrl = context.Configuration["Seq:ServerUrl"];
+        if (!string.IsNullOrEmpty(seqUrl))
+            configuration.WriteTo.Seq(seqUrl);
+    });
 
     // Database (optional — app starts without it for design review deployments)
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -115,12 +121,18 @@ try
     // API endpoints
     app.MapContactApi();
 
-    // Auto-migrate and seed in development
-    if (app.Environment.IsDevelopment())
+    // Auto-migrate and seed in development, ensure InMemory DB is created in production without PG
+    using (var scope = app.Services.CreateScope())
     {
-        using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await db.Database.MigrateAsync();
+        if (app.Environment.IsDevelopment())
+        {
+            await db.Database.MigrateAsync();
+        }
+        else
+        {
+            await db.Database.EnsureCreatedAsync();
+        }
         await AdminSeedService.SeedAdminUserAsync(scope.ServiceProvider);
     }
 
