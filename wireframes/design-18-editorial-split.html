@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 18: Editorial Split — The Switchboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { font-family: 'Inter', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #faf9f7; color: #1a1a1a; overflow-x: hidden; }
+.serif { font-family: 'Instrument Serif', serif; }
+
+/* ── Split Grid ── */
+.split { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+.split-auto { display: grid; grid-template-columns: 1fr 1fr; }
+.split-light { background: #faf9f7; color: #1a1a1a; }
+.split-dark { background: #1a1a1a; color: #faf9f7; }
+
+/* ── Buttons ── */
+.pill-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 100px; font-size: 14px; font-weight: 500;
+  padding: 12px 28px; transition: all 0.25s ease;
+  cursor: pointer; text-decoration: none;
+}
+.pill-dark { background: #1a1a1a; color: #faf9f7; }
+.pill-dark:hover { background: #333; }
+.pill-outline { border: 1px solid #1a1a1a; color: #1a1a1a; background: transparent; }
+.pill-outline:hover { background: #1a1a1a; color: #faf9f7; }
+.pill-blue { background: #2563eb; color: #fff; }
+.pill-blue:hover { background: #1d4ed8; }
+.pill-outline-light { border: 1px solid rgba(250,249,247,0.3); color: #faf9f7; background: transparent; }
+.pill-outline-light:hover { background: rgba(250,249,247,0.1); }
+
+/* ── Marquee ── */
+.marquee-wrap { overflow: hidden; white-space: nowrap; }
+.marquee-track {
+  display: inline-flex;
+  animation: marquee 50s linear infinite;
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Capability Row ── */
+.cap-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid rgba(26,26,26,0.1);
+}
+.cap-row:first-child { border-top: 1px solid rgba(26,26,26,0.1); }
+.cap-visual {
+  background: linear-gradient(135deg, #2563eb10 0%, #2563eb08 100%);
+  display: flex; align-items: center; justify-content: center;
+  min-height: 420px; position: relative; overflow: hidden;
+}
+.cap-visual-block {
+  width: 65%; aspect-ratio: 16/10; border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb18 0%, #2563eb08 100%);
+  border: 1px solid #2563eb20;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.cap-visual-block::after {
+  content: '';
+  position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px;
+  border: 1px solid #2563eb15;
+  border-radius: 8px;
+}
+.cap-text {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 64px 56px;
+}
+
+/* ── Comparison ── */
+.comparison-item {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 20px 0;
+}
+.comparison-item + .comparison-item {
+  border-top: 1px solid rgba(26,26,26,0.08);
+}
+.comparison-dark .comparison-item + .comparison-item {
+  border-top: 1px solid rgba(250,249,247,0.08);
+}
+
+/* ── Editorial Cards ── */
+.editorial-card {
+  border-top: 1px solid rgba(26,26,26,0.1);
+  padding-top: 32px; transition: all 0.3s ease;
+}
+.editorial-card:hover { padding-left: 12px; }
+
+/* ── Stat Divider ── */
+.stat-divider {
+  width: 1px; background: rgba(26,26,26,0.12);
+  align-self: stretch;
+}
+
+/* ── Quote accent ── */
+.quote-accent {
+  width: 60px; height: 3px;
+  background: #2563eb;
+  margin-bottom: 40px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .split, .split-auto, .cap-row { grid-template-columns: 1fr; }
+  .split { min-height: auto; }
+  .cap-visual { min-height: 280px; }
+  .cap-text { padding: 40px 24px; }
+  .hero-headline { font-size: 48px !important; }
+  .stats-grid { flex-direction: column; gap: 32px; }
+  .stat-divider { width: 100%; height: 1px; }
+  .footer-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .cta-headline { font-size: 56px !important; }
+}
+
+/* ── Smooth Scroll ── */
+html { scroll-behavior: smooth; }
+
+/* ── Fade-in animation ── */
+[x-intersect] { opacity: 0; transform: translateY(24px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+.is-visible { opacity: 1 !important; transform: translateY(0) !important; }
+</style>
+</head>
+<body x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 40">
+
+<!-- ═══════════════════════════════════════════════════════════
+     1. HEADER — Fixed, cream/90 + blur, serif logo, 72px
+     ═══════════════════════════════════════════════════════════ -->
+<header
+  class="fixed top-0 w-full z-50 transition-all duration-300"
+  :class="scrolled ? 'bg-[#faf9f7]/95 backdrop-blur-xl shadow-[0_1px_0_rgba(26,26,26,0.06)]' : 'bg-[#faf9f7]/90 backdrop-blur-lg'"
+  style="height: 72px;">
+  <div class="max-w-[1400px] mx-auto h-full flex items-center justify-between px-8">
+    <a href="#" class="serif text-2xl tracking-tight">The Switchboard</a>
+    <nav class="hidden md:flex items-center gap-8 text-[13px] text-neutral-500 font-medium uppercase tracking-[0.08em]">
+      <a href="#" class="hover:text-[#1a1a1a] transition-colors duration-200">Platform</a>
+      <a href="#" class="hover:text-[#1a1a1a] transition-colors duration-200">Solutions</a>
+      <a href="#" class="hover:text-[#1a1a1a] transition-colors duration-200">About</a>
+      <a href="#" class="hover:text-[#1a1a1a] transition-colors duration-200">Journal</a>
+    </nav>
+    <a href="#" class="pill-btn pill-dark text-[13px] tracking-wide">Book a Demo</a>
+  </div>
+</header>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     2. HERO — Dramatic 50/50 Split (Light / Dark)
+     ═══════════════════════════════════════════════════════════ -->
+<section class="split" style="padding-top: 72px;">
+
+  <!-- LEFT: Cream -->
+  <div class="split-light flex items-center justify-center px-10 md:px-16 lg:px-20 py-20">
+    <div class="max-w-[520px]">
+      <div class="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#2563eb] mb-8">Insurance Intelligence Platform</div>
+      <h1 class="serif hero-headline leading-[0.95] mb-10" style="font-size: 80px;">Intelligence,<br>delivered.</h1>
+      <div class="flex flex-wrap gap-4">
+        <a href="#" class="pill-btn pill-dark px-8 py-3.5">Book a Demo</a>
+        <a href="#" class="pill-btn pill-outline px-8 py-3.5">See the Platform</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Dark -->
+  <div class="split-dark flex items-center justify-center px-10 md:px-16 lg:px-20 py-20">
+    <div class="max-w-[480px]">
+      <p class="text-[18px] leading-[1.7] font-light mb-12" style="color: rgba(250,249,247,0.8);">
+        The Switchboard enriches, scores, segments, and routes every insurance opportunity in real-time. 343 million records. Five intelligence engines. One platform.
+      </p>
+      <div class="grid grid-cols-3 gap-6">
+        <div>
+          <div class="serif text-[42px] leading-none text-[#faf9f7] mb-2">340%</div>
+          <div class="text-[12px] uppercase tracking-[0.12em]" style="color: rgba(250,249,247,0.45);">ROI increase</div>
+        </div>
+        <div>
+          <div class="serif text-[42px] leading-none text-[#faf9f7] mb-2">&lt;5ms</div>
+          <div class="text-[12px] uppercase tracking-[0.12em]" style="color: rgba(250,249,247,0.45);">Response time</div>
+        </div>
+        <div>
+          <div class="serif text-[42px] leading-none text-[#faf9f7] mb-2">50+</div>
+          <div class="text-[12px] uppercase tracking-[0.12em]" style="color: rgba(250,249,247,0.45);">Data sources</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     3. MARQUEE — Serif ticker
+     ═══════════════════════════════════════════════════════════ -->
+<section class="border-y" style="border-color: rgba(26,26,26,0.1);">
+  <div class="marquee-wrap py-6">
+    <div class="marquee-track">
+      <span class="serif text-[28px] md:text-[36px] mx-6" style="color: rgba(26,26,26,0.15);">
+        Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&#9670;&nbsp;&nbsp;
+        Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&#9670;&nbsp;&nbsp;
+        Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&#9670;&nbsp;&nbsp;
+        Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&#9670;&nbsp;&nbsp;
+      </span>
+      <span class="serif text-[28px] md:text-[36px] mx-6" style="color: rgba(26,26,26,0.15);">
+        Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&#9670;&nbsp;&nbsp;
+        Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&#9670;&nbsp;&nbsp;
+        Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&#9670;&nbsp;&nbsp;
+        Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&#9670;&nbsp;&nbsp;
+      </span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     4. CAPABILITIES — Alternating Split Rows
+     ═══════════════════════════════════════════════════════════ -->
+<section class="py-20 md:py-32" style="background: #faf9f7;">
+  <div class="max-w-[1400px] mx-auto px-8">
+    <div class="text-center mb-20">
+      <div class="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#2563eb] mb-4">Five Engines, One Platform</div>
+      <h2 class="serif text-[48px] md:text-[56px] leading-[1.05]">The intelligence stack</h2>
+    </div>
+  </div>
+
+  <!-- Row 01 — Data Enrichment (visual LEFT, text RIGHT) -->
+  <div class="cap-row">
+    <div class="cap-visual">
+      <div class="cap-visual-block">
+        <div class="text-center">
+          <div class="serif text-[56px] text-[#2563eb] opacity-20">343M</div>
+          <div class="text-[11px] uppercase tracking-[0.15em] text-[#2563eb] opacity-40 mt-1">Records enriched</div>
+        </div>
+      </div>
+    </div>
+    <div class="cap-text">
+      <div class="text-[13px] font-semibold text-[#2563eb] tracking-[0.12em] uppercase mb-4">01</div>
+      <h3 class="serif text-[36px] md:text-[42px] leading-[1.1] mb-5">Data Enrichment</h3>
+      <p class="text-[16px] leading-[1.8] text-neutral-500 mb-6 max-w-[420px]">
+        Raw opportunity data enters. Enriched intelligence exits. We append 80+ data points from 50+ sources in under 5 milliseconds, transforming incomplete records into complete customer profiles.
+      </p>
+      <span class="pill-btn pill-blue text-[12px] px-5 py-2 self-start">80+ data points appended</span>
+    </div>
+  </div>
+
+  <!-- Row 02 — Risk Segmentation (text LEFT, visual RIGHT) -->
+  <div class="cap-row">
+    <div class="cap-text">
+      <div class="text-[13px] font-semibold text-[#2563eb] tracking-[0.12em] uppercase mb-4">02</div>
+      <h3 class="serif text-[36px] md:text-[42px] leading-[1.1] mb-5">Risk Segmentation</h3>
+      <p class="text-[16px] leading-[1.8] text-neutral-500 mb-6 max-w-[420px]">
+        Every opportunity is segmented into precise risk tiers using proprietary algorithms. Carriers receive exactly the profiles that match their appetite — no wasted spend, no misaligned risk.
+      </p>
+      <span class="pill-btn pill-blue text-[12px] px-5 py-2 self-start">12 risk tiers</span>
+    </div>
+    <div class="cap-visual">
+      <div class="cap-visual-block">
+        <div class="flex flex-col gap-2 w-3/4">
+          <div class="h-3 rounded-full bg-[#2563eb] opacity-10" style="width: 95%;"></div>
+          <div class="h-3 rounded-full bg-[#2563eb] opacity-15" style="width: 80%;"></div>
+          <div class="h-3 rounded-full bg-[#2563eb] opacity-20" style="width: 65%;"></div>
+          <div class="h-3 rounded-full bg-[#2563eb] opacity-25" style="width: 50%;"></div>
+          <div class="h-3 rounded-full bg-[#2563eb] opacity-30" style="width: 35%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 03 — Quality Scoring (visual LEFT, text RIGHT) -->
+  <div class="cap-row">
+    <div class="cap-visual">
+      <div class="cap-visual-block">
+        <div class="text-center">
+          <div class="serif text-[72px] text-[#2563eb] opacity-20 leading-none">A+</div>
+          <div class="text-[11px] uppercase tracking-[0.15em] text-[#2563eb] opacity-40 mt-2">Quality tier</div>
+        </div>
+      </div>
+    </div>
+    <div class="cap-text">
+      <div class="text-[13px] font-semibold text-[#2563eb] tracking-[0.12em] uppercase mb-4">03</div>
+      <h3 class="serif text-[36px] md:text-[42px] leading-[1.1] mb-5">Quality Scoring</h3>
+      <p class="text-[16px] leading-[1.8] text-neutral-500 mb-6 max-w-[420px]">
+        Our ML-powered scoring engine evaluates every opportunity across 140+ signals. Predictive quality scores tell you the likelihood of conversion before you spend a dollar.
+      </p>
+      <span class="pill-btn pill-blue text-[12px] px-5 py-2 self-start">140+ scoring signals</span>
+    </div>
+  </div>
+
+  <!-- Row 04 — Decision Engine (text LEFT, visual RIGHT) -->
+  <div class="cap-row">
+    <div class="cap-text">
+      <div class="text-[13px] font-semibold text-[#2563eb] tracking-[0.12em] uppercase mb-4">04</div>
+      <h3 class="serif text-[36px] md:text-[42px] leading-[1.1] mb-5">Decision Engine</h3>
+      <p class="text-[16px] leading-[1.8] text-neutral-500 mb-6 max-w-[420px]">
+        Intelligent routing that matches every opportunity to the right buyer at the right price. Rules-based and ML-assisted decisioning ensures maximum yield for every record.
+      </p>
+      <span class="pill-btn pill-blue text-[12px] px-5 py-2 self-start">Real-time decisioning</span>
+    </div>
+    <div class="cap-visual">
+      <div class="cap-visual-block">
+        <div class="flex flex-col items-center gap-3">
+          <div class="w-10 h-10 rounded-full border border-[#2563eb] opacity-20"></div>
+          <div class="w-px h-8 bg-[#2563eb] opacity-15"></div>
+          <div class="flex gap-6">
+            <div class="w-8 h-8 rounded-full border border-[#2563eb] opacity-15"></div>
+            <div class="w-8 h-8 rounded-full border border-[#2563eb] opacity-15"></div>
+            <div class="w-8 h-8 rounded-full border border-[#2563eb] opacity-15"></div>
+          </div>
+          <div class="text-[10px] uppercase tracking-[0.15em] text-[#2563eb] opacity-40 mt-1">Route to optimal buyer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 05 — Performance Analytics (visual LEFT, text RIGHT) -->
+  <div class="cap-row">
+    <div class="cap-visual">
+      <div class="cap-visual-block">
+        <div class="flex items-end gap-2 h-24">
+          <div class="w-4 rounded-t bg-[#2563eb] opacity-10" style="height: 30%;"></div>
+          <div class="w-4 rounded-t bg-[#2563eb] opacity-15" style="height: 45%;"></div>
+          <div class="w-4 rounded-t bg-[#2563eb] opacity-18" style="height: 55%;"></div>
+          <div class="w-4 rounded-t bg-[#2563eb] opacity-20" style="height: 40%;"></div>
+          <div class="w-4 rounded-t bg-[#2563eb] opacity-22" style="height: 70%;"></div>
+          <div class="w-4 rounded-t bg-[#2563eb] opacity-25" style="height: 85%;"></div>
+          <div class="w-4 rounded-t bg-[#2563eb] opacity-30" style="height: 100%;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cap-text">
+      <div class="text-[13px] font-semibold text-[#2563eb] tracking-[0.12em] uppercase mb-4">05</div>
+      <h3 class="serif text-[36px] md:text-[42px] leading-[1.1] mb-5">Performance Analytics</h3>
+      <p class="text-[16px] leading-[1.8] text-neutral-500 mb-6 max-w-[420px]">
+        Closed-loop analytics that track every opportunity from acquisition through conversion. See what's working, what's not, and optimize in real-time with actionable dashboards.
+      </p>
+      <span class="pill-btn pill-blue text-[12px] px-5 py-2 self-start">Closed-loop attribution</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     5. DARK QUOTE SECTION
+     ═══════════════════════════════════════════════════════════ -->
+<section class="py-28 md:py-36" style="background: #1a1a1a;">
+  <div class="max-w-[900px] mx-auto px-8 text-center">
+    <div class="quote-accent mx-auto"></div>
+    <blockquote class="serif text-[32px] md:text-[44px] leading-[1.25] text-[#faf9f7] mb-10">
+      &ldquo;The Switchboard didn&rsquo;t just improve our pipeline &mdash; it fundamentally changed how we evaluate and acquire customers.&rdquo;
+    </blockquote>
+    <div>
+      <div class="text-[14px] font-medium text-[#faf9f7]">Sarah Mitchell</div>
+      <div class="text-[13px] mt-1" style="color: rgba(250,249,247,0.45);">VP of Distribution, National Carrier Group</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     6. COMPARISON SPLIT — Old Way vs The Switchboard
+     ═══════════════════════════════════════════════════════════ -->
+<section class="split-auto" style="min-height: auto;">
+
+  <!-- LEFT: The Old Way (Light) -->
+  <div class="split-light py-20 md:py-28 px-10 md:px-16 lg:px-20">
+    <div class="max-w-[480px] ml-auto mr-0">
+      <div class="text-[12px] uppercase tracking-[0.25em] font-semibold mb-4" style="color: #dc2626;">The Old Way</div>
+      <h3 class="serif text-[36px] md:text-[42px] leading-[1.1] mb-10">Broken by design</h3>
+      <div class="comparison-light">
+        <div class="comparison-item">
+          <div class="w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5" style="border-color: #dc262640;"></div>
+          <div>
+            <div class="font-medium text-[15px] mb-1">Blind buying</div>
+            <div class="text-[14px] text-neutral-500 leading-[1.6]">No enrichment, no scoring. You get a name and a phone number and hope for the best.</div>
+          </div>
+        </div>
+        <div class="comparison-item">
+          <div class="w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5" style="border-color: #dc262640;"></div>
+          <div>
+            <div class="font-medium text-[15px] mb-1">One-size-fits-all distribution</div>
+            <div class="text-[14px] text-neutral-500 leading-[1.6]">Every buyer gets the same opportunities regardless of appetite or capacity.</div>
+          </div>
+        </div>
+        <div class="comparison-item">
+          <div class="w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5" style="border-color: #dc262640;"></div>
+          <div>
+            <div class="font-medium text-[15px] mb-1">Black-box pricing</div>
+            <div class="text-[14px] text-neutral-500 leading-[1.6]">No transparency into why you're paying what you're paying.</div>
+          </div>
+        </div>
+        <div class="comparison-item">
+          <div class="w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5" style="border-color: #dc262640;"></div>
+          <div>
+            <div class="font-medium text-[15px] mb-1">No feedback loop</div>
+            <div class="text-[14px] text-neutral-500 leading-[1.6]">Acquisition and conversion data live in separate silos. No way to optimize.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: The Switchboard (Dark) -->
+  <div class="split-dark py-20 md:py-28 px-10 md:px-16 lg:px-20">
+    <div class="max-w-[480px] mr-auto ml-0">
+      <div class="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#2563eb] mb-4">The Switchboard</div>
+      <h3 class="serif text-[36px] md:text-[42px] leading-[1.1] text-[#faf9f7] mb-10">Built for intelligence</h3>
+      <div class="comparison-dark">
+        <div class="comparison-item">
+          <div class="w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5" style="border-color: #2563eb80;"></div>
+          <div>
+            <div class="font-medium text-[15px] text-[#faf9f7] mb-1">80+ enrichment fields</div>
+            <div class="text-[14px] leading-[1.6]" style="color: rgba(250,249,247,0.5);">Every record enriched with demographic, behavioral, and risk data before it reaches a buyer.</div>
+          </div>
+        </div>
+        <div class="comparison-item">
+          <div class="w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5" style="border-color: #2563eb80;"></div>
+          <div>
+            <div class="font-medium text-[15px] text-[#faf9f7] mb-1">Precision-matched routing</div>
+            <div class="text-[14px] leading-[1.6]" style="color: rgba(250,249,247,0.5);">ML-powered decisioning matches every opportunity to the carrier with the highest propensity to convert.</div>
+          </div>
+        </div>
+        <div class="comparison-item">
+          <div class="w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5" style="border-color: #2563eb80;"></div>
+          <div>
+            <div class="font-medium text-[15px] text-[#faf9f7] mb-1">Transparent scoring</div>
+            <div class="text-[14px] leading-[1.6]" style="color: rgba(250,249,247,0.5);">Every score is explainable. Every routing decision is auditable. Full transparency, always.</div>
+          </div>
+        </div>
+        <div class="comparison-item">
+          <div class="w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5" style="border-color: #2563eb80;"></div>
+          <div>
+            <div class="font-medium text-[15px] text-[#faf9f7] mb-1">Closed-loop analytics</div>
+            <div class="text-[14px] leading-[1.6]" style="color: rgba(250,249,247,0.5);">Conversion data flows back to optimize scoring and routing in real-time. Continuous improvement.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     7. STATS — Big serif numbers with thin dividers
+     ═══════════════════════════════════════════════════════════ -->
+<section class="py-24 md:py-32" style="background: #faf9f7;">
+  <div class="max-w-[1200px] mx-auto px-8">
+    <div class="text-center mb-16">
+      <div class="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#2563eb] mb-4">By the Numbers</div>
+      <h2 class="serif text-[48px] md:text-[56px] leading-[1.05]">Platform performance</h2>
+    </div>
+    <div class="stats-grid flex items-center justify-center gap-12 md:gap-16">
+      <div class="text-center">
+        <div class="serif text-[64px] md:text-[80px] leading-none mb-3">343M</div>
+        <div class="text-[12px] uppercase tracking-[0.15em] text-neutral-400">Records processed</div>
+      </div>
+      <div class="stat-divider hidden md:block" style="height: 80px;"></div>
+      <div class="text-center">
+        <div class="serif text-[64px] md:text-[80px] leading-none mb-3">99.7%</div>
+        <div class="text-[12px] uppercase tracking-[0.15em] text-neutral-400">Uptime SLA</div>
+      </div>
+      <div class="stat-divider hidden md:block" style="height: 80px;"></div>
+      <div class="text-center">
+        <div class="serif text-[64px] md:text-[80px] leading-none mb-3">&lt;5ms</div>
+        <div class="text-[12px] uppercase tracking-[0.15em] text-neutral-400">Avg. response</div>
+      </div>
+      <div class="stat-divider hidden md:block" style="height: 80px;"></div>
+      <div class="text-center">
+        <div class="serif text-[64px] md:text-[80px] leading-none mb-3">340%</div>
+        <div class="text-[12px] uppercase tracking-[0.15em] text-neutral-400">Avg. ROI lift</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     8. CASE STUDIES — Editorial Cards
+     ═══════════════════════════════════════════════════════════ -->
+<section class="py-20 md:py-28" style="background: #faf9f7; border-top: 1px solid rgba(26,26,26,0.08);">
+  <div class="max-w-[1200px] mx-auto px-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+      <div>
+        <div class="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#2563eb] mb-4">Case Studies</div>
+        <h2 class="serif text-[48px] md:text-[56px] leading-[1.05]">Results that speak</h2>
+      </div>
+      <a href="#" class="pill-btn pill-outline text-[13px] mt-6 md:mt-0 self-start md:self-auto">View All Studies</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+      <!-- Card 1 -->
+      <div class="editorial-card">
+        <div class="text-[12px] uppercase tracking-[0.12em] text-neutral-400 mb-3">National Carrier</div>
+        <h4 class="serif text-[24px] leading-[1.2] mb-3">Reduced acquisition cost by 42% while increasing policy bind rate</h4>
+        <p class="text-[14px] text-neutral-500 leading-[1.7] mb-5">A top-10 national carrier leveraged The Switchboard's enrichment and scoring engines to dramatically improve their customer acquisition economics.</p>
+        <div class="flex items-center gap-6">
+          <div>
+            <div class="serif text-[28px] text-[#2563eb]">-42%</div>
+            <div class="text-[11px] uppercase tracking-[0.1em] text-neutral-400">Cost per bind</div>
+          </div>
+          <div class="w-px h-10" style="background: rgba(26,26,26,0.1);"></div>
+          <div>
+            <div class="serif text-[28px] text-[#2563eb]">+67%</div>
+            <div class="text-[11px] uppercase tracking-[0.1em] text-neutral-400">Bind rate</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="editorial-card">
+        <div class="text-[12px] uppercase tracking-[0.12em] text-neutral-400 mb-3">Regional MGA</div>
+        <h4 class="serif text-[24px] leading-[1.2] mb-3">5x pipeline growth with zero increase in distribution spend</h4>
+        <p class="text-[14px] text-neutral-500 leading-[1.7] mb-5">A Southeast regional MGA used intelligent routing and risk segmentation to multiply their qualified pipeline without raising acquisition budgets.</p>
+        <div class="flex items-center gap-6">
+          <div>
+            <div class="serif text-[28px] text-[#2563eb]">5x</div>
+            <div class="text-[11px] uppercase tracking-[0.1em] text-neutral-400">Pipeline growth</div>
+          </div>
+          <div class="w-px h-10" style="background: rgba(26,26,26,0.1);"></div>
+          <div>
+            <div class="serif text-[28px] text-[#2563eb]">$0</div>
+            <div class="text-[11px] uppercase tracking-[0.1em] text-neutral-400">Added spend</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="editorial-card">
+        <div class="text-[12px] uppercase tracking-[0.12em] text-neutral-400 mb-3">InsurTech Startup</div>
+        <h4 class="serif text-[24px] leading-[1.2] mb-3">From launch to profitability in 90 days with intelligent distribution</h4>
+        <p class="text-[14px] text-neutral-500 leading-[1.7] mb-5">An InsurTech startup bypassed years of distribution infrastructure buildout by plugging into The Switchboard's intelligence layer from day one.</p>
+        <div class="flex items-center gap-6">
+          <div>
+            <div class="serif text-[28px] text-[#2563eb]">90</div>
+            <div class="text-[11px] uppercase tracking-[0.1em] text-neutral-400">Days to profit</div>
+          </div>
+          <div class="w-px h-10" style="background: rgba(26,26,26,0.1);"></div>
+          <div>
+            <div class="serif text-[28px] text-[#2563eb]">340%</div>
+            <div class="text-[11px] uppercase tracking-[0.1em] text-neutral-400">ROI year one</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     9. FINAL CTA — Split Layout
+     ═══════════════════════════════════════════════════════════ -->
+<section class="split-auto" style="min-height: auto;">
+
+  <!-- LEFT: Massive serif CTA -->
+  <div class="split-light flex items-center justify-center px-10 md:px-16 lg:px-20 py-24 md:py-32">
+    <div class="max-w-[480px]">
+      <h2 class="serif cta-headline leading-[0.95] mb-6" style="font-size: 80px;">Let&rsquo;s<br>talk.</h2>
+      <p class="text-[16px] text-neutral-500 leading-[1.7] max-w-[360px]">
+        See how The Switchboard transforms raw insurance data into risk-scored, routable intelligence.
+      </p>
+    </div>
+  </div>
+
+  <!-- RIGHT: Dark with form/CTA -->
+  <div class="split-dark flex items-center justify-center px-10 md:px-16 lg:px-20 py-24 md:py-32">
+    <div class="max-w-[420px] w-full">
+      <div class="text-[12px] uppercase tracking-[0.25em] font-semibold text-[#2563eb] mb-6">Book a Demo</div>
+      <p class="text-[15px] leading-[1.7] mb-8" style="color: rgba(250,249,247,0.6);">
+        30-minute platform walkthrough. No pitch deck. Just the product, your questions, and honest answers.
+      </p>
+      <form class="flex flex-col gap-4 mb-8">
+        <input type="text" placeholder="Full name"
+          class="w-full px-5 py-3.5 rounded-lg bg-white/5 border border-white/10 text-[#faf9f7] text-[14px] placeholder:text-white/30 focus:outline-none focus:border-[#2563eb]/50 transition-colors">
+        <input type="email" placeholder="Work email"
+          class="w-full px-5 py-3.5 rounded-lg bg-white/5 border border-white/10 text-[#faf9f7] text-[14px] placeholder:text-white/30 focus:outline-none focus:border-[#2563eb]/50 transition-colors">
+        <input type="text" placeholder="Company"
+          class="w-full px-5 py-3.5 rounded-lg bg-white/5 border border-white/10 text-[#faf9f7] text-[14px] placeholder:text-white/30 focus:outline-none focus:border-[#2563eb]/50 transition-colors">
+        <button type="submit" class="pill-btn pill-blue w-full py-4 text-[14px] font-semibold mt-2">
+          Book Your Demo
+        </button>
+      </form>
+      <div class="flex items-center gap-6 text-[12px]" style="color: rgba(250,249,247,0.35);">
+        <span>No commitment</span>
+        <span>&bull;</span>
+        <span>30 min call</span>
+        <span>&bull;</span>
+        <span>Live platform demo</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     10. FOOTER — Dark, minimal, editorial
+     ═══════════════════════════════════════════════════════════ -->
+<footer style="background: #1a1a1a; border-top: 1px solid rgba(250,249,247,0.06);">
+  <div class="max-w-[1400px] mx-auto px-8 py-16">
+    <div class="footer-grid grid gap-16" style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+
+      <!-- Brand -->
+      <div>
+        <div class="serif text-[24px] text-[#faf9f7] mb-4">The Switchboard</div>
+        <p class="text-[14px] leading-[1.7] max-w-[280px]" style="color: rgba(250,249,247,0.4);">
+          The intelligence layer for insurance distribution. Enrich, score, segment, route, and analyze every opportunity.
+        </p>
+      </div>
+
+      <!-- Platform -->
+      <div>
+        <div class="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#faf9f7] mb-5">Platform</div>
+        <div class="flex flex-col gap-3">
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">Data Enrichment</a>
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">Risk Segmentation</a>
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">Quality Scoring</a>
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">Decision Engine</a>
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">Analytics</a>
+        </div>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <div class="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#faf9f7] mb-5">Company</div>
+        <div class="flex flex-col gap-3">
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">About</a>
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">Careers</a>
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">Journal</a>
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">Contact</a>
+        </div>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <div class="text-[11px] uppercase tracking-[0.15em] font-semibold text-[#faf9f7] mb-5">Legal</div>
+        <div class="flex flex-col gap-3">
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">Privacy Policy</a>
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">Terms of Service</a>
+          <a href="#" class="text-[13px] hover:text-[#faf9f7] transition-colors" style="color: rgba(250,249,247,0.4);">Security</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-4" style="border-top: 1px solid rgba(250,249,247,0.06);">
+      <div class="text-[12px]" style="color: rgba(250,249,247,0.3);">&copy; 2026 The Switchboard. All rights reserved.</div>
+      <div class="text-[12px]" style="color: rgba(250,249,247,0.2);">Intelligence, delivered.</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
