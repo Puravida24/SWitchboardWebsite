@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Switchboard — Insurance Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue: #3b82f6;
+    --blue-deep: #2563eb;
+    --blue-dark: #1d4ed8;
+    --amber: #f59e0b;
+    --green: #22c55e;
+    --cyan: #06b6d4;
+    --bg-start: #030818;
+    --bg-mid: #0a1628;
+    --bg-end: #0d1f3c;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-start);
+    color: #e2e8f0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .font-serif { font-family: 'Instrument Serif', serif; }
+
+  /* Noise texture overlay */
+  .noise-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Dark gradient bg */
+  .dark-gradient {
+    background: linear-gradient(135deg, #030818 0%, #0a1628 30%, #0d1f3c 60%, #071230 100%);
+  }
+
+  /* Glassmorphic panel */
+  .glass {
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .glass-strong {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  /* Multi-shadow cards */
+  .card-shadow {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.05);
+  }
+  .deep-shadow {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 16px 48px rgba(0,0,0,0.3), 0 32px 80px rgba(0,0,0,0.2);
+  }
+
+  /* Gradient button */
+  .btn-gradient {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 4px 15px rgba(37,99,235,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+  }
+  .btn-gradient:hover {
+    box-shadow: 0 6px 25px rgba(37,99,235,0.6), inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(-1px);
+  }
+  .btn-ghost {
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* Glow orb */
+  .glow-blue {
+    background: radial-gradient(circle, #3b82f6 0%, #2563eb 50%, transparent 70%);
+    box-shadow: 0 0 12px rgba(59,130,246,0.8), 0 0 30px rgba(59,130,246,0.4), 0 0 60px rgba(59,130,246,0.1);
+  }
+  .glow-amber {
+    background: radial-gradient(circle, #f59e0b 0%, #d97706 50%, transparent 70%);
+    box-shadow: 0 0 12px rgba(245,158,11,0.8), 0 0 30px rgba(245,158,11,0.4), 0 0 60px rgba(245,158,11,0.1);
+  }
+  .glow-green {
+    background: radial-gradient(circle, #22c55e 0%, #16a34a 50%, transparent 70%);
+    box-shadow: 0 0 12px rgba(34,197,94,0.8), 0 0 30px rgba(34,197,94,0.4), 0 0 60px rgba(34,197,94,0.1);
+  }
+  .glow-cyan {
+    background: radial-gradient(circle, #06b6d4 0%, #0891b2 50%, transparent 70%);
+    box-shadow: 0 0 12px rgba(6,182,212,0.8), 0 0 30px rgba(6,182,212,0.4), 0 0 60px rgba(6,182,212,0.1);
+  }
+
+  /* Jack hole styling */
+  .jack {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #1a2744 0%, #0c1a30 60%, #060e1f 100%);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.3);
+    position: relative;
+    transition: all 0.4s ease;
+  }
+  .jack::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(30,50,80,0.8) 0%, rgba(10,20,40,0.9) 100%);
+    border: 0.5px solid rgba(255,255,255,0.04);
+  }
+  .jack.active-blue::after {
+    background: radial-gradient(circle, #3b82f6 0%, #2563eb 40%, rgba(37,99,235,0.3) 70%, transparent 100%);
+    box-shadow: 0 0 8px rgba(59,130,246,0.9), 0 0 20px rgba(59,130,246,0.5);
+  }
+  .jack.active-amber::after {
+    background: radial-gradient(circle, #f59e0b 0%, #d97706 40%, rgba(217,119,6,0.3) 70%, transparent 100%);
+    box-shadow: 0 0 8px rgba(245,158,11,0.9), 0 0 20px rgba(245,158,11,0.5);
+  }
+  .jack.active-green::after {
+    background: radial-gradient(circle, #22c55e 0%, #16a34a 40%, rgba(22,163,74,0.3) 70%, transparent 100%);
+    box-shadow: 0 0 8px rgba(34,197,94,0.9), 0 0 20px rgba(34,197,94,0.5);
+  }
+  .jack.active-cyan::after {
+    background: radial-gradient(circle, #06b6d4 0%, #0891b2 40%, rgba(8,145,178,0.3) 70%, transparent 100%);
+    box-shadow: 0 0 8px rgba(6,182,212,0.9), 0 0 20px rgba(6,182,212,0.5);
+  }
+
+  /* Pulse animation for live dot */
+  @keyframes pulse-live {
+    0%, 100% { opacity: 1; box-shadow: 0 0 4px #22c55e, 0 0 12px rgba(34,197,94,0.5); }
+    50% { opacity: 0.5; box-shadow: 0 0 2px #22c55e, 0 0 6px rgba(34,197,94,0.3); }
+  }
+  .pulse-live { animation: pulse-live 2s ease-in-out infinite; }
+
+  /* Jack glow pulse */
+  @keyframes jack-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  .jack-pulse::after { animation: jack-pulse 2.5s ease-in-out infinite; }
+
+  /* Flowing dot animation along cords */
+  @keyframes flow-dot {
+    0% { offset-distance: 0%; opacity: 0; }
+    5% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { offset-distance: 100%; opacity: 0; }
+  }
+
+  /* SVG animated dot */
+  .flow-dot {
+    r: 3;
+    filter: url(#glow);
+  }
+
+  /* Scanline overlay */
+  .scanlines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Counter tick animation */
+  @keyframes tick {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+    100% { transform: translateY(0); }
+  }
+
+  /* Radial glow behind console */
+  .radial-glow {
+    position: absolute;
+    width: 800px;
+    height: 600px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse, rgba(37,99,235,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Connecting line animation */
+  @keyframes line-flow {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
+  .animated-line {
+    background: linear-gradient(90deg, transparent, rgba(59,130,246,0.5), rgba(34,197,94,0.5), transparent);
+    background-size: 200% 100%;
+    animation: line-flow 3s linear infinite;
+  }
+
+  /* Step connector */
+  .step-connector {
+    height: 2px;
+    background: linear-gradient(90deg, rgba(59,130,246,0.3), rgba(34,197,94,0.3));
+    position: relative;
+  }
+  .step-connector::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #3b82f6;
+    box-shadow: 0 0 8px rgba(59,130,246,0.8);
+    animation: dot-travel 3s linear infinite;
+  }
+  @keyframes dot-travel {
+    0% { left: 0%; }
+    100% { left: calc(100% - 6px); }
+  }
+
+  /* Subtle text glow */
+  .text-glow {
+    text-shadow: 0 0 30px rgba(59,130,246,0.3), 0 0 60px rgba(59,130,246,0.1);
+  }
+
+  /* Light section */
+  .light-section {
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  }
+
+  /* Mobile jack grid */
+  @media (max-width: 768px) {
+    .console-grid { gap: 8px !important; }
+    .jack { width: 16px; height: 16px; }
+    .jack-label { font-size: 8px !important; }
+    .row-label { font-size: 9px !important; min-width: 60px !important; }
+    .console-panel { padding: 16px !important; }
+  }
+  @media (max-width: 480px) {
+    .hide-mobile-jack { display: none; }
+  }
+
+  /* Smooth reveal */
+  [x-cloak] { display: none !important; }
+</style>
+</head>
+<body class="dark-gradient noise-bg relative" x-data="consoleApp()">
+
+<!-- ============================================= -->
+<!-- NAVIGATION -->
+<!-- ============================================= -->
+<nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+     :class="scrolled ? 'bg-[#030818]/80 backdrop-blur-xl border-b border-white/5' : ''"
+     x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 40">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2.5 group">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/20">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4m-3.5-6.5L16 7m-8 10l-1.5 1.5M20.5 17.5L18 16M6 8L3.5 6.5m14 0L16 8M6 16l-2.5 1.5"/>
+        </svg>
+      </div>
+      <span class="text-white font-bold text-lg tracking-tight">The Switchboard</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#how-it-works" class="text-sm text-slate-400 hover:text-white transition-colors">How It Works</a>
+      <a href="#capabilities" class="text-sm text-slate-400 hover:text-white transition-colors">Capabilities</a>
+      <a href="#results" class="text-sm text-slate-400 hover:text-white transition-colors">Results</a>
+      <a href="#contact" class="btn-gradient text-white text-sm font-semibold px-5 py-2 rounded-lg">Get Started</a>
+    </div>
+    <!-- Mobile menu -->
+    <button class="md:hidden text-white" @click="$dispatch('toggle-mobile')">
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</nav>
+
+
+<!-- ============================================= -->
+<!-- HERO — THE OPERATOR CONSOLE -->
+<!-- ============================================= -->
+<section class="relative min-h-screen flex flex-col items-center justify-center pt-20 pb-12 px-4 overflow-hidden">
+
+  <!-- Radial glow behind console -->
+  <div class="radial-glow" style="width:1000px; height:800px;"></div>
+  <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-indigo-500/5 rounded-full blur-3xl"></div>
+
+  <!-- Hero text ABOVE console -->
+  <div class="relative z-10 text-center mb-8 max-w-3xl mx-auto">
+    <div class="inline-flex items-center gap-2 mb-5">
+      <span class="w-2 h-2 rounded-full bg-blue-500 glow-blue"></span>
+      <span class="text-xs font-semibold tracking-[0.2em] uppercase text-blue-400/80">Insurance Intelligence Platform</span>
+    </div>
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.08] mb-4 text-glow">
+      The intelligence<br><span class="font-serif italic font-normal text-blue-300/90">operator.</span>
+    </h1>
+    <p class="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-7 leading-relaxed">
+      Every connection enriched, scored, and routed in real time. Watch the switchboard work.
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="#contact" class="btn-gradient text-white font-semibold px-7 py-3 rounded-xl text-sm">See It Live</a>
+      <a href="#how-it-works" class="btn-ghost text-white/80 font-semibold px-7 py-3 rounded-xl text-sm">How It Works</a>
+    </div>
+  </div>
+
+  <!-- ===== THE OPERATOR CONSOLE ===== -->
+  <div class="relative z-10 w-full max-w-[1100px] mx-auto">
+    <div class="glass-strong rounded-2xl overflow-hidden scanlines console-panel p-5 sm:p-7 relative" style="box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 32px 80px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08), 0 0 120px rgba(37,99,235,0.06);">
+
+      <!-- Console Top Bar -->
+      <div class="flex items-center justify-between mb-5 px-2 flex-wrap gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-[10px] sm:text-xs font-bold tracking-[0.15em] uppercase text-slate-300">The Switchboard</span>
+          <span class="text-[10px] sm:text-xs text-slate-500 tracking-wide">— Intelligence Console</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-green-500 pulse-live"></span>
+            <span class="text-[10px] sm:text-xs font-semibold text-green-400 tracking-wide uppercase">Live</span>
+          </div>
+          <div class="flex items-center gap-1.5 glass rounded-full px-3 py-1">
+            <svg class="w-3 h-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span class="text-[10px] sm:text-xs font-mono text-blue-300" x-text="connectionCount.toLocaleString() + ' connections/sec'"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Console Main Area: Jack Grid + SVG Cords -->
+      <div class="relative rounded-xl overflow-hidden" style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.04);">
+        <div class="p-4 sm:p-6">
+
+          <!-- SVG overlay for patch cords -->
+          <svg class="absolute inset-0 w-full h-full pointer-events-none z-10" preserveAspectRatio="none" id="cordsSvg">
+            <defs>
+              <!-- Glow filter for dots -->
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="glow-strong" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <!-- Gradients for cords -->
+              <linearGradient id="cord-blue-green" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.7"/>
+                <stop offset="100%" stop-color="#22c55e" stop-opacity="0.7"/>
+              </linearGradient>
+              <linearGradient id="cord-blue-amber" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.7"/>
+                <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.7"/>
+              </linearGradient>
+              <linearGradient id="cord-blue-cyan" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.7"/>
+                <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.7"/>
+              </linearGradient>
+              <linearGradient id="cord-green-green" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#22c55e" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#22c55e" stop-opacity="0.6"/>
+              </linearGradient>
+              <linearGradient id="cord-amber-green" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#22c55e" stop-opacity="0.6"/>
+              </linearGradient>
+              <linearGradient id="cord-cyan-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.6"/>
+              </linearGradient>
+            </defs>
+            <!-- Cords will be drawn by Alpine -->
+            <g id="cordsGroup"></g>
+          </svg>
+
+          <!-- THE JACK GRID -->
+          <div class="console-grid grid gap-5 sm:gap-6 relative z-20">
+
+            <!-- Row 1: SOURCES -->
+            <div class="flex items-center gap-3 sm:gap-4">
+              <div class="row-label min-w-[70px] sm:min-w-[90px]">
+                <span class="text-[9px] sm:text-[10px] font-bold tracking-[0.15em] uppercase text-blue-400/70">Sources</span>
+              </div>
+              <div class="flex-1 flex justify-between items-center">
+                <template x-for="(jack, i) in sourceJacks" :key="'s'+i">
+                  <div class="flex flex-col items-center gap-1.5" :class="i >= 5 ? 'hide-mobile-jack' : ''">
+                    <div class="jack jack-pulse" :class="jack.state" :id="'source-'+i" :data-row="0" :data-col="i"></div>
+                    <span class="jack-label text-[8px] sm:text-[9px] text-slate-500 font-medium" x-text="jack.label"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <!-- Row 2: ENRICHMENT -->
+            <div class="flex items-center gap-3 sm:gap-4">
+              <div class="row-label min-w-[70px] sm:min-w-[90px]">
+                <span class="text-[9px] sm:text-[10px] font-bold tracking-[0.15em] uppercase text-amber-400/70">Enrich</span>
+              </div>
+              <div class="flex-1 flex justify-between items-center">
+                <template x-for="(jack, i) in enrichJacks" :key="'e'+i">
+                  <div class="flex flex-col items-center gap-1.5" :class="i >= 5 ? 'hide-mobile-jack' : ''">
+                    <div class="jack jack-pulse" :class="jack.state" :id="'enrich-'+i" :data-row="1" :data-col="i"></div>
+                    <span class="jack-label text-[8px] sm:text-[9px] text-slate-500 font-medium" x-text="jack.label"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <!-- Row 3: ROUTING -->
+            <div class="flex items-center gap-3 sm:gap-4">
+              <div class="row-label min-w-[70px] sm:min-w-[90px]">
+                <span class="text-[9px] sm:text-[10px] font-bold tracking-[0.15em] uppercase text-green-400/70">Routing</span>
+              </div>
+              <div class="flex-1 flex justify-between items-center">
+                <template x-for="(jack, i) in routeJacks" :key="'r'+i">
+                  <div class="flex flex-col items-center gap-1.5" :class="i >= 5 ? 'hide-mobile-jack' : ''">
+                    <div class="jack jack-pulse" :class="jack.state" :id="'route-'+i" :data-row="2" :data-col="i"></div>
+                    <span class="jack-label text-[8px] sm:text-[9px] text-slate-500 font-medium" x-text="jack.label"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <!-- Row 4: DESTINATIONS -->
+            <div class="flex items-center gap-3 sm:gap-4">
+              <div class="row-label min-w-[70px] sm:min-w-[90px]">
+                <span class="text-[9px] sm:text-[10px] font-bold tracking-[0.15em] uppercase text-green-400/70">Output</span>
+              </div>
+              <div class="flex-1 flex justify-between items-center">
+                <template x-for="(jack, i) in destJacks" :key="'d'+i">
+                  <div class="flex flex-col items-center gap-1.5" :class="i >= 5 ? 'hide-mobile-jack' : ''">
+                    <div class="jack jack-pulse" :class="jack.state" :id="'dest-'+i" :data-row="3" :data-col="i"></div>
+                    <span class="jack-label text-[8px] sm:text-[9px] text-slate-500 font-medium" x-text="jack.label"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Status Panel (bottom of console) -->
+        <div class="border-t border-white/5 bg-black/20 px-4 sm:px-6 py-3">
+          <div class="flex flex-wrap justify-between gap-3 text-[10px] sm:text-xs">
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-500" style="box-shadow: 0 0 6px rgba(59,130,246,0.8);"></span>
+              <span class="text-slate-400">Sources Active: <span class="text-blue-300 font-semibold" x-text="activeSources + '/8'"></span></span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500" style="box-shadow: 0 0 6px rgba(245,158,11,0.8);"></span>
+              <span class="text-slate-400">Enrichment Queue: <span class="text-amber-300 font-semibold" x-text="enrichQueue"></span></span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-500" style="box-shadow: 0 0 6px rgba(34,197,94,0.8);"></span>
+              <span class="text-slate-400">Routes/sec: <span class="text-green-300 font-semibold" x-text="routesSec.toLocaleString()"></span></span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan-500" style="box-shadow: 0 0 6px rgba(6,182,212,0.8);"></span>
+              <span class="text-slate-400">Match Rate: <span class="text-cyan-300 font-semibold" x-text="matchRate + '%'"></span></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- STATS -->
+<!-- ============================================= -->
+<section class="relative py-20 px-4 noise-bg">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+      <div class="glass rounded-xl p-6 text-center group hover:border-blue-500/20 transition-all duration-500">
+        <div class="text-3xl sm:text-4xl font-extrabold text-white mb-1 text-glow">10M+</div>
+        <div class="text-xs text-slate-400 tracking-wide uppercase font-semibold">Connections Routed</div>
+      </div>
+      <div class="glass rounded-xl p-6 text-center group hover:border-green-500/20 transition-all duration-500">
+        <div class="text-3xl sm:text-4xl font-extrabold text-white mb-1" style="text-shadow: 0 0 30px rgba(34,197,94,0.3);">&lt;250<span class="text-lg">ms</span></div>
+        <div class="text-xs text-slate-400 tracking-wide uppercase font-semibold">Routing Speed</div>
+      </div>
+      <div class="glass rounded-xl p-6 text-center group hover:border-amber-500/20 transition-all duration-500">
+        <div class="text-3xl sm:text-4xl font-extrabold text-white mb-1" style="text-shadow: 0 0 30px rgba(245,158,11,0.3);">94%</div>
+        <div class="text-xs text-slate-400 tracking-wide uppercase font-semibold">Signal Accuracy</div>
+      </div>
+      <div class="glass rounded-xl p-6 text-center group hover:border-cyan-500/20 transition-all duration-500">
+        <div class="text-3xl sm:text-4xl font-extrabold text-white mb-1" style="text-shadow: 0 0 30px rgba(6,182,212,0.3);">50+</div>
+        <div class="text-xs text-slate-400 tracking-wide uppercase font-semibold">Active Lines</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- HOW THE OPERATOR WORKS -->
+<!-- ============================================= -->
+<section id="how-it-works" class="relative py-24 px-4 noise-bg">
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/[0.02] to-transparent pointer-events-none"></div>
+  <div class="max-w-6xl mx-auto relative z-10">
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 mb-4">
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 glow-blue"></span>
+        <span class="text-xs font-semibold tracking-[0.2em] uppercase text-blue-400/80">Process</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">How the <span class="font-serif italic font-normal text-blue-300/90">operator</span> works</h2>
+      <p class="text-slate-400 max-w-lg mx-auto">Four precision steps. Every signal received, identified, matched, and connected.</p>
+    </div>
+
+    <div class="grid md:grid-cols-4 gap-6 relative">
+      <!-- Connecting line (desktop) -->
+      <div class="hidden md:block absolute top-12 left-[12.5%] right-[12.5%] h-0.5 z-0">
+        <div class="animated-line w-full h-full rounded-full"></div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="glass rounded-xl p-6 relative z-10 text-center group hover:border-blue-500/20 transition-all duration-500">
+        <div class="w-10 h-10 rounded-full mx-auto mb-4 flex items-center justify-center" style="background: radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%); border: 1px solid rgba(59,130,246,0.3); box-shadow: 0 0 20px rgba(59,130,246,0.15);">
+          <svg class="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M9.348 14.652a3.75 3.75 0 010-5.304m5.304 0a3.75 3.75 0 010 5.304m-7.425 2.121a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.808-3.808-9.98 0-13.788m13.788 0c3.808 3.808 3.808 9.98 0 13.788M12 12h.008v.008H12V12zm0 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+        </div>
+        <div class="text-xs text-blue-400 font-semibold tracking-wide uppercase mb-2">Step 01</div>
+        <h3 class="text-white font-bold text-lg mb-2">Receive the Signal</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Every incoming opportunity hits the switchboard. Web forms, API feeds, partner connections, call data.</p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="glass rounded-xl p-6 relative z-10 text-center group hover:border-amber-500/20 transition-all duration-500">
+        <div class="w-10 h-10 rounded-full mx-auto mb-4 flex items-center justify-center" style="background: radial-gradient(circle, rgba(245,158,11,0.2) 0%, transparent 70%); border: 1px solid rgba(245,158,11,0.3); box-shadow: 0 0 20px rgba(245,158,11,0.15);">
+          <svg class="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+        </div>
+        <div class="text-xs text-amber-400 font-semibold tracking-wide uppercase mb-2">Step 02</div>
+        <h3 class="text-white font-bold text-lg mb-2">Identify the Caller</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Real-time enrichment layers on 40+ data points. Risk scoring separates premium signals from noise.</p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="glass rounded-xl p-6 relative z-10 text-center group hover:border-green-500/20 transition-all duration-500">
+        <div class="w-10 h-10 rounded-full mx-auto mb-4 flex items-center justify-center" style="background: radial-gradient(circle, rgba(34,197,94,0.2) 0%, transparent 70%); border: 1px solid rgba(34,197,94,0.3); box-shadow: 0 0 20px rgba(34,197,94,0.15);">
+          <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+        </div>
+        <div class="text-xs text-green-400 font-semibold tracking-wide uppercase mb-2">Step 03</div>
+        <h3 class="text-white font-bold text-lg mb-2">Find the Best Line</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Intelligent segmentation matches each opportunity to the highest-value buyer in real time.</p>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="glass rounded-xl p-6 relative z-10 text-center group hover:border-cyan-500/20 transition-all duration-500">
+        <div class="w-10 h-10 rounded-full mx-auto mb-4 flex items-center justify-center" style="background: radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 70%); border: 1px solid rgba(6,182,212,0.3); box-shadow: 0 0 20px rgba(6,182,212,0.15);">
+          <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-4.07a4.5 4.5 0 00-6.364-6.364L4.5 6.257m11.566 6.013l4.5-4.5a4.5 4.5 0 00-6.364-6.364l-4.5 4.5"/></svg>
+        </div>
+        <div class="text-xs text-cyan-400 font-semibold tracking-wide uppercase mb-2">Step 04</div>
+        <h3 class="text-white font-bold text-lg mb-2">Make the Connection</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Sub-250ms routing delivers enriched, scored opportunities to the right buyer, every time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- CAPABILITIES -->
+<!-- ============================================= -->
+<section id="capabilities" class="relative py-24 px-4" style="background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%);">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 mb-4">
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+        <span class="text-xs font-semibold tracking-[0.2em] uppercase text-blue-600/80">Capabilities</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3">Operator <span class="font-serif italic font-normal text-blue-600">skills</span></h2>
+      <p class="text-slate-500 max-w-lg mx-auto">Five core capabilities that no single competitor combines. The full intelligence stack, unified.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Card 1 -->
+      <div class="bg-white rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.05);">
+        <div class="w-11 h-11 rounded-xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.05)); border: 1px solid rgba(59,130,246,0.15);">
+          <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M9.348 14.652a3.75 3.75 0 010-5.304m5.304 0a3.75 3.75 0 010 5.304m-7.425 2.121a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546"/></svg>
+        </div>
+        <h3 class="text-slate-900 font-bold text-lg mb-2">Signal Reception</h3>
+        <p class="text-sm text-slate-500 leading-relaxed mb-4">Real-time data enrichment with 40+ appended fields per opportunity. Phone verification, address validation, demographic layering.</p>
+        <span class="text-xs font-semibold text-blue-600 tracking-wide uppercase">Enrichment Engine</span>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="bg-white rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.05);">
+        <div class="w-11 h-11 rounded-xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05)); border: 1px solid rgba(245,158,11,0.15);">
+          <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+        </div>
+        <h3 class="text-slate-900 font-bold text-lg mb-2">Caller Identification</h3>
+        <p class="text-sm text-slate-500 leading-relaxed mb-4">Proprietary risk-scoring algorithms assess opportunity quality in milliseconds. Higher scores mean higher conversion potential.</p>
+        <span class="text-xs font-semibold text-amber-600 tracking-wide uppercase">Scoring Engine</span>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="bg-white rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.05);">
+        <div class="w-11 h-11 rounded-xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(139,92,246,0.05)); border: 1px solid rgba(139,92,246,0.15);">
+          <svg class="w-5 h-5 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M6 6.878V6a2.25 2.25 0 012.25-2.25h7.5A2.25 2.25 0 0118 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 004.5 9v.878m13.5-3A2.25 2.25 0 0119.5 9v.878m0 0a2.246 2.246 0 00-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0121 12v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6c0-1.007.663-1.86 1.577-2.144"/></svg>
+        </div>
+        <h3 class="text-slate-900 font-bold text-lg mb-2">Line Management</h3>
+        <p class="text-sm text-slate-500 leading-relaxed mb-4">Dynamic segmentation groups opportunities by geography, product line, risk tier, and custom buyer criteria automatically.</p>
+        <span class="text-xs font-semibold text-violet-600 tracking-wide uppercase">Segmentation Engine</span>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="bg-white rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 sm:col-span-1 lg:col-span-1" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.05);">
+        <div class="w-11 h-11 rounded-xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.05)); border: 1px solid rgba(34,197,94,0.15);">
+          <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+        </div>
+        <h3 class="text-slate-900 font-bold text-lg mb-2">Connection Routing</h3>
+        <p class="text-sm text-slate-500 leading-relaxed mb-4">Sub-250ms intelligent routing to the highest-bidding, best-fit buyer. Ping-post, exclusive, and shared distribution models.</p>
+        <span class="text-xs font-semibold text-green-600 tracking-wide uppercase">Routing Engine</span>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="bg-white rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 sm:col-span-2 lg:col-span-2" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.05);">
+        <div class="flex gap-6 items-start">
+          <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(6,182,212,0.05)); border: 1px solid rgba(6,182,212,0.15);">
+            <svg class="w-5 h-5 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605"/></svg>
+          </div>
+          <div>
+            <h3 class="text-slate-900 font-bold text-lg mb-2">Call Analytics</h3>
+            <p class="text-sm text-slate-500 leading-relaxed mb-4">Real-time dashboards track every signal through the entire pipeline. Source performance, buyer fill rates, revenue attribution, and margin optimization — all in one view.</p>
+            <span class="text-xs font-semibold text-cyan-600 tracking-wide uppercase">Analytics Engine</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- TESTIMONIAL -->
+<!-- ============================================= -->
+<section class="relative py-24 px-4 dark-gradient noise-bg">
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-blue-500/[0.04] rounded-full blur-3xl"></div>
+  </div>
+  <div class="max-w-3xl mx-auto relative z-10">
+    <div class="glass-strong rounded-2xl p-8 sm:p-12 text-center" style="box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 80px rgba(37,99,235,0.05);">
+      <svg class="w-10 h-10 mx-auto mb-6 text-blue-500/30" fill="currentColor" viewBox="0 0 24 24"><path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z"/></svg>
+      <blockquote class="text-xl sm:text-2xl text-white font-medium leading-relaxed mb-6">
+        "The Switchboard transformed how we buy insurance opportunities. The enrichment and real-time scoring alone cut our cost-per-acquisition by 40%. It's like having an operator who never sleeps."
+      </blockquote>
+      <div class="flex items-center justify-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">JM</div>
+        <div class="text-left">
+          <div class="text-white font-semibold text-sm">James Mitchell</div>
+          <div class="text-slate-400 text-xs">VP of Acquisition, National Insurance Group</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- CASE STUDIES -->
+<!-- ============================================= -->
+<section id="results" class="relative py-24 px-4 dark-gradient noise-bg">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-14">
+      <div class="inline-flex items-center gap-2 mb-4">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-500 glow-green"></span>
+        <span class="text-xs font-semibold tracking-[0.2em] uppercase text-green-400/80">Results</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Proven <span class="font-serif italic font-normal text-green-300/80">connections</span></h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Case Study 1 -->
+      <div class="glass-strong rounded-2xl p-7 sm:p-9 group hover:border-green-500/15 transition-all duration-500" style="box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 24px 64px rgba(0,0,0,0.2);">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-semibold tracking-[0.15em] uppercase text-green-400/70">Case Study</span>
+          <span class="text-xs text-slate-500">|</span>
+          <span class="text-xs text-slate-400">Auto Insurance</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">Regional carrier scales acquisition 3x without increasing spend</h3>
+        <p class="text-sm text-slate-400 leading-relaxed mb-6">By leveraging The Switchboard's enrichment and intelligent routing, this mid-market auto carrier tripled their qualified opportunity volume while maintaining their target CPA.</p>
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <div class="text-2xl font-extrabold text-green-400">3x</div>
+            <div class="text-[10px] text-slate-500 uppercase tracking-wide font-semibold">Volume Growth</div>
+          </div>
+          <div>
+            <div class="text-2xl font-extrabold text-blue-400">-34%</div>
+            <div class="text-[10px] text-slate-500 uppercase tracking-wide font-semibold">Cost Per Acq.</div>
+          </div>
+          <div>
+            <div class="text-2xl font-extrabold text-amber-400">94%</div>
+            <div class="text-[10px] text-slate-500 uppercase tracking-wide font-semibold">Contact Rate</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case Study 2 -->
+      <div class="glass-strong rounded-2xl p-7 sm:p-9 group hover:border-blue-500/15 transition-all duration-500" style="box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 24px 64px rgba(0,0,0,0.2);">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-semibold tracking-[0.15em] uppercase text-blue-400/70">Case Study</span>
+          <span class="text-xs text-slate-500">|</span>
+          <span class="text-xs text-slate-400">Home Insurance</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">National aggregator improves match rate from 62% to 91%</h3>
+        <p class="text-sm text-slate-400 leading-relaxed mb-6">The Switchboard's real-time scoring and segmentation engine helped this aggregator dramatically improve buyer-opportunity fit across their entire network.</p>
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <div class="text-2xl font-extrabold text-blue-400">91%</div>
+            <div class="text-[10px] text-slate-500 uppercase tracking-wide font-semibold">Match Rate</div>
+          </div>
+          <div>
+            <div class="text-2xl font-extrabold text-green-400">+47%</div>
+            <div class="text-[10px] text-slate-500 uppercase tracking-wide font-semibold">Revenue/Opp</div>
+          </div>
+          <div>
+            <div class="text-2xl font-extrabold text-cyan-400">&lt;200ms</div>
+            <div class="text-[10px] text-slate-500 uppercase tracking-wide font-semibold">Route Time</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- CTA -->
+<!-- ============================================= -->
+<section id="contact" class="relative py-28 px-4 overflow-hidden">
+  <div class="absolute inset-0 dark-gradient"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-blue-600/[0.06] rounded-full blur-3xl pointer-events-none"></div>
+  <div class="relative z-10 max-w-2xl mx-auto text-center">
+    <div class="inline-flex items-center gap-2 mb-5">
+      <span class="w-2 h-2 rounded-full bg-green-500 pulse-live"></span>
+      <span class="text-xs font-semibold tracking-[0.2em] uppercase text-green-400/80">Lines Open</span>
+    </div>
+    <h2 class="text-3xl sm:text-5xl font-extrabold text-white mb-4 text-glow">Ready to <span class="font-serif italic font-normal text-blue-300/90">connect?</span></h2>
+    <p class="text-slate-400 text-lg max-w-md mx-auto mb-8 leading-relaxed">See The Switchboard route live opportunities in real time. No obligation, no pressure.</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="#" class="btn-gradient text-white font-semibold px-8 py-3.5 rounded-xl text-sm inline-flex items-center gap-2">
+        Request a Demo
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+      <a href="#" class="btn-ghost text-white/80 font-semibold px-8 py-3.5 rounded-xl text-sm">Talk to Our Team</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================= -->
+<!-- FOOTER -->
+<!-- ============================================= -->
+<footer class="relative px-4 pt-16 pb-8" style="background: linear-gradient(180deg, #030818 0%, #020612 100%);">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+      <div>
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+            <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>
+            </svg>
+          </div>
+          <span class="text-white font-bold text-sm">The Switchboard</span>
+        </div>
+        <p class="text-xs text-slate-500 leading-relaxed">The intelligence layer for insurance opportunity distribution. Enrich. Score. Route.</p>
+      </div>
+      <div>
+        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-4">Platform</h4>
+        <ul class="space-y-2.5">
+          <li><a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Enrichment</a></li>
+          <li><a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Scoring</a></li>
+          <li><a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Routing</a></li>
+          <li><a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Analytics</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-4">Company</h4>
+        <ul class="space-y-2.5">
+          <li><a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">About</a></li>
+          <li><a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Careers</a></li>
+          <li><a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Contact</a></li>
+          <li><a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-4">Legal</h4>
+        <ul class="space-y-2.5">
+          <li><a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Privacy Policy</a></li>
+          <li><a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Terms of Service</a></li>
+          <li><a href="#" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">TCPA Compliance</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <span class="text-xs text-slate-600">&copy; 2026 The Switchboard. All rights reserved.</span>
+      <div class="flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-500 pulse-live"></span>
+        <span class="text-[10px] text-slate-500">All systems operational</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ============================================= -->
+<!-- ALPINE.JS APP — CONSOLE LOGIC -->
+<!-- ============================================= -->
+<script>
+function consoleApp() {
+  return {
+    connectionCount: 1247,
+    activeSources: 5,
+    enrichQueue: 12,
+    routesSec: 1247,
+    matchRate: 94.2,
+
+    sourceJacks: [
+      { label: 'Forms', state: 'active-blue' },
+      { label: 'API', state: 'active-blue' },
+      { label: 'Partners', state: 'active-blue' },
+      { label: 'Calls', state: 'active-blue' },
+      { label: 'Web', state: 'active-blue' },
+      { label: 'Email', state: '' },
+      { label: 'Social', state: '' },
+      { label: 'Direct', state: '' },
+    ],
+    enrichJacks: [
+      { label: 'Phone', state: 'active-amber' },
+      { label: 'Address', state: 'active-amber' },
+      { label: 'Risk', state: 'active-amber' },
+      { label: 'Demo', state: 'active-amber' },
+      { label: 'Credit', state: '' },
+      { label: 'Vehicle', state: 'active-amber' },
+      { label: 'Property', state: '' },
+      { label: 'History', state: '' },
+    ],
+    routeJacks: [
+      { label: 'Score', state: 'active-green' },
+      { label: 'Segment', state: 'active-green' },
+      { label: 'Match', state: 'active-green' },
+      { label: 'Bid', state: 'active-green' },
+      { label: 'Filter', state: 'active-green' },
+      { label: 'Dedupe', state: '' },
+      { label: 'Comply', state: 'active-green' },
+      { label: 'Queue', state: '' },
+    ],
+    destJacks: [
+      { label: 'Tier 1', state: 'active-green' },
+      { label: 'Tier 2', state: 'active-green' },
+      { label: 'Tier 3', state: 'active-cyan' },
+      { label: 'Analytics', state: 'active-cyan' },
+      { label: 'CRM', state: 'active-green' },
+      { label: 'Reports', state: '' },
+      { label: 'Webhook', state: 'active-cyan' },
+      { label: 'Archive', state: '' },
+    ],
+
+    // Cord definitions: [sourceRow, sourceCol, destRow, destCol, gradientId, dotColor]
+    cords: [
+      [0, 0, 1, 0, 'cord-blue-amber', '#3b82f6'],    // Forms -> Phone
+      [0, 1, 1, 2, 'cord-blue-amber', '#3b82f6'],     // API -> Risk
+      [0, 2, 1, 3, 'cord-blue-amber', '#3b82f6'],     // Partners -> Demo
+      [0, 3, 1, 5, 'cord-blue-amber', '#3b82f6'],     // Calls -> Vehicle
+      [1, 0, 2, 0, 'cord-amber-green', '#f59e0b'],    // Phone -> Score
+      [1, 2, 2, 1, 'cord-amber-green', '#f59e0b'],    // Risk -> Segment
+      [1, 3, 2, 2, 'cord-amber-green', '#f59e0b'],    // Demo -> Match
+      [2, 0, 3, 0, 'cord-green-green', '#22c55e'],    // Score -> Tier 1
+      [2, 1, 3, 1, 'cord-green-green', '#22c55e'],    // Segment -> Tier 2
+      [2, 2, 3, 4, 'cord-green-green', '#22c55e'],    // Match -> CRM
+      [2, 4, 3, 3, 'cord-cyan-blue', '#06b6d4'],      // Filter -> Analytics
+      [0, 4, 1, 1, 'cord-blue-amber', '#3b82f6'],     // Web -> Address
+    ],
+
+    cordPaths: [],
+
+    init() {
+      // Tick up the connection counter
+      setInterval(() => {
+        this.connectionCount += Math.floor(Math.random() * 5) + 1;
+        this.routesSec = 1200 + Math.floor(Math.random() * 100);
+        this.enrichQueue = 8 + Math.floor(Math.random() * 10);
+        this.matchRate = (93.5 + Math.random() * 1.5).toFixed(1);
+      }, 2000);
+
+      // Randomly pulse jacks
+      setInterval(() => {
+        const rows = [this.sourceJacks, this.enrichJacks, this.routeJacks, this.destJacks];
+        const states = ['active-blue', 'active-amber', 'active-green', 'active-cyan'];
+        rows.forEach((row, ri) => {
+          row.forEach((jack, ji) => {
+            if (Math.random() > 0.85 && !jack.state) {
+              jack.state = states[ri] || 'active-blue';
+              setTimeout(() => { jack.state = ''; }, 1500 + Math.random() * 2000);
+            }
+          });
+        });
+      }, 3000);
+
+      // Draw SVG cords after DOM settles
+      this.$nextTick(() => {
+        setTimeout(() => this.drawCords(), 200);
+        window.addEventListener('resize', () => this.drawCords());
+      });
+    },
+
+    drawCords() {
+      const svg = document.getElementById('cordsSvg');
+      const group = document.getElementById('cordsGroup');
+      if (!svg || !group) return;
+      group.innerHTML = '';
+
+      const svgRect = svg.getBoundingClientRect();
+      const rowPrefixes = ['source', 'enrich', 'route', 'dest'];
+
+      this.cords.forEach((cord, ci) => {
+        const [sr, sc, dr, dc, gradId, dotColor] = cord;
+        const srcEl = document.getElementById(`${rowPrefixes[sr]}-${sc}`);
+        const dstEl = document.getElementById(`${rowPrefixes[dr]}-${dc}`);
+        if (!srcEl || !dstEl) return;
+
+        const srcRect = srcEl.getBoundingClientRect();
+        const dstRect = dstEl.getBoundingClientRect();
+
+        const x1 = srcRect.left + srcRect.width / 2 - svgRect.left;
+        const y1 = srcRect.top + srcRect.height / 2 - svgRect.top;
+        const x2 = dstRect.left + dstRect.width / 2 - svgRect.left;
+        const y2 = dstRect.top + dstRect.height / 2 - svgRect.top;
+
+        const midY = (y1 + y2) / 2;
+        const cpx1 = x1 + (x2 - x1) * 0.1;
+        const cpx2 = x1 + (x2 - x1) * 0.9;
+
+        const pathId = `cord-path-${ci}`;
+        const d = `M ${x1} ${y1} C ${cpx1} ${midY}, ${cpx2} ${midY}, ${x2} ${y2}`;
+
+        // Draw the cord path
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('id', pathId);
+        path.setAttribute('d', d);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', `url(#${gradId})`);
+        path.setAttribute('stroke-width', '1.5');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('opacity', '0.6');
+        group.appendChild(path);
+
+        // Animated dot flowing along the cord
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('r', '3');
+        circle.setAttribute('fill', dotColor);
+        circle.setAttribute('filter', 'url(#glow)');
+        circle.setAttribute('opacity', '0.9');
+
+        const animMotion = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+        const duration = (2.5 + Math.random() * 2).toFixed(1);
+        const delay = (Math.random() * 3).toFixed(1);
+        animMotion.setAttribute('dur', `${duration}s`);
+        animMotion.setAttribute('begin', `${delay}s`);
+        animMotion.setAttribute('repeatCount', 'indefinite');
+        animMotion.setAttribute('fill', 'freeze');
+
+        const mpath = document.createElementNS('http://www.w3.org/2000/svg', 'mpath');
+        mpath.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `#${pathId}`);
+        animMotion.appendChild(mpath);
+        circle.appendChild(animMotion);
+        group.appendChild(circle);
+
+        // Second dot for busier cords
+        if (ci < 6) {
+          const circle2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle2.setAttribute('r', '2');
+          circle2.setAttribute('fill', dotColor);
+          circle2.setAttribute('filter', 'url(#glow)');
+          circle2.setAttribute('opacity', '0.6');
+
+          const animMotion2 = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+          animMotion2.setAttribute('dur', `${(parseFloat(duration) + 1).toFixed(1)}s`);
+          animMotion2.setAttribute('begin', `${(parseFloat(delay) + 1.5).toFixed(1)}s`);
+          animMotion2.setAttribute('repeatCount', 'indefinite');
+
+          const mpath2 = document.createElementNS('http://www.w3.org/2000/svg', 'mpath');
+          mpath2.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `#${pathId}`);
+          animMotion2.appendChild(mpath2);
+          circle2.appendChild(animMotion2);
+          group.appendChild(circle2);
+        }
+      });
+    }
+  };
+}
+</script>
+
+</body>
+</html>

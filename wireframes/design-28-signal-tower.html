@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Switchboard — Insurance Intelligence Platform</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['Instrument Serif', 'Georgia', 'serif'],
+      },
+    }
+  }
+}
+</script>
+<style>
+  /* Noise texture overlay */
+  .noise-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .noise-bg > * { position: relative; z-index: 2; }
+
+  /* Hub pulse */
+  @keyframes hubPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.05); }
+  }
+  @keyframes ringPulse1 {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.08); opacity: 0.8; }
+  }
+  @keyframes ringPulse2 {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+    50% { transform: translate(-50%, -50%) scale(1.12); opacity: 0.6; }
+  }
+
+  /* Floating badges */
+  @keyframes floatA {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+  @keyframes floatB {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-16px); }
+  }
+  @keyframes floatC {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* Dot flow along spokes */
+  @keyframes dotFlowIn {
+    0% { offset-distance: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { offset-distance: 100%; opacity: 0; }
+  }
+  @keyframes dotFlowOut {
+    0% { offset-distance: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { offset-distance: 100%; opacity: 0; }
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, #ffffff 0%, #93c5fd 50%, #60a5fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .gradient-text-green {
+    background: linear-gradient(135deg, #ffffff 0%, #86efac 50%, #4ade80 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glassmorphic card */
+  .glass-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.05) inset;
+  }
+  .glass-card-light {
+    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(241,245,249,0.9) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  /* Gradient button */
+  .btn-gradient {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+    box-shadow: 0 4px 15px rgba(59,130,246,0.4), 0 1px 3px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.1) inset;
+    transition: all 0.3s ease;
+  }
+  .btn-gradient:hover {
+    box-shadow: 0 6px 25px rgba(59,130,246,0.6), 0 2px 6px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.15) inset;
+    transform: translateY(-1px);
+  }
+  .btn-outline-glow {
+    border: 1px solid rgba(59,130,246,0.5);
+    box-shadow: 0 0 15px rgba(59,130,246,0.15), 0 1px 3px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  }
+  .btn-outline-glow:hover {
+    border-color: rgba(59,130,246,0.8);
+    box-shadow: 0 0 25px rgba(59,130,246,0.3), 0 2px 6px rgba(0,0,0,0.3);
+    background: rgba(59,130,246,0.1);
+  }
+
+  /* Pipeline connector */
+  .pipeline-connector {
+    background: linear-gradient(90deg, rgba(59,130,246,0.3), rgba(59,130,246,0.6), rgba(59,130,246,0.3));
+    height: 2px;
+    position: relative;
+  }
+  .pipeline-connector::after {
+    content: '';
+    position: absolute;
+    width: 8px; height: 8px;
+    background: #3b82f6;
+    border-radius: 50%;
+    top: -3px;
+    animation: pipelineDot 2s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(59,130,246,0.8);
+  }
+  @keyframes pipelineDot {
+    0% { left: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+  }
+
+  /* Glow dot */
+  .glow-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    position: relative;
+  }
+  .glow-dot::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: inherit;
+    filter: blur(6px);
+    opacity: 0.6;
+  }
+  .glow-dot-blue { background: #3b82f6; }
+  .glow-dot-green { background: #4ade80; }
+  .glow-dot-purple { background: #a78bfa; }
+
+  /* Spoke node cards */
+  .spoke-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 100%);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.9);
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 1px rgba(255,255,255,0.1) inset;
+  }
+
+  /* Stat badge floating */
+  .stat-badge {
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  }
+
+  /* Capability card premium */
+  .capability-card {
+    background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 20px;
+    padding: 36px 28px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 12px 40px rgba(0,0,0,0.06), 0 -1px 0 rgba(255,255,255,0.8) inset;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .capability-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.04), 0 24px 60px rgba(0,0,0,0.1), 0 -1px 0 rgba(255,255,255,0.8) inset;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #0a0a1a; }
+  ::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.3); border-radius: 4px; }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+</style>
+</head>
+<body class="bg-[#06080f] text-white font-sans antialiased">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     NAVIGATION
+     ═══════════════════════════════════════════════════════════════ -->
+<nav x-data="{ open: false, scrolled: false }"
+     @scroll.window="scrolled = (window.scrollY > 40)"
+     :class="scrolled ? 'bg-[#06080f]/90 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/20' : 'bg-transparent'"
+     class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-3 group">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-shadow">
+        <span class="text-white font-bold text-sm">SB</span>
+      </div>
+      <span class="text-lg font-bold tracking-tight">The Switchboard</span>
+    </a>
+    <!-- Desktop links -->
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#pipeline" class="text-sm text-white/60 hover:text-white transition-colors">Platform</a>
+      <a href="#capabilities" class="text-sm text-white/60 hover:text-white transition-colors">Capabilities</a>
+      <a href="#results" class="text-sm text-white/60 hover:text-white transition-colors">Results</a>
+      <a href="#cta" class="btn-gradient text-sm font-semibold px-5 py-2.5 rounded-full text-white">Get Started</a>
+    </div>
+    <!-- Mobile hamburger -->
+    <button @click="open = !open" class="md:hidden text-white/70 hover:text-white">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path x-show="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        <path x-show="open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+  <!-- Mobile menu -->
+  <div x-show="open" x-transition class="md:hidden px-6 pb-6 space-y-4">
+    <a href="#pipeline" class="block text-sm text-white/70 hover:text-white">Platform</a>
+    <a href="#capabilities" class="block text-sm text-white/70 hover:text-white">Capabilities</a>
+    <a href="#results" class="block text-sm text-white/70 hover:text-white">Results</a>
+    <a href="#cta" class="btn-gradient inline-block text-sm font-semibold px-5 py-2.5 rounded-full text-white">Get Started</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HERO — SIGNAL TOWER HUB & SPOKE VISUALIZATION
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden noise-bg"
+         style="background: radial-gradient(ellipse 80% 60% at 50% 50%, #0c1a3a 0%, #0a1025 40%, #06080f 80%);">
+
+  <!-- Ambient glow orbs -->
+  <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/8 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-500/6 rounded-full blur-3xl"></div>
+  <div class="absolute top-1/3 right-1/3 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl"></div>
+
+  <!-- Header text above visualization -->
+  <div class="text-center mb-8 md:mb-12 pt-28 md:pt-32 px-6">
+    <p class="text-xs md:text-sm font-semibold tracking-[0.25em] uppercase text-blue-400/80 mb-4">Insurance Intelligence Platform</p>
+    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] mb-5">
+      <span class="gradient-text">The signal at the center.</span>
+    </h1>
+    <p class="text-base md:text-lg text-white/50 max-w-xl mx-auto leading-relaxed mb-8">
+      Every opportunity enriched, scored, and routed to the right buyer in milliseconds. One intelligence layer powering your entire distribution.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="#cta" class="btn-gradient px-8 py-3.5 rounded-full text-sm font-bold tracking-wide">See It In Action</a>
+      <a href="#pipeline" class="btn-outline-glow px-8 py-3.5 rounded-full text-sm font-semibold text-white/80">How It Works</a>
+    </div>
+  </div>
+
+  <!-- ═══ SIGNAL HUB VISUALIZATION ═══ -->
+  <div class="relative w-full max-w-5xl mx-auto px-4" style="height: 420px;" x-data="signalHub()">
+
+    <!-- SVG Spokes Layer -->
+    <svg class="absolute inset-0 w-full h-full hidden md:block" viewBox="0 0 1000 420" fill="none" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <!-- Gradients for inbound spokes (blue) -->
+        <linearGradient id="spokeInGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="rgba(59,130,246,0.15)"/>
+          <stop offset="100%" stop-color="rgba(59,130,246,0.6)"/>
+        </linearGradient>
+        <!-- Gradients for outbound spokes (blue to green) -->
+        <linearGradient id="spokeOutGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="rgba(59,130,246,0.6)"/>
+          <stop offset="100%" stop-color="rgba(74,222,128,0.5)"/>
+        </linearGradient>
+        <linearGradient id="spokeOutBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="rgba(59,130,246,0.6)"/>
+          <stop offset="100%" stop-color="rgba(96,165,250,0.3)"/>
+        </linearGradient>
+
+        <!-- Animated dot filter glow -->
+        <filter id="dotGlow">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+        </filter>
+      </defs>
+
+      <!-- INBOUND SPOKES (left side → hub center at 500,210) -->
+      <!-- Web Forms: upper-left -->
+      <path id="spokeIn1" d="M130,90 Q300,120 500,210" stroke="url(#spokeInGrad)" stroke-width="1.5" fill="none"/>
+      <!-- Partner APIs: left -->
+      <path id="spokeIn2" d="M100,175 Q280,185 500,210" stroke="url(#spokeInGrad)" stroke-width="1.5" fill="none"/>
+      <!-- Call Tracking: lower-left -->
+      <path id="spokeIn3" d="M100,255 Q280,245 500,210" stroke="url(#spokeInGrad)" stroke-width="1.5" fill="none"/>
+      <!-- Direct Upload: bottom-left -->
+      <path id="spokeIn4" d="M130,340 Q300,300 500,210" stroke="url(#spokeInGrad)" stroke-width="1.5" fill="none"/>
+
+      <!-- OUTBOUND SPOKES (hub center → right side) -->
+      <!-- Tier 1 Premium: upper-right -->
+      <path id="spokeOut1" d="M500,210 Q700,120 870,90" stroke="url(#spokeOutGrad)" stroke-width="1.5" fill="none"/>
+      <!-- Tier 2 Standard: right -->
+      <path id="spokeOut2" d="M500,210 Q720,185 900,175" stroke="url(#spokeOutGrad)" stroke-width="1.5" fill="none"/>
+      <!-- Analytics: lower-right -->
+      <path id="spokeOut3" d="M500,210 Q720,245 900,255" stroke="url(#spokeOutBlue)" stroke-width="1.5" fill="none"/>
+      <!-- CRM Sync: bottom-right -->
+      <path id="spokeOut4" d="M500,210 Q700,300 870,340" stroke="url(#spokeOutBlue)" stroke-width="1.5" fill="none"/>
+
+      <!-- Animated dots flowing INWARD (4 per spoke, staggered) -->
+      <template x-for="(spoke, si) in ['spokeIn1','spokeIn2','spokeIn3','spokeIn4']" :key="spoke">
+        <template x-for="d in [0,1,2]" :key="spoke+d">
+          <circle r="3" fill="#3b82f6" filter="url(#dotGlow)" opacity="0.9">
+            <animateMotion :dur="(2.5 + si*0.3) + 's'" repeatCount="indefinite" :begin="(d * 0.8) + 's'">
+              <mpath :href="'#' + spoke"/>
+            </animateMotion>
+          </circle>
+        </template>
+      </template>
+
+      <!-- Animated dots flowing OUTWARD -->
+      <template x-for="(spoke, si) in ['spokeOut1','spokeOut2','spokeOut3','spokeOut4']" :key="spoke">
+        <template x-for="d in [0,1,2]" :key="spoke+d">
+          <circle r="3" :fill="si < 2 ? '#4ade80' : '#3b82f6'" filter="url(#dotGlow)" opacity="0.9">
+            <animateMotion :dur="(2.5 + si*0.3) + 's'" repeatCount="indefinite" :begin="(d * 0.8) + 's'">
+              <mpath :href="'#' + spoke"/>
+            </animateMotion>
+          </circle>
+        </template>
+      </template>
+    </svg>
+
+    <!-- CENTRAL HUB -->
+    <div class="absolute left-1/2 top-1/2 hidden md:block" style="transform: translate(-50%, -50%);">
+      <!-- Outer ring 2 -->
+      <div class="absolute left-1/2 top-1/2 w-48 h-48 rounded-full border border-blue-500/15"
+           style="animation: ringPulse2 4s ease-in-out infinite; transform-origin: center;"></div>
+      <!-- Outer ring 1 -->
+      <div class="absolute left-1/2 top-1/2 w-36 h-36 rounded-full border border-blue-400/25"
+           style="animation: ringPulse1 3s ease-in-out infinite; transform-origin: center;"></div>
+      <!-- Core hub -->
+      <div class="absolute left-1/2 top-1/2 w-[120px] h-[120px] rounded-full flex items-center justify-center"
+           style="animation: hubPulse 3s ease-in-out infinite;
+                  background: radial-gradient(circle, #3b82f6 0%, #1e40af 50%, #0c1a3a 100%);
+                  box-shadow: 0 0 20px rgba(59,130,246,0.6), 0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15), 0 0 200px rgba(59,130,246,0.05), inset 0 -2px 10px rgba(0,0,0,0.3), inset 0 2px 10px rgba(147,197,253,0.2);">
+        <span class="text-white font-black text-2xl tracking-tight" style="text-shadow: 0 0 20px rgba(255,255,255,0.3);">SB</span>
+      </div>
+      <!-- Label -->
+      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 mt-20 whitespace-nowrap">
+        <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-blue-300/60">The Switchboard</span>
+      </div>
+    </div>
+
+    <!-- SOURCE CARDS (left side) — desktop only -->
+    <div class="hidden md:block">
+      <!-- Web Forms -->
+      <div class="absolute spoke-card flex items-center gap-2" style="left: 3%; top: 14%;">
+        <div class="glow-dot glow-dot-blue"></div>
+        <span>Web Forms</span>
+      </div>
+      <!-- Partner APIs -->
+      <div class="absolute spoke-card flex items-center gap-2" style="left: 1%; top: 35%;">
+        <div class="glow-dot glow-dot-blue"></div>
+        <span>Partner APIs</span>
+      </div>
+      <!-- Call Tracking -->
+      <div class="absolute spoke-card flex items-center gap-2" style="left: 1%; top: 54%;">
+        <div class="glow-dot glow-dot-blue"></div>
+        <span>Call Tracking</span>
+      </div>
+      <!-- Direct Upload -->
+      <div class="absolute spoke-card flex items-center gap-2" style="left: 3%; top: 75%;">
+        <div class="glow-dot glow-dot-blue"></div>
+        <span>Direct Upload</span>
+      </div>
+    </div>
+
+    <!-- DESTINATION CARDS (right side) — desktop only -->
+    <div class="hidden md:block">
+      <!-- Tier 1 Premium -->
+      <div class="absolute spoke-card flex items-center gap-2" style="right: 2%; top: 14%;">
+        <span>Tier 1 Premium</span>
+        <div class="glow-dot glow-dot-green"></div>
+      </div>
+      <!-- Tier 2 Standard -->
+      <div class="absolute spoke-card flex items-center gap-2" style="right: 0.5%; top: 35%;">
+        <span>Tier 2 Standard</span>
+        <div class="glow-dot glow-dot-green"></div>
+      </div>
+      <!-- Analytics -->
+      <div class="absolute spoke-card flex items-center gap-2" style="right: 0.5%; top: 54%;">
+        <span>Analytics</span>
+        <div class="glow-dot glow-dot-blue"></div>
+      </div>
+      <!-- CRM Sync -->
+      <div class="absolute spoke-card flex items-center gap-2" style="right: 2%; top: 75%;">
+        <span>CRM Sync</span>
+        <div class="glow-dot glow-dot-blue"></div>
+      </div>
+    </div>
+
+    <!-- FLOATING STAT BADGES — desktop only -->
+    <div class="hidden md:block">
+      <div class="absolute stat-badge" style="left: 34%; top: 5%; animation: floatA 4s ease-in-out infinite;">
+        <span class="text-green-400">1,247</span> <span class="text-white/60">ops/sec</span>
+      </div>
+      <div class="absolute stat-badge" style="right: 32%; top: 2%; animation: floatB 5s ease-in-out infinite;">
+        <span class="text-blue-400">94.2%</span> <span class="text-white/60">match rate</span>
+      </div>
+      <div class="absolute stat-badge" style="left: 38%; bottom: 8%; animation: floatC 3.5s ease-in-out infinite;">
+        <span class="text-purple-400">&lt;5ms</span> <span class="text-white/60">scoring</span>
+      </div>
+    </div>
+
+    <!-- MOBILE SIMPLIFIED VIEW -->
+    <div class="md:hidden flex flex-col items-center gap-6 pt-4">
+      <!-- Sources -->
+      <div class="flex flex-wrap gap-2 justify-center">
+        <div class="spoke-card flex items-center gap-2 text-xs"><div class="glow-dot glow-dot-blue" style="width:6px;height:6px;"></div>Web Forms</div>
+        <div class="spoke-card flex items-center gap-2 text-xs"><div class="glow-dot glow-dot-blue" style="width:6px;height:6px;"></div>Partner APIs</div>
+        <div class="spoke-card flex items-center gap-2 text-xs"><div class="glow-dot glow-dot-blue" style="width:6px;height:6px;"></div>Call Tracking</div>
+        <div class="spoke-card flex items-center gap-2 text-xs"><div class="glow-dot glow-dot-blue" style="width:6px;height:6px;"></div>Direct Upload</div>
+      </div>
+      <!-- Arrow down -->
+      <svg width="24" height="40" viewBox="0 0 24 40" fill="none"><path d="M12 0v36M6 30l6 8 6-8" stroke="#3b82f6" stroke-width="1.5" opacity="0.5"/></svg>
+      <!-- Mobile Hub -->
+      <div class="relative">
+        <div class="w-24 h-24 rounded-full flex items-center justify-center"
+             style="background: radial-gradient(circle, #3b82f6 0%, #1e40af 50%, #0c1a3a 100%);
+                    box-shadow: 0 0 20px rgba(59,130,246,0.6), 0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15);
+                    animation: hubPulse 3s ease-in-out infinite; transform-origin: center;">
+          <span class="text-white font-black text-xl">SB</span>
+        </div>
+        <div class="absolute -inset-4 rounded-full border border-blue-500/20" style="animation: ringPulse1 3s ease-in-out infinite; transform-origin: center;"></div>
+      </div>
+      <p class="text-[10px] font-bold tracking-[0.3em] uppercase text-blue-300/50">The Switchboard</p>
+      <!-- Arrow down -->
+      <svg width="24" height="40" viewBox="0 0 24 40" fill="none"><path d="M12 0v36M6 30l6 8 6-8" stroke="#4ade80" stroke-width="1.5" opacity="0.5"/></svg>
+      <!-- Destinations -->
+      <div class="flex flex-wrap gap-2 justify-center">
+        <div class="spoke-card flex items-center gap-2 text-xs">Tier 1 Premium<div class="glow-dot glow-dot-green" style="width:6px;height:6px;"></div></div>
+        <div class="spoke-card flex items-center gap-2 text-xs">Tier 2 Standard<div class="glow-dot glow-dot-green" style="width:6px;height:6px;"></div></div>
+        <div class="spoke-card flex items-center gap-2 text-xs">Analytics<div class="glow-dot glow-dot-blue" style="width:6px;height:6px;"></div></div>
+        <div class="spoke-card flex items-center gap-2 text-xs">CRM Sync<div class="glow-dot glow-dot-blue" style="width:6px;height:6px;"></div></div>
+      </div>
+      <!-- Mobile stat badges -->
+      <div class="flex flex-wrap gap-2 justify-center mt-2">
+        <div class="stat-badge text-xs"><span class="text-green-400">1,247</span> ops/sec</div>
+        <div class="stat-badge text-xs"><span class="text-blue-400">94.2%</span> match</div>
+        <div class="stat-badge text-xs"><span class="text-purple-400">&lt;5ms</span> scoring</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom fade -->
+  <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#06080f] to-transparent"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 2: PROCESSING PIPELINE
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="pipeline" class="relative py-28 md:py-36 noise-bg" style="background: linear-gradient(180deg, #06080f 0%, #0a0e1a 50%, #06080f 100%);">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="text-xs font-semibold tracking-[0.25em] uppercase text-blue-400/70 mb-3">How It Works</p>
+      <h2 class="text-3xl md:text-5xl font-extrabold gradient-text mb-4">Five stages. One signal.</h2>
+      <p class="text-white/40 max-w-lg mx-auto">Every opportunity passes through our intelligence pipeline in under 250 milliseconds.</p>
+    </div>
+
+    <!-- Pipeline stages -->
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-0">
+      <!-- Stage 1: Enrich -->
+      <div class="glass-card rounded-2xl p-6 md:p-5 text-center w-full md:w-44 flex-shrink-0">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); box-shadow: 0 4px 15px rgba(59,130,246,0.3);">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+        </div>
+        <h3 class="font-bold text-sm mb-1">Enrich</h3>
+        <p class="text-xs text-white/40">40+ data points appended</p>
+      </div>
+
+      <!-- Connector -->
+      <div class="hidden md:block flex-1 mx-1"><div class="pipeline-connector" style="animation-delay: 0s;"></div></div>
+      <div class="md:hidden w-px h-8 bg-gradient-to-b from-blue-500/40 to-blue-500/10"></div>
+
+      <!-- Stage 2: Score -->
+      <div class="glass-card rounded-2xl p-6 md:p-5 text-center w-full md:w-44 flex-shrink-0">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background: linear-gradient(135deg, #6366f1, #4338ca); box-shadow: 0 4px 15px rgba(99,102,241,0.3);">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <h3 class="font-bold text-sm mb-1">Score</h3>
+        <p class="text-xs text-white/40">Risk-weighted intelligence</p>
+      </div>
+
+      <div class="hidden md:block flex-1 mx-1"><div class="pipeline-connector" style="animation-delay: 0.4s;"></div></div>
+      <div class="md:hidden w-px h-8 bg-gradient-to-b from-indigo-500/40 to-indigo-500/10"></div>
+
+      <!-- Stage 3: Segment -->
+      <div class="glass-card rounded-2xl p-6 md:p-5 text-center w-full md:w-44 flex-shrink-0">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); box-shadow: 0 4px 15px rgba(139,92,246,0.3);">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        </div>
+        <h3 class="font-bold text-sm mb-1">Segment</h3>
+        <p class="text-xs text-white/40">Tier-matched grouping</p>
+      </div>
+
+      <div class="hidden md:block flex-1 mx-1"><div class="pipeline-connector" style="animation-delay: 0.8s;"></div></div>
+      <div class="md:hidden w-px h-8 bg-gradient-to-b from-purple-500/40 to-purple-500/10"></div>
+
+      <!-- Stage 4: Route -->
+      <div class="glass-card rounded-2xl p-6 md:p-5 text-center w-full md:w-44 flex-shrink-0">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background: linear-gradient(135deg, #06b6d4, #0891b2); box-shadow: 0 4px 15px rgba(6,182,212,0.3);">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+        </div>
+        <h3 class="font-bold text-sm mb-1">Route</h3>
+        <p class="text-xs text-white/40">Intelligent distribution</p>
+      </div>
+
+      <div class="hidden md:block flex-1 mx-1"><div class="pipeline-connector" style="animation-delay: 1.2s;"></div></div>
+      <div class="md:hidden w-px h-8 bg-gradient-to-b from-cyan-500/40 to-cyan-500/10"></div>
+
+      <!-- Stage 5: Analyze -->
+      <div class="glass-card rounded-2xl p-6 md:p-5 text-center w-full md:w-44 flex-shrink-0">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16,185,129,0.3);">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <h3 class="font-bold text-sm mb-1">Analyze</h3>
+        <p class="text-xs text-white/40">Full-funnel reporting</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 3: SIGNAL METRICS (STATS)
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="relative py-24 noise-bg" style="background: linear-gradient(180deg, #06080f 0%, #080c18 50%, #06080f 100%);">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" x-data="{ shown: false }" x-intersect.once="shown = true">
+
+      <div class="glass-card rounded-2xl p-6 md:p-8 text-center group hover:border-blue-500/20 transition-all duration-500">
+        <div class="w-3 h-3 rounded-full bg-blue-500 mx-auto mb-4 shadow-lg shadow-blue-500/50" style="animation: hubPulse 2s ease-in-out infinite;"></div>
+        <p class="text-2xl md:text-4xl font-black gradient-text mb-1" x-text="shown ? '10M+' : '—'">—</p>
+        <p class="text-xs md:text-sm text-white/40 font-medium">Signals Processed</p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 md:p-8 text-center group hover:border-green-500/20 transition-all duration-500">
+        <div class="w-3 h-3 rounded-full bg-green-500 mx-auto mb-4 shadow-lg shadow-green-500/50" style="animation: hubPulse 2.3s ease-in-out infinite;"></div>
+        <p class="text-2xl md:text-4xl font-black gradient-text-green mb-1" x-text="shown ? '<250ms' : '—'">—</p>
+        <p class="text-xs md:text-sm text-white/40 font-medium">Signal Speed</p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 md:p-8 text-center group hover:border-purple-500/20 transition-all duration-500">
+        <div class="w-3 h-3 rounded-full bg-purple-500 mx-auto mb-4 shadow-lg shadow-purple-500/50" style="animation: hubPulse 1.8s ease-in-out infinite;"></div>
+        <p class="text-2xl md:text-4xl font-black mb-1" style="background: linear-gradient(135deg, #fff, #c4b5fd, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" x-text="shown ? '94%' : '—'">—</p>
+        <p class="text-xs md:text-sm text-white/40 font-medium">Signal Clarity</p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 md:p-8 text-center group hover:border-cyan-500/20 transition-all duration-500">
+        <div class="w-3 h-3 rounded-full bg-cyan-500 mx-auto mb-4 shadow-lg shadow-cyan-500/50" style="animation: hubPulse 2.5s ease-in-out infinite;"></div>
+        <p class="text-2xl md:text-4xl font-black mb-1" style="background: linear-gradient(135deg, #fff, #67e8f9, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" x-text="shown ? '50+' : '—'">—</p>
+        <p class="text-xs md:text-sm text-white/40 font-medium">Active Receivers</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 4: CAPABILITIES
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="capabilities" class="relative py-28 md:py-36" style="background: linear-gradient(180deg, #f0f4f8 0%, #e8edf5 40%, #f0f4f8 100%);">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="text-xs font-semibold tracking-[0.25em] uppercase text-blue-600/60 mb-3">Capabilities</p>
+      <h2 class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4">Everything the signal carries.</h2>
+      <p class="text-gray-500 max-w-lg mx-auto">No competitor does all five. We built the only end-to-end intelligence layer for insurance distribution.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 mb-6">
+      <!-- Card 1 -->
+      <div class="capability-card">
+        <div class="w-12 h-12 rounded-2xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); box-shadow: 0 4px 12px rgba(59,130,246,0.15);">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">Data Enrichment</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Append 40+ verified data points to every inbound record. Property data, demographic profiles, risk indicators — all in real time.</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="capability-card">
+        <div class="w-12 h-12 rounded-2xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, #ede9fe, #ddd6fe); box-shadow: 0 4px 12px rgba(139,92,246,0.15);">
+          <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">Intelligent Scoring</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Proprietary risk-weighted algorithms score every opportunity. Buyers see quality before they buy, reducing returns to near zero.</p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="capability-card">
+        <div class="w-12 h-12 rounded-2xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); box-shadow: 0 4px 12px rgba(16,185,129,0.15);">
+          <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">Smart Routing</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Rule-based and ML-driven distribution. Every opportunity reaches the right buyer at the right time through the right channel.</p>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Card 4 -->
+      <div class="capability-card">
+        <div class="w-12 h-12 rounded-2xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, #cffafe, #a5f3fc); box-shadow: 0 4px 12px rgba(6,182,212,0.15);">
+          <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">Dynamic Segmentation</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Automatically segment opportunities by line, geography, risk profile, and buyer preference. Tiered pricing ensures optimal monetization across your entire inventory.</p>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="capability-card">
+        <div class="w-12 h-12 rounded-2xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, #fef3c7, #fde68a); box-shadow: 0 4px 12px rgba(245,158,11,0.15);">
+          <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">Full-Funnel Analytics</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Source-to-sale attribution, real-time dashboards, and predictive forecasting. See which sources, segments, and buyers drive the most revenue — and optimize accordingly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 5: TESTIMONIAL
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="relative py-28 md:py-36 noise-bg" style="background: linear-gradient(180deg, #06080f 0%, #0c1020 50%, #06080f 100%);">
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-3xl"></div>
+  <div class="max-w-3xl mx-auto px-6 text-center relative">
+    <div class="glass-card rounded-3xl p-10 md:p-14">
+      <svg class="w-10 h-10 text-blue-500/30 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+      <p class="text-xl md:text-2xl font-medium text-white/90 leading-relaxed mb-8 font-serif italic">
+        "The Switchboard transformed our distribution overnight. We went from manually sorting opportunities in spreadsheets to fully automated, risk-scored routing — and our buyer satisfaction increased 40% in the first quarter."
+      </p>
+      <div class="flex items-center justify-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-blue-500/25">MR</div>
+        <div class="text-left">
+          <p class="font-semibold text-white text-sm">Michael Reynolds</p>
+          <p class="text-white/40 text-xs">VP of Distribution, National Insurance Partners</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 6: CASE STUDIES
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="results" class="relative py-28 md:py-36 noise-bg" style="background: linear-gradient(180deg, #06080f 0%, #080c18 50%, #06080f 100%);">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <p class="text-xs font-semibold tracking-[0.25em] uppercase text-blue-400/70 mb-3">Results</p>
+      <h2 class="text-3xl md:text-5xl font-extrabold gradient-text mb-4">Signal strength, measured.</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Case Study 1 -->
+      <div class="glass-card rounded-2xl overflow-hidden group hover:border-blue-500/20 transition-all duration-500">
+        <div class="h-48 relative overflow-hidden" style="background: linear-gradient(135deg, #0c1a3a 0%, #1e3a5f 50%, #0c1a3a 100%);">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center">
+              <p class="text-5xl font-black gradient-text">+62%</p>
+              <p class="text-sm text-blue-300/60 mt-1">Revenue per opportunity</p>
+            </div>
+          </div>
+          <div class="absolute top-4 right-4 stat-badge text-xs">Auto Insurance</div>
+        </div>
+        <div class="p-6">
+          <h3 class="font-bold text-lg mb-2">Regional carrier scales distribution 3x</h3>
+          <p class="text-sm text-white/40 leading-relaxed mb-4">A mid-size P&C carrier connected to The Switchboard and automated their entire opportunity intake. Within 90 days, they tripled volume while improving close rates.</p>
+          <a href="#" class="text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center gap-1">
+            Read the full story
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Case Study 2 -->
+      <div class="glass-card rounded-2xl overflow-hidden group hover:border-green-500/20 transition-all duration-500">
+        <div class="h-48 relative overflow-hidden" style="background: linear-gradient(135deg, #0a1a0f 0%, #1a3a25 50%, #0a1a0f 100%);">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center">
+              <p class="text-5xl font-black gradient-text-green">-84%</p>
+              <p class="text-sm text-green-300/60 mt-1">Return rate reduction</p>
+            </div>
+          </div>
+          <div class="absolute top-4 right-4 stat-badge text-xs">Home Insurance</div>
+        </div>
+        <div class="p-6">
+          <h3 class="font-bold text-lg mb-2">National aggregator eliminates bad inventory</h3>
+          <p class="text-sm text-white/40 leading-relaxed mb-4">By scoring every opportunity before distribution, this aggregator cut return rates from 22% to under 4% — saving hundreds of thousands in refunds annually.</p>
+          <a href="#" class="text-sm font-semibold text-green-400 hover:text-green-300 transition-colors inline-flex items-center gap-1">
+            Read the full story
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 7: CTA
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="cta" class="relative py-32 md:py-40 overflow-hidden noise-bg" style="background: radial-gradient(ellipse 60% 50% at 50% 50%, #0c1a3a 0%, #06080f 70%);">
+  <!-- Echo of the hub in background -->
+  <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full opacity-20"
+       style="background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, rgba(59,130,246,0.05) 50%, transparent 70%);
+              box-shadow: 0 0 120px rgba(59,130,246,0.15);"></div>
+  <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] rounded-full border border-blue-500/10" style="animation: ringPulse2 5s ease-in-out infinite;"></div>
+  <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] rounded-full border border-blue-500/15" style="animation: ringPulse1 4s ease-in-out infinite;"></div>
+
+  <div class="relative text-center max-w-2xl mx-auto px-6">
+    <p class="text-xs font-semibold tracking-[0.25em] uppercase text-blue-400/60 mb-4">Start Now</p>
+    <h2 class="text-3xl md:text-5xl font-extrabold gradient-text mb-5 leading-tight">Ready to connect<br>to the signal?</h2>
+    <p class="text-white/40 max-w-md mx-auto mb-10 leading-relaxed">Join the carriers and aggregators who trust The Switchboard to power their distribution intelligence.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="#" class="btn-gradient px-10 py-4 rounded-full text-sm font-bold tracking-wide">Schedule a Demo</a>
+      <a href="#" class="btn-outline-glow px-10 py-4 rounded-full text-sm font-semibold text-white/80">Talk to Our Team</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════════ -->
+<footer class="relative py-16 noise-bg" style="background: linear-gradient(180deg, #06080f 0%, #030408 100%);">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid md:grid-cols-4 gap-10 mb-12">
+      <!-- Brand -->
+      <div class="md:col-span-1">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <span class="text-white font-bold text-xs">SB</span>
+          </div>
+          <span class="font-bold tracking-tight">The Switchboard</span>
+        </div>
+        <p class="text-sm text-white/30 leading-relaxed">The intelligence layer for insurance distribution. Enrich, score, segment, route, and analyze — all in one signal.</p>
+      </div>
+
+      <!-- Platform -->
+      <div>
+        <h4 class="text-xs font-semibold tracking-[0.15em] uppercase text-white/50 mb-4">Platform</h4>
+        <ul class="space-y-2.5">
+          <li><a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors">Data Enrichment</a></li>
+          <li><a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors">Scoring Engine</a></li>
+          <li><a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors">Smart Routing</a></li>
+          <li><a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors">Analytics</a></li>
+        </ul>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <h4 class="text-xs font-semibold tracking-[0.15em] uppercase text-white/50 mb-4">Company</h4>
+        <ul class="space-y-2.5">
+          <li><a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors">About Us</a></li>
+          <li><a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors">Careers</a></li>
+          <li><a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors">Contact</a></li>
+          <li><a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors">Blog</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h4 class="text-xs font-semibold tracking-[0.15em] uppercase text-white/50 mb-4">Legal</h4>
+        <ul class="space-y-2.5">
+          <li><a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors">Privacy Policy</a></li>
+          <li><a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors">Terms of Service</a></li>
+          <li><a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors">Compliance</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-xs text-white/20">&copy; 2026 The Switchboard. All rights reserved.</p>
+      <div class="flex items-center gap-6">
+        <a href="#" class="text-white/20 hover:text-white/50 transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <a href="#" class="text-white/20 hover:text-white/50 transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Alpine component for the signal hub (placeholder for future interactivity)
+document.addEventListener('alpine:init', () => {
+  Alpine.data('signalHub', () => ({
+    init() {
+      // Hub visualization initialized
+    }
+  }));
+});
+</script>
+
+</body>
+</html>

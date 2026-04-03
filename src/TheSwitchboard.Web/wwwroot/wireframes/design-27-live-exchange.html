@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Switchboard — The Insurance Intelligence Exchange</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            serif: ['Instrument Serif', 'Georgia', 'serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; margin: 0; -webkit-font-smoothing: antialiased; }
+
+    /* ===== NOISE OVERLAY ===== */
+    .noise-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+    .noise-overlay { position: relative; }
+    .noise-overlay > * { position: relative; z-index: 1; }
+
+    /* ===== RICH DARK GRADIENTS ===== */
+    .bg-deep-dark {
+      background: linear-gradient(135deg, #030818 0%, #0a1628 30%, #0d1f3c 60%, #071230 100%);
+    }
+    .bg-exchange-dark {
+      background: linear-gradient(180deg, #020710 0%, #081830 40%, #0a1f3a 70%, #040e20 100%);
+    }
+
+    /* ===== SCAN LINES (Terminal Feel) ===== */
+    .scanlines::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 136, 0.008) 2px,
+        rgba(0, 255, 136, 0.008) 4px
+      );
+      pointer-events: none;
+      z-index: 2;
+      border-radius: inherit;
+    }
+
+    /* ===== GLASS CARD ===== */
+    .glass-card {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .glass-card-strong {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .glass-terminal {
+      background: rgba(5, 15, 35, 0.85);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      box-shadow:
+        0 0 0 1px rgba(59, 130, 246, 0.05),
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    /* ===== GLOW NODES ===== */
+    .glow-blue {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: radial-gradient(circle, #60a5fa 0%, #3b82f6 40%, #2563eb 70%, transparent 100%);
+      box-shadow: 0 0 8px rgba(59,130,246,0.9), 0 0 20px rgba(59,130,246,0.5), 0 0 40px rgba(59,130,246,0.15);
+    }
+    .glow-green {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: radial-gradient(circle, #6ee7b7 0%, #10b981 40%, #059669 70%, transparent 100%);
+      box-shadow: 0 0 6px rgba(16,185,129,0.9), 0 0 16px rgba(16,185,129,0.5), 0 0 30px rgba(16,185,129,0.15);
+    }
+    .glow-amber {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: radial-gradient(circle, #fcd34d 0%, #f59e0b 40%, #d97706 70%, transparent 100%);
+      box-shadow: 0 0 6px rgba(245,158,11,0.9), 0 0 16px rgba(245,158,11,0.5), 0 0 30px rgba(245,158,11,0.15);
+    }
+    .glow-red {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: radial-gradient(circle, #fca5a5 0%, #ef4444 40%, #dc2626 70%, transparent 100%);
+      box-shadow: 0 0 6px rgba(239,68,68,0.9), 0 0 16px rgba(239,68,68,0.5), 0 0 30px rgba(239,68,68,0.15);
+    }
+
+    /* ===== PULSE ANIMATIONS ===== */
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.4); }
+    }
+    .animate-pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
+
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 6px rgba(16,185,129,0.9), 0 0 16px rgba(16,185,129,0.5); }
+      50% { box-shadow: 0 0 10px rgba(16,185,129,1), 0 0 25px rgba(16,185,129,0.7), 0 0 40px rgba(16,185,129,0.3); }
+    }
+    .animate-pulse-green { animation: pulse-green 2s ease-in-out infinite; }
+
+    /* ===== TICKER SCROLL ===== */
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-track {
+      display: flex;
+      animation: ticker-scroll 40s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+
+    /* ===== ROW FADE IN ===== */
+    @keyframes row-flash {
+      0% { background: rgba(16, 185, 129, 0.12); }
+      100% { background: rgba(255, 255, 255, 0.02); }
+    }
+    .row-animate {
+      animation: row-flash 3s ease-out forwards;
+    }
+    @keyframes row-flash-amber {
+      0% { background: rgba(245, 158, 11, 0.12); }
+      100% { background: rgba(255, 255, 255, 0.02); }
+    }
+    .row-animate-amber {
+      animation: row-flash-amber 3s ease-out forwards;
+    }
+
+    /* ===== COUNTER ANIMATION ===== */
+    @keyframes count-up {
+      0% { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .count-animate { animation: count-up 0.6s ease-out forwards; }
+
+    /* ===== GRADIENT BUTTONS ===== */
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+      color: white;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4), 0 1px 3px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.15);
+      text-decoration: none;
+      display: inline-block;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5), 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: white;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+      text-decoration: none;
+      display: inline-block;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    /* ===== ORB GLOW ===== */
+    .orb-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+
+    /* ===== CONIC GAUGE ===== */
+    .gauge-ring {
+      background: conic-gradient(
+        from 220deg,
+        #10b981 0%,
+        #3b82f6 60%,
+        #6366f1 85%,
+        rgba(255,255,255,0.05) 85%,
+        rgba(255,255,255,0.05) 100%
+      );
+      border-radius: 50%;
+      padding: 4px;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3), 0 0 40px rgba(59, 130, 246, 0.15);
+    }
+    .gauge-inner {
+      background: rgba(5, 15, 35, 0.95);
+      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    /* ===== GRADIENT CONNECTORS ===== */
+    .connector-line {
+      height: 2px;
+      background: linear-gradient(90deg, #2563eb, #10b981, #6366f1);
+      position: relative;
+      opacity: 0.5;
+    }
+    .connector-line::after {
+      content: '';
+      position: absolute;
+      top: -3px; right: -4px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px rgba(16,185,129,0.8);
+    }
+
+    /* ===== LIGHT SECTION ===== */
+    .bg-light-section {
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e8edf4 100%);
+    }
+
+    /* ===== PREMIUM CARD HOVER ===== */
+    .premium-card {
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .premium-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    /* ===== DARK PREMIUM CARD ===== */
+    .dark-premium-card {
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .dark-premium-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.15);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(59,130,246,0.1);
+    }
+
+    /* ===== TABLE STYLES ===== */
+    .exchange-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.7);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .exchange-table td {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      color: rgba(226, 232, 240, 0.9);
+    }
+    .exchange-table tr {
+      transition: background 0.3s ease;
+    }
+    .exchange-table tr:hover {
+      background: rgba(59, 130, 246, 0.05) !important;
+    }
+
+    /* ===== MINI BAR CHART ===== */
+    .bar-fill {
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
+    }
+    .bar-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      animation: bar-shimmer 2.5s ease-in-out infinite;
+    }
+    @keyframes bar-shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .ticker-track { animation-duration: 25s; }
+    }
+  </style>
+</head>
+<body class="bg-deep-dark text-white">
+
+  <!-- ============================================================ -->
+  <!-- NAVIGATION -->
+  <!-- ============================================================ -->
+  <nav class="fixed top-0 left-0 right-0 z-50" style="background: rgba(3, 8, 24, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.06);">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+      <a href="#" class="flex items-center gap-3 text-white no-underline">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 2px 10px rgba(37,99,235,0.4);">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="white" opacity="0.9"/><rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.6"/><rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.6"/><rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.9"/></svg>
+        </div>
+        <span class="font-bold text-base tracking-tight">The Switchboard</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#" class="text-sm text-slate-300 hover:text-white transition-colors no-underline">Platform</a>
+        <a href="#" class="text-sm text-slate-300 hover:text-white transition-colors no-underline">Exchange</a>
+        <a href="#" class="text-sm text-slate-300 hover:text-white transition-colors no-underline">Pricing</a>
+        <a href="#" class="text-sm text-slate-300 hover:text-white transition-colors no-underline">Resources</a>
+        <a href="#" class="text-sm text-slate-300 hover:text-white transition-colors no-underline">Company</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="#" class="hidden md:block text-sm text-slate-300 hover:text-white transition-colors no-underline">Sign In</a>
+        <a href="#" class="btn-primary !py-2.5 !px-5 !text-sm">Join the Exchange</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- HERO SECTION -->
+  <!-- ============================================================ -->
+  <section class="bg-exchange-dark noise-overlay min-h-screen pt-24 pb-16 overflow-hidden">
+    <!-- Orb glows -->
+    <div class="orb-glow" style="width: 600px; height: 600px; background: radial-gradient(circle, rgba(37,99,235,0.12), transparent); top: -100px; left: -200px;"></div>
+    <div class="orb-glow" style="width: 500px; height: 500px; background: radial-gradient(circle, rgba(16,185,129,0.08), transparent); bottom: 10%; right: -150px;"></div>
+    <div class="orb-glow" style="width: 400px; height: 400px; background: radial-gradient(circle, rgba(99,102,241,0.06), transparent); top: 30%; left: 50%;"></div>
+
+    <div class="max-w-7xl mx-auto px-6">
+      <!-- TOP: Headline -->
+      <div class="text-center mb-12 pt-8">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8" style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.15);">
+          <div class="glow-green animate-pulse-green" style="width: 6px; height: 6px;"></div>
+          <span class="text-emerald-400 text-xs font-mono font-semibold tracking-wider uppercase">Exchange Active — 1,247 ops/sec</span>
+        </div>
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-6" style="text-shadow: 0 2px 30px rgba(37,99,235,0.2), 0 0 60px rgba(37,99,235,0.05);">
+          The Insurance<br>
+          <span class="bg-clip-text text-transparent" style="background-image: linear-gradient(135deg, #60a5fa, #3b82f6, #818cf8);">Intelligence Exchange.</span>
+        </h1>
+        <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed" style="text-shadow: 0 1px 10px rgba(0,0,0,0.3);">
+          Where data sources and buyers connect in real time. <br class="hidden md:block">
+          Enrich, score, match, and route — at exchange speed.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="#" class="btn-primary text-base">Request Access</a>
+          <a href="#" class="btn-secondary text-base">View Live Metrics</a>
+        </div>
+      </div>
+
+      <!-- BELOW: Live Exchange Dashboard -->
+      <div class="relative max-w-6xl mx-auto">
+        <!-- Radial glow behind terminal -->
+        <div class="absolute inset-0 -inset-x-20 -inset-y-10" style="background: radial-gradient(ellipse at center, rgba(37,99,235,0.12) 0%, rgba(16,185,129,0.04) 40%, transparent 70%); pointer-events: none;"></div>
+
+        <div class="glass-terminal rounded-2xl overflow-hidden scanlines relative">
+          <!-- Terminal Header Bar -->
+          <div class="flex items-center justify-between px-5 py-3" style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full" style="background: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,0.5);"></div>
+              <div class="w-3 h-3 rounded-full" style="background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.5);"></div>
+              <div class="w-3 h-3 rounded-full" style="background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.5);"></div>
+            </div>
+            <span class="font-mono text-[11px] text-slate-500 tracking-wider uppercase">Switchboard Exchange Terminal v4.2.1</span>
+            <div class="flex items-center gap-2">
+              <div class="glow-green animate-pulse-green" style="width: 6px; height: 6px;"></div>
+              <span class="font-mono text-[11px] text-emerald-400">CONNECTED</span>
+            </div>
+          </div>
+
+          <!-- TOP TICKER BAR -->
+          <div class="overflow-hidden py-2.5 px-0" style="background: rgba(0, 20, 10, 0.4); border-bottom: 1px solid rgba(16,185,129,0.1);">
+            <div class="ticker-track">
+              <span class="font-mono text-xs text-emerald-400 mx-6">&#9650; Auto-047 routed to Tier 1 @ $24.50</span>
+              <span class="font-mono text-xs text-blue-400 mx-6">&#9654; Health-129 enriched: score 847</span>
+              <span class="font-mono text-xs text-emerald-400 mx-6">&#9650; Comm-038 matched: 97% confidence</span>
+              <span class="font-mono text-xs text-violet-400 mx-6">&#9733; Auto-112 routed to Tier 2 @ $18.00</span>
+              <span class="font-mono text-xs text-emerald-400 mx-6">&#9650; Home-291 routed to Tier 1 @ $31.00</span>
+              <span class="font-mono text-xs text-blue-400 mx-6">&#9654; Life-084 enriched: score 912</span>
+              <span class="font-mono text-xs text-amber-400 mx-6">&#9679; Auto-887 queued: matching in progress</span>
+              <span class="font-mono text-xs text-emerald-400 mx-6">&#9650; Health-445 routed to Tier 1 @ $29.00</span>
+              <span class="font-mono text-xs text-violet-400 mx-6">&#9733; Comm-201 matched: 94% confidence</span>
+              <span class="font-mono text-xs text-emerald-400 mx-6">&#9650; Auto-553 routed to Tier 1 @ $26.75</span>
+              <!-- Duplicate for seamless loop -->
+              <span class="font-mono text-xs text-emerald-400 mx-6">&#9650; Auto-047 routed to Tier 1 @ $24.50</span>
+              <span class="font-mono text-xs text-blue-400 mx-6">&#9654; Health-129 enriched: score 847</span>
+              <span class="font-mono text-xs text-emerald-400 mx-6">&#9650; Comm-038 matched: 97% confidence</span>
+              <span class="font-mono text-xs text-violet-400 mx-6">&#9733; Auto-112 routed to Tier 2 @ $18.00</span>
+              <span class="font-mono text-xs text-emerald-400 mx-6">&#9650; Home-291 routed to Tier 1 @ $31.00</span>
+              <span class="font-mono text-xs text-blue-400 mx-6">&#9654; Life-084 enriched: score 912</span>
+              <span class="font-mono text-xs text-amber-400 mx-6">&#9679; Auto-887 queued: matching in progress</span>
+              <span class="font-mono text-xs text-emerald-400 mx-6">&#9650; Health-445 routed to Tier 1 @ $29.00</span>
+              <span class="font-mono text-xs text-violet-400 mx-6">&#9733; Comm-201 matched: 94% confidence</span>
+              <span class="font-mono text-xs text-emerald-400 mx-6">&#9650; Auto-553 routed to Tier 1 @ $26.75</span>
+            </div>
+          </div>
+
+          <!-- MAIN BOARD -->
+          <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+
+            <!-- LEFT: Active Routes Table (3/5) -->
+            <div class="lg:col-span-3 p-5" style="border-right: 1px solid rgba(255,255,255,0.04);">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-emerald-400" style="box-shadow: 0 0 8px rgba(16,185,129,0.6);"></div>
+                  <h3 class="font-mono text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Routes</h3>
+                </div>
+                <span class="font-mono text-[10px] text-slate-600">Live — auto-refresh</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="exchange-table w-full">
+                  <thead>
+                    <tr>
+                      <th>Source</th>
+                      <th>Score</th>
+                      <th>Tier</th>
+                      <th>Buyer</th>
+                      <th>Price</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="row-animate" style="animation-delay: 0s;">
+                      <td class="text-blue-300">Web-4829</td>
+                      <td><span class="text-emerald-400 font-semibold">847</span></td>
+                      <td><span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase" style="background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.2);">Premium</span></td>
+                      <td class="text-slate-300">Carrier A</td>
+                      <td class="text-emerald-400 font-semibold">$24.50</td>
+                      <td>
+                        <span class="inline-flex items-center gap-1.5">
+                          <span class="glow-green animate-pulse-green" style="width: 6px; height: 6px;"></span>
+                          <span class="text-emerald-400 text-[11px] font-semibold">ROUTED</span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="row-animate" style="animation-delay: 0.5s;">
+                      <td class="text-blue-300">API-1203</td>
+                      <td><span class="text-emerald-400 font-semibold">723</span></td>
+                      <td><span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase" style="background: rgba(59,130,246,0.12); color: #93c5fd; border: 1px solid rgba(59,130,246,0.2);">Standard</span></td>
+                      <td class="text-slate-300">Carrier B</td>
+                      <td class="text-emerald-400 font-semibold">$18.00</td>
+                      <td>
+                        <span class="inline-flex items-center gap-1.5">
+                          <span class="glow-green animate-pulse-green" style="width: 6px; height: 6px;"></span>
+                          <span class="text-emerald-400 text-[11px] font-semibold">ROUTED</span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="row-animate-amber" style="animation-delay: 1s;">
+                      <td class="text-blue-300">Call-0891</td>
+                      <td><span class="text-amber-400 font-semibold">612</span></td>
+                      <td><span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase" style="background: rgba(245,158,11,0.12); color: #fcd34d; border: 1px solid rgba(245,158,11,0.2);">Volume</span></td>
+                      <td class="text-slate-300">Pool C</td>
+                      <td class="text-amber-400 font-semibold">$12.00</td>
+                      <td>
+                        <span class="inline-flex items-center gap-1.5">
+                          <span class="glow-amber" style="width: 6px; height: 6px; animation: pulse-glow 1.5s ease-in-out infinite;"></span>
+                          <span class="text-amber-400 text-[11px] font-semibold">PROCESSING</span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="row-animate" style="animation-delay: 1.5s;">
+                      <td class="text-blue-300">Partner-2847</td>
+                      <td><span class="text-emerald-400 font-semibold">891</span></td>
+                      <td><span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase" style="background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.2);">Premium</span></td>
+                      <td class="text-slate-300">Carrier A</td>
+                      <td class="text-emerald-400 font-semibold">$27.00</td>
+                      <td>
+                        <span class="inline-flex items-center gap-1.5">
+                          <span class="glow-green animate-pulse-green" style="width: 6px; height: 6px;"></span>
+                          <span class="text-emerald-400 text-[11px] font-semibold">ROUTED</span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="row-animate" style="animation-delay: 2s;">
+                      <td class="text-blue-300">Web-5012</td>
+                      <td><span class="text-emerald-400 font-semibold">778</span></td>
+                      <td><span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase" style="background: rgba(59,130,246,0.12); color: #93c5fd; border: 1px solid rgba(59,130,246,0.2);">Standard</span></td>
+                      <td class="text-slate-300">Carrier D</td>
+                      <td class="text-emerald-400 font-semibold">$21.00</td>
+                      <td>
+                        <span class="inline-flex items-center gap-1.5">
+                          <span class="glow-green animate-pulse-green" style="width: 6px; height: 6px;"></span>
+                          <span class="text-emerald-400 text-[11px] font-semibold">ROUTED</span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr class="row-animate-amber" style="animation-delay: 2.5s;">
+                      <td class="text-blue-300">API-3391</td>
+                      <td><span class="text-amber-400 font-semibold">654</span></td>
+                      <td><span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase" style="background: rgba(245,158,11,0.12); color: #fcd34d; border: 1px solid rgba(245,158,11,0.2);">Volume</span></td>
+                      <td class="text-slate-300">Pool B</td>
+                      <td class="text-amber-400 font-semibold">$14.50</td>
+                      <td>
+                        <span class="inline-flex items-center gap-1.5">
+                          <span class="glow-amber" style="width: 6px; height: 6px; animation: pulse-glow 1.5s ease-in-out infinite;"></span>
+                          <span class="text-amber-400 text-[11px] font-semibold">PROCESSING</span>
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- RIGHT: Exchange Metrics (2/5) -->
+            <div class="lg:col-span-2 p-5">
+              <div class="flex items-center gap-2 mb-5">
+                <div class="w-2 h-2 rounded-full bg-blue-400" style="box-shadow: 0 0 8px rgba(59,130,246,0.6);"></div>
+                <h3 class="font-mono text-xs font-semibold text-slate-400 uppercase tracking-wider">Exchange Metrics</h3>
+              </div>
+
+              <!-- Ops/Sec -->
+              <div class="glass-card rounded-xl p-4 mb-4" x-data="{ count: 0 }" x-init="
+                let target = 1247;
+                let duration = 2000;
+                let steps = 60;
+                let increment = target / steps;
+                let current = 0;
+                let interval = setInterval(() => {
+                  current += increment;
+                  if (current >= target) { current = target; clearInterval(interval); }
+                  count = Math.round(current);
+                }, duration / steps);
+              ">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-mono text-[10px] text-slate-500 uppercase tracking-wider">Throughput</span>
+                  <div class="flex items-center gap-1.5">
+                    <div class="glow-green animate-pulse-green" style="width: 5px; height: 5px;"></div>
+                    <span class="font-mono text-[10px] text-emerald-400">LIVE</span>
+                  </div>
+                </div>
+                <div class="flex items-baseline gap-2">
+                  <span class="font-mono text-3xl font-bold text-white" x-text="count.toLocaleString()" style="text-shadow: 0 0 20px rgba(255,255,255,0.1);">0</span>
+                  <span class="font-mono text-sm text-slate-500">ops/sec</span>
+                </div>
+              </div>
+
+              <!-- Match Rate Gauge -->
+              <div class="glass-card rounded-xl p-4 mb-4">
+                <span class="font-mono text-[10px] text-slate-500 uppercase tracking-wider block mb-3">Match Rate</span>
+                <div class="flex items-center gap-4">
+                  <div class="gauge-ring w-20 h-20 flex-shrink-0">
+                    <div class="gauge-inner">
+                      <span class="font-mono text-lg font-bold text-white">94.2</span>
+                      <span class="font-mono text-[9px] text-slate-400">%</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-1 mb-1">
+                      <span class="text-emerald-400 font-mono text-xs">&#9650; 2.1%</span>
+                      <span class="text-slate-500 font-mono text-[10px]">vs last week</span>
+                    </div>
+                    <span class="text-slate-400 text-xs">Highest rate in 90 days</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Routes by Tier -->
+              <div class="glass-card rounded-xl p-4 mb-4">
+                <span class="font-mono text-[10px] text-slate-500 uppercase tracking-wider block mb-3">Routes by Tier</span>
+                <div class="space-y-2.5">
+                  <div>
+                    <div class="flex justify-between mb-1">
+                      <span class="font-mono text-[11px] text-slate-400">Tier 1 — Premium</span>
+                      <span class="font-mono text-[11px] text-indigo-400">42%</span>
+                    </div>
+                    <div class="h-2 rounded-full" style="background: rgba(255,255,255,0.05);">
+                      <div class="bar-fill h-full rounded-full" style="width: 42%; background: linear-gradient(90deg, #6366f1, #818cf8);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between mb-1">
+                      <span class="font-mono text-[11px] text-slate-400">Tier 2 — Standard</span>
+                      <span class="font-mono text-[11px] text-blue-400">35%</span>
+                    </div>
+                    <div class="h-2 rounded-full" style="background: rgba(255,255,255,0.05);">
+                      <div class="bar-fill h-full rounded-full" style="width: 35%; background: linear-gradient(90deg, #3b82f6, #60a5fa);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between mb-1">
+                      <span class="font-mono text-[11px] text-slate-400">Tier 3 — Volume</span>
+                      <span class="font-mono text-[11px] text-amber-400">23%</span>
+                    </div>
+                    <div class="h-2 rounded-full" style="background: rgba(255,255,255,0.05);">
+                      <div class="bar-fill h-full rounded-full" style="width: 23%; background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- System Status -->
+              <div class="glass-card rounded-xl p-4">
+                <div class="flex items-center gap-2">
+                  <div class="glow-green animate-pulse-green" style="width: 8px; height: 8px;"></div>
+                  <span class="font-mono text-xs font-semibold text-emerald-400">ALL SYSTEMS OPERATIONAL</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2 mt-3">
+                  <div class="text-center">
+                    <span class="block font-mono text-[10px] text-slate-500">Intake</span>
+                    <span class="block font-mono text-[11px] text-emerald-400">OK</span>
+                  </div>
+                  <div class="text-center">
+                    <span class="block font-mono text-[10px] text-slate-500">Scoring</span>
+                    <span class="block font-mono text-[11px] text-emerald-400">OK</span>
+                  </div>
+                  <div class="text-center">
+                    <span class="block font-mono text-[10px] text-slate-500">Routing</span>
+                    <span class="block font-mono text-[11px] text-emerald-400">OK</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTTOM TICKER -->
+          <div class="px-5 py-3 flex flex-wrap items-center justify-between gap-3 font-mono text-[11px]" style="background: rgba(255,255,255,0.015); border-top: 1px solid rgba(255,255,255,0.05);">
+            <span class="text-slate-500">24h Volume: <span class="text-slate-300 font-semibold">47,892</span></span>
+            <span class="text-slate-600">|</span>
+            <span class="text-slate-500">Avg Score: <span class="text-slate-300 font-semibold">734</span></span>
+            <span class="text-slate-600">|</span>
+            <span class="text-slate-500">Top Route: <span class="text-slate-300 font-semibold">Carrier A ($24.50 avg)</span></span>
+            <span class="text-slate-600">|</span>
+            <span class="text-slate-500">Uptime: <span class="text-emerald-400 font-semibold">99.97%</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- LIVE STATS BAR -->
+  <!-- ============================================================ -->
+  <section class="relative" style="background: linear-gradient(135deg, #0a1628 0%, #122a4e 50%, #0a1628 100%); border-top: 1px solid rgba(59,130,246,0.1); border-bottom: 1px solid rgba(59,130,246,0.1);">
+    <div class="max-w-7xl mx-auto px-6 py-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="text-center">
+          <span class="block font-mono text-[10px] text-slate-500 uppercase tracking-wider mb-1">24h Volume</span>
+          <span class="block font-mono text-2xl md:text-3xl font-bold text-white" style="text-shadow: 0 0 15px rgba(255,255,255,0.08);">47,892</span>
+        </div>
+        <div class="text-center">
+          <span class="block font-mono text-[10px] text-slate-500 uppercase tracking-wider mb-1">Avg Price</span>
+          <span class="block font-mono text-2xl md:text-3xl font-bold text-emerald-400" style="text-shadow: 0 0 15px rgba(16,185,129,0.2);">$21.40</span>
+        </div>
+        <div class="text-center">
+          <span class="block font-mono text-[10px] text-slate-500 uppercase tracking-wider mb-1">Match Rate</span>
+          <span class="block font-mono text-2xl md:text-3xl font-bold text-blue-400" style="text-shadow: 0 0 15px rgba(59,130,246,0.2);">94.2%</span>
+        </div>
+        <div class="text-center">
+          <span class="block font-mono text-[10px] text-slate-500 uppercase tracking-wider mb-1">System Load</span>
+          <div class="flex items-center justify-center gap-2">
+            <span class="block font-mono text-2xl md:text-3xl font-bold text-amber-400" style="text-shadow: 0 0 15px rgba(245,158,11,0.2);">67%</span>
+            <div class="w-16 h-2 rounded-full hidden md:block" style="background: rgba(255,255,255,0.06);">
+              <div class="h-full rounded-full" style="width: 67%; background: linear-gradient(90deg, #10b981, #f59e0b);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- HOW THE EXCHANGE WORKS -->
+  <!-- ============================================================ -->
+  <section class="bg-deep-dark noise-overlay py-24 overflow-hidden">
+    <div class="orb-glow" style="width: 400px; height: 400px; background: radial-gradient(circle, rgba(37,99,235,0.08), transparent); top: 50%; left: -100px;"></div>
+
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="font-mono text-xs text-blue-400 uppercase tracking-wider block mb-4">Trading Phases</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">How the Exchange Works</h2>
+        <p class="text-slate-400 text-lg max-w-xl mx-auto">Four phases. Milliseconds of execution. Complete transparency from intake to delivery.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+        <!-- Connector line (desktop) -->
+        <div class="hidden md:block absolute top-16 left-[12.5%] right-[12.5%] h-px" style="background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), rgba(16,185,129,0.3), rgba(99,102,241,0.3), transparent);"></div>
+
+        <!-- Phase 1: List -->
+        <div class="glass-card-strong rounded-2xl p-6 text-center relative dark-premium-card">
+          <div class="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)); border: 1px solid rgba(59,130,246,0.2); box-shadow: 0 0 20px rgba(59,130,246,0.1);">
+            <svg width="24" height="24" fill="none" stroke="#60a5fa" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.338-2.32 4.5 4.5 0 013.112 8.095"/></svg>
+          </div>
+          <span class="font-mono text-[10px] text-slate-500 uppercase tracking-wider block mb-2">Phase 01</span>
+          <h3 class="text-xl font-bold mb-2">List</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">Data sources publish opportunities to the exchange via API, web form, or partner integration.</p>
+        </div>
+
+        <!-- Phase 2: Evaluate -->
+        <div class="glass-card-strong rounded-2xl p-6 text-center relative dark-premium-card">
+          <div class="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); border: 1px solid rgba(16,185,129,0.2); box-shadow: 0 0 20px rgba(16,185,129,0.1);">
+            <svg width="24" height="24" fill="none" stroke="#6ee7b7" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>
+          </div>
+          <span class="font-mono text-[10px] text-slate-500 uppercase tracking-wider block mb-2">Phase 02</span>
+          <h3 class="text-xl font-bold mb-2">Evaluate</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">ML scoring engine enriches data, assigns risk scores, and validates quality in real time.</p>
+        </div>
+
+        <!-- Phase 3: Match -->
+        <div class="glass-card-strong rounded-2xl p-6 text-center relative dark-premium-card">
+          <div class="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(99,102,241,0.05)); border: 1px solid rgba(99,102,241,0.2); box-shadow: 0 0 20px rgba(99,102,241,0.1);">
+            <svg width="24" height="24" fill="none" stroke="#a5b4fc" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+          </div>
+          <span class="font-mono text-[10px] text-slate-500 uppercase tracking-wider block mb-2">Phase 03</span>
+          <h3 class="text-xl font-bold mb-2">Match</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">Real-time auction matches opportunities to the highest-value buyers based on score and criteria.</p>
+        </div>
+
+        <!-- Phase 4: Execute -->
+        <div class="glass-card-strong rounded-2xl p-6 text-center relative dark-premium-card">
+          <div class="w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)); border: 1px solid rgba(245,158,11,0.2); box-shadow: 0 0 20px rgba(245,158,11,0.1);">
+            <svg width="24" height="24" fill="none" stroke="#fcd34d" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+          </div>
+          <span class="font-mono text-[10px] text-slate-500 uppercase tracking-wider block mb-2">Phase 04</span>
+          <h3 class="text-xl font-bold mb-2">Execute</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">Instant routing delivers verified, scored opportunities to buyers with full attribution and reporting.</p>
+        </div>
+      </div>
+
+      <!-- Execution time callout -->
+      <div class="text-center mt-12">
+        <div class="inline-flex items-center gap-3 glass-card rounded-full px-6 py-3">
+          <svg width="16" height="16" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span class="font-mono text-sm text-slate-300">Average execution time: <span class="text-emerald-400 font-semibold">47ms</span> end to end</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- CAPABILITIES -->
+  <!-- ============================================================ -->
+  <section class="bg-light-section py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="font-mono text-xs text-blue-600 uppercase tracking-wider block mb-4">Exchange Infrastructure</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">Built for the Exchange Floor</h2>
+        <p class="text-slate-600 text-lg max-w-xl mx-auto">Five core systems that power the insurance intelligence exchange. Institutional-grade infrastructure, built for scale.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 1: Data Intake Terminal -->
+        <div class="premium-card bg-white rounded-2xl p-7 border border-slate-200/60" style="box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);">
+          <div class="w-12 h-12 rounded-xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid rgba(59,130,246,0.15);">
+            <svg width="24" height="24" fill="none" stroke="#2563eb" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 mb-2">Data Intake Terminal</h3>
+          <p class="text-sm text-slate-600 leading-relaxed mb-4">Multi-source ingestion from APIs, web forms, call centers, and partner feeds. 40+ data points enriched per record.</p>
+          <div class="flex items-center gap-2 font-mono text-xs text-blue-600">
+            <span class="px-2 py-1 rounded bg-blue-50 border border-blue-100">API</span>
+            <span class="px-2 py-1 rounded bg-blue-50 border border-blue-100">Web</span>
+            <span class="px-2 py-1 rounded bg-blue-50 border border-blue-100">Voice</span>
+            <span class="px-2 py-1 rounded bg-blue-50 border border-blue-100">Partner</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Scoring Engine -->
+        <div class="premium-card bg-white rounded-2xl p-7 border border-slate-200/60" style="box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);">
+          <div class="w-12 h-12 rounded-xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 1px solid rgba(16,185,129,0.15);">
+            <svg width="24" height="24" fill="none" stroke="#059669" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 mb-2">Scoring Engine</h3>
+          <p class="text-sm text-slate-600 leading-relaxed mb-4">ML-powered risk scoring with 94.2% match accuracy. Continuous model refinement from outcome data loops.</p>
+          <div class="flex items-center gap-2 font-mono text-xs text-emerald-600">
+            <span class="px-2 py-1 rounded bg-emerald-50 border border-emerald-100">ML Model</span>
+            <span class="px-2 py-1 rounded bg-emerald-50 border border-emerald-100">Real-time</span>
+            <span class="px-2 py-1 rounded bg-emerald-50 border border-emerald-100">Adaptive</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Market Maker -->
+        <div class="premium-card bg-white rounded-2xl p-7 border border-slate-200/60" style="box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);">
+          <div class="w-12 h-12 rounded-xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, #eef2ff, #e0e7ff); border: 1px solid rgba(99,102,241,0.15);">
+            <svg width="24" height="24" fill="none" stroke="#4f46e5" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 6.878V6a2.25 2.25 0 012.25-2.25h7.5A2.25 2.25 0 0118 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 004.5 9v.878m13.5-3A2.25 2.25 0 0119.5 9v.878m0 0a2.246 2.246 0 00-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0121 12v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6c0-1.243 1.007-2.25 2.25-2.25h13.5"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 mb-2">Market Maker</h3>
+          <p class="text-sm text-slate-600 leading-relaxed mb-4">Intelligent segmentation groups opportunities into tiers. Dynamic pricing ensures maximum value for every match.</p>
+          <div class="flex items-center gap-2 font-mono text-xs text-indigo-600">
+            <span class="px-2 py-1 rounded bg-indigo-50 border border-indigo-100">Tiering</span>
+            <span class="px-2 py-1 rounded bg-indigo-50 border border-indigo-100">Pricing</span>
+            <span class="px-2 py-1 rounded bg-indigo-50 border border-indigo-100">Auction</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Execution Desk -->
+        <div class="premium-card bg-white rounded-2xl p-7 border border-slate-200/60" style="box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);">
+          <div class="w-12 h-12 rounded-xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, #fff7ed, #ffedd5); border: 1px solid rgba(245,158,11,0.15);">
+            <svg width="24" height="24" fill="none" stroke="#d97706" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 mb-2">Execution Desk</h3>
+          <p class="text-sm text-slate-600 leading-relaxed mb-4">Sub-50ms routing to verified buyers. Failover logic, retry queues, and delivery confirmation built in.</p>
+          <div class="flex items-center gap-2 font-mono text-xs text-amber-600">
+            <span class="px-2 py-1 rounded bg-amber-50 border border-amber-100">Routing</span>
+            <span class="px-2 py-1 rounded bg-amber-50 border border-amber-100">Failover</span>
+            <span class="px-2 py-1 rounded bg-amber-50 border border-amber-100">Webhooks</span>
+          </div>
+        </div>
+
+        <!-- Card 5: Compliance & Reporting -->
+        <div class="premium-card bg-white rounded-2xl p-7 border border-slate-200/60 md:col-span-2 lg:col-span-1" style="box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);">
+          <div class="w-12 h-12 rounded-xl mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, #fdf2f8, #fce7f3); border: 1px solid rgba(219,39,119,0.15);">
+            <svg width="24" height="24" fill="none" stroke="#be185d" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 mb-2">Compliance & Reporting</h3>
+          <p class="text-sm text-slate-600 leading-relaxed mb-4">Full audit trail, TCPA compliance tracking, and real-time analytics dashboards for every transaction.</p>
+          <div class="flex items-center gap-2 font-mono text-xs text-pink-600">
+            <span class="px-2 py-1 rounded bg-pink-50 border border-pink-100">TCPA</span>
+            <span class="px-2 py-1 rounded bg-pink-50 border border-pink-100">Audit Trail</span>
+            <span class="px-2 py-1 rounded bg-pink-50 border border-pink-100">Analytics</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TESTIMONIAL -->
+  <!-- ============================================================ -->
+  <section class="bg-deep-dark noise-overlay py-24">
+    <div class="orb-glow" style="width: 500px; height: 500px; background: radial-gradient(circle, rgba(99,102,241,0.08), transparent); top: 0; right: -100px;"></div>
+
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="glass-card-strong rounded-3xl p-10 md:p-14 text-center relative overflow-hidden">
+        <!-- Subtle glow accent -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px" style="background: linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent);"></div>
+
+        <svg class="mx-auto mb-6 opacity-20" width="48" height="48" viewBox="0 0 24 24" fill="white"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+
+        <blockquote class="text-xl md:text-2xl font-medium text-white leading-relaxed mb-8" style="text-shadow: 0 1px 10px rgba(0,0,0,0.3);">
+          "The Switchboard transformed our distribution model. We went from manual routing to real-time exchange matching — <span class="text-blue-400">our cost per acquisition dropped 34%</span> while volume increased 2.8x."
+        </blockquote>
+
+        <div>
+          <span class="block text-white font-semibold text-base">Sarah Chen</span>
+          <span class="block text-slate-400 text-sm">VP of Distribution, National Insurance Partners</span>
+        </div>
+
+        <div class="flex items-center justify-center gap-6 mt-8 pt-8" style="border-top: 1px solid rgba(255,255,255,0.06);">
+          <div class="text-center">
+            <span class="block font-mono text-xl font-bold text-emerald-400">-34%</span>
+            <span class="block text-xs text-slate-500">Cost per Acquisition</span>
+          </div>
+          <div class="w-px h-10" style="background: rgba(255,255,255,0.08);"></div>
+          <div class="text-center">
+            <span class="block font-mono text-xl font-bold text-blue-400">2.8x</span>
+            <span class="block text-xs text-slate-500">Volume Increase</span>
+          </div>
+          <div class="w-px h-10" style="background: rgba(255,255,255,0.08);"></div>
+          <div class="text-center">
+            <span class="block font-mono text-xl font-bold text-indigo-400">47ms</span>
+            <span class="block text-xs text-slate-500">Avg Route Time</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- CASE STUDIES -->
+  <!-- ============================================================ -->
+  <section class="bg-deep-dark noise-overlay py-24" style="background: linear-gradient(180deg, #050d1f 0%, #0a1628 50%, #050d1f 100%);">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="font-mono text-xs text-emerald-400 uppercase tracking-wider block mb-4">Exchange Performance</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">Proven on the Floor</h2>
+        <p class="text-slate-400 text-lg max-w-xl mx-auto">Real results from carriers and agencies operating on the exchange.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Case Study 1 -->
+        <div class="glass-card-strong rounded-2xl overflow-hidden dark-premium-card">
+          <div class="p-8">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)); border: 1px solid rgba(59,130,246,0.2);">
+                <span class="text-blue-400 font-bold text-sm">NA</span>
+              </div>
+              <div>
+                <span class="block text-white font-semibold text-sm">National Auto Carriers</span>
+                <span class="block text-slate-500 text-xs">Multi-state auto insurance</span>
+              </div>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed mb-6">Migrated from legacy batch processing to real-time exchange routing. Saw immediate improvement in match quality and buyer satisfaction scores.</p>
+            <div class="grid grid-cols-3 gap-4">
+              <div class="glass-card rounded-xl p-3 text-center">
+                <span class="block font-mono text-lg font-bold text-emerald-400">+41%</span>
+                <span class="block text-[10px] text-slate-500 mt-1">Match Quality</span>
+              </div>
+              <div class="glass-card rounded-xl p-3 text-center">
+                <span class="block font-mono text-lg font-bold text-blue-400">3.2x</span>
+                <span class="block text-[10px] text-slate-500 mt-1">Throughput</span>
+              </div>
+              <div class="glass-card rounded-xl p-3 text-center">
+                <span class="block font-mono text-lg font-bold text-indigo-400">-28%</span>
+                <span class="block text-[10px] text-slate-500 mt-1">Cost/Opportunity</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case Study 2 -->
+        <div class="glass-card-strong rounded-2xl overflow-hidden dark-premium-card">
+          <div class="p-8">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); border: 1px solid rgba(16,185,129,0.2);">
+                <span class="text-emerald-400 font-bold text-sm">HP</span>
+              </div>
+              <div>
+                <span class="block text-white font-semibold text-sm">HealthPath Networks</span>
+                <span class="block text-slate-500 text-xs">Health & life insurance distribution</span>
+              </div>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed mb-6">Connected 12 data sources to the exchange in one integration sprint. ML scoring identified high-value opportunities their previous system missed entirely.</p>
+            <div class="grid grid-cols-3 gap-4">
+              <div class="glass-card rounded-xl p-3 text-center">
+                <span class="block font-mono text-lg font-bold text-emerald-400">94%</span>
+                <span class="block text-[10px] text-slate-500 mt-1">Match Rate</span>
+              </div>
+              <div class="glass-card rounded-xl p-3 text-center">
+                <span class="block font-mono text-lg font-bold text-blue-400">12</span>
+                <span class="block text-[10px] text-slate-500 mt-1">Sources Connected</span>
+              </div>
+              <div class="glass-card rounded-xl p-3 text-center">
+                <span class="block font-mono text-lg font-bold text-indigo-400">$2.1M</span>
+                <span class="block text-[10px] text-slate-500 mt-1">Annual Savings</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- CTA SECTION -->
+  <!-- ============================================================ -->
+  <section class="bg-deep-dark noise-overlay py-24 relative overflow-hidden">
+    <!-- Large radial glow -->
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse at center, rgba(37,99,235,0.1) 0%, transparent 60%); pointer-events: none;"></div>
+    <div class="orb-glow" style="width: 600px; height: 600px; background: radial-gradient(circle, rgba(99,102,241,0.06), transparent); top: -200px; left: 50%; transform: translateX(-50%);"></div>
+
+    <div class="max-w-3xl mx-auto px-6 text-center relative">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8" style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.15);">
+        <div class="glow-blue animate-pulse-glow" style="width: 6px; height: 6px;"></div>
+        <span class="text-blue-400 text-xs font-mono font-semibold tracking-wider uppercase">Now Accepting New Members</span>
+      </div>
+
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6" style="text-shadow: 0 2px 30px rgba(37,99,235,0.15);">
+        Join the Exchange.
+      </h2>
+      <p class="text-lg text-slate-400 max-w-xl mx-auto mb-10 leading-relaxed">
+        Connect your data sources, access the buyer network, and start trading on the most advanced insurance intelligence platform ever built.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+        <a href="#" class="btn-primary text-base !px-10">Request Exchange Access</a>
+        <a href="#" class="btn-secondary text-base !px-10">Schedule a Demo</a>
+      </div>
+
+      <!-- Trust badges -->
+      <div class="flex flex-wrap items-center justify-center gap-6 text-slate-500 text-xs font-mono">
+        <span class="flex items-center gap-1.5">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+          SOC 2 Compliant
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+          256-bit Encryption
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          99.97% Uptime SLA
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          TCPA Compliant
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- FOOTER -->
+  <!-- ============================================================ -->
+  <footer style="background: linear-gradient(180deg, #020710 0%, #010509 100%); border-top: 1px solid rgba(255,255,255,0.04);">
+    <div class="max-w-7xl mx-auto px-6 py-16">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+        <!-- Brand -->
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 2px 10px rgba(37,99,235,0.3);">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="white" opacity="0.9"/><rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity="0.6"/><rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity="0.6"/><rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity="0.9"/></svg>
+            </div>
+            <span class="font-bold text-white text-sm">The Switchboard</span>
+          </div>
+          <p class="text-sm text-slate-500 leading-relaxed">The insurance intelligence exchange. Where data sources and buyers connect in real time.</p>
+        </div>
+        <!-- Platform -->
+        <div>
+          <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Platform</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Data Intake</a></li>
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Scoring Engine</a></li>
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Market Maker</a></li>
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Execution Desk</a></li>
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Analytics</a></li>
+          </ul>
+        </div>
+        <!-- Company -->
+        <div>
+          <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Company</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">About</a></li>
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Careers</a></li>
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Blog</a></li>
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Contact</a></li>
+          </ul>
+        </div>
+        <!-- Legal -->
+        <div>
+          <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Legal</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Privacy Policy</a></li>
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Terms of Service</a></li>
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Compliance</a></li>
+            <li><a href="#" class="text-sm text-slate-500 hover:text-slate-300 transition-colors no-underline">Security</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4" style="border-top: 1px solid rgba(255,255,255,0.04);">
+        <span class="text-xs text-slate-600">&copy; 2026 The Switchboard. All rights reserved.</span>
+        <div class="flex items-center gap-2">
+          <div class="glow-green" style="width: 5px; height: 5px;"></div>
+          <span class="font-mono text-[10px] text-slate-500">Exchange Status: <span class="text-emerald-400">Operational</span></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
