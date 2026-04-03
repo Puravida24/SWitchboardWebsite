@@ -101,7 +101,8 @@ try
     }
 
     app.UseStatusCodePagesWithReExecute("/Error/{0}");
-    app.UseHttpsRedirection();
+    if (app.Environment.IsDevelopment())
+        app.UseHttpsRedirection();
     app.UseRouting();
     app.UseAuthentication();
     app.UseAuthorization();
