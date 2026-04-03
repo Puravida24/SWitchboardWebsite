@@ -206,6 +206,9 @@ body { font-family: 'Inter', sans-serif; margin: 0; background: #faf9f7; color: 
   animation: subtlePulse 4s ease-in-out infinite;
 }
 
+/* Alpine cloak */
+[x-cloak] { display: none !important; }
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #faf9f7; }
@@ -227,7 +230,23 @@ body { font-family: 'Inter', sans-serif; margin: 0; background: #faf9f7; color: 
       <a href="#" class="hover:text-charcoal transition-colors duration-200">About</a>
       <a href="#" class="hover:text-charcoal transition-colors duration-200">Journal</a>
     </nav>
-    <a href="#" class="pill-btn px-6 py-2.5 text-sm font-medium hidden sm:inline-block">Book a Demo</a>
+    <a href="#" class="pill-btn px-6 py-2.5 text-sm font-medium hidden md:inline-block">Book a Demo</a>
+    <!-- Mobile hamburger -->
+    <button class="md:hidden p-2" x-data x-on:click="$dispatch('toggle-mobile-nav')">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <!-- Mobile nav -->
+  <div x-data="{ open: false }" @toggle-mobile-nav.window="open = !open" x-show="open" x-cloak x-transition
+    class="md:hidden bg-[#faf9f7] border-t border-charcoal/[0.06] px-8 py-6">
+    <div class="flex flex-col gap-4 text-sm text-neutral-500 font-normal">
+      <a href="#" @click="open = false" class="hover:text-charcoal transition-colors duration-200">Platform</a>
+      <a href="#" @click="open = false" class="hover:text-charcoal transition-colors duration-200">Solutions</a>
+      <a href="#" @click="open = false" class="hover:text-charcoal transition-colors duration-200">Industries</a>
+      <a href="#" @click="open = false" class="hover:text-charcoal transition-colors duration-200">About</a>
+      <a href="#" @click="open = false" class="hover:text-charcoal transition-colors duration-200">Journal</a>
+      <a href="#" @click="open = false" class="pill-btn px-6 py-2.5 text-sm font-medium text-center mt-2">Book a Demo</a>
+    </div>
   </div>
   <div class="absolute bottom-0 left-0 w-full h-px bg-charcoal/[0.06]"></div>
 </header>

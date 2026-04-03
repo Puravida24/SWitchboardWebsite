@@ -77,7 +77,8 @@
          1. HEADER
     ═══════════════════════════════════════════ -->
     <header class="fixed top-0 left-0 right-0 z-50 h-[72px] flex items-center"
-            style="background: rgba(3,8,24,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+            style="background: rgba(3,8,24,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);"
+            x-data="{ mobileOpen: false }">
         <div class="w-full max-w-[1400px] mx-auto px-6 md:px-10 flex items-center justify-between">
             <!-- Logo -->
             <a href="#" class="flex items-center gap-2 shrink-0">
@@ -97,13 +98,25 @@
                 <a href="#" class="hover:text-white transition">Pricing</a>
             </nav>
             <!-- CTA -->
-            <a href="#cta" class="hidden sm:inline-flex items-center gap-2 bg-[#2563eb] text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg hover:bg-[#3b82f6] transition">
-                Request a Demo
-            </a>
-            <!-- Mobile menu button -->
-            <button class="lg:hidden text-white/60" x-data @click="$dispatch('toggle-menu')">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
+            <div class="flex items-center gap-4">
+                <a href="#cta" class="hidden sm:inline-flex items-center gap-2 bg-[#2563eb] text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg hover:bg-[#3b82f6] transition">
+                    Request a Demo
+                </a>
+                <!-- Mobile menu button -->
+                <button @click="mobileOpen = !mobileOpen" class="lg:hidden text-white/60 hover:text-white" aria-label="Menu">
+                    <svg x-show="!mobileOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="mobileOpen" x-cloak class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div x-show="mobileOpen" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 bg-[#030818]/95 backdrop-blur-xl border-t border-white/5 px-6 py-6 space-y-4">
+            <a @click="mobileOpen = false" href="#engines" class="block text-[14px] font-medium text-white/60 hover:text-white transition">Platform</a>
+            <a @click="mobileOpen = false" href="#process" class="block text-[14px] font-medium text-white/60 hover:text-white transition">How It Works</a>
+            <a @click="mobileOpen = false" href="#comparison" class="block text-[14px] font-medium text-white/60 hover:text-white transition">Why Us</a>
+            <a @click="mobileOpen = false" href="#case-studies" class="block text-[14px] font-medium text-white/60 hover:text-white transition">Results</a>
+            <a @click="mobileOpen = false" href="#" class="block text-[14px] font-medium text-white/60 hover:text-white transition">Pricing</a>
+            <a href="#cta" class="block text-center bg-[#2563eb] text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg hover:bg-[#3b82f6] transition mt-4">Request a Demo</a>
         </div>
     </header>
 

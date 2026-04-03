@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Design 9: Frosted Layers — The Switchboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 * { font-family: 'Inter', sans-serif; }
@@ -87,12 +88,13 @@ body {
   background: #8b5cf6;
   box-shadow: 0 0 12px rgba(139,92,246,0.6);
 }
+[x-cloak] { display: none !important; }
 </style>
 </head>
 <body>
 
 <!-- Header -->
-<header class="frost-header fixed top-0 w-full z-50 px-8 py-4">
+<header class="frost-header fixed top-0 w-full z-50 px-8 py-4" x-data="{ mobileOpen: false }">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
     <div class="text-xl font-bold tracking-tight">
       <span style="background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">⚡</span> The Switchboard
@@ -103,7 +105,21 @@ body {
       <a href="#" class="hover:text-white transition">About</a>
       <a href="#" class="hover:text-white transition">Resources</a>
     </nav>
-    <a href="#" class="gradient-btn px-5 py-2.5 rounded-xl text-white text-sm font-semibold">Book Demo</a>
+    <div class="flex items-center gap-4">
+      <a href="#" class="hidden md:inline-block gradient-btn px-5 py-2.5 rounded-xl text-white text-sm font-semibold">Book Demo</a>
+      <button @click="mobileOpen = !mobileOpen" class="md:hidden text-white p-2" aria-label="Menu">
+        <svg x-show="!mobileOpen" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg x-show="mobileOpen" x-cloak width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M6 18L18 6"/></svg>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile Menu -->
+  <div x-show="mobileOpen" x-cloak x-transition class="md:hidden frost absolute top-full left-0 right-0 px-8 py-6 space-y-4 border-t border-white/5">
+    <a @click="mobileOpen = false" href="#" class="block text-slate-400 hover:text-white transition">Solutions</a>
+    <a @click="mobileOpen = false" href="#" class="block text-slate-400 hover:text-white transition">Industries</a>
+    <a @click="mobileOpen = false" href="#" class="block text-slate-400 hover:text-white transition">About</a>
+    <a @click="mobileOpen = false" href="#" class="block text-slate-400 hover:text-white transition">Resources</a>
+    <a href="#" class="gradient-btn block text-center px-5 py-2.5 rounded-xl text-white text-sm font-semibold mt-4">Book Demo</a>
   </div>
 </header>
 

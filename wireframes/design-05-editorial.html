@@ -6,6 +6,7 @@
 <title>Design 5: Editorial — The Switchboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <style>
 * { font-family: 'Inter', sans-serif; }
 body { background: #faf9f7; color: #1a1a1a; }
@@ -13,9 +14,14 @@ body { background: #faf9f7; color: #1a1a1a; }
 
 .editorial-hero {
   display: grid;
-  grid-template-columns: 1fr 1px 1fr;
+  grid-template-columns: 1fr;
   min-height: 90vh;
   align-items: center;
+}
+@media (min-width: 768px) {
+  .editorial-hero {
+    grid-template-columns: 1fr 1px 1fr;
+  }
 }
 .hero-divider {
   background: #1a1a1a;
@@ -81,7 +87,7 @@ body { background: #faf9f7; color: #1a1a1a; }
 <body>
 
 <!-- Header -->
-<header class="fixed top-0 w-full z-50 bg-[#faf9f7]/90 backdrop-blur-lg px-8 py-5">
+<header class="fixed top-0 w-full z-50 bg-[#faf9f7]/90 backdrop-blur-lg px-8 py-5" x-data="{ mobileMenu: false }">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
     <div class="serif text-2xl">The Switchboard</div>
     <nav class="hidden md:flex items-center gap-8 text-sm text-neutral-500">
@@ -90,13 +96,23 @@ body { background: #faf9f7; color: #1a1a1a; }
       <a href="#" class="hover:text-black transition">About</a>
       <a href="#" class="hover:text-black transition">Journal</a>
     </nav>
-    <a href="#" class="pill-btn px-6 py-2.5 text-sm font-medium">Book a Demo</a>
+    <a href="#" class="pill-btn px-6 py-2.5 text-sm font-medium hidden md:inline-block">Book a Demo</a>
+    <button @click="mobileMenu = !mobileMenu" class="md:hidden text-neutral-500 hover:text-black" aria-label="Toggle menu">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div x-show="mobileMenu" x-transition class="md:hidden px-4 pb-4 pt-2 space-y-3 text-sm text-neutral-500">
+    <a href="#" class="block hover:text-black transition">Solutions</a>
+    <a href="#" class="block hover:text-black transition">Industries</a>
+    <a href="#" class="block hover:text-black transition">About</a>
+    <a href="#" class="block hover:text-black transition">Journal</a>
+    <a href="#" class="block pill-btn text-center px-6 py-2.5 font-medium">Book a Demo</a>
   </div>
 </header>
 
 <!-- Hero -->
 <section class="editorial-hero px-8 pt-24">
-  <div class="max-w-xl ml-auto pr-16">
+  <div class="max-w-xl mx-auto md:ml-auto md:mr-0 px-8 md:pr-16">
     <div class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-8">Insurance Intelligence Platform</div>
     <h1 class="serif text-6xl md:text-7xl leading-[1.05] mb-8">
       The precision layer for insurance.
@@ -107,7 +123,7 @@ body { background: #faf9f7; color: #1a1a1a; }
     </div>
   </div>
   <div class="hero-divider hidden md:block"></div>
-  <div class="max-w-xl mr-auto pl-16 hidden md:block">
+  <div class="max-w-xl mx-auto md:mr-auto md:ml-0 px-8 md:pl-16 hidden md:block">
     <p class="text-lg text-neutral-600 leading-relaxed mb-8">
       We built The Switchboard because insurance deserves better infrastructure. Every prospect enriched, scored, and routed to the right buyer — in milliseconds.
     </p>

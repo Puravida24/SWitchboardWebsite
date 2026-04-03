@@ -6,6 +6,7 @@
 <title>Design 1: Dark Intelligence — The Switchboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <style>
 * { font-family: 'Inter', sans-serif; }
 body { background: #0a0e1a; color: #e2e8f0; }
@@ -90,7 +91,7 @@ body { background: #0a0e1a; color: #e2e8f0; }
 <body>
 
 <!-- Header -->
-<header class="glass-header fixed top-0 w-full z-50 px-8 py-4">
+<header class="glass-header fixed top-0 w-full z-50 px-8 py-4" x-data="{ mobileMenu: false }">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
     <div class="text-xl font-bold tracking-tight">
       <span class="text-blue-400">⚡</span> The Switchboard
@@ -103,9 +104,22 @@ body { background: #0a0e1a; color: #e2e8f0; }
       <a href="#" class="hover:text-white transition">Contact</a>
     </nav>
     <div class="flex items-center gap-4">
-      <a href="#" class="text-sm text-slate-400 hover:text-white transition">Sign In</a>
-      <a href="#" class="glow-btn text-sm font-semibold px-5 py-2.5 rounded-lg text-white">Book Demo</a>
+      <a href="#" class="text-sm text-slate-400 hover:text-white transition hidden md:inline">Sign In</a>
+      <a href="#" class="glow-btn text-sm font-semibold px-5 py-2.5 rounded-lg text-white hidden md:inline-block">Book Demo</a>
+      <button @click="mobileMenu = !mobileMenu" class="md:hidden text-slate-400 hover:text-white" aria-label="Toggle menu">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
     </div>
+  </div>
+  <!-- Mobile Menu -->
+  <div x-show="mobileMenu" x-transition class="md:hidden px-4 pb-4 pt-2 space-y-3 text-sm text-slate-400">
+    <a href="#" class="block hover:text-white transition">Solutions</a>
+    <a href="#" class="block hover:text-white transition">Industries</a>
+    <a href="#" class="block hover:text-white transition">About</a>
+    <a href="#" class="block hover:text-white transition">Resources</a>
+    <a href="#" class="block hover:text-white transition">Contact</a>
+    <a href="#" class="block text-slate-400 hover:text-white transition">Sign In</a>
+    <a href="#" class="block glow-btn text-center font-semibold px-5 py-2.5 rounded-lg text-white">Book Demo</a>
   </div>
 </header>
 
@@ -233,6 +247,19 @@ body { background: #0a0e1a; color: #e2e8f0; }
         <h3 class="text-lg font-semibold mb-2">Convert</h3>
         <p class="text-sm text-slate-400 leading-relaxed">Watch conversion rates climb as every opportunity reaches the buyer most likely to close it.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="py-24 border-t border-slate-800/50">
+  <div class="max-w-4xl mx-auto px-8 text-center">
+    <p class="text-xl md:text-2xl font-light leading-relaxed text-slate-200 mb-8">
+      "The Switchboard cut our cost per acquisition by 42% in the first quarter. It's not even close to what we had before."
+    </p>
+    <div>
+      <div class="font-semibold text-white">Sarah Chen</div>
+      <div class="text-sm text-slate-500">VP of Operations, Meridian Insurance Group</div>
     </div>
   </div>
 </section>

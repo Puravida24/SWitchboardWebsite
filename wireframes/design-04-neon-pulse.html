@@ -6,6 +6,7 @@
 <title>Design 4: Neon Pulse — The Switchboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <style>
 * { font-family: 'Inter', sans-serif; }
 body { background: #000000; color: #e2e8f0; }
@@ -118,7 +119,7 @@ body { background: #000000; color: #e2e8f0; }
 <body class="grid-bg">
 
 <!-- Header -->
-<header class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-green-500/10 px-8 py-4">
+<header class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-green-500/10 px-8 py-4" x-data="{ mobileMenu: false }">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
     <div class="text-lg font-bold tracking-tight">
       <span class="neon-green">⚡</span> THE SWITCHBOARD
@@ -129,7 +130,17 @@ body { background: #000000; color: #e2e8f0; }
       <a href="#" class="hover:text-green-400 transition">about</a>
       <a href="#" class="hover:text-green-400 transition">resources</a>
     </nav>
-    <a href="#" class="neon-btn px-5 py-2.5 rounded-lg text-sm">BOOK DEMO</a>
+    <a href="#" class="neon-btn px-5 py-2.5 rounded-lg text-sm hidden md:inline-block">BOOK DEMO</a>
+    <button @click="mobileMenu = !mobileMenu" class="md:hidden text-slate-500 hover:text-green-400" aria-label="Toggle menu">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div x-show="mobileMenu" x-transition class="md:hidden px-4 pb-4 pt-2 space-y-3 text-sm text-slate-500 mono">
+    <a href="#" class="block hover:text-green-400 transition">solutions</a>
+    <a href="#" class="block hover:text-green-400 transition">industries</a>
+    <a href="#" class="block hover:text-green-400 transition">about</a>
+    <a href="#" class="block hover:text-green-400 transition">resources</a>
+    <a href="#" class="block neon-btn text-center px-5 py-2.5 rounded-lg text-sm">BOOK DEMO</a>
   </div>
 </header>
 
@@ -238,6 +249,22 @@ body { background: #000000; color: #e2e8f0; }
         <div class="mono text-xs text-green-400/30 ml-auto hidden md:block">
           conversion.track()<br>revenue.report()<br>roi.optimize()
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="py-24">
+  <div class="max-w-4xl mx-auto px-8">
+    <div class="terminal-card py-12 px-8 text-center">
+      <div class="mono text-xs text-green-400/50 mb-6">client_testimonial.log</div>
+      <p class="text-xl md:text-2xl font-light leading-relaxed text-slate-200 mb-8">
+        "The Switchboard cut our cost per acquisition by 42% in the first quarter. It's not even close to what we had before."
+      </p>
+      <div>
+        <div class="font-semibold neon-green">Sarah Chen</div>
+        <div class="text-sm text-slate-500">VP of Operations, Meridian Insurance Group</div>
       </div>
     </div>
   </div>

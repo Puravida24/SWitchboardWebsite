@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Design 10: Cyber Grid — The Switchboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 * { font-family: 'Inter', sans-serif; }
@@ -121,12 +122,13 @@ body { background: #030712; color: #e5e7eb; }
   background: linear-gradient(90deg, transparent 0%, #06b6d4 20%, #06b6d4 80%, transparent 100%);
   opacity: 0.15;
 }
+[x-cloak] { display: none !important; }
 </style>
 </head>
 <body class="grid-bg">
 
 <!-- Header -->
-<header class="fixed top-0 w-full z-50 bg-[#030712]/80 backdrop-blur-xl border-b border-cyan-900/20 px-8 py-4">
+<header class="fixed top-0 w-full z-50 bg-[#030712]/80 backdrop-blur-xl border-b border-cyan-900/20 px-8 py-4" x-data="{ mobileOpen: false }">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
     <div class="text-lg font-bold tracking-wider uppercase">
       <span class="cyber-blue">⬡</span> THE SWITCHBOARD
@@ -137,7 +139,21 @@ body { background: #030712; color: #e5e7eb; }
       <a href="#" class="hover:text-cyan-400 transition">About</a>
       <a href="#" class="hover:text-cyan-400 transition">Intel</a>
     </nav>
-    <a href="#" class="cyber-btn px-6 py-2.5 text-xs font-bold tracking-wider">BOOK DEMO</a>
+    <div class="flex items-center gap-4">
+      <a href="#" class="hidden md:inline-block cyber-btn px-6 py-2.5 text-xs font-bold tracking-wider">BOOK DEMO</a>
+      <button @click="mobileOpen = !mobileOpen" class="md:hidden text-cyan-400 p-2" aria-label="Menu">
+        <svg x-show="!mobileOpen" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg x-show="mobileOpen" x-cloak width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M6 18L18 6"/></svg>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile Menu -->
+  <div x-show="mobileOpen" x-cloak x-transition class="md:hidden absolute top-full left-0 right-0 bg-[#030712]/95 backdrop-blur-xl border-b border-cyan-900/20 px-8 py-6 space-y-4">
+    <a @click="mobileOpen = false" href="#" class="block text-xs text-gray-400 uppercase tracking-widest hover:text-cyan-400 transition">Solutions</a>
+    <a @click="mobileOpen = false" href="#" class="block text-xs text-gray-400 uppercase tracking-widest hover:text-cyan-400 transition">Industries</a>
+    <a @click="mobileOpen = false" href="#" class="block text-xs text-gray-400 uppercase tracking-widest hover:text-cyan-400 transition">About</a>
+    <a @click="mobileOpen = false" href="#" class="block text-xs text-gray-400 uppercase tracking-widest hover:text-cyan-400 transition">Intel</a>
+    <a href="#" class="cyber-btn block text-center px-6 py-2.5 text-xs font-bold tracking-wider mt-4">BOOK DEMO</a>
   </div>
 </header>
 

@@ -6,6 +6,7 @@
 <title>Design 7: Warm Premium — The Switchboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <style>
 * { font-family: 'Inter', sans-serif; }
 body { background: #0c0a09; color: #fafaf9; }
@@ -71,7 +72,7 @@ body { background: #0c0a09; color: #fafaf9; }
 <body>
 
 <!-- Header -->
-<header class="fixed top-0 w-full z-50 bg-[#0c0a09]/80 backdrop-blur-xl border-b border-amber-900/10 px-8 py-5">
+<header class="fixed top-0 w-full z-50 bg-[#0c0a09]/80 backdrop-blur-xl border-b border-amber-900/10 px-8 py-5" x-data="{ mobileMenu: false }">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
     <div class="text-xl font-bold tracking-tight">
       <span class="gold">◈</span> The Switchboard
@@ -82,7 +83,17 @@ body { background: #0c0a09; color: #fafaf9; }
       <a href="#" class="hover:text-stone-200 transition">About</a>
       <a href="#" class="hover:text-stone-200 transition">Resources</a>
     </nav>
-    <a href="#" class="warm-btn px-6 py-2.5 rounded-lg text-sm">Book Demo</a>
+    <a href="#" class="warm-btn px-6 py-2.5 rounded-lg text-sm hidden md:inline-block">Book Demo</a>
+    <button @click="mobileMenu = !mobileMenu" class="md:hidden text-stone-500 hover:text-stone-200" aria-label="Toggle menu">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div x-show="mobileMenu" x-transition class="md:hidden px-4 pb-4 pt-2 space-y-3 text-sm text-stone-500">
+    <a href="#" class="block hover:text-stone-200 transition">Solutions</a>
+    <a href="#" class="block hover:text-stone-200 transition">Industries</a>
+    <a href="#" class="block hover:text-stone-200 transition">About</a>
+    <a href="#" class="block hover:text-stone-200 transition">Resources</a>
+    <a href="#" class="block warm-btn text-center px-6 py-2.5 rounded-lg">Book Demo</a>
   </div>
 </header>
 
@@ -107,7 +118,7 @@ body { background: #0c0a09; color: #fafaf9; }
     </div>
 
     <!-- Stats Row -->
-    <div class="grid grid-cols-4 gap-8 mt-24 pt-12 border-t border-amber-900/10">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 pt-12 border-t border-amber-900/10">
       <div>
         <div class="text-4xl font-bold gold mb-1">340%</div>
         <div class="text-sm text-stone-600">Average ROI across clients</div>

@@ -123,6 +123,9 @@ body { background: #faf9f7; color: #1a1a1a; overflow-x: hidden; }
 /* ── Smooth Scroll ── */
 html { scroll-behavior: smooth; }
 
+/* ── Alpine cloak ── */
+[x-cloak] { display: none !important; }
+
 /* ── Fade-in animation ── */
 [x-intersect] { opacity: 0; transform: translateY(24px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
 .is-visible { opacity: 1 !important; transform: translateY(0) !important; }
@@ -145,9 +148,24 @@ html { scroll-behavior: smooth; }
       <a href="#" class="hover:text-[#1a1a1a] transition-colors duration-200">About</a>
       <a href="#" class="hover:text-[#1a1a1a] transition-colors duration-200">Journal</a>
     </nav>
-    <a href="#" class="pill-btn pill-dark text-[13px] tracking-wide">Book a Demo</a>
+    <a href="#" class="pill-btn pill-dark text-[13px] tracking-wide hidden md:inline-flex">Book a Demo</a>
+    <!-- Mobile hamburger -->
+    <button class="md:hidden p-2" x-data x-on:click="$dispatch('toggle-mobile-menu')">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
   </div>
 </header>
+<!-- Mobile nav -->
+<div x-data="{ open: false }" @toggle-mobile-menu.window="open = !open" x-show="open" x-cloak x-transition
+  class="fixed top-[72px] left-0 right-0 z-40 bg-[#faf9f7] border-b md:hidden" style="border-color: rgba(26,26,26,0.1);">
+  <div class="flex flex-col gap-4 px-8 py-6 text-[13px] text-neutral-500 font-medium uppercase tracking-[0.08em]">
+    <a href="#" @click="open = false" class="hover:text-[#1a1a1a] transition-colors duration-200">Platform</a>
+    <a href="#" @click="open = false" class="hover:text-[#1a1a1a] transition-colors duration-200">Solutions</a>
+    <a href="#" @click="open = false" class="hover:text-[#1a1a1a] transition-colors duration-200">About</a>
+    <a href="#" @click="open = false" class="hover:text-[#1a1a1a] transition-colors duration-200">Journal</a>
+    <a href="#" @click="open = false" class="pill-btn pill-dark text-[13px] tracking-wide text-center mt-2">Book a Demo</a>
+  </div>
+</div>
 
 
 <!-- ═══════════════════════════════════════════════════════════
