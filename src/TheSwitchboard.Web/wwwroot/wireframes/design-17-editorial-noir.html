@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 17: Editorial Noir — The Switchboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+* { font-family: 'Inter', sans-serif; }
+body { background: #1a1a1a; color: #faf9f7; }
+.serif { font-family: 'Instrument Serif', serif; }
+
+/* --- Pill Buttons --- */
+.pill-light {
+  background: #faf9f7; color: #1a1a1a;
+  border-radius: 100px;
+  transition: all 0.25s;
+}
+.pill-light:hover { background: #e8e5e0; }
+
+.pill-dark {
+  background: #1a1a1a; color: #faf9f7;
+  border-radius: 100px;
+  transition: all 0.25s;
+}
+.pill-dark:hover { background: #333; }
+
+.pill-outline-light {
+  border: 1px solid rgba(250,249,247,0.4); color: #faf9f7;
+  border-radius: 100px;
+  transition: all 0.25s;
+}
+.pill-outline-light:hover { background: rgba(250,249,247,0.1); border-color: #faf9f7; }
+
+.pill-outline-dark {
+  border: 1px solid rgba(26,26,26,0.3); color: #1a1a1a;
+  border-radius: 100px;
+  transition: all 0.25s;
+}
+.pill-outline-dark:hover { background: #1a1a1a; color: #faf9f7; }
+
+/* --- Marquee --- */
+.marquee-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.marquee-text {
+  display: inline-block;
+  animation: marquee 45s linear infinite;
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* --- Light Section --- */
+.section-light { background: #faf9f7; color: #1a1a1a; }
+.section-dark { background: #1a1a1a; color: #faf9f7; }
+
+/* --- Editorial Card --- */
+.editorial-card {
+  border-top: 1px solid #1a1a1a;
+  padding-top: 40px;
+  transition: all 0.3s ease;
+}
+.editorial-card:hover { padding-left: 12px; }
+
+/* --- Stat Dividers (dark bg) --- */
+.stat-dark { border-right: 1px solid rgba(250,249,247,0.15); }
+.stat-dark:last-child { border-right: none; }
+
+/* --- Stat Dividers (light bg) --- */
+.stat-light { border-right: 1px solid rgba(26,26,26,0.1); }
+.stat-light:last-child { border-right: none; }
+
+/* --- Image Placeholder --- */
+.img-placeholder {
+  background: #2a2a2a;
+  border-radius: 8px;
+  aspect-ratio: 16/10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(250,249,247,0.2);
+  font-size: 14px;
+}
+.section-light .img-placeholder {
+  background: #e8e5e0;
+  color: #bbb;
+}
+
+/* --- Gold accent --- */
+.gold { color: #c9a96e; }
+.bg-gold { background: #c9a96e; }
+
+/* --- Smooth scroll --- */
+html { scroll-behavior: smooth; }
+
+/* --- Step number --- */
+.step-number {
+  font-family: 'Instrument Serif', serif;
+  font-size: 120px;
+  line-height: 1;
+  color: rgba(201,169,110,0.15);
+  position: absolute;
+  top: -20px;
+  left: 0;
+}
+
+/* --- Quote bar --- */
+.quote-bar {
+  width: 4px;
+  background: #c9a96e;
+  border-radius: 2px;
+}
+
+/* Mobile hamburger */
+.mobile-menu-open .mobile-nav { display: flex !important; }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- ============================================================ -->
+<!-- HEADER -->
+<!-- ============================================================ -->
+<header class="fixed top-0 w-full z-50 bg-[#1a1a1a]/90 backdrop-blur-xl" style="height:72px">
+  <div class="max-w-7xl mx-auto h-full flex items-center justify-between px-6 lg:px-8">
+    <a href="#" class="serif text-2xl text-[#faf9f7]">The Switchboard</a>
+    <nav class="hidden md:flex items-center gap-8 text-sm" style="color:rgba(250,249,247,0.5)">
+      <a href="#capabilities" class="hover:text-[#faf9f7] transition-colors duration-200">Platform</a>
+      <a href="#how-it-works" class="hover:text-[#faf9f7] transition-colors duration-200">How It Works</a>
+      <a href="#industries" class="hover:text-[#faf9f7] transition-colors duration-200">Industries</a>
+      <a href="#results" class="hover:text-[#faf9f7] transition-colors duration-200">Results</a>
+    </nav>
+    <div class="flex items-center gap-4">
+      <a href="#cta" class="pill-light px-6 py-2.5 text-sm font-medium hidden md:inline-block">Book a Demo</a>
+      <!-- Mobile hamburger -->
+      <button class="md:hidden text-[#faf9f7]" x-data x-on:click="$el.closest('header').classList.toggle('mobile-menu-open')">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile nav -->
+  <div class="mobile-nav hidden flex-col bg-[#1a1a1a] border-t border-white/10 px-6 py-6 gap-4 md:hidden" style="color:rgba(250,249,247,0.7)">
+    <a href="#capabilities" class="text-sm py-2">Platform</a>
+    <a href="#how-it-works" class="text-sm py-2">How It Works</a>
+    <a href="#industries" class="text-sm py-2">Industries</a>
+    <a href="#results" class="text-sm py-2">Results</a>
+    <a href="#cta" class="pill-light px-6 py-2.5 text-sm font-medium text-center mt-2">Book a Demo</a>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- HERO -->
+<!-- ============================================================ -->
+<section class="section-dark min-h-screen flex flex-col justify-center pt-[72px]">
+  <div class="max-w-7xl mx-auto w-full px-6 lg:px-8 py-16 lg:py-0">
+    <!-- Asymmetric layout -->
+    <div class="flex flex-col lg:flex-row lg:items-center gap-12 lg:gap-0">
+      <!-- Left — 65% -->
+      <div class="lg:w-[65%] lg:pr-16">
+        <p class="text-xs uppercase tracking-[0.25em] gold mb-8 font-medium">Insurance Intelligence</p>
+        <h1 class="serif text-5xl sm:text-6xl lg:text-7xl xl:text-[80px] leading-[1.05] text-[#faf9f7]">
+          The precision layer<br>for profitable<br>insurance growth.
+        </h1>
+      </div>
+      <!-- Vertical divider (desktop) -->
+      <div class="hidden lg:block w-px self-stretch bg-[rgba(250,249,247,0.12)]"></div>
+      <!-- Right — 30% -->
+      <div class="lg:w-[30%] lg:pl-16 flex flex-col gap-8">
+        <p class="text-lg leading-relaxed" style="color:rgba(250,249,247,0.6)">
+          Every prospect enriched with 343&nbsp;million records. Scored by ML in under 5&nbsp;milliseconds. Routed to the highest-value buyer. In&nbsp;real&#8209;time.
+        </p>
+        <div class="flex flex-col sm:flex-row lg:flex-col gap-3">
+          <a href="#cta" class="pill-light px-8 py-3.5 text-sm font-medium text-center">Book a Demo</a>
+          <a href="#capabilities" class="pill-outline-light px-8 py-3.5 text-sm font-medium text-center">Our Approach &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Stats -->
+    <div class="mt-20 lg:mt-28 flex flex-col sm:flex-row justify-center gap-0">
+      <div class="stat-dark flex-1 text-center py-6 sm:py-0 sm:px-10 lg:px-16 border-b sm:border-b-0 border-white/10">
+        <div class="serif text-5xl lg:text-6xl text-[#faf9f7]">340%</div>
+        <div class="text-xs uppercase tracking-[0.2em] mt-3" style="color:rgba(250,249,247,0.4)">Avg ROI</div>
+      </div>
+      <div class="stat-dark flex-1 text-center py-6 sm:py-0 sm:px-10 lg:px-16 border-b sm:border-b-0 border-white/10">
+        <div class="serif text-5xl lg:text-6xl text-[#faf9f7]">&lt;5ms</div>
+        <div class="text-xs uppercase tracking-[0.2em] mt-3" style="color:rgba(250,249,247,0.4)">Score Time</div>
+      </div>
+      <div class="stat-dark flex-1 text-center py-6 sm:py-0 sm:px-10 lg:px-16">
+        <div class="serif text-5xl lg:text-6xl text-[#faf9f7]">343M</div>
+        <div class="text-xs uppercase tracking-[0.2em] mt-3" style="color:rgba(250,249,247,0.4)">Records</div>
+      </div>
+    </div>
+  </div>
+  <!-- Bottom border -->
+  <div class="border-t mt-16" style="border-color:rgba(250,249,247,0.08)"></div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CAPABILITIES MARQUEE -->
+<!-- ============================================================ -->
+<section class="section-dark border-y" style="border-color:rgba(250,249,247,0.08)">
+  <div class="marquee-wrap py-8 lg:py-10">
+    <div class="marquee-text serif text-6xl sm:text-7xl lg:text-[80px]" style="color:rgba(250,249,247,0.12)">
+      Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enrich&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Score&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Segment&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Route&nbsp;&nbsp;&#9670;&nbsp;&nbsp;Analyze&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- WHAT WE DO (LIGHT SECTION) -->
+<!-- ============================================================ -->
+<section id="capabilities" class="section-light py-24 lg:py-32">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <!-- Section header -->
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-20">
+      <h2 class="serif text-5xl lg:text-6xl text-[#1a1a1a]">Five connected engines.</h2>
+      <p class="text-base max-w-md" style="color:#888">One intelligence layer that enriches, scores, segments, routes, and measures every opportunity in real-time.</p>
+    </div>
+
+    <!-- Editorial cards — single column -->
+    <div class="space-y-16">
+
+      <!-- Card 01 — Enrichment -->
+      <div class="editorial-card">
+        <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-16">
+          <div class="lg:w-1/2">
+            <p class="text-xs uppercase tracking-[0.2em] mb-4" style="color:#999">01 &mdash; Enrichment</p>
+            <h3 class="serif text-3xl lg:text-4xl text-[#1a1a1a] mb-4">Real-Time Data Enrichment</h3>
+            <p style="color:#888" class="leading-relaxed max-w-lg">Every inbound opportunity is instantly enriched against 343 million consumer and commercial records &mdash; 398 unique attributes appended in under one second.</p>
+          </div>
+          <div class="lg:w-1/2 lg:text-right flex lg:justify-end items-start">
+            <span class="inline-block gold text-sm font-medium tracking-wide bg-[#c9a96e]/10 px-4 py-2 rounded-full">343M+ records &middot; 398 attributes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 02 — Segmentation -->
+      <div class="editorial-card">
+        <div class="flex flex-col lg:flex-row-reverse lg:items-start gap-6 lg:gap-16">
+          <div class="lg:w-1/2 lg:text-right">
+            <p class="text-xs uppercase tracking-[0.2em] mb-4" style="color:#999">02 &mdash; Segmentation</p>
+            <h3 class="serif text-3xl lg:text-4xl text-[#1a1a1a] mb-4">ML Risk Segmentation</h3>
+            <p style="color:#888" class="leading-relaxed max-w-lg lg:ml-auto">Machine learning models assign each opportunity to one of four risk tiers &mdash; preferred, standard, substandard, or decline &mdash; with 97% accuracy.</p>
+          </div>
+          <div class="lg:w-1/2 flex lg:justify-start items-start">
+            <span class="inline-block gold text-sm font-medium tracking-wide bg-[#c9a96e]/10 px-4 py-2 rounded-full">4-tier system &middot; 97% accuracy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 03 — Scoring -->
+      <div class="editorial-card">
+        <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-16">
+          <div class="lg:w-1/2">
+            <p class="text-xs uppercase tracking-[0.2em] mb-4" style="color:#999">03 &mdash; Scoring</p>
+            <h3 class="serif text-3xl lg:text-4xl text-[#1a1a1a] mb-4">Quality Scoring Engine</h3>
+            <p style="color:#888" class="leading-relaxed max-w-lg">Proprietary scoring models evaluate every opportunity in under 5 milliseconds &mdash; delivering a 467% improvement in downstream conversion rates.</p>
+          </div>
+          <div class="lg:w-1/2 lg:text-right flex lg:justify-end items-start">
+            <span class="inline-block gold text-sm font-medium tracking-wide bg-[#c9a96e]/10 px-4 py-2 rounded-full">&lt; 5ms &middot; 467% conversion lift</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 04 — Routing -->
+      <div class="editorial-card">
+        <div class="flex flex-col lg:flex-row-reverse lg:items-start gap-6 lg:gap-16">
+          <div class="lg:w-1/2 lg:text-right">
+            <p class="text-xs uppercase tracking-[0.2em] mb-4" style="color:#999">04 &mdash; Routing</p>
+            <h3 class="serif text-3xl lg:text-4xl text-[#1a1a1a] mb-4">Decision Engine</h3>
+            <p style="color:#888" class="leading-relaxed max-w-lg lg:ml-auto">Intelligent routing matches each risk-scored opportunity to the optimal buyer in under 250 milliseconds &mdash; maximizing value on both sides of the transaction.</p>
+          </div>
+          <div class="lg:w-1/2 flex lg:justify-start items-start">
+            <span class="inline-block gold text-sm font-medium tracking-wide bg-[#c9a96e]/10 px-4 py-2 rounded-full">&lt; 250ms &middot; 94% match accuracy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 05 — Analytics -->
+      <div class="editorial-card">
+        <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-16">
+          <div class="lg:w-1/2">
+            <p class="text-xs uppercase tracking-[0.2em] mb-4" style="color:#999">05 &mdash; Analytics</p>
+            <h3 class="serif text-3xl lg:text-4xl text-[#1a1a1a] mb-4">Performance Analytics</h3>
+            <p style="color:#888" class="leading-relaxed max-w-lg">Closed-loop attribution connects every dollar spent to every dollar earned &mdash; real ROI, not vanity metrics. Know exactly what works and what doesn't.</p>
+          </div>
+          <div class="lg:w-1/2 lg:text-right flex lg:justify-end items-start">
+            <span class="inline-block gold text-sm font-medium tracking-wide bg-[#c9a96e]/10 px-4 py-2 rounded-full">Closed-loop attribution &middot; Real ROI</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- HOW IT WORKS (DARK SECTION) -->
+<!-- ============================================================ -->
+<section id="how-it-works" class="section-dark py-24 lg:py-32">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <h2 class="serif text-5xl lg:text-6xl text-[#faf9f7] mb-24">From noise to signal.</h2>
+
+    <div class="space-y-24 lg:space-y-32">
+      <!-- Step 1 -->
+      <div class="relative pl-4 lg:pl-0">
+        <div class="step-number">01</div>
+        <div class="relative z-10 lg:pl-40">
+          <h3 class="serif text-3xl lg:text-4xl text-[#faf9f7] mb-4">Ingest</h3>
+          <p style="color:rgba(250,249,247,0.5)" class="text-lg max-w-xl">Raw prospect data flows in from any source &mdash; web forms, API feeds, aggregator partners &mdash; in any format, at any volume.</p>
+        </div>
+      </div>
+      <!-- Step 2 -->
+      <div class="relative pl-4 lg:pl-0">
+        <div class="step-number">02</div>
+        <div class="relative z-10 lg:pl-40">
+          <h3 class="serif text-3xl lg:text-4xl text-[#faf9f7] mb-4">Enrich</h3>
+          <p style="color:rgba(250,249,247,0.5)" class="text-lg max-w-xl">Each record is matched against 343 million data points. 398 attributes are appended. Duplicates are flagged. Identity is verified.</p>
+        </div>
+      </div>
+      <!-- Step 3 -->
+      <div class="relative pl-4 lg:pl-0">
+        <div class="step-number">03</div>
+        <div class="relative z-10 lg:pl-40">
+          <h3 class="serif text-3xl lg:text-4xl text-[#faf9f7] mb-4">Score &amp; Route</h3>
+          <p style="color:rgba(250,249,247,0.5)" class="text-lg max-w-xl">ML models score quality and segment risk in under 5ms. The decision engine routes each opportunity to the highest-value buyer in under 250ms.</p>
+        </div>
+      </div>
+      <!-- Step 4 -->
+      <div class="relative pl-4 lg:pl-0">
+        <div class="step-number">04</div>
+        <div class="relative z-10 lg:pl-40">
+          <h3 class="serif text-3xl lg:text-4xl text-[#faf9f7] mb-4">Deliver</h3>
+          <p style="color:rgba(250,249,247,0.5)" class="text-lg max-w-xl">Enriched, scored, and segmented opportunities arrive in your system of record &mdash; with full attribution and real-time performance tracking.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SOCIAL PROOF / TESTIMONIAL (LIGHT SECTION) -->
+<!-- ============================================================ -->
+<section class="section-light py-24 lg:py-32">
+  <div class="max-w-5xl mx-auto px-6 lg:px-8">
+    <div class="flex gap-8">
+      <!-- Gold bar -->
+      <div class="quote-bar flex-shrink-0 hidden sm:block"></div>
+      <!-- Quote content -->
+      <div>
+        <blockquote class="serif text-3xl lg:text-5xl text-[#1a1a1a] leading-[1.2] mb-10">
+          &ldquo;The Switchboard replaced three vendors and cut our acquisition cost by 42% in the first quarter.&rdquo;
+        </blockquote>
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-[#e8e5e0] flex items-center justify-center text-xs" style="color:#999">Photo</div>
+          <div>
+            <div class="font-medium text-[#1a1a1a]">Sarah Mitchell</div>
+            <div class="text-sm" style="color:#888">VP of Acquisition, National Insurance Group</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- BY THE NUMBERS (DARK SECTION) -->
+<!-- ============================================================ -->
+<section class="section-dark py-24 lg:py-32">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-0">
+      <div class="stat-dark text-center py-8 lg:py-0 lg:px-8">
+        <div class="serif text-6xl sm:text-7xl lg:text-[90px] leading-none text-[#faf9f7]">10M+</div>
+        <div class="text-xs uppercase tracking-[0.2em] mt-4" style="color:rgba(250,249,247,0.4)">Opportunities Processed</div>
+      </div>
+      <div class="stat-dark text-center py-8 lg:py-0 lg:px-8">
+        <div class="serif text-6xl sm:text-7xl lg:text-[90px] leading-none text-[#faf9f7]">&lt;250<span class="text-4xl lg:text-5xl">ms</span></div>
+        <div class="text-xs uppercase tracking-[0.2em] mt-4" style="color:rgba(250,249,247,0.4)">End-to-End Latency</div>
+      </div>
+      <div class="stat-dark text-center py-8 lg:py-0 lg:px-8">
+        <div class="serif text-6xl sm:text-7xl lg:text-[90px] leading-none text-[#faf9f7]">467%</div>
+        <div class="text-xs uppercase tracking-[0.2em] mt-4" style="color:rgba(250,249,247,0.4)">Conversion Improvement</div>
+      </div>
+      <div class="text-center py-8 lg:py-0 lg:px-8">
+        <div class="serif text-6xl sm:text-7xl lg:text-[90px] leading-none text-[#faf9f7]">50+</div>
+        <div class="text-xs uppercase tracking-[0.2em] mt-4" style="color:rgba(250,249,247,0.4)">Enterprise Clients</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CASE STUDIES (LIGHT SECTION) -->
+<!-- ============================================================ -->
+<section id="results" class="section-light py-24 lg:py-32">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <h2 class="serif text-5xl lg:text-6xl text-[#1a1a1a] mb-16">Results that speak.</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- Case Study 1 -->
+      <div class="group">
+        <div class="img-placeholder mb-6">
+          <span>Case Study Image</span>
+        </div>
+        <p class="text-xs uppercase tracking-[0.2em] mb-3 gold font-medium">Auto Insurance</p>
+        <h3 class="serif text-2xl lg:text-3xl text-[#1a1a1a] mb-3 group-hover:underline decoration-1 underline-offset-4 cursor-pointer">How a Top-10 Carrier Cut Acquisition Costs by 38%</h3>
+        <p style="color:#888" class="mb-4 leading-relaxed">Real-time enrichment and scoring replaced a manual review process, reducing cost-per-acquisition while improving bind rates.</p>
+        <a href="#" class="text-sm font-medium text-[#1a1a1a] hover:text-[#c9a96e] transition-colors">Read More &rarr;</a>
+      </div>
+      <!-- Case Study 2 -->
+      <div class="group">
+        <div class="img-placeholder mb-6">
+          <span>Case Study Image</span>
+        </div>
+        <p class="text-xs uppercase tracking-[0.2em] mb-3 gold font-medium">Health Insurance</p>
+        <h3 class="serif text-2xl lg:text-3xl text-[#1a1a1a] mb-3 group-hover:underline decoration-1 underline-offset-4 cursor-pointer">467% Conversion Lift for a National Health Marketplace</h3>
+        <p style="color:#888" class="mb-4 leading-relaxed">ML-driven quality scoring ensured only qualified, high-intent shoppers were matched to carriers &mdash; transforming unit economics overnight.</p>
+        <a href="#" class="text-sm font-medium text-[#1a1a1a] hover:text-[#c9a96e] transition-colors">Read More &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- INDUSTRIES (DARK SECTION) -->
+<!-- ============================================================ -->
+<section id="industries" class="section-dark py-24 lg:py-32">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <h2 class="serif text-5xl lg:text-6xl text-[#faf9f7] mb-20">Tuned to your vertical.</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+      <!-- Auto -->
+      <div>
+        <div class="gold serif text-5xl mb-6">01</div>
+        <h3 class="serif text-3xl text-[#faf9f7] mb-6">Auto Insurance</h3>
+        <ul class="space-y-3 text-sm" style="color:rgba(250,249,247,0.5)">
+          <li class="flex items-start gap-3">
+            <span class="gold mt-1.5 text-xs">&#9670;</span>
+            <span>Real-time driver risk profiling from 398 attributes</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="gold mt-1.5 text-xs">&#9670;</span>
+            <span>VIN-level vehicle data enrichment</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="gold mt-1.5 text-xs">&#9670;</span>
+            <span>Multi-carrier routing optimized for bind rate</span>
+          </li>
+        </ul>
+      </div>
+      <!-- Health -->
+      <div class="md:border-x md:px-12 lg:px-16" style="border-color:rgba(250,249,247,0.1)">
+        <div class="gold serif text-5xl mb-6">02</div>
+        <h3 class="serif text-3xl text-[#faf9f7] mb-6">Health Insurance</h3>
+        <ul class="space-y-3 text-sm" style="color:rgba(250,249,247,0.5)">
+          <li class="flex items-start gap-3">
+            <span class="gold mt-1.5 text-xs">&#9670;</span>
+            <span>ACA marketplace qualification scoring</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="gold mt-1.5 text-xs">&#9670;</span>
+            <span>Subsidy eligibility pre-screening</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="gold mt-1.5 text-xs">&#9670;</span>
+            <span>SEP and OEP demand forecasting</span>
+          </li>
+        </ul>
+      </div>
+      <!-- Commercial -->
+      <div>
+        <div class="gold serif text-5xl mb-6">03</div>
+        <h3 class="serif text-3xl text-[#faf9f7] mb-6">Commercial Lines</h3>
+        <ul class="space-y-3 text-sm" style="color:rgba(250,249,247,0.5)">
+          <li class="flex items-start gap-3">
+            <span class="gold mt-1.5 text-xs">&#9670;</span>
+            <span>Business entity verification and firmographic enrichment</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="gold mt-1.5 text-xs">&#9670;</span>
+            <span>Industry-specific risk classification (NAICS/SIC)</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="gold mt-1.5 text-xs">&#9670;</span>
+            <span>Multi-line appetite matching across carriers</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- FINAL CTA (LIGHT SECTION) -->
+<!-- ============================================================ -->
+<section id="cta" class="section-light py-24 lg:py-32">
+  <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+    <h2 class="serif text-6xl sm:text-7xl lg:text-[80px] text-[#1a1a1a] mb-8">Let&rsquo;s talk.</h2>
+    <p class="text-lg mb-12 max-w-md mx-auto" style="color:#888">15 minutes is all it takes to see what precision looks like.</p>
+    <a href="#" class="pill-dark px-10 py-4 text-base font-medium inline-block">Book a Demo</a>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- FOOTER -->
+<!-- ============================================================ -->
+<footer class="section-dark border-t py-16" style="border-color:rgba(250,249,247,0.08)">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-12">
+      <!-- Logo -->
+      <div>
+        <div class="serif text-2xl text-[#faf9f7] mb-4">The Switchboard</div>
+        <p class="text-sm max-w-xs" style="color:rgba(250,249,247,0.35)">The intelligence layer for insurance customer acquisition.</p>
+      </div>
+      <!-- Link columns -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-8 lg:gap-16">
+        <div>
+          <h4 class="text-xs uppercase tracking-[0.2em] mb-4" style="color:rgba(250,249,247,0.3)">Platform</h4>
+          <ul class="space-y-3 text-sm" style="color:rgba(250,249,247,0.5)">
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">Enrichment</a></li>
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">Scoring</a></li>
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">Segmentation</a></li>
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">Routing</a></li>
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">Analytics</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-xs uppercase tracking-[0.2em] mb-4" style="color:rgba(250,249,247,0.3)">Industries</h4>
+          <ul class="space-y-3 text-sm" style="color:rgba(250,249,247,0.5)">
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">Auto Insurance</a></li>
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">Health Insurance</a></li>
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">Commercial Lines</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-xs uppercase tracking-[0.2em] mb-4" style="color:rgba(250,249,247,0.3)">Company</h4>
+          <ul class="space-y-3 text-sm" style="color:rgba(250,249,247,0.5)">
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">About</a></li>
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">Journal</a></li>
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">Contact</a></li>
+            <li><a href="#" class="hover:text-[#faf9f7] transition-colors">Privacy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Copyright -->
+    <div class="border-t mt-12 pt-8 text-xs" style="border-color:rgba(250,249,247,0.08); color:rgba(250,249,247,0.25)">
+      &copy; 2026 The Switchboard. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

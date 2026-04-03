@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 5: Editorial — The Switchboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { font-family: 'Inter', sans-serif; }
+body { background: #faf9f7; color: #1a1a1a; }
+.serif { font-family: 'Instrument Serif', serif; }
+
+.editorial-hero {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  min-height: 90vh;
+  align-items: center;
+}
+.hero-divider {
+  background: #1a1a1a;
+  height: 60%;
+  align-self: center;
+}
+
+.section-dark { background: #1a1a1a; color: #faf9f7; }
+
+.editorial-card {
+  border-top: 1px solid #1a1a1a;
+  padding-top: 32px;
+  transition: all 0.3s;
+}
+.editorial-card:hover { padding-left: 16px; }
+
+.pill-btn {
+  background: #1a1a1a; color: #faf9f7;
+  border-radius: 100px;
+  transition: all 0.2s;
+}
+.pill-btn:hover { background: #333; }
+
+.outline-pill {
+  border: 1px solid #1a1a1a; color: #1a1a1a;
+  border-radius: 100px;
+  transition: all 0.2s;
+}
+.outline-pill:hover { background: #1a1a1a; color: #faf9f7; }
+
+.stat-editorial {
+  border-right: 1px solid #ddd;
+  padding-right: 40px;
+  margin-right: 40px;
+}
+.stat-editorial:last-child { border: none; margin: 0; padding-right: 0; }
+
+.marquee-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.marquee-text {
+  display: inline-block;
+  animation: marquee 40s linear infinite;
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.img-placeholder {
+  background: #e8e5e0;
+  border-radius: 8px;
+  aspect-ratio: 4/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 bg-[#faf9f7]/90 backdrop-blur-lg px-8 py-5">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="serif text-2xl">The Switchboard</div>
+    <nav class="hidden md:flex items-center gap-8 text-sm text-neutral-500">
+      <a href="#" class="hover:text-black transition">Solutions</a>
+      <a href="#" class="hover:text-black transition">Industries</a>
+      <a href="#" class="hover:text-black transition">About</a>
+      <a href="#" class="hover:text-black transition">Journal</a>
+    </nav>
+    <a href="#" class="pill-btn px-6 py-2.5 text-sm font-medium">Book a Demo</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="editorial-hero px-8 pt-24">
+  <div class="max-w-xl ml-auto pr-16">
+    <div class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-8">Insurance Intelligence Platform</div>
+    <h1 class="serif text-6xl md:text-7xl leading-[1.05] mb-8">
+      The precision layer for insurance.
+    </h1>
+    <div class="flex items-center gap-4">
+      <a href="#" class="pill-btn px-7 py-3.5 text-sm font-medium">Book a Demo</a>
+      <a href="#" class="outline-pill px-7 py-3.5 text-sm font-medium">Our Approach →</a>
+    </div>
+  </div>
+  <div class="hero-divider hidden md:block"></div>
+  <div class="max-w-xl mr-auto pl-16 hidden md:block">
+    <p class="text-lg text-neutral-600 leading-relaxed mb-8">
+      We built The Switchboard because insurance deserves better infrastructure. Every prospect enriched, scored, and routed to the right buyer — in milliseconds.
+    </p>
+    <div class="flex items-center gap-0">
+      <div class="stat-editorial">
+        <div class="serif text-5xl mb-1">340%</div>
+        <div class="text-xs text-neutral-500 uppercase tracking-wider">Avg. ROI</div>
+      </div>
+      <div class="stat-editorial">
+        <div class="serif text-5xl mb-1">47%</div>
+        <div class="text-xs text-neutral-500 uppercase tracking-wider">Lower CPA</div>
+      </div>
+      <div class="stat-editorial">
+        <div class="serif text-5xl mb-1">12M</div>
+        <div class="text-xs text-neutral-500 uppercase tracking-wider">Processed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="py-12 marquee-wrap border-y border-neutral-200">
+  <div class="marquee-text">
+    <span class="serif text-6xl text-neutral-200 mx-12">Enrich</span>
+    <span class="text-neutral-300 mx-4">◆</span>
+    <span class="serif text-6xl text-neutral-200 mx-12">Score</span>
+    <span class="text-neutral-300 mx-4">◆</span>
+    <span class="serif text-6xl text-neutral-200 mx-12">Segment</span>
+    <span class="text-neutral-300 mx-4">◆</span>
+    <span class="serif text-6xl text-neutral-200 mx-12">Route</span>
+    <span class="text-neutral-300 mx-4">◆</span>
+    <span class="serif text-6xl text-neutral-200 mx-12">Convert</span>
+    <span class="text-neutral-300 mx-4">◆</span>
+    <span class="serif text-6xl text-neutral-200 mx-12">Enrich</span>
+    <span class="text-neutral-300 mx-4">◆</span>
+    <span class="serif text-6xl text-neutral-200 mx-12">Score</span>
+    <span class="text-neutral-300 mx-4">◆</span>
+    <span class="serif text-6xl text-neutral-200 mx-12">Segment</span>
+    <span class="text-neutral-300 mx-4">◆</span>
+    <span class="serif text-6xl text-neutral-200 mx-12">Route</span>
+    <span class="text-neutral-300 mx-4">◆</span>
+    <span class="serif text-6xl text-neutral-200 mx-12">Convert</span>
+    <span class="text-neutral-300 mx-4">◆</span>
+  </div>
+</div>
+
+<!-- Capabilities -->
+<section class="py-28">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="grid md:grid-cols-2 gap-16 items-start mb-20">
+      <div>
+        <div class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-4">What We Do</div>
+        <h2 class="serif text-5xl leading-tight">Four connected engines, one platform.</h2>
+      </div>
+      <p class="text-neutral-500 leading-relaxed text-lg pt-8">
+        Most platforms do one thing. We do four — and they all talk to each other. The result is an intelligence layer that turns raw prospect data into predictable, profitable growth.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-x-16 gap-y-12">
+      <div class="editorial-card">
+        <div class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-3">01 — Enrichment</div>
+        <h3 class="serif text-3xl mb-3">Real-Time Data Enrichment</h3>
+        <p class="text-neutral-500 leading-relaxed">40+ data points appended to every prospect in milliseconds. Property, risk, coverage, and behavioral signals — automatically verified.</p>
+      </div>
+      <div class="editorial-card">
+        <div class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-3">02 — Scoring</div>
+        <h3 class="serif text-3xl mb-3">Predictive Quality Scoring</h3>
+        <p class="text-neutral-500 leading-relaxed">ML models score every opportunity by close probability, lifetime value, and risk. Know what's worth pursuing before you spend a dollar.</p>
+      </div>
+      <div class="editorial-card">
+        <div class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-3">03 — Segmentation</div>
+        <h3 class="serif text-3xl mb-3">Intelligent Segmentation</h3>
+        <p class="text-neutral-500 leading-relaxed">Auto-group by line of business, geography, risk appetite, and 20+ custom dimensions. Your data, organized the way your business thinks.</p>
+      </div>
+      <div class="editorial-card">
+        <div class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-3">04 — Routing</div>
+        <h3 class="serif text-3xl mb-3">Precision Routing</h3>
+        <p class="text-neutral-500 leading-relaxed">Every opportunity matched to the buyer most likely to close it. Appetite, capacity, history — no cherry-picking, no waste.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Dark Quote Section -->
+<section class="section-dark py-28">
+  <div class="max-w-4xl mx-auto px-8">
+    <div class="serif text-4xl md:text-5xl leading-tight mb-12">
+      "The Switchboard replaced three vendors and cut our acquisition cost by 42% in the first quarter alone."
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-full bg-neutral-700"></div>
+      <div>
+        <div class="font-medium">Sarah Chen</div>
+        <div class="text-sm text-neutral-500">VP of Operations, Meridian Insurance Group</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Case Studies Tease -->
+<section class="py-28">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="flex items-end justify-between mb-12">
+      <div>
+        <div class="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-4">Case Studies</div>
+        <h2 class="serif text-4xl">Results that speak.</h2>
+      </div>
+      <a href="#" class="text-sm font-medium hover:underline">View All →</a>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div>
+        <div class="img-placeholder mb-6">Case Study Image</div>
+        <div class="text-xs uppercase tracking-wider text-neutral-400 mb-2">Auto Insurance</div>
+        <h3 class="serif text-2xl mb-2">340% ROI in 90 days</h3>
+        <p class="text-sm text-neutral-500">How a regional agency transformed their prospect pipeline with intelligent routing.</p>
+      </div>
+      <div>
+        <div class="img-placeholder mb-6">Case Study Image</div>
+        <div class="text-xs uppercase tracking-wider text-neutral-400 mb-2">Health Insurance</div>
+        <h3 class="serif text-2xl mb-2">47% lower acquisition cost</h3>
+        <p class="text-sm text-neutral-500">Predictive scoring eliminated waste spend for this multi-state health carrier.</p>
+      </div>
+      <div>
+        <div class="img-placeholder mb-6">Case Study Image</div>
+        <div class="text-xs uppercase tracking-wider text-neutral-400 mb-2">Commercial</div>
+        <h3 class="serif text-2xl mb-2">$2.4M additional premium</h3>
+        <p class="text-sm text-neutral-500">Smart segmentation uncovered high-value commercial opportunities being underserved.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-24 border-t border-neutral-200">
+  <div class="max-w-3xl mx-auto px-8 text-center">
+    <h2 class="serif text-5xl md:text-6xl mb-6">Let's talk.</h2>
+    <p class="text-neutral-500 mb-8 text-lg">15 minutes is all it takes to see what precision looks like.</p>
+    <a href="#" class="pill-btn inline-block px-8 py-4 text-sm font-medium">Book Your Demo</a>
+  </div>
+</section>
+
+<footer class="border-t border-neutral-200 py-12 px-8">
+  <div class="max-w-7xl mx-auto flex justify-between items-center text-sm text-neutral-400">
+    <span class="serif text-lg text-neutral-600">The Switchboard</span>
+    <div class="flex gap-6">
+      <a href="#" class="hover:text-black transition">Privacy</a>
+      <a href="#" class="hover:text-black transition">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<div style="position:fixed;bottom:20px;left:20px;background:#faf9f7;border:1px solid #e5e5e5;padding:12px 20px;border-radius:12px;font-size:13px;color:#999;z-index:99;box-shadow:0 4px 12px rgba(0,0,0,0.04);">
+  Design 5 of 10 — <strong style="color:#1a1a1a;">Editorial</strong>
+</div>
+</body>
+</html>

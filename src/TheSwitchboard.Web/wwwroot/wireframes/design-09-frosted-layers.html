@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 9: Frosted Layers — The Switchboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { font-family: 'Inter', sans-serif; }
+body {
+  background: #0f0f1a;
+  color: #e2e8f0;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(59,130,246,0.05) 0%, transparent 50%);
+}
+
+.frost {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 24px;
+}
+
+.frost-sm {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 16px;
+}
+
+.frost-header {
+  background: rgba(15,15,26,0.5);
+  backdrop-filter: blur(40px);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.gradient-btn {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+  box-shadow: 0 4px 20px rgba(99,102,241,0.25);
+  transition: all 0.3s;
+}
+.gradient-btn:hover {
+  box-shadow: 0 8px 40px rgba(99,102,241,0.4);
+  transform: translateY(-2px);
+}
+
+.ghost-frost {
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s;
+}
+.ghost-frost:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: orb-float 10s ease-in-out infinite;
+}
+@keyframes orb-float {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(30px, -20px); }
+  66% { transform: translate(-20px, 15px); }
+}
+
+.feature-icon {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.1));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+
+.glow-stat {
+  text-shadow: 0 0 30px rgba(139,92,246,0.3);
+}
+
+.progress-ring {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #8b5cf6;
+  box-shadow: 0 0 12px rgba(139,92,246,0.6);
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="frost-header fixed top-0 w-full z-50 px-8 py-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="text-xl font-bold tracking-tight">
+      <span style="background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">⚡</span> The Switchboard
+    </div>
+    <nav class="hidden md:flex items-center gap-8 text-sm text-slate-500">
+      <a href="#" class="hover:text-white transition">Solutions</a>
+      <a href="#" class="hover:text-white transition">Industries</a>
+      <a href="#" class="hover:text-white transition">About</a>
+      <a href="#" class="hover:text-white transition">Resources</a>
+    </nav>
+    <a href="#" class="gradient-btn px-5 py-2.5 rounded-xl text-white text-sm font-semibold">Book Demo</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+  <div class="orb" style="width:400px;height:400px;background:rgba(99,102,241,0.08);top:10%;left:10%;"></div>
+  <div class="orb" style="width:300px;height:300px;background:rgba(168,85,247,0.06);top:50%;right:15%;animation-delay:-4s;"></div>
+  <div class="orb" style="width:350px;height:350px;background:rgba(59,130,246,0.05);bottom:10%;left:40%;animation-delay:-7s;"></div>
+
+  <div class="relative max-w-7xl mx-auto px-8 w-full">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div>
+        <div class="inline-flex items-center gap-2 px-4 py-2 frost-sm text-xs text-slate-400 mb-8">
+          <div class="progress-ring"></div>
+          Insurance Intelligence Platform
+        </div>
+        <h1 class="text-5xl md:text-6xl font-bold tracking-tight leading-[1.08] mb-6">
+          Intelligence<br>through
+          <span style="background:linear-gradient(135deg,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">clarity.</span>
+        </h1>
+        <p class="text-lg text-slate-400 leading-relaxed mb-8 max-w-md">
+          Enrich, score, segment, and route every insurance opportunity — with a platform built for precision.
+        </p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="gradient-btn px-7 py-3.5 rounded-xl text-white font-semibold text-sm">Book a Demo</a>
+          <a href="#" class="ghost-frost px-7 py-3.5 rounded-xl text-slate-300 font-semibold text-sm">Watch Demo →</a>
+        </div>
+      </div>
+
+      <!-- Frosted Stats Panel -->
+      <div class="frost p-8">
+        <div class="grid grid-cols-2 gap-6">
+          <div class="frost-sm p-6 text-center">
+            <div class="text-3xl font-bold glow-stat mb-1">340%</div>
+            <div class="text-xs text-slate-500">Average ROI</div>
+          </div>
+          <div class="frost-sm p-6 text-center">
+            <div class="text-3xl font-bold glow-stat mb-1">0.3s</div>
+            <div class="text-xs text-slate-500">Enrichment</div>
+          </div>
+          <div class="frost-sm p-6 text-center">
+            <div class="text-3xl font-bold glow-stat mb-1">47%</div>
+            <div class="text-xs text-slate-500">Lower CPA</div>
+          </div>
+          <div class="frost-sm p-6 text-center">
+            <div class="text-3xl font-bold glow-stat mb-1">12M+</div>
+            <div class="text-xs text-slate-500">Processed</div>
+          </div>
+        </div>
+        <div class="mt-6 pt-6 border-t border-white/5 text-center text-xs text-slate-500">
+          Trusted by 200+ insurance agencies nationwide
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="py-28 relative">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold tracking-tight mb-4">Four engines. Zero friction.</h2>
+      <p class="text-slate-500 max-w-lg mx-auto">A unified intelligence layer that transforms raw prospect data into revenue.</p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="frost p-8 transition-all duration-300 hover:border-indigo-500/20">
+        <div class="feature-icon mb-5">◎</div>
+        <h3 class="text-xl font-semibold mb-3">Real-Time Enrichment</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">40+ data points appended to every prospect in milliseconds. Property data, risk indicators, coverage history, and behavioral signals.</p>
+        <div class="mt-6 pt-4 border-t border-white/5 flex items-center gap-2 text-xs text-slate-500">
+          <div class="progress-ring"></div>
+          Sub-second processing
+        </div>
+      </div>
+      <div class="frost p-8 transition-all duration-300 hover:border-purple-500/20">
+        <div class="feature-icon mb-5">◆</div>
+        <h3 class="text-xl font-semibold mb-3">Predictive Scoring</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">ML models trained on insurance conversion data score every opportunity by close probability, lifetime value, and risk profile.</p>
+        <div class="mt-6 pt-4 border-t border-white/5 flex items-center gap-2 text-xs text-slate-500">
+          <div class="progress-ring"></div>
+          Insurance-trained ML models
+        </div>
+      </div>
+      <div class="frost p-8 transition-all duration-300 hover:border-violet-500/20">
+        <div class="feature-icon mb-5">⬡</div>
+        <h3 class="text-xl font-semibold mb-3">Smart Segmentation</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Auto-group prospects by line of business, geography, risk appetite, and 20+ custom dimensions.</p>
+        <div class="mt-6 pt-4 border-t border-white/5 flex items-center gap-2 text-xs text-slate-500">
+          <div class="progress-ring"></div>
+          20+ dimensions
+        </div>
+      </div>
+      <div class="frost p-8 transition-all duration-300 hover:border-fuchsia-500/20">
+        <div class="feature-icon mb-5">⇄</div>
+        <h3 class="text-xl font-semibold mb-3">Intelligent Routing</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Match every opportunity to the right buyer based on appetite, capacity, conversion history, and custom business rules.</p>
+        <div class="mt-6 pt-4 border-t border-white/5 flex items-center gap-2 text-xs text-slate-500">
+          <div class="progress-ring"></div>
+          Rules + ML hybrid
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="py-20">
+  <div class="max-w-4xl mx-auto px-8">
+    <div class="frost p-12 text-center">
+      <p class="text-2xl md:text-3xl font-light leading-relaxed mb-8">
+        "The Switchboard cut our cost per acquisition by 42% in the first quarter. We should have switched a year ago."
+      </p>
+      <div>
+        <div class="font-semibold">Sarah Chen</div>
+        <div class="text-sm text-slate-500">VP of Operations, Meridian Insurance Group</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-24">
+  <div class="max-w-3xl mx-auto px-8 text-center">
+    <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+      See through the
+      <span style="background:linear-gradient(135deg,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">noise.</span>
+    </h2>
+    <p class="text-slate-400 mb-8">Book a 15-minute demo and experience clarity.</p>
+    <a href="#" class="gradient-btn inline-block px-8 py-4 rounded-xl text-white font-semibold">Book Your Demo</a>
+  </div>
+</section>
+
+<footer class="border-t border-white/5 py-12 px-8">
+  <div class="max-w-7xl mx-auto flex justify-between items-center text-sm text-slate-600">
+    <span>© 2026 The Switchboard</span>
+    <div class="flex gap-6">
+      <a href="#" class="hover:text-white transition">Privacy</a>
+      <a href="#" class="hover:text-white transition">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<div style="position:fixed;bottom:20px;left:20px;background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06);padding:12px 20px;border-radius:12px;font-size:13px;color:#94a3b8;z-index:99;">
+  Design 9 of 10 — <strong style="color:white;">Frosted Layers</strong>
+</div>
+</body>
+</html>

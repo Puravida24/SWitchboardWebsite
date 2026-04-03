@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 7: Warm Premium — The Switchboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { font-family: 'Inter', sans-serif; }
+body { background: #0c0a09; color: #fafaf9; }
+
+.gold { color: #d4a853; }
+.gold-bg { background: #d4a853; }
+
+.warm-card {
+  background: rgba(214,168,83,0.03);
+  border: 1px solid rgba(214,168,83,0.08);
+  border-radius: 16px;
+  padding: 36px;
+  transition: all 0.4s;
+}
+.warm-card:hover {
+  border-color: rgba(214,168,83,0.2);
+  background: rgba(214,168,83,0.06);
+}
+
+.warm-btn {
+  background: linear-gradient(135deg, #d4a853, #c09030);
+  color: #0c0a09;
+  font-weight: 700;
+  transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(212,168,83,0.2);
+}
+.warm-btn:hover {
+  box-shadow: 0 8px 40px rgba(212,168,83,0.35);
+  transform: translateY(-2px);
+}
+
+.ghost-warm {
+  border: 1px solid rgba(214,168,83,0.3);
+  color: #d4a853;
+  transition: all 0.2s;
+}
+.ghost-warm:hover {
+  background: rgba(214,168,83,0.08);
+}
+
+.gradient-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(214,168,83,0.2), transparent);
+}
+
+.warm-section-alt {
+  background: #141210;
+}
+
+.gold-ring {
+  width: 80px; height: 80px;
+  border: 2px solid rgba(214,168,83,0.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.luxury-quote {
+  border-left: 2px solid #d4a853;
+  padding-left: 32px;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 bg-[#0c0a09]/80 backdrop-blur-xl border-b border-amber-900/10 px-8 py-5">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="text-xl font-bold tracking-tight">
+      <span class="gold">◈</span> The Switchboard
+    </div>
+    <nav class="hidden md:flex items-center gap-8 text-sm text-stone-500">
+      <a href="#" class="hover:text-stone-200 transition">Solutions</a>
+      <a href="#" class="hover:text-stone-200 transition">Industries</a>
+      <a href="#" class="hover:text-stone-200 transition">About</a>
+      <a href="#" class="hover:text-stone-200 transition">Resources</a>
+    </nav>
+    <a href="#" class="warm-btn px-6 py-2.5 rounded-lg text-sm">Book Demo</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="min-h-screen flex items-center pt-20 px-8">
+  <div class="max-w-7xl mx-auto w-full">
+    <div class="max-w-3xl">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-800/20 text-amber-500/70 text-xs font-medium mb-8 tracking-wider uppercase">
+        Insurance Intelligence Platform
+      </div>
+      <h1 class="text-5xl md:text-7xl font-bold tracking-tight leading-[1.05] mb-6">
+        Where data meets<br>
+        <span class="gold">precision.</span>
+      </h1>
+      <p class="text-xl text-stone-500 leading-relaxed mb-10 max-w-xl">
+        The Switchboard enriches, scores, segments, and routes every insurance opportunity — transforming raw data into premium results.
+      </p>
+      <div class="flex items-center gap-4">
+        <a href="#" class="warm-btn px-8 py-4 rounded-xl text-sm">Book a Demo</a>
+        <a href="#" class="ghost-warm px-8 py-4 rounded-xl text-sm font-semibold">Our Approach →</a>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="grid grid-cols-4 gap-8 mt-24 pt-12 border-t border-amber-900/10">
+      <div>
+        <div class="text-4xl font-bold gold mb-1">340%</div>
+        <div class="text-sm text-stone-600">Average ROI across clients</div>
+      </div>
+      <div>
+        <div class="text-4xl font-bold gold mb-1">0.3s</div>
+        <div class="text-sm text-stone-600">Real-time enrichment speed</div>
+      </div>
+      <div>
+        <div class="text-4xl font-bold gold mb-1">47%</div>
+        <div class="text-sm text-stone-600">Reduction in acquisition cost</div>
+      </div>
+      <div>
+        <div class="text-4xl font-bold gold mb-1">12M+</div>
+        <div class="text-sm text-stone-600">Prospects processed to date</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gradient-divider"></div>
+
+<!-- Capabilities -->
+<section class="warm-section-alt py-28">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="text-center mb-20">
+      <h2 class="text-4xl font-bold tracking-tight mb-4">The complete intelligence stack.</h2>
+      <p class="text-stone-500 max-w-lg mx-auto">Four proprietary engines working in concert to maximize every opportunity.</p>
+    </div>
+    <div class="grid md:grid-cols-4 gap-6">
+      <div class="warm-card text-center">
+        <div class="gold-ring mx-auto mb-6">
+          <span class="gold text-2xl">◎</span>
+        </div>
+        <h3 class="text-lg font-bold mb-3">Enrich</h3>
+        <p class="text-sm text-stone-500 leading-relaxed">40+ data points appended in milliseconds. Property, risk, coverage, behavior.</p>
+      </div>
+      <div class="warm-card text-center">
+        <div class="gold-ring mx-auto mb-6">
+          <span class="gold text-2xl">◆</span>
+        </div>
+        <h3 class="text-lg font-bold mb-3">Score</h3>
+        <p class="text-sm text-stone-500 leading-relaxed">ML-driven quality scores predict close probability and lifetime value.</p>
+      </div>
+      <div class="warm-card text-center">
+        <div class="gold-ring mx-auto mb-6">
+          <span class="gold text-2xl">⬡</span>
+        </div>
+        <h3 class="text-lg font-bold mb-3">Segment</h3>
+        <p class="text-sm text-stone-500 leading-relaxed">Auto-categorize by LOB, geography, risk appetite, and custom dimensions.</p>
+      </div>
+      <div class="warm-card text-center">
+        <div class="gold-ring mx-auto mb-6">
+          <span class="gold text-2xl">⇄</span>
+        </div>
+        <h3 class="text-lg font-bold mb-3">Route</h3>
+        <p class="text-sm text-stone-500 leading-relaxed">Match to the right buyer by appetite, capacity, and conversion history.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gradient-divider"></div>
+
+<!-- Testimonial -->
+<section class="py-28">
+  <div class="max-w-4xl mx-auto px-8">
+    <div class="luxury-quote">
+      <p class="text-2xl md:text-3xl font-light leading-relaxed mb-8 text-stone-300">
+        "The Switchboard isn't just another tool — it's the infrastructure we should have had years ago. 42% lower CPA in quarter one."
+      </p>
+      <div>
+        <div class="font-semibold gold">Sarah Chen</div>
+        <div class="text-sm text-stone-600">VP of Operations, Meridian Insurance Group</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="warm-section-alt py-24">
+  <div class="max-w-3xl mx-auto px-8 text-center">
+    <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+      Experience <span class="gold">premium</span><br>intelligence.
+    </h2>
+    <p class="text-stone-500 mb-8">Book a 15-minute demo and see why the best agencies choose The Switchboard.</p>
+    <a href="#" class="warm-btn inline-block px-8 py-4 rounded-xl text-sm">Book Your Demo</a>
+  </div>
+</section>
+
+<footer class="border-t border-amber-900/10 py-12 px-8">
+  <div class="max-w-7xl mx-auto flex justify-between items-center text-sm text-stone-600">
+    <span>© 2026 The Switchboard</span>
+    <div class="flex gap-6">
+      <a href="#" class="hover:text-stone-200 transition">Privacy</a>
+      <a href="#" class="hover:text-stone-200 transition">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<div style="position:fixed;bottom:20px;left:20px;background:#1c1917;border:1px solid rgba(214,168,83,0.15);padding:12px 20px;border-radius:12px;font-size:13px;color:#78716c;z-index:99;">
+  Design 7 of 10 — <strong style="color:#d4a853;">Warm Premium</strong>
+</div>
+</body>
+</html>

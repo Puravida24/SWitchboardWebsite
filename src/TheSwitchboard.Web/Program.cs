@@ -117,6 +117,7 @@ try
 
     app.UseSerilogRequestLogging();
 
+    app.UseDefaultFiles();
     app.UseStaticFiles();
     app.MapRazorPages();
     app.MapHealthChecks("/health");

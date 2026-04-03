@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 3: Clean White — The Switchboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { font-family: 'Inter', sans-serif; }
+body { background: #ffffff; color: #0f172a; }
+
+.text-accent { color: #2563eb; }
+.bg-accent { background: #2563eb; }
+
+.clean-btn {
+  background: #0f172a; color: white;
+  transition: all 0.2s;
+}
+.clean-btn:hover { background: #1e293b; transform: translateY(-1px); }
+
+.outline-btn {
+  border: 1.5px solid #e2e8f0; color: #0f172a;
+  transition: all 0.2s;
+}
+.outline-btn:hover { border-color: #0f172a; }
+
+.feature-card {
+  padding: 40px;
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+  transition: all 0.3s;
+}
+.feature-card:hover {
+  border-color: #e2e8f0;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+}
+
+.stat-block {
+  text-align: center;
+}
+.stat-block .number {
+  font-size: 56px; font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #0f172a;
+}
+
+.section-gray { background: #fafbfc; }
+
+.ticker {
+  display: flex; gap: 80px;
+  animation: scroll-left 30s linear infinite;
+}
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.step-line {
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, #2563eb, #e2e8f0);
+  position: absolute; top: 20px; left: 50%;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-lg border-b border-slate-100 px-8 py-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="text-xl font-bold tracking-tight text-slate-900">
+      The Switchboard
+    </div>
+    <nav class="hidden md:flex items-center gap-8 text-sm text-slate-500">
+      <a href="#" class="hover:text-slate-900 transition">Solutions</a>
+      <a href="#" class="hover:text-slate-900 transition">Industries</a>
+      <a href="#" class="hover:text-slate-900 transition">About</a>
+      <a href="#" class="hover:text-slate-900 transition">Resources</a>
+      <a href="#" class="hover:text-slate-900 transition">Contact</a>
+    </nav>
+    <div class="flex items-center gap-4">
+      <a href="#" class="text-sm text-slate-500 hover:text-slate-900 transition">Sign In</a>
+      <a href="#" class="clean-btn px-5 py-2.5 rounded-lg text-sm font-semibold">Book Demo</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="pt-40 pb-24 px-8">
+  <div class="max-w-4xl mx-auto text-center">
+    <h1 class="text-6xl md:text-8xl font-bold tracking-tight leading-[1.02] mb-6">
+      Insurance<br>intelligence,<br>
+      <span class="text-accent">simplified.</span>
+    </h1>
+    <p class="text-xl text-slate-500 leading-relaxed mb-10 max-w-xl mx-auto">
+      Enrich, score, segment, and route every insurance opportunity — automatically, in real time.
+    </p>
+    <div class="flex items-center justify-center gap-4">
+      <a href="#" class="clean-btn px-8 py-4 rounded-xl text-sm font-semibold">Book a Demo</a>
+      <a href="#" class="outline-btn px-8 py-4 rounded-xl text-sm font-semibold">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<!-- Logo Ticker -->
+<section class="py-12 border-y border-slate-100 overflow-hidden">
+  <div class="flex">
+    <div class="ticker">
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">ALLSTATE</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">STATE FARM</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">PROGRESSIVE</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">LIBERTY MUTUAL</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">NATIONWIDE</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">FARMERS</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">GEICO</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">USAA</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">ALLSTATE</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">STATE FARM</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">PROGRESSIVE</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">LIBERTY MUTUAL</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">NATIONWIDE</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">FARMERS</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">GEICO</span>
+      <span class="text-slate-300 text-sm font-medium whitespace-nowrap">USAA</span>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="py-24">
+  <div class="max-w-5xl mx-auto px-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div class="stat-block">
+      <div class="number">340<span class="text-accent text-4xl">%</span></div>
+      <div class="text-sm text-slate-500 mt-2">Average ROI</div>
+    </div>
+    <div class="stat-block">
+      <div class="number">0.3<span class="text-accent text-4xl">s</span></div>
+      <div class="text-sm text-slate-500 mt-2">Enrichment Speed</div>
+    </div>
+    <div class="stat-block">
+      <div class="number">47<span class="text-accent text-4xl">%</span></div>
+      <div class="text-sm text-slate-500 mt-2">Lower CPA</div>
+    </div>
+    <div class="stat-block">
+      <div class="number">12<span class="text-accent text-4xl">M</span></div>
+      <div class="text-sm text-slate-500 mt-2">Prospects Processed</div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section-gray py-24">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="max-w-xl mb-16">
+      <h2 class="text-4xl font-bold tracking-tight mb-4">Built for the way insurance actually works.</h2>
+      <p class="text-slate-500">Four connected engines that turn raw prospect data into predictable revenue.</p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="feature-card bg-white">
+        <div class="text-sm font-semibold text-accent mb-4">01 — ENRICH</div>
+        <h3 class="text-2xl font-bold mb-3">Real-Time Enrichment</h3>
+        <p class="text-slate-500 leading-relaxed">Append 40+ data points to every prospect in milliseconds. Property data, risk indicators, coverage history, and behavioral signals — all automated.</p>
+      </div>
+      <div class="feature-card bg-white">
+        <div class="text-sm font-semibold text-accent mb-4">02 — SCORE</div>
+        <h3 class="text-2xl font-bold mb-3">Predictive Scoring</h3>
+        <p class="text-slate-500 leading-relaxed">ML models score every opportunity by close probability, lifetime value, and risk profile. Know which opportunities to prioritize before you pick up the phone.</p>
+      </div>
+      <div class="feature-card bg-white">
+        <div class="text-sm font-semibold text-accent mb-4">03 — SEGMENT</div>
+        <h3 class="text-2xl font-bold mb-3">Smart Segmentation</h3>
+        <p class="text-slate-500 leading-relaxed">Auto-group by line of business, geography, risk appetite, and 20+ custom dimensions. Your data, organized the way your business thinks.</p>
+      </div>
+      <div class="feature-card bg-white">
+        <div class="text-sm font-semibold text-accent mb-4">04 — ROUTE</div>
+        <h3 class="text-2xl font-bold mb-3">Intelligent Routing</h3>
+        <p class="text-slate-500 leading-relaxed">Match every opportunity to the right buyer. Appetite, capacity, conversion history, and custom rules — no cherry-picking, no waste, just results.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="py-24">
+  <div class="max-w-3xl mx-auto px-8 text-center">
+    <div class="text-5xl text-slate-200 mb-6">"</div>
+    <p class="text-2xl md:text-3xl font-light leading-relaxed text-slate-700 mb-8">
+      The Switchboard replaced three vendors and cut our acquisition cost by 42%. We should have switched a year ago.
+    </p>
+    <div>
+      <div class="font-semibold">Sarah Chen</div>
+      <div class="text-sm text-slate-500">VP of Operations, Meridian Insurance Group</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-24 bg-slate-900 text-white">
+  <div class="max-w-3xl mx-auto px-8 text-center">
+    <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">See it in action.</h2>
+    <p class="text-slate-400 mb-8">15-minute demo. No sales pitch. Just the product.</p>
+    <a href="#" class="inline-block bg-white text-slate-900 px-8 py-4 rounded-xl font-semibold text-sm hover:bg-slate-100 transition">Book Your Demo</a>
+  </div>
+</section>
+
+<footer class="py-12 px-8 border-t border-slate-100">
+  <div class="max-w-7xl mx-auto flex justify-between items-center text-sm text-slate-400">
+    <span>© 2026 The Switchboard</span>
+    <div class="flex gap-6">
+      <a href="#" class="hover:text-slate-900 transition">Privacy</a>
+      <a href="#" class="hover:text-slate-900 transition">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<div style="position:fixed;bottom:20px;left:20px;background:white;border:1px solid #e2e8f0;padding:12px 20px;border-radius:12px;font-size:13px;color:#64748b;z-index:99;box-shadow:0 4px 12px rgba(0,0,0,0.06);">
+  Design 3 of 10 — <strong style="color:#0f172a;">Clean White</strong>
+</div>
+</body>
+</html>

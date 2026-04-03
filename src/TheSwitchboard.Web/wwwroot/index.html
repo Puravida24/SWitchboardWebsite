@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Switchboard — Design Review</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: #030818; color: white; min-height: 100vh; }
+.container { max-width: 1200px; margin: 0 auto; padding: 60px 24px; }
+h1 { font-size: 48px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
+.subtitle { color: rgba(255,255,255,0.5); font-size: 18px; margin-bottom: 48px; }
+.section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #2563eb; margin-bottom: 20px; margin-top: 48px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+a.card { display: block; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 28px; text-decoration: none; color: white; transition: all 0.2s; }
+a.card:hover { background: rgba(255,255,255,0.06); border-color: rgba(37,99,235,0.3); transform: translateY(-2px); }
+.card-num { font-size: 13px; color: #2563eb; font-weight: 600; margin-bottom: 8px; }
+.card-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.card-desc { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+.badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; margin-top: 12px; }
+.badge.og { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+.badge.green { background: rgba(5,150,105,0.15); color: #34d399; }
+.badge.amber { background: rgba(217,119,6,0.15); color: #fbbf24; }
+.badge.purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
+.badge.rose { background: rgba(244,63,94,0.15); color: #fb7185; }
+.star { color: #fbbf24; margin-right: 4px; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+<h1>The Switchboard</h1>
+<p class="subtitle">Homepage Design Review — Team, pick your favorites and tell us what elements you love</p>
+
+<div class="section-title">Original Explorations (1-10)</div>
+<div class="grid">
+  <a class="card" href="wireframes/design-01-dark-intelligence.html"><div class="card-num">Design 01</div><div class="card-title">Dark Intelligence</div><div class="card-desc">Dark bg, animated network, blue accents, data-rich.</div><span class="badge og">Original</span></a>
+  <a class="card" href="wireframes/design-02-aurora-gradient.html"><div class="card-num">Design 02</div><div class="card-title">Aurora Gradient</div><div class="card-desc">Gradient backgrounds, colorful aurora effects.</div><span class="badge og">Original</span></a>
+  <a class="card" href="wireframes/design-03-clean-white.html"><div class="card-num">Design 03</div><div class="card-title">Clean White</div><div class="card-desc">Light, minimal, Apple-inspired whitespace.</div><span class="badge og">Original</span></a>
+  <a class="card" href="wireframes/design-04-neon-pulse.html"><div class="card-num">Design 04</div><div class="card-title">Neon Pulse</div><div class="card-desc">Vibrant neon accents on dark backgrounds.</div><span class="badge og">Original</span></a>
+  <a class="card" href="wireframes/design-05-editorial.html"><div class="card-num">Design 05</div><div class="card-title"><span class="star">★</span>Editorial</div><div class="card-desc">Serif typography, split layouts, magazine feel. Warm cream palette. The team favorite.</div><span class="badge green">Team Favorite</span></a>
+  <a class="card" href="wireframes/design-06-split-contrast.html"><div class="card-num">Design 06</div><div class="card-title">Split Contrast</div><div class="card-desc">Bold dark/light split sections.</div><span class="badge og">Original</span></a>
+  <a class="card" href="wireframes/design-07-warm-premium.html"><div class="card-num">Design 07</div><div class="card-title">Warm Premium</div><div class="card-desc">Warm tones, premium feel, earthy accents.</div><span class="badge og">Original</span></a>
+  <a class="card" href="wireframes/design-08-brutalist.html"><div class="card-num">Design 08</div><div class="card-title">Brutalist</div><div class="card-desc">Raw, bold, unconventional typography.</div><span class="badge og">Original</span></a>
+  <a class="card" href="wireframes/design-09-frosted-layers.html"><div class="card-num">Design 09</div><div class="card-title">Frosted Layers</div><div class="card-desc">Glassmorphism, layered depth, blur effects.</div><span class="badge og">Original</span></a>
+  <a class="card" href="wireframes/design-10-cyber-grid.html"><div class="card-num">Design 10</div><div class="card-title">Cyber Grid</div><div class="card-desc">Grid patterns, cyber aesthetic, tech-forward.</div><span class="badge og">Original</span></a>
+</div>
+
+<div class="section-title">Research-Driven (11-13) — Built from 14 inspiration site analyses</div>
+<div class="grid">
+  <a class="card" href="wireframes/design-11-command-center.html"><div class="card-num">Design 11</div><div class="card-title">Command Center</div><div class="card-desc">Mission control energy. Animated network graph, 3-quote carousel, data-rich hero. Inspired by Linear + Scale AI.</div><span class="badge green">Recommended</span></a>
+  <a class="card" href="wireframes/design-12-glass-prestige.html"><div class="card-num">Design 12</div><div class="card-title">Glass Prestige</div><div class="card-desc">Apple-style centered hero. Floating glassmorphic dashboard mockup with live clock, conic gauge, data table.</div><span class="badge green">Recommended</span></a>
+  <a class="card" href="wireframes/design-13-signal-grid.html"><div class="card-num">Design 13</div><div class="card-title">Signal Grid</div><div class="card-desc">Bold editorial typography (72px). Massive background numbers. Blue accent CTA strip. Bloomberg meets Linear.</div><span class="badge green">Recommended</span></a>
+</div>
+
+<div class="section-title">Switchboard Concept (14-16) — The switchboard metaphor visualized</div>
+<div class="grid">
+  <a class="card" href="wireframes/design-14-patch-panel.html"><div class="card-num">Design 14</div><div class="card-title">The Patch Panel</div><div class="card-desc">SVG switchboard visualization — animated patch cords routing data from inputs through THE SWITCHBOARD to outputs.</div><span class="badge amber">Switchboard Concept</span></a>
+  <a class="card" href="wireframes/design-15-circuit-traces.html"><div class="card-num">Design 15</div><div class="card-title">Circuit Traces</div><div class="card-desc">PCB circuit board aesthetic. Every section connected by circuit traces with animated flowing dots.</div><span class="badge amber">Switchboard Concept</span></a>
+  <a class="card" href="wireframes/design-16-the-operator.html"><div class="card-num">Design 16</div><div class="card-title">The Operator</div><div class="card-desc">Split-screen hero: chaotic raw data (left) transforms into clean intelligence (right). THE SWITCHBOARD is the divider.</div><span class="badge amber">Switchboard Concept</span></a>
+</div>
+
+<div class="section-title">Editorial Variations (17-19) — Inspired by Design 05</div>
+<div class="grid">
+  <a class="card" href="wireframes/design-17-editorial-noir.html"><div class="card-num">Design 17</div><div class="card-title">Editorial Noir</div><div class="card-desc">Dark editorial — charcoal bg, cream text, warm gold accents. Premium dark magazine feel.</div><span class="badge purple">Editorial</span></a>
+  <a class="card" href="wireframes/design-18-editorial-split.html"><div class="card-num">Design 18</div><div class="card-title">Editorial Split</div><div class="card-desc">Every section is a dramatic 50/50 split layout. Light/dark halves. Magazine spread energy.</div><span class="badge purple">Editorial</span></a>
+  <a class="card" href="wireframes/design-19-editorial-swiss.html"><div class="card-num">Design 19</div><div class="card-title">Editorial Swiss</div><div class="card-desc">Swiss/International typographic style. Pure white, strict grid, massive numbers. Data IS the design.</div><span class="badge purple">Editorial</span></a>
+</div>
+
+<div class="section-title">Editorial + Tech Hybrids (20-22) — Old school magazine meets modern switchboard tech</div>
+<div class="grid">
+  <a class="card" href="wireframes/design-20-editorial-switchboard.html"><div class="card-num">Design 20</div><div class="card-title"><span class="star">★</span>Editorial Switchboard</div><div class="card-desc">Serif magazine layout with living switchboard visualization woven in. Editorial typography meets animated data flows. The best of both worlds.</div><span class="badge rose">Hybrid</span></a>
+  <a class="card" href="wireframes/design-21-vintage-operator.html"><div class="card-num">Design 21</div><div class="card-title"><span class="star">★</span>Vintage Operator</div><div class="card-desc">1920s switchboard operator meets modern intelligence. Brass/copper accents, serif typography, vintage patch panel with glowing blue signals.</div><span class="badge rose">Hybrid</span></a>
+  <a class="card" href="wireframes/design-22-editorial-circuit.html"><div class="card-num">Design 22</div><div class="card-title"><span class="star">★</span>Editorial Circuit</div><div class="card-desc">Circuit board traces replace traditional design elements — dividers, borders, bullets all become PCB traces. Editorial serif + tech DNA.</div><span class="badge rose">Hybrid</span></a>
+</div>
+
+</div>
+</body>
+</html>

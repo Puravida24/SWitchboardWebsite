@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Switchboard — Insurance Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#faf9f7',
+                        charcoal: '#1c1917',
+                        brass: '#92673a',
+                        gold: '#c9a96e',
+                        signal: '#2563eb',
+                        amber: '#d97706',
+                        success: '#059669',
+                    },
+                    fontFamily: {
+                        serif: ['Instrument Serif', 'Georgia', 'serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Pulse animations for signal lights */
+        @keyframes signalPulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 4px currentColor; }
+            50% { opacity: 0.5; box-shadow: 0 0 12px currentColor; }
+        }
+        @keyframes signalPulseSlow {
+            0%, 100% { opacity: 0.8; box-shadow: 0 0 3px currentColor; }
+            50% { opacity: 0.4; box-shadow: 0 0 8px currentColor; }
+        }
+        .signal-pulse {
+            animation: signalPulse 2s ease-in-out infinite;
+        }
+        .signal-pulse-slow {
+            animation: signalPulseSlow 3s ease-in-out infinite;
+        }
+        .signal-pulse-fast {
+            animation: signalPulse 1.2s ease-in-out infinite;
+        }
+
+        /* Flowing dash animation for patch cords */
+        @keyframes flowDash {
+            to { stroke-dashoffset: -24; }
+        }
+        .flow-dash {
+            animation: flowDash 1.5s linear infinite;
+        }
+        @keyframes flowDashSlow {
+            to { stroke-dashoffset: -24; }
+        }
+        .flow-dash-slow {
+            animation: flowDashSlow 2.5s linear infinite;
+        }
+
+        /* Marquee */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+            animation: marquee 30s linear infinite;
+        }
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        /* Brass gradient border */
+        .brass-border-gradient {
+            border-image: linear-gradient(135deg, #92673a, #c9a96e, #92673a) 1;
+        }
+
+        /* Connection line animation */
+        @keyframes connectionFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        .connection-flow {
+            background: linear-gradient(90deg, transparent, #2563eb, transparent);
+            background-size: 200% 100%;
+            animation: connectionFlow 2s linear infinite;
+        }
+
+        /* Fade in on scroll */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Smooth number counter */
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Subtle brass shimmer */
+        @keyframes brassShimmer {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        .brass-shimmer {
+            animation: brassShimmer 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-cream text-charcoal font-sans antialiased" x-data="{ mobileMenu: false }">
+
+    <!-- ============================================================ -->
+    <!-- HEADER -->
+    <!-- ============================================================ -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-cream/90 backdrop-blur-md border-b" style="border-color: rgba(201,169,110,0.3);">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="#" class="font-serif text-2xl lg:text-3xl text-charcoal tracking-tight">
+                    The Switchboard
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden lg:flex items-center gap-10">
+                    <a href="#engines" class="text-sm font-medium text-charcoal/70 hover:text-charcoal relative group transition-colors">
+                        Platform
+                        <span class="absolute -bottom-1 left-0 w-0 h-px bg-gold group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#how-it-works" class="text-sm font-medium text-charcoal/70 hover:text-charcoal relative group transition-colors">
+                        How It Works
+                        <span class="absolute -bottom-1 left-0 w-0 h-px bg-gold group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#case-studies" class="text-sm font-medium text-charcoal/70 hover:text-charcoal relative group transition-colors">
+                        Case Studies
+                        <span class="absolute -bottom-1 left-0 w-0 h-px bg-gold group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#comparison" class="text-sm font-medium text-charcoal/70 hover:text-charcoal relative group transition-colors">
+                        Why Us
+                        <span class="absolute -bottom-1 left-0 w-0 h-px bg-gold group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#cta" class="ml-4 px-6 py-2.5 text-sm font-semibold border-2 border-brass text-brass rounded-full hover:bg-brass hover:text-cream transition-all duration-300">
+                        Book a Demo
+                    </a>
+                </nav>
+
+                <!-- Mobile menu button -->
+                <button @click="mobileMenu = !mobileMenu" class="lg:hidden p-2" aria-label="Toggle menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path x-show="!mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                        <path x-show="mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav -->
+        <div x-show="mobileMenu" x-transition class="lg:hidden bg-cream border-t" style="border-color: rgba(201,169,110,0.3);">
+            <div class="px-6 py-6 space-y-4">
+                <a href="#engines" @click="mobileMenu = false" class="block text-base font-medium text-charcoal/70">Platform</a>
+                <a href="#how-it-works" @click="mobileMenu = false" class="block text-base font-medium text-charcoal/70">How It Works</a>
+                <a href="#case-studies" @click="mobileMenu = false" class="block text-base font-medium text-charcoal/70">Case Studies</a>
+                <a href="#comparison" @click="mobileMenu = false" class="block text-base font-medium text-charcoal/70">Why Us</a>
+                <a href="#cta" @click="mobileMenu = false" class="block w-full text-center px-6 py-3 text-sm font-semibold border-2 border-brass text-brass rounded-full">Book a Demo</a>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- ============================================================ -->
+    <!-- HERO -->
+    <!-- ============================================================ -->
+    <section class="min-h-screen flex flex-col items-center justify-center bg-cream pt-20 pb-16 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Overline -->
+            <p class="text-brass font-sans text-xs font-semibold tracking-[0.3em] uppercase mb-8">
+                Est. Intelligence Platform
+            </p>
+
+            <!-- Headline -->
+            <h1 class="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-[80px] leading-[1.05] text-charcoal mb-8">
+                Where every connection counts.
+            </h1>
+
+            <!-- Subheadline -->
+            <p class="text-lg md:text-xl text-charcoal/50 max-w-2xl mx-auto leading-relaxed mb-12 font-light">
+                The Switchboard processes, scores, and routes insurance opportunities with the precision of a master operator&nbsp;&mdash;&nbsp;in&nbsp;real&#8209;time.
+            </p>
+
+            <!-- Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+                <a href="#cta" class="px-8 py-3.5 text-sm font-semibold border-2 border-brass text-brass rounded-full hover:bg-brass hover:text-cream transition-all duration-300">
+                    Book a Demo
+                </a>
+                <a href="#engines" class="px-8 py-3.5 text-sm font-semibold bg-charcoal text-cream rounded-full hover:bg-charcoal/90 transition-all duration-300">
+                    See the Platform
+                </a>
+            </div>
+        </div>
+
+        <!-- Vintage Patch Panel SVG -->
+        <div class="w-full max-w-4xl mx-auto px-4">
+            <div class="relative rounded-xl p-1" style="background: linear-gradient(135deg, rgba(146,103,58,0.3), rgba(201,169,110,0.4), rgba(146,103,58,0.3));">
+                <div class="bg-cream rounded-lg p-6 md:p-10">
+                    <!-- Labels -->
+                    <div class="flex justify-between mb-4">
+                        <span class="text-xs font-semibold tracking-[0.2em] uppercase text-brass/70">Data In</span>
+                        <span class="text-xs font-semibold tracking-[0.2em] uppercase text-brass/70">Intelligence Out</span>
+                    </div>
+
+                    <svg viewBox="0 0 800 300" class="w-full" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Background panel -->
+                        <rect x="0" y="0" width="800" height="300" rx="8" fill="#faf9f7" stroke="rgba(146,103,58,0.15)" stroke-width="1"/>
+
+                        <!-- Horizontal divider lines (vintage panel grooves) -->
+                        <line x1="40" y1="75" x2="760" y2="75" stroke="rgba(201,169,110,0.15)" stroke-width="0.5"/>
+                        <line x1="40" y1="150" x2="760" y2="150" stroke="rgba(201,169,110,0.15)" stroke-width="0.5"/>
+                        <line x1="40" y1="225" x2="760" y2="225" stroke="rgba(201,169,110,0.15)" stroke-width="0.5"/>
+
+                        <!-- Row labels -->
+                        <text x="20" y="42" font-family="Inter" font-size="8" fill="rgba(146,103,58,0.5)" text-anchor="middle">IN</text>
+                        <text x="20" y="117" font-family="Inter" font-size="8" fill="rgba(146,103,58,0.5)" text-anchor="middle">PROC</text>
+                        <text x="20" y="192" font-family="Inter" font-size="8" fill="rgba(146,103,58,0.5)" text-anchor="middle">ROUTE</text>
+                        <text x="20" y="267" font-family="Inter" font-size="8" fill="rgba(146,103,58,0.5)" text-anchor="middle">OUT</text>
+
+                        <!-- INPUT ROW (Row 1) - jack circles -->
+                        <!-- Active (blue) jacks -->
+                        <circle cx="80" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="80" cy="37" r="3" fill="#2563eb" class="signal-pulse" style="color:#2563eb"/>
+
+                        <circle cx="140" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="140" cy="37" r="3" fill="#2563eb" class="signal-pulse-fast" style="color:#2563eb"/>
+
+                        <circle cx="200" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="200" cy="37" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="260" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="260" cy="37" r="3" fill="#2563eb" class="signal-pulse" style="color:#2563eb"/>
+
+                        <circle cx="320" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="320" cy="37" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="380" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="380" cy="37" r="3" fill="#2563eb" class="signal-pulse-fast" style="color:#2563eb"/>
+
+                        <circle cx="440" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="440" cy="37" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="500" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="500" cy="37" r="3" fill="#2563eb" class="signal-pulse" style="color:#2563eb"/>
+
+                        <circle cx="560" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="560" cy="37" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="620" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="620" cy="37" r="3" fill="#2563eb" class="signal-pulse-fast" style="color:#2563eb"/>
+
+                        <circle cx="680" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="680" cy="37" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="740" cy="37" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="740" cy="37" r="3" fill="#2563eb" class="signal-pulse" style="color:#2563eb"/>
+
+                        <!-- PROCESSING ROW (Row 2) -->
+                        <circle cx="80" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="80" cy="112" r="3" fill="#d97706" class="signal-pulse-slow" style="color:#d97706"/>
+
+                        <circle cx="140" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="140" cy="112" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="200" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="200" cy="112" r="3" fill="#d97706" class="signal-pulse" style="color:#d97706"/>
+
+                        <circle cx="260" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="260" cy="112" r="3" fill="#d97706" class="signal-pulse-slow" style="color:#d97706"/>
+
+                        <circle cx="320" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="320" cy="112" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="380" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="380" cy="112" r="3" fill="#d97706" class="signal-pulse" style="color:#d97706"/>
+
+                        <circle cx="440" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="440" cy="112" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="500" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="500" cy="112" r="3" fill="#d97706" class="signal-pulse-slow" style="color:#d97706"/>
+
+                        <circle cx="560" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="560" cy="112" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="620" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="620" cy="112" r="3" fill="#d97706" class="signal-pulse" style="color:#d97706"/>
+
+                        <circle cx="680" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="680" cy="112" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="740" cy="112" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="740" cy="112" r="3" fill="#d97706" class="signal-pulse-slow" style="color:#d97706"/>
+
+                        <!-- ROUTING ROW (Row 3) -->
+                        <circle cx="80" cy="187" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="80" cy="187" r="3" fill="#2563eb" class="signal-pulse" style="color:#2563eb"/>
+
+                        <circle cx="160" cy="187" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="160" cy="187" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="240" cy="187" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="240" cy="187" r="3" fill="#2563eb" class="signal-pulse-fast" style="color:#2563eb"/>
+
+                        <circle cx="320" cy="187" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="320" cy="187" r="3" fill="#2563eb" class="signal-pulse" style="color:#2563eb"/>
+
+                        <circle cx="400" cy="187" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="400" cy="187" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="480" cy="187" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="480" cy="187" r="3" fill="#2563eb" class="signal-pulse-fast" style="color:#2563eb"/>
+
+                        <circle cx="560" cy="187" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="560" cy="187" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="640" cy="187" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="640" cy="187" r="3" fill="#2563eb" class="signal-pulse" style="color:#2563eb"/>
+
+                        <circle cx="720" cy="187" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="720" cy="187" r="3" fill="#2563eb" class="signal-pulse-fast" style="color:#2563eb"/>
+
+                        <!-- OUTPUT ROW (Row 4) -->
+                        <circle cx="100" cy="262" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="100" cy="262" r="3" fill="#059669" class="signal-pulse" style="color:#059669"/>
+
+                        <circle cx="200" cy="262" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="200" cy="262" r="3" fill="#059669" class="signal-pulse-slow" style="color:#059669"/>
+
+                        <circle cx="300" cy="262" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="300" cy="262" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="400" cy="262" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="400" cy="262" r="3" fill="#059669" class="signal-pulse" style="color:#059669"/>
+
+                        <circle cx="500" cy="262" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="500" cy="262" r="3" fill="#059669" class="signal-pulse-slow" style="color:#059669"/>
+
+                        <circle cx="600" cy="262" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="600" cy="262" r="3" fill="rgba(146,103,58,0.3)"/>
+
+                        <circle cx="700" cy="262" r="6" fill="none" stroke="rgba(146,103,58,0.25)" stroke-width="1"/>
+                        <circle cx="700" cy="262" r="3" fill="#059669" class="signal-pulse" style="color:#059669"/>
+
+                        <!-- PATCH CORDS — animated flowing connections -->
+                        <!-- Cord 1: Input to Processing -->
+                        <path d="M 80 43 C 80 70, 200 85, 200 106" fill="none" stroke="rgba(37,99,235,0.15)" stroke-width="1.5"/>
+                        <path d="M 80 43 C 80 70, 200 85, 200 106" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4 8" class="flow-dash" opacity="0.6"/>
+
+                        <!-- Cord 2: Input to Processing -->
+                        <path d="M 260 43 C 260 65, 260 90, 260 106" fill="none" stroke="rgba(37,99,235,0.15)" stroke-width="1.5"/>
+                        <path d="M 260 43 C 260 65, 260 90, 260 106" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4 8" class="flow-dash" opacity="0.6"/>
+
+                        <!-- Cord 3: Input to Processing -->
+                        <path d="M 500 43 C 500 60, 380 85, 380 106" fill="none" stroke="rgba(37,99,235,0.15)" stroke-width="1.5"/>
+                        <path d="M 500 43 C 500 60, 380 85, 380 106" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4 8" class="flow-dash-slow" opacity="0.6"/>
+
+                        <!-- Cord 4: Input to Processing -->
+                        <path d="M 620 43 C 620 60, 620 90, 620 106" fill="none" stroke="rgba(37,99,235,0.15)" stroke-width="1.5"/>
+                        <path d="M 620 43 C 620 60, 620 90, 620 106" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4 8" class="flow-dash" opacity="0.6"/>
+
+                        <!-- Cord 5: Processing to Routing -->
+                        <path d="M 200 118 C 200 145, 240 160, 240 181" fill="none" stroke="rgba(217,119,6,0.15)" stroke-width="1.5"/>
+                        <path d="M 200 118 C 200 145, 240 160, 240 181" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 8" class="flow-dash-slow" opacity="0.5"/>
+
+                        <!-- Cord 6: Processing to Routing -->
+                        <path d="M 380 118 C 380 140, 320 160, 320 181" fill="none" stroke="rgba(217,119,6,0.15)" stroke-width="1.5"/>
+                        <path d="M 380 118 C 380 140, 320 160, 320 181" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 8" class="flow-dash" opacity="0.5"/>
+
+                        <!-- Cord 7: Processing to Routing -->
+                        <path d="M 620 118 C 620 145, 640 160, 640 181" fill="none" stroke="rgba(217,119,6,0.15)" stroke-width="1.5"/>
+                        <path d="M 620 118 C 620 145, 640 160, 640 181" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 8" class="flow-dash-slow" opacity="0.5"/>
+
+                        <!-- Cord 8: Routing to Output -->
+                        <path d="M 240 193 C 240 220, 200 240, 200 256" fill="none" stroke="rgba(5,150,105,0.15)" stroke-width="1.5"/>
+                        <path d="M 240 193 C 240 220, 200 240, 200 256" fill="none" stroke="#059669" stroke-width="1.5" stroke-dasharray="4 8" class="flow-dash" opacity="0.5"/>
+
+                        <!-- Cord 9: Routing to Output -->
+                        <path d="M 480 193 C 480 220, 500 240, 500 256" fill="none" stroke="rgba(5,150,105,0.15)" stroke-width="1.5"/>
+                        <path d="M 480 193 C 480 220, 500 240, 500 256" fill="none" stroke="#059669" stroke-width="1.5" stroke-dasharray="4 8" class="flow-dash-slow" opacity="0.5"/>
+
+                        <!-- Cord 10: Routing to Output -->
+                        <path d="M 720 193 C 720 220, 700 240, 700 256" fill="none" stroke="rgba(5,150,105,0.15)" stroke-width="1.5"/>
+                        <path d="M 720 193 C 720 220, 700 240, 700 256" fill="none" stroke="#059669" stroke-width="1.5" stroke-dasharray="4 8" class="flow-dash" opacity="0.5"/>
+
+                        <!-- Long cord: Input all the way to Output -->
+                        <path d="M 140 43 C 140 100, 100 200, 100 256" fill="none" stroke="rgba(37,99,235,0.08)" stroke-width="2"/>
+                        <path d="M 140 43 C 140 100, 100 200, 100 256" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="6 10" class="flow-dash" opacity="0.4"/>
+
+                        <path d="M 740 43 C 740 100, 400 200, 400 256" fill="none" stroke="rgba(37,99,235,0.08)" stroke-width="2"/>
+                        <path d="M 740 43 C 740 100, 400 200, 400 256" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="6 10" class="flow-dash-slow" opacity="0.35"/>
+                    </svg>
+
+                    <!-- Legend -->
+                    <div class="flex flex-wrap items-center justify-center gap-6 mt-4 text-xs text-charcoal/40">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-signal signal-pulse inline-block" style="color:#2563eb"></span>
+                            Active
+                        </span>
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-amber signal-pulse-slow inline-block" style="color:#d97706"></span>
+                            Processing
+                        </span>
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-success signal-pulse inline-block" style="color:#059669"></span>
+                            Routed
+                        </span>
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full inline-block" style="background:rgba(146,103,58,0.3)"></span>
+                            Idle
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================================ -->
+    <!-- SOCIAL PROOF MARQUEE -->
+    <!-- ============================================================ -->
+    <section class="border-y py-6 overflow-hidden" style="border-color: rgba(201,169,110,0.25);">
+        <div class="relative">
+            <div class="flex marquee-track whitespace-nowrap">
+                <span class="inline-flex items-center gap-16 px-8 text-sm font-medium text-charcoal/30 tracking-wide">
+                    <span>Progressive</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>Allstate</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>Liberty Mutual</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>Nationwide</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>Farmers Insurance</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>State Farm</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>GEICO</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>Travelers</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>USAA</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>American Family</span>
+                    <span class="text-gold/40">&bull;</span>
+                </span>
+                <span class="inline-flex items-center gap-16 px-8 text-sm font-medium text-charcoal/30 tracking-wide">
+                    <span>Progressive</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>Allstate</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>Liberty Mutual</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>Nationwide</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>Farmers Insurance</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>State Farm</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>GEICO</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>Travelers</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>USAA</span>
+                    <span class="text-gold/40">&bull;</span>
+                    <span>American Family</span>
+                    <span class="text-gold/40">&bull;</span>
+                </span>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================================ -->
+    <!-- THE FIVE ENGINES -->
+    <!-- ============================================================ -->
+    <section id="engines" class="bg-cream py-24 md:py-32 px-6">
+        <div class="max-w-3xl mx-auto">
+            <!-- Section header -->
+            <div class="mb-20 text-center">
+                <p class="text-brass text-xs font-semibold tracking-[0.3em] uppercase mb-4">The Platform</p>
+                <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl text-charcoal">Five engines, one operator.</h2>
+            </div>
+
+            <!-- Engine cards — editorial vertical flow -->
+            <div class="space-y-0">
+                <!-- Engine 1 -->
+                <div class="fade-in-up py-10 border-t-2" style="border-color: rgba(201,169,110,0.4);">
+                    <div class="flex items-start gap-6">
+                        <div class="flex-shrink-0">
+                            <span class="font-sans text-xs font-bold text-brass tracking-wider">01</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="font-serif text-2xl md:text-3xl text-charcoal">Enrichment</h3>
+                                <span class="w-2 h-2 rounded-full bg-signal signal-pulse inline-block" style="color:#2563eb"></span>
+                            </div>
+                            <p class="text-charcoal/50 leading-relaxed">
+                                Raw data arrives incomplete. Our enrichment engine appends 40+ verified data points in real-time&nbsp;&mdash;&nbsp;demographics, property records, credit indicators, policy history&nbsp;&mdash;&nbsp;transforming fragments into complete customer profiles.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Connector wire -->
+                <div class="flex justify-center">
+                    <div class="w-px h-8 relative" style="background: rgba(201,169,110,0.3);">
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-gold/50"></div>
+                    </div>
+                </div>
+
+                <!-- Engine 2 -->
+                <div class="fade-in-up py-10 border-t-2" style="border-color: rgba(201,169,110,0.4);">
+                    <div class="flex items-start gap-6">
+                        <div class="flex-shrink-0">
+                            <span class="font-sans text-xs font-bold text-brass tracking-wider">02</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="font-serif text-2xl md:text-3xl text-charcoal">Scoring</h3>
+                                <span class="w-2 h-2 rounded-full bg-signal signal-pulse-fast inline-block" style="color:#2563eb"></span>
+                            </div>
+                            <p class="text-charcoal/50 leading-relaxed">
+                                Our ML models evaluate every opportunity across 200+ weighted signals. Each prospect receives a composite quality score, intent score, and predicted conversion probability&nbsp;&mdash;&nbsp;before it ever reaches a buyer.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Connector wire -->
+                <div class="flex justify-center">
+                    <div class="w-px h-8 relative" style="background: rgba(201,169,110,0.3);">
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-gold/50"></div>
+                    </div>
+                </div>
+
+                <!-- Engine 3 -->
+                <div class="fade-in-up py-10 border-t-2" style="border-color: rgba(201,169,110,0.4);">
+                    <div class="flex items-start gap-6">
+                        <div class="flex-shrink-0">
+                            <span class="font-sans text-xs font-bold text-brass tracking-wider">03</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="font-serif text-2xl md:text-3xl text-charcoal">Segmentation</h3>
+                                <span class="w-2 h-2 rounded-full bg-signal signal-pulse inline-block" style="color:#2563eb"></span>
+                            </div>
+                            <p class="text-charcoal/50 leading-relaxed">
+                                Scored opportunities are automatically sorted into dynamic buyer segments based on geography, line of business, risk profile, and buyer appetite. The right opportunity finds the right buyer&nbsp;&mdash;&nbsp;every time.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Connector wire -->
+                <div class="flex justify-center">
+                    <div class="w-px h-8 relative" style="background: rgba(201,169,110,0.3);">
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-gold/50"></div>
+                    </div>
+                </div>
+
+                <!-- Engine 4 -->
+                <div class="fade-in-up py-10 border-t-2" style="border-color: rgba(201,169,110,0.4);">
+                    <div class="flex items-start gap-6">
+                        <div class="flex-shrink-0">
+                            <span class="font-sans text-xs font-bold text-brass tracking-wider">04</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="font-serif text-2xl md:text-3xl text-charcoal">Routing</h3>
+                                <span class="w-2 h-2 rounded-full bg-signal signal-pulse-fast inline-block" style="color:#2563eb"></span>
+                            </div>
+                            <p class="text-charcoal/50 leading-relaxed">
+                                Like a master switchboard operator connecting calls, our routing engine delivers each opportunity to the optimal buyer in under 5 milliseconds. Priority queues, weighted distribution, and real-time capacity balancing ensure zero waste.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Connector wire -->
+                <div class="flex justify-center">
+                    <div class="w-px h-8 relative" style="background: rgba(201,169,110,0.3);">
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-gold/50"></div>
+                    </div>
+                </div>
+
+                <!-- Engine 5 -->
+                <div class="fade-in-up py-10 border-t-2" style="border-color: rgba(201,169,110,0.4);">
+                    <div class="flex items-start gap-6">
+                        <div class="flex-shrink-0">
+                            <span class="font-sans text-xs font-bold text-brass tracking-wider">05</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="font-serif text-2xl md:text-3xl text-charcoal">Analytics</h3>
+                                <span class="w-2 h-2 rounded-full bg-signal signal-pulse inline-block" style="color:#2563eb"></span>
+                            </div>
+                            <p class="text-charcoal/50 leading-relaxed">
+                                Every connection generates intelligence. Track conversion rates, buyer performance, source quality, and revenue attribution in real-time. The data that flows through The Switchboard makes it smarter with every transaction.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================================ -->
+    <!-- HOW IT WORKS -->
+    <!-- ============================================================ -->
+    <section id="how-it-works" class="bg-charcoal py-24 md:py-32 px-6">
+        <div class="max-w-6xl mx-auto">
+            <!-- Section header -->
+            <div class="text-center mb-20">
+                <p class="text-gold text-xs font-semibold tracking-[0.3em] uppercase mb-4">The Process</p>
+                <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl text-cream">The operator at work.</h2>
+            </div>
+
+            <!-- 4-step process -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-0 relative">
+                <!-- Connection lines between steps (desktop only) -->
+                <div class="hidden md:block absolute top-16 left-[calc(25%-20px)] right-[calc(25%-20px)] h-px">
+                    <div class="w-full h-full" style="background: rgba(146,103,58,0.3);"></div>
+                    <div class="absolute inset-0 connection-flow h-px"></div>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="fade-in-up text-center px-6 py-8 relative">
+                    <div class="font-serif text-6xl md:text-7xl lg:text-8xl text-gold/30 mb-4">1</div>
+                    <h3 class="font-serif text-xl text-cream mb-3">Ingest</h3>
+                    <p class="text-cream/40 text-sm leading-relaxed">
+                        Raw opportunity data flows in from publishers, forms, calls, and APIs. Every signal is captured.
+                    </p>
+                    <!-- Mobile connector -->
+                    <div class="md:hidden flex justify-center mt-8">
+                        <div class="w-px h-10 relative" style="background: rgba(146,103,58,0.3);">
+                            <div class="absolute inset-0 connection-flow w-px"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-signal signal-pulse" style="color:#2563eb"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="fade-in-up text-center px-6 py-8 relative">
+                    <div class="font-serif text-6xl md:text-7xl lg:text-8xl text-gold/30 mb-4">2</div>
+                    <h3 class="font-serif text-xl text-cream mb-3">Process</h3>
+                    <p class="text-cream/40 text-sm leading-relaxed">
+                        Data is enriched, validated, and deduplicated. Fraud signals are flagged. Quality is assured.
+                    </p>
+                    <div class="md:hidden flex justify-center mt-8">
+                        <div class="w-px h-10 relative" style="background: rgba(146,103,58,0.3);">
+                            <div class="absolute inset-0 connection-flow w-px"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-signal signal-pulse" style="color:#2563eb"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="fade-in-up text-center px-6 py-8 relative">
+                    <div class="font-serif text-6xl md:text-7xl lg:text-8xl text-gold/30 mb-4">3</div>
+                    <h3 class="font-serif text-xl text-cream mb-3">Score &amp; Match</h3>
+                    <p class="text-cream/40 text-sm leading-relaxed">
+                        ML models score each opportunity. Buyer matching algorithms find the optimal connection.
+                    </p>
+                    <div class="md:hidden flex justify-center mt-8">
+                        <div class="w-px h-10 relative" style="background: rgba(146,103,58,0.3);">
+                            <div class="absolute inset-0 connection-flow w-px"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-signal signal-pulse" style="color:#2563eb"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="fade-in-up text-center px-6 py-8 relative">
+                    <div class="font-serif text-6xl md:text-7xl lg:text-8xl text-gold/30 mb-4">4</div>
+                    <h3 class="font-serif text-xl text-cream mb-3">Deliver</h3>
+                    <p class="text-cream/40 text-sm leading-relaxed">
+                        Qualified, scored opportunities reach the right buyer in &lt;5ms. The connection is made.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================================ -->
+    <!-- TESTIMONIAL -->
+    <!-- ============================================================ -->
+    <section class="bg-cream py-24 md:py-32 px-6">
+        <div class="max-w-3xl mx-auto">
+            <div class="fade-in-up relative pl-8 md:pl-12">
+                <!-- Gold left border -->
+                <div class="absolute left-0 top-0 bottom-0 w-1 rounded-full" style="background: linear-gradient(180deg, #c9a96e, #92673a);"></div>
+
+                <!-- Brass corner accents -->
+                <div class="absolute -top-2 -left-2 w-6 h-6 border-t-2 border-l-2 rounded-tl-sm" style="border-color: rgba(201,169,110,0.4);"></div>
+                <div class="absolute -bottom-2 -left-2 w-6 h-6 border-b-2 border-l-2 rounded-bl-sm" style="border-color: rgba(201,169,110,0.4);"></div>
+
+                <blockquote class="font-serif text-2xl md:text-3xl lg:text-4xl text-charcoal leading-snug mb-8">
+                    &ldquo;The Switchboard transformed our acquisition costs overnight. We went from buying blind to buying with precision. Every opportunity that reaches us has already been scored and matched to our appetite.&rdquo;
+                </blockquote>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-charcoal/10 flex items-center justify-center">
+                        <span class="font-serif text-lg text-brass">JM</span>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-charcoal text-sm">James Mitchell</p>
+                        <p class="text-charcoal/40 text-sm">VP of Acquisitions, National Insurance Group</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================================ -->
+    <!-- STATS -->
+    <!-- ============================================================ -->
+    <section class="bg-charcoal py-20 md:py-28 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0" x-data="{ shown: false }" x-intersect.once="shown = true">
+                <!-- Stat 1 -->
+                <div class="fade-in-up text-center md:border-r" style="border-color: rgba(201,169,110,0.2);">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <span class="font-serif text-4xl md:text-5xl lg:text-6xl text-cream">&lt;5ms</span>
+                        <span class="w-2 h-2 rounded-full bg-signal signal-pulse" style="color:#2563eb"></span>
+                    </div>
+                    <p class="text-cream/40 text-sm">Routing Speed</p>
+                </div>
+
+                <!-- Stat 2 -->
+                <div class="fade-in-up text-center md:border-r" style="border-color: rgba(201,169,110,0.2);">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <span class="font-serif text-4xl md:text-5xl lg:text-6xl text-cream">40+</span>
+                        <span class="w-2 h-2 rounded-full bg-signal signal-pulse-fast" style="color:#2563eb"></span>
+                    </div>
+                    <p class="text-cream/40 text-sm">Data Points Enriched</p>
+                </div>
+
+                <!-- Stat 3 -->
+                <div class="fade-in-up text-center md:border-r" style="border-color: rgba(201,169,110,0.2);">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <span class="font-serif text-4xl md:text-5xl lg:text-6xl text-cream">99.7%</span>
+                        <span class="w-2 h-2 rounded-full bg-signal signal-pulse inline-block" style="color:#2563eb"></span>
+                    </div>
+                    <p class="text-cream/40 text-sm">Uptime SLA</p>
+                </div>
+
+                <!-- Stat 4 -->
+                <div class="fade-in-up text-center">
+                    <div class="flex items-center justify-center gap-2 mb-2">
+                        <span class="font-serif text-4xl md:text-5xl lg:text-6xl text-cream">3.2x</span>
+                        <span class="w-2 h-2 rounded-full bg-signal signal-pulse-fast" style="color:#2563eb"></span>
+                    </div>
+                    <p class="text-cream/40 text-sm">Avg. ROI Improvement</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================================ -->
+    <!-- CASE STUDIES -->
+    <!-- ============================================================ -->
+    <section id="case-studies" class="bg-cream py-24 md:py-32 px-6">
+        <div class="max-w-6xl mx-auto">
+            <!-- Section header -->
+            <div class="text-center mb-16">
+                <p class="text-brass text-xs font-semibold tracking-[0.3em] uppercase mb-4">Results</p>
+                <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl text-charcoal">Proven connections.</h2>
+            </div>
+
+            <!-- Case study cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="fade-in-up group">
+                    <div class="border rounded-lg p-8 hover:shadow-lg transition-all duration-500" style="border-color: rgba(201,169,110,0.25);">
+                        <span class="inline-block text-xs font-semibold text-brass tracking-wider uppercase mb-6">Auto Insurance</span>
+                        <h3 class="font-serif text-2xl text-charcoal mb-4">National carrier reduces CPA by 42%</h3>
+                        <p class="text-charcoal/50 text-sm leading-relaxed mb-6">
+                            By leveraging real-time scoring and intelligent routing, this top-10 carrier transformed their acquisition funnel and cut cost per acquisition nearly in half.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-brass hover:text-charcoal transition-colors group-hover:gap-3">
+                            Read the case study
+                            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="fade-in-up group">
+                    <div class="border rounded-lg p-8 hover:shadow-lg transition-all duration-500" style="border-color: rgba(201,169,110,0.25);">
+                        <span class="inline-block text-xs font-semibold text-brass tracking-wider uppercase mb-6">Home Insurance</span>
+                        <h3 class="font-serif text-2xl text-charcoal mb-4">Regional agency scales 5x without waste</h3>
+                        <p class="text-charcoal/50 text-sm leading-relaxed mb-6">
+                            Smart segmentation and capacity-aware routing allowed this 200-agent agency to quintuple volume while maintaining their target conversion rate.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-brass hover:text-charcoal transition-colors group-hover:gap-3">
+                            Read the case study
+                            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="fade-in-up group">
+                    <div class="border rounded-lg p-8 hover:shadow-lg transition-all duration-500" style="border-color: rgba(201,169,110,0.25);">
+                        <span class="inline-block text-xs font-semibold text-brass tracking-wider uppercase mb-6">Life Insurance</span>
+                        <h3 class="font-serif text-2xl text-charcoal mb-4">Publisher boosts revenue 68% per opportunity</h3>
+                        <p class="text-charcoal/50 text-sm leading-relaxed mb-6">
+                            Real-time enrichment and multi-buyer distribution unlocked hidden value in every opportunity, driving a 68% increase in average revenue per record.
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-brass hover:text-charcoal transition-colors group-hover:gap-3">
+                            Read the case study
+                            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================================ -->
+    <!-- COMPARISON: THEN VS NOW -->
+    <!-- ============================================================ -->
+    <section id="comparison" class="bg-charcoal py-24 md:py-32 px-6">
+        <div class="max-w-5xl mx-auto">
+            <!-- Section header -->
+            <div class="text-center mb-16">
+                <p class="text-gold text-xs font-semibold tracking-[0.3em] uppercase mb-4">Evolution</p>
+                <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl text-cream">Then vs. Now.</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-0">
+                <!-- THEN -->
+                <div class="fade-in-up border rounded-t-lg md:rounded-l-lg md:rounded-tr-none p-10 md:p-12" style="border-color: rgba(201,169,110,0.2);">
+                    <h3 class="font-serif text-2xl text-cream/40 mb-8">The old switchboard</h3>
+                    <ul class="space-y-5">
+                        <li class="flex items-start gap-4">
+                            <span class="w-2 h-2 rounded-full bg-cream/20 mt-2 flex-shrink-0"></span>
+                            <div>
+                                <p class="text-cream/60 font-medium text-sm">Manual operator connections</p>
+                                <p class="text-cream/30 text-xs mt-1">Human operators physically patched each call</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="w-2 h-2 rounded-full bg-cream/20 mt-2 flex-shrink-0"></span>
+                            <div>
+                                <p class="text-cream/60 font-medium text-sm">Minutes per connection</p>
+                                <p class="text-cream/30 text-xs mt-1">Speed limited by physical cord management</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="w-2 h-2 rounded-full bg-cream/20 mt-2 flex-shrink-0"></span>
+                            <div>
+                                <p class="text-cream/60 font-medium text-sm">No intelligence — just connections</p>
+                                <p class="text-cream/30 text-xs mt-1">First-come, first-served routing</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="w-2 h-2 rounded-full bg-cream/20 mt-2 flex-shrink-0"></span>
+                            <div>
+                                <p class="text-cream/60 font-medium text-sm">Error-prone at scale</p>
+                                <p class="text-cream/30 text-xs mt-1">Wrong connections, dropped calls, busy signals</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="w-2 h-2 rounded-full bg-cream/20 mt-2 flex-shrink-0"></span>
+                            <div>
+                                <p class="text-cream/60 font-medium text-sm">Zero analytics</p>
+                                <p class="text-cream/30 text-xs mt-1">No data, no optimization, no feedback loop</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- NOW -->
+                <div class="fade-in-up border rounded-b-lg md:rounded-r-lg md:rounded-bl-none p-10 md:p-12 relative" style="border-color: rgba(37,99,235,0.2); background: rgba(37,99,235,0.03);">
+                    <h3 class="font-serif text-2xl text-cream mb-8">The Switchboard</h3>
+                    <ul class="space-y-5">
+                        <li class="flex items-start gap-4">
+                            <span class="w-2 h-2 rounded-full bg-signal mt-2 flex-shrink-0 signal-pulse" style="color:#2563eb"></span>
+                            <div>
+                                <p class="text-cream font-medium text-sm">ML-powered intelligent routing</p>
+                                <p class="text-cream/40 text-xs mt-1">200+ signals determine optimal buyer match</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="w-2 h-2 rounded-full bg-signal mt-2 flex-shrink-0 signal-pulse-fast" style="color:#2563eb"></span>
+                            <div>
+                                <p class="text-cream font-medium text-sm">&lt;5 milliseconds per connection</p>
+                                <p class="text-cream/40 text-xs mt-1">Faster than a blink — literally</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="w-2 h-2 rounded-full bg-signal mt-2 flex-shrink-0 signal-pulse" style="color:#2563eb"></span>
+                            <div>
+                                <p class="text-cream font-medium text-sm">Enrich + Score + Segment + Route</p>
+                                <p class="text-cream/40 text-xs mt-1">Full intelligence pipeline, not just a pass-through</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="w-2 h-2 rounded-full bg-signal mt-2 flex-shrink-0 signal-pulse-fast" style="color:#2563eb"></span>
+                            <div>
+                                <p class="text-cream font-medium text-sm">99.7% uptime, zero dropped opportunities</p>
+                                <p class="text-cream/40 text-xs mt-1">Enterprise-grade reliability at any volume</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="w-2 h-2 rounded-full bg-signal mt-2 flex-shrink-0 signal-pulse" style="color:#2563eb"></span>
+                            <div>
+                                <p class="text-cream font-medium text-sm">Real-time analytics dashboard</p>
+                                <p class="text-cream/40 text-xs mt-1">Every connection generates actionable intelligence</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================================ -->
+    <!-- FINAL CTA -->
+    <!-- ============================================================ -->
+    <section id="cta" class="bg-cream py-24 md:py-32 px-6">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="fade-in-up">
+                <p class="text-brass text-xs font-semibold tracking-[0.3em] uppercase mb-6">Get Started</p>
+                <h2 class="font-serif text-5xl md:text-6xl lg:text-7xl text-charcoal mb-8">
+                    Make the connection.
+                </h2>
+                <p class="text-lg text-charcoal/50 max-w-xl mx-auto leading-relaxed mb-12 font-light">
+                    See how The Switchboard can transform your insurance distribution with intelligent routing, real-time scoring, and precision matching.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                    <a href="#" class="px-10 py-4 text-sm font-semibold border-2 border-brass text-brass rounded-full hover:bg-brass hover:text-cream transition-all duration-300">
+                        Book a Demo
+                    </a>
+                    <a href="#" class="px-10 py-4 text-sm font-semibold text-charcoal/50 hover:text-charcoal transition-colors">
+                        Contact Sales &rarr;
+                    </a>
+                </div>
+
+                <!-- Mini patch panel SVG -->
+                <div class="max-w-xs mx-auto opacity-30">
+                    <svg viewBox="0 0 300 80" class="w-full" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0" y="0" width="300" height="80" rx="6" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="1"/>
+                        <!-- Top row jacks -->
+                        <circle cx="40" cy="25" r="4" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="0.8"/>
+                        <circle cx="40" cy="25" r="2" fill="#2563eb" class="signal-pulse" style="color:#2563eb" opacity="0.6"/>
+                        <circle cx="80" cy="25" r="4" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="0.8"/>
+                        <circle cx="80" cy="25" r="2" fill="rgba(146,103,58,0.3)"/>
+                        <circle cx="120" cy="25" r="4" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="0.8"/>
+                        <circle cx="120" cy="25" r="2" fill="#2563eb" class="signal-pulse-fast" style="color:#2563eb" opacity="0.6"/>
+                        <circle cx="160" cy="25" r="4" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="0.8"/>
+                        <circle cx="160" cy="25" r="2" fill="rgba(146,103,58,0.3)"/>
+                        <circle cx="200" cy="25" r="4" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="0.8"/>
+                        <circle cx="200" cy="25" r="2" fill="#059669" class="signal-pulse" style="color:#059669" opacity="0.6"/>
+                        <circle cx="240" cy="25" r="4" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="0.8"/>
+                        <circle cx="240" cy="25" r="2" fill="#2563eb" class="signal-pulse" style="color:#2563eb" opacity="0.6"/>
+                        <!-- Bottom row jacks -->
+                        <circle cx="60" cy="55" r="4" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="0.8"/>
+                        <circle cx="60" cy="55" r="2" fill="#059669" class="signal-pulse-slow" style="color:#059669" opacity="0.6"/>
+                        <circle cx="100" cy="55" r="4" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="0.8"/>
+                        <circle cx="100" cy="55" r="2" fill="rgba(146,103,58,0.3)"/>
+                        <circle cx="140" cy="55" r="4" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="0.8"/>
+                        <circle cx="140" cy="55" r="2" fill="#059669" class="signal-pulse" style="color:#059669" opacity="0.6"/>
+                        <circle cx="180" cy="55" r="4" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="0.8"/>
+                        <circle cx="180" cy="55" r="2" fill="rgba(146,103,58,0.3)"/>
+                        <circle cx="220" cy="55" r="4" fill="none" stroke="rgba(146,103,58,0.3)" stroke-width="0.8"/>
+                        <circle cx="220" cy="55" r="2" fill="#059669" class="signal-pulse-slow" style="color:#059669" opacity="0.6"/>
+                        <!-- Patch cords -->
+                        <path d="M 40 29 C 40 40, 60 44, 60 51" fill="none" stroke="#2563eb" stroke-width="1" stroke-dasharray="3 5" class="flow-dash" opacity="0.4"/>
+                        <path d="M 120 29 C 120 40, 140 44, 140 51" fill="none" stroke="#2563eb" stroke-width="1" stroke-dasharray="3 5" class="flow-dash-slow" opacity="0.4"/>
+                        <path d="M 240 29 C 240 40, 220 44, 220 51" fill="none" stroke="#2563eb" stroke-width="1" stroke-dasharray="3 5" class="flow-dash" opacity="0.4"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================================ -->
+    <footer class="bg-charcoal py-16 md:py-20 px-6 border-t" style="border-color: rgba(201,169,110,0.15);">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <!-- Brand -->
+                <div class="md:col-span-1">
+                    <a href="#" class="font-serif text-2xl text-cream">The Switchboard</a>
+                    <p class="text-cream/30 text-sm mt-4 leading-relaxed">
+                        The intelligence layer for insurance distribution.
+                    </p>
+                </div>
+
+                <!-- Platform -->
+                <div>
+                    <h4 class="text-xs font-semibold tracking-[0.2em] uppercase text-gold/60 mb-5">Platform</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">Enrichment</a></li>
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">Scoring</a></li>
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">Segmentation</a></li>
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">Routing</a></li>
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">Analytics</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="text-xs font-semibold tracking-[0.2em] uppercase text-gold/60 mb-5">Company</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">About</a></li>
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">Case Studies</a></li>
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">Careers</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-xs font-semibold tracking-[0.2em] uppercase text-gold/60 mb-5">Connect</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">Book a Demo</a></li>
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">Contact Sales</a></li>
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">API Documentation</a></li>
+                        <li><a href="#" class="text-sm text-cream/40 hover:text-gold transition-colors">Status Page</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom bar -->
+            <div class="border-t pt-8 flex flex-col md:flex-row items-center justify-between gap-4" style="border-color: rgba(201,169,110,0.1);">
+                <p class="text-cream/20 text-xs">&copy; 2026 The Switchboard. All rights reserved.</p>
+                <div class="flex items-center gap-6">
+                    <a href="#" class="text-cream/20 text-xs hover:text-gold/60 transition-colors">Privacy</a>
+                    <a href="#" class="text-cream/20 text-xs hover:text-gold/60 transition-colors">Terms</a>
+                    <a href="#" class="text-cream/20 text-xs hover:text-gold/60 transition-colors">Compliance</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- ============================================================ -->
+    <!-- SCROLL ANIMATIONS -->
+    <!-- ============================================================ -->
+    <script>
+        // Intersection Observer for fade-in-up animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

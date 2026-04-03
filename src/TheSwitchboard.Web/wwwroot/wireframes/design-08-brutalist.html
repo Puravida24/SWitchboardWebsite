@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 8: Brutalist Tech — The Switchboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { font-family: 'Inter', sans-serif; }
+body { background: #f5f5f0; color: #111; }
+.mono { font-family: 'Space Mono', monospace; }
+
+.brutal-border { border: 2px solid #111; }
+.brutal-btn {
+  background: #111; color: #f5f5f0;
+  border: 2px solid #111;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.15s;
+}
+.brutal-btn:hover {
+  background: #f5f5f0; color: #111;
+  transform: translate(-3px, -3px);
+  box-shadow: 3px 3px 0 #111;
+}
+
+.brutal-outline {
+  border: 2px solid #111;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.15s;
+}
+.brutal-outline:hover {
+  background: #111; color: #f5f5f0;
+}
+
+.brutal-card {
+  border: 2px solid #111;
+  padding: 32px;
+  transition: all 0.15s;
+  position: relative;
+}
+.brutal-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 4px 4px 0 #111;
+}
+.brutal-card .num {
+  position: absolute; top: -16px; left: 20px;
+  background: #111; color: #f5f5f0;
+  padding: 4px 12px; font-weight: 900;
+  font-size: 14px;
+}
+
+.massive-text {
+  font-size: clamp(80px, 12vw, 180px);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.ticker-bar {
+  background: #111; color: #f5f5f0;
+  overflow: hidden; white-space: nowrap;
+  padding: 12px 0;
+}
+.ticker-content {
+  display: inline-block;
+  animation: ticker 25s linear infinite;
+}
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.red-accent { color: #dc2626; }
+
+.stat-brutal {
+  text-align: center;
+  padding: 40px 20px;
+  border-right: 2px solid #111;
+}
+.stat-brutal:last-child { border-right: none; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 bg-[#f5f5f0] border-b-2 border-black px-8 py-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="text-xl font-black uppercase tracking-wider">The Switchboard</div>
+    <nav class="hidden md:flex items-center gap-6 mono text-xs uppercase tracking-wider">
+      <a href="#" class="hover:text-red-600 transition">Solutions</a>
+      <a href="#" class="hover:text-red-600 transition">Industries</a>
+      <a href="#" class="hover:text-red-600 transition">About</a>
+      <a href="#" class="hover:text-red-600 transition">Resources</a>
+    </nav>
+    <a href="#" class="brutal-btn px-5 py-2.5 text-xs">BOOK DEMO</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="min-h-screen flex items-center pt-24 px-8">
+  <div class="max-w-7xl mx-auto w-full">
+    <div class="massive-text mb-8">
+      INSUR<span class="red-accent">ANCE</span><br>
+      INTELLI<span class="red-accent">GENCE</span>
+    </div>
+    <div class="grid md:grid-cols-2 gap-16 items-end">
+      <div>
+        <p class="text-lg leading-relaxed mb-8 max-w-md">
+          The only platform that enriches, scores, segments, and routes insurance opportunities in real time. Raw data in. Revenue out.
+        </p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="brutal-btn px-8 py-4 text-sm">BOOK A DEMO</a>
+          <a href="#" class="brutal-outline px-8 py-4 text-sm">LEARN MORE →</a>
+        </div>
+      </div>
+      <div class="mono text-xs text-neutral-500 text-right">
+        ENRICHMENT / SCORING / SEGMENTATION / ROUTING<br>
+        EST. 2024 — BUILT FOR INSURANCE
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Ticker -->
+<div class="ticker-bar">
+  <div class="ticker-content mono text-sm tracking-wider">
+    <span class="mx-8">340% AVG ROI</span>
+    <span class="mx-8 red-accent">◆</span>
+    <span class="mx-8">0.3s ENRICHMENT</span>
+    <span class="mx-8 red-accent">◆</span>
+    <span class="mx-8">47% LOWER CPA</span>
+    <span class="mx-8 red-accent">◆</span>
+    <span class="mx-8">12M+ PROCESSED</span>
+    <span class="mx-8 red-accent">◆</span>
+    <span class="mx-8">200+ AGENCIES</span>
+    <span class="mx-8 red-accent">◆</span>
+    <span class="mx-8">340% AVG ROI</span>
+    <span class="mx-8 red-accent">◆</span>
+    <span class="mx-8">0.3s ENRICHMENT</span>
+    <span class="mx-8 red-accent">◆</span>
+    <span class="mx-8">47% LOWER CPA</span>
+    <span class="mx-8 red-accent">◆</span>
+    <span class="mx-8">12M+ PROCESSED</span>
+    <span class="mx-8 red-accent">◆</span>
+    <span class="mx-8">200+ AGENCIES</span>
+    <span class="mx-8 red-accent">◆</span>
+  </div>
+</div>
+
+<!-- Stats -->
+<section class="brutal-border mx-8 my-16">
+  <div class="grid grid-cols-4">
+    <div class="stat-brutal">
+      <div class="text-5xl font-black mb-2">340<span class="red-accent">%</span></div>
+      <div class="mono text-xs uppercase tracking-wider text-neutral-500">Average ROI</div>
+    </div>
+    <div class="stat-brutal">
+      <div class="text-5xl font-black mb-2">0.3<span class="red-accent">s</span></div>
+      <div class="mono text-xs uppercase tracking-wider text-neutral-500">Enrichment</div>
+    </div>
+    <div class="stat-brutal">
+      <div class="text-5xl font-black mb-2">47<span class="red-accent">%</span></div>
+      <div class="mono text-xs uppercase tracking-wider text-neutral-500">Lower CPA</div>
+    </div>
+    <div class="stat-brutal">
+      <div class="text-5xl font-black mb-2">12<span class="red-accent">M</span></div>
+      <div class="mono text-xs uppercase tracking-wider text-neutral-500">Processed</div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="py-20 px-8">
+  <div class="max-w-7xl mx-auto">
+    <div class="mono text-xs uppercase tracking-wider text-neutral-500 mb-4">CAPABILITIES</div>
+    <h2 class="text-5xl font-black tracking-tight mb-16">WHAT WE <span class="red-accent">DO.</span></h2>
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="brutal-card">
+        <div class="num">01</div>
+        <h3 class="text-2xl font-black mb-3 mt-2">REAL-TIME ENRICHMENT</h3>
+        <p class="text-neutral-600 leading-relaxed">40+ data points appended in milliseconds. Property data, risk indicators, coverage history, behavioral signals — all automated, all verified.</p>
+      </div>
+      <div class="brutal-card">
+        <div class="num">02</div>
+        <h3 class="text-2xl font-black mb-3 mt-2">PREDICTIVE SCORING</h3>
+        <p class="text-neutral-600 leading-relaxed">ML models score every opportunity by close probability, lifetime value, and risk profile. Know what's worth pursuing before you spend a dollar.</p>
+      </div>
+      <div class="brutal-card">
+        <div class="num">03</div>
+        <h3 class="text-2xl font-black mb-3 mt-2">SMART SEGMENTATION</h3>
+        <p class="text-neutral-600 leading-relaxed">Auto-group by line of business, geography, risk appetite, and 20+ custom dimensions. Your data organized your way.</p>
+      </div>
+      <div class="brutal-card">
+        <div class="num">04</div>
+        <h3 class="text-2xl font-black mb-3 mt-2">INTELLIGENT ROUTING</h3>
+        <p class="text-neutral-600 leading-relaxed">Match every opportunity to the right buyer. Appetite, capacity, conversion history, and custom rules. No cherry-picking. No waste.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quote -->
+<section class="bg-black text-white py-20 px-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-3xl md:text-4xl font-black leading-tight mb-8">
+      "THE SWITCHBOARD CUT OUR CPA BY 42% IN Q1. <span class="red-accent">WE SHOULD HAVE SWITCHED A YEAR AGO.</span>"
+    </div>
+    <div class="mono text-sm text-neutral-400">
+      SARAH CHEN — VP OF OPERATIONS, MERIDIAN INSURANCE GROUP
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-24 px-8">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="text-5xl md:text-6xl font-black tracking-tight mb-6">
+      STOP <span class="red-accent">GUESSING.</span><br>START KNOWING.
+    </h2>
+    <p class="text-neutral-500 mb-8 text-lg">15-minute demo. Real data. No pitch.</p>
+    <a href="#" class="brutal-btn inline-block px-10 py-5 text-sm">BOOK YOUR DEMO</a>
+  </div>
+</section>
+
+<footer class="border-t-2 border-black py-12 px-8">
+  <div class="max-w-7xl mx-auto flex justify-between items-center text-sm">
+    <span class="font-black uppercase">The Switchboard © 2026</span>
+    <div class="flex gap-6 mono text-xs uppercase">
+      <a href="#" class="hover:text-red-600 transition">Privacy</a>
+      <a href="#" class="hover:text-red-600 transition">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<div style="position:fixed;bottom:20px;left:20px;background:#f5f5f0;border:2px solid #111;padding:12px 20px;font-size:13px;color:#666;z-index:99;">
+  Design 8 of 10 — <strong style="color:#111;">Brutalist Tech</strong>
+</div>
+</body>
+</html>

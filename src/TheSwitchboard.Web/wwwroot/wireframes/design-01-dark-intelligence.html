@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 1: Dark Intelligence — The Switchboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { font-family: 'Inter', sans-serif; }
+body { background: #0a0e1a; color: #e2e8f0; }
+
+/* Animated network graph */
+.network-canvas { position: absolute; inset: 0; overflow: hidden; }
+.node {
+  position: absolute; width: 8px; height: 8px; border-radius: 50%;
+  background: #3b82f6; box-shadow: 0 0 20px rgba(59,130,246,0.6);
+  animation: pulse 3s ease-in-out infinite;
+}
+.node:nth-child(2) { width: 12px; height: 12px; top: 20%; left: 70%; animation-delay: 0.5s; background: #60a5fa; }
+.node:nth-child(3) { width: 6px; height: 6px; top: 60%; left: 30%; animation-delay: 1s; }
+.node:nth-child(4) { width: 10px; height: 10px; top: 40%; left: 85%; animation-delay: 1.5s; }
+.node:nth-child(5) { width: 8px; height: 8px; top: 75%; left: 60%; animation-delay: 2s; background: #93c5fd; }
+.node:nth-child(6) { width: 14px; height: 14px; top: 15%; left: 40%; animation-delay: 0.3s; background: #2563eb; }
+.node:nth-child(7) { width: 6px; height: 6px; top: 50%; left: 15%; animation-delay: 1.8s; }
+.node:nth-child(8) { width: 10px; height: 10px; top: 85%; left: 80%; animation-delay: 0.8s; }
+.node:nth-child(1) { top: 30%; left: 50%; }
+
+.connection {
+  position: absolute; height: 1px; background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent);
+  transform-origin: left center;
+}
+.connection:nth-child(1) { top: 32%; left: 42%; width: 200px; transform: rotate(-15deg); }
+.connection:nth-child(2) { top: 22%; left: 45%; width: 280px; transform: rotate(5deg); }
+.connection:nth-child(3) { top: 55%; left: 20%; width: 250px; transform: rotate(-25deg); }
+.connection:nth-child(4) { top: 45%; left: 55%; width: 300px; transform: rotate(15deg); }
+.connection:nth-child(5) { top: 70%; left: 35%; width: 260px; transform: rotate(10deg); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.5); }
+}
+
+/* Data labels floating */
+.data-label {
+  position: absolute; padding: 6px 12px; border-radius: 8px;
+  background: rgba(15,23,42,0.8); border: 1px solid rgba(59,130,246,0.2);
+  font-size: 11px; font-weight: 500; backdrop-filter: blur(8px);
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.glow-btn {
+  background: #3b82f6; transition: all 0.3s;
+  box-shadow: 0 0 0 rgba(59,130,246,0);
+}
+.glow-btn:hover {
+  background: #2563eb;
+  box-shadow: 0 0 30px rgba(59,130,246,0.4);
+  transform: translateY(-1px);
+}
+
+.stat-card {
+  border-left: 2px solid #3b82f6;
+  padding-left: 24px;
+}
+
+.glass-header {
+  background: rgba(10,14,26,0.7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(59,130,246,0.1);
+}
+
+.capability-card {
+  background: #f8fafc; color: #0f172a; border-radius: 16px;
+  padding: 40px; transition: all 0.3s;
+}
+.capability-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
+
+.section-light { background: #f1f5f9; }
+.dot-grid {
+  background-image: radial-gradient(rgba(59,130,246,0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="glass-header fixed top-0 w-full z-50 px-8 py-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="text-xl font-bold tracking-tight">
+      <span class="text-blue-400">⚡</span> The Switchboard
+    </div>
+    <nav class="hidden md:flex items-center gap-8 text-sm text-slate-400">
+      <a href="#" class="hover:text-white transition">Solutions</a>
+      <a href="#" class="hover:text-white transition">Industries</a>
+      <a href="#" class="hover:text-white transition">About</a>
+      <a href="#" class="hover:text-white transition">Resources</a>
+      <a href="#" class="hover:text-white transition">Contact</a>
+    </nav>
+    <div class="flex items-center gap-4">
+      <a href="#" class="text-sm text-slate-400 hover:text-white transition">Sign In</a>
+      <a href="#" class="glow-btn text-sm font-semibold px-5 py-2.5 rounded-lg text-white">Book Demo</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="relative min-h-screen flex items-center pt-20">
+  <div class="network-canvas">
+    <div class="node"></div><div class="node"></div><div class="node"></div>
+    <div class="node"></div><div class="node"></div><div class="node"></div>
+    <div class="node"></div><div class="node"></div>
+    <div class="connection"></div><div class="connection"></div>
+    <div class="connection"></div><div class="connection"></div><div class="connection"></div>
+  </div>
+  <div class="data-label" style="top:18%; right:15%; animation-delay:0.5s;">
+    <span class="text-green-400">●</span> Risk Score: <span class="text-white font-semibold">94.2</span>
+  </div>
+  <div class="data-label" style="top:35%; right:25%; animation-delay:1.5s;">
+    <span class="text-blue-400">●</span> Match: <span class="text-white font-semibold">97%</span>
+  </div>
+  <div class="data-label" style="bottom:30%; right:20%; animation-delay:2.5s;">
+    <span class="text-amber-400">●</span> Enriched: <span class="text-white font-semibold">0.3s</span>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-8">
+    <div class="max-w-2xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+        Insurance Intelligence Platform
+      </div>
+      <h1 class="text-5xl md:text-7xl font-bold tracking-tight leading-[1.05] mb-6">
+        Turn raw prospects<br>
+        <span class="text-blue-400">into revenue.</span>
+      </h1>
+      <p class="text-lg text-slate-400 leading-relaxed mb-8 max-w-lg">
+        The only platform that enriches, scores, segments, and routes insurance opportunities in real time — so every dollar works harder.
+      </p>
+      <div class="flex items-center gap-4">
+        <a href="#" class="glow-btn px-7 py-3.5 rounded-lg text-white font-semibold text-sm">Book a Demo</a>
+        <a href="#" class="px-7 py-3.5 rounded-lg border border-slate-700 text-slate-300 font-semibold text-sm hover:border-slate-500 transition">See How It Works</a>
+      </div>
+      <div class="flex items-center gap-6 mt-10 text-sm text-slate-500">
+        <span>Trusted by 200+ agencies</span>
+        <span>·</span>
+        <span>$2.4B in premiums influenced</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="py-24 border-t border-slate-800/50">
+  <div class="max-w-7xl mx-auto px-8 grid grid-cols-2 md:grid-cols-4 gap-12">
+    <div class="stat-card">
+      <div class="text-4xl font-bold text-white mb-1">340%</div>
+      <div class="text-sm text-slate-500">Average ROI</div>
+    </div>
+    <div class="stat-card">
+      <div class="text-4xl font-bold text-white mb-1">0.3s</div>
+      <div class="text-sm text-slate-500">Enrichment Speed</div>
+    </div>
+    <div class="stat-card">
+      <div class="text-4xl font-bold text-white mb-1">47%</div>
+      <div class="text-sm text-slate-500">Lower CPA</div>
+    </div>
+    <div class="stat-card">
+      <div class="text-4xl font-bold text-white mb-1">12M+</div>
+      <div class="text-sm text-slate-500">Prospects Processed</div>
+    </div>
+  </div>
+</section>
+
+<!-- Capabilities (Light Section) -->
+<section class="section-light py-24">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 tracking-tight mb-4">One platform. Complete intelligence.</h2>
+      <p class="text-slate-600 max-w-xl mx-auto">Everything you need to transform insurance prospect data into predictable, profitable growth.</p>
+    </div>
+    <div class="grid md:grid-cols-5 gap-4">
+      <div class="capability-card md:col-span-3">
+        <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 text-xl mb-4">◎</div>
+        <h3 class="text-xl font-semibold mb-2">Real-Time Enrichment</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">Append 40+ data points to every prospect in milliseconds. Property data, risk indicators, coverage history, and behavioral signals — automatically.</p>
+      </div>
+      <div class="capability-card md:col-span-2">
+        <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600 text-xl mb-4">◆</div>
+        <h3 class="text-xl font-semibold mb-2">Predictive Scoring</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">ML models trained on insurance conversion data score every opportunity by close probability, lifetime value, and risk profile.</p>
+      </div>
+      <div class="capability-card md:col-span-2">
+        <div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 text-xl mb-4">⬡</div>
+        <h3 class="text-xl font-semibold mb-2">Smart Segmentation</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">Auto-group prospects by line of business, geography, risk appetite, and 20+ custom dimensions.</p>
+      </div>
+      <div class="capability-card md:col-span-3">
+        <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 text-xl mb-4">⇄</div>
+        <h3 class="text-xl font-semibold mb-2">Intelligent Routing</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">Match every opportunity to the right buyer based on appetite, capacity, conversion history, and custom business rules. No cherry-picking, no waste.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-24 dot-grid">
+  <div class="max-w-7xl mx-auto px-8">
+    <h2 class="text-4xl font-bold tracking-tight mb-16 text-center">How it works</h2>
+    <div class="grid md:grid-cols-4 gap-8">
+      <div class="relative">
+        <div class="text-6xl font-black text-blue-500/20 mb-4">01</div>
+        <h3 class="text-lg font-semibold mb-2">Connect</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Plug in your prospect sources — web forms, aggregators, call centers, or APIs. Two-minute setup.</p>
+      </div>
+      <div class="relative">
+        <div class="text-6xl font-black text-blue-500/20 mb-4">02</div>
+        <h3 class="text-lg font-semibold mb-2">Enrich</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Every record is instantly enriched with 40+ verified data points — property, risk, coverage, and behavioral signals.</p>
+      </div>
+      <div class="relative">
+        <div class="text-6xl font-black text-blue-500/20 mb-4">03</div>
+        <h3 class="text-lg font-semibold mb-2">Score & Route</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">ML models score quality and intent while rules-based routing matches opportunities to the right buyers instantly.</p>
+      </div>
+      <div class="relative">
+        <div class="text-6xl font-black text-blue-500/20 mb-4">04</div>
+        <h3 class="text-lg font-semibold mb-2">Convert</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">Watch conversion rates climb as every opportunity reaches the buyer most likely to close it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-24 border-t border-slate-800/50">
+  <div class="max-w-3xl mx-auto px-8 text-center">
+    <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">Ready to see what<br>intelligence looks like?</h2>
+    <p class="text-slate-400 mb-8">Book a 15-minute demo and see how The Switchboard transforms your insurance operation.</p>
+    <a href="#" class="glow-btn inline-block px-8 py-4 rounded-lg text-white font-semibold">Book Your Demo</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-t border-slate-800/50 py-12 px-8">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="text-sm text-slate-500">© 2026 The Switchboard. All rights reserved.</div>
+    <div class="flex gap-6 text-sm text-slate-500">
+      <a href="#" class="hover:text-white transition">Privacy</a>
+      <a href="#" class="hover:text-white transition">Terms</a>
+      <a href="#" class="hover:text-white transition">Security</a>
+    </div>
+  </div>
+</footer>
+
+<div style="position:fixed;bottom:20px;left:20px;background:#1e293b;border:1px solid #334155;padding:12px 20px;border-radius:12px;font-size:13px;color:#94a3b8;z-index:99;">
+  Design 1 of 10 — <strong style="color:white;">Dark Intelligence</strong>
+</div>
+</body>
+</html>

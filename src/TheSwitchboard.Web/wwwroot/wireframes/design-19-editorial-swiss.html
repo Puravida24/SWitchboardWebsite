@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design 19: Editorial Swiss — The Switchboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+  * { font-family: 'Inter', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #ffffff; color: #000000; -webkit-font-smoothing: antialiased; }
+
+  /* === GRID SYSTEM === */
+  .swiss-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 0 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* === TYPOGRAPHY === */
+  .display-xl { font-weight: 900; font-size: 96px; line-height: 1.0; letter-spacing: -0.03em; }
+  .display-lg { font-weight: 900; font-size: 72px; line-height: 1.0; letter-spacing: -0.02em; }
+  .display-md { font-weight: 800; font-size: 48px; line-height: 1.1; letter-spacing: -0.02em; }
+  .display-sm { font-weight: 900; font-size: 56px; line-height: 1.0; letter-spacing: -0.02em; }
+  .heading-lg { font-weight: 700; font-size: 28px; line-height: 1.3; }
+  .heading-sm { font-weight: 700; font-size: 20px; line-height: 1.4; }
+  .body-lg { font-weight: 400; font-size: 18px; line-height: 1.6; }
+  .body-md { font-weight: 400; font-size: 16px; line-height: 1.6; }
+  .body-sm { font-weight: 400; font-size: 14px; line-height: 1.5; }
+  .label { font-weight: 500; font-size: 14px; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; }
+  .overline { font-weight: 600; font-size: 14px; line-height: 1; letter-spacing: 0.1em; text-transform: uppercase; color: #2563eb; }
+  .number-watermark { font-weight: 900; font-size: 64px; line-height: 1; color: #eee; }
+
+  /* === BUTTONS === */
+  .pill-black {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #000; color: #fff;
+    padding: 14px 32px; border-radius: 100px;
+    font-weight: 600; font-size: 15px; letter-spacing: 0.01em;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .pill-black:hover { background: #222; }
+
+  .pill-outline-blue {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; color: #2563eb;
+    padding: 14px 32px; border-radius: 100px;
+    font-weight: 600; font-size: 15px; letter-spacing: 0.01em;
+    text-decoration: none; cursor: pointer;
+    border: 1.5px solid #2563eb;
+    transition: all 0.2s;
+  }
+  .pill-outline-blue:hover { background: #2563eb; color: #fff; }
+
+  /* === DIVIDER === */
+  .divider { width: 100%; height: 1px; background: #000; }
+  .divider-light { width: 100%; height: 1px; background: rgba(0,0,0,0.1); }
+  .divider-blue { height: 2px; background: #2563eb; }
+
+  /* === HEADER === */
+  .site-header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: #fff; border-bottom: 1px solid #000;
+    height: 64px;
+  }
+  .site-header .swiss-grid { height: 100%; align-items: center; }
+
+  /* === STATS BAR (dark section) === */
+  .stats-bar { background: #000; color: #fff; }
+
+  /* === TABLE === */
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    padding: 20px 0;
+    align-items: center;
+  }
+  .comparison-row-alt { background: #fafafa; }
+
+  /* === ANIMATIONS === */
+  [x-cloak] { display: none !important; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in {
+    animation: fadeUp 0.6s ease-out both;
+  }
+
+  /* === MOBILE === */
+  @media (max-width: 768px) {
+    .display-xl { font-size: 48px; }
+    .display-lg { font-size: 40px; }
+    .display-md { font-size: 32px; }
+    .display-sm { font-size: 36px; }
+    .number-watermark { font-size: 40px; }
+    .heading-lg { font-size: 22px; }
+
+    .swiss-grid { gap: 0 16px; padding: 0 16px; }
+
+    .hero-content { grid-column: 1 / -1 !important; }
+    .hero-data { grid-column: 1 / -1 !important; margin-top: 48px; }
+    .hero-data-stack { flex-direction: row; flex-wrap: wrap; gap: 32px; }
+
+    .cap-number, .cap-title, .cap-desc {
+      grid-column: 1 / -1 !important;
+    }
+    .cap-title { margin-top: 8px !important; }
+    .cap-desc { margin-top: 8px !important; }
+
+    .process-step { grid-column: span 6 !important; margin-bottom: 32px; }
+    .connecting-line { display: none; }
+
+    .comparison-table { overflow-x: auto; }
+    .comparison-row { min-width: 600px; }
+
+    .case-card { grid-column: 1 / -1 !important; }
+
+    .footer-left, .footer-right { grid-column: 1 / -1 !important; text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    .display-xl { font-size: 36px; }
+    .display-lg { font-size: 32px; }
+    .process-step { grid-column: 1 / -1 !important; }
+    .hero-data-stack { flex-direction: column; gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- HEADER                                        -->
+<!-- ============================================ -->
+<header class="site-header" x-data="{ menuOpen: false }">
+  <div class="swiss-grid">
+    <div style="grid-column: 1 / 4; display: flex; align-items: center;">
+      <a href="#" style="font-weight: 700; font-size: 18px; color: #000; text-decoration: none; letter-spacing: -0.01em;">The Switchboard</a>
+    </div>
+    <nav style="grid-column: 4 / 10; display: flex; align-items: center; gap: 32px; justify-content: center;" class="hidden md:flex">
+      <a href="#capabilities" style="font-size: 14px; color: #000; text-decoration: none; font-weight: 400;">Capabilities</a>
+      <a href="#process" style="font-size: 14px; color: #000; text-decoration: none; font-weight: 400;">Process</a>
+      <a href="#comparison" style="font-size: 14px; color: #000; text-decoration: none; font-weight: 400;">Comparison</a>
+      <a href="#results" style="font-size: 14px; color: #000; text-decoration: none; font-weight: 400;">Results</a>
+    </nav>
+    <div style="grid-column: 10 / 13; display: flex; align-items: center; justify-content: flex-end; gap: 16px;">
+      <a href="#contact" class="pill-black" style="padding: 10px 24px; font-size: 13px;">Get Started</a>
+      <!-- Mobile menu toggle -->
+      <button @click="menuOpen = !menuOpen" class="md:hidden" style="background: none; border: none; cursor: pointer; padding: 8px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2">
+          <template x-if="!menuOpen"><g><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></g></template>
+          <template x-if="menuOpen"><g><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></g></template>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile nav -->
+  <div x-show="menuOpen" x-cloak x-transition class="md:hidden" style="background: #fff; border-bottom: 1px solid #000; padding: 24px;">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+      <a href="#capabilities" @click="menuOpen = false" style="font-size: 14px; color: #000; text-decoration: none;">Capabilities</a>
+      <a href="#process" @click="menuOpen = false" style="font-size: 14px; color: #000; text-decoration: none;">Process</a>
+      <a href="#comparison" @click="menuOpen = false" style="font-size: 14px; color: #000; text-decoration: none;">Comparison</a>
+      <a href="#results" @click="menuOpen = false" style="font-size: 14px; color: #000; text-decoration: none;">Results</a>
+    </div>
+  </div>
+</header>
+
+
+<!-- ============================================ -->
+<!-- HERO                                          -->
+<!-- ============================================ -->
+<section style="min-height: 100vh; display: flex; align-items: center; padding-top: 64px;">
+  <div class="swiss-grid" style="width: 100%; padding-top: 80px; padding-bottom: 80px;">
+
+    <!-- Left content: columns 1-8 -->
+    <div class="hero-content" style="grid-column: 1 / 9;">
+      <div class="overline" style="margin-bottom: 32px;">Insurance Intelligence Platform</div>
+      <h1 class="display-xl" style="margin-bottom: 0;">The intelligence<br>layer.</h1>
+    </div>
+
+    <!-- Right data: columns 9-12 -->
+    <div class="hero-data" style="grid-column: 9 / 13; display: flex; flex-direction: column; justify-content: center;">
+      <div class="hero-data-stack" style="display: flex; flex-direction: column; gap: 40px;">
+        <div>
+          <div class="display-lg" style="color: #000;">343M</div>
+          <div style="color: #666; font-size: 14px; margin-top: 4px;">records enriched</div>
+        </div>
+        <div>
+          <div class="display-lg" style="color: #2563eb;">&lt;5ms</div>
+          <div style="color: #666; font-size: 14px; margin-top: 4px;">scoring latency</div>
+        </div>
+        <div>
+          <div class="display-lg" style="color: #000;">467%</div>
+          <div style="color: #666; font-size: 14px; margin-top: 4px;">conversion lift</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full-width rule -->
+    <div style="grid-column: 1 / -1; margin: 40px 0;">
+      <div class="divider"></div>
+    </div>
+
+    <!-- Sub-headline content: columns 1-6 -->
+    <div style="grid-column: 1 / 7;">
+      <p class="body-lg" style="color: rgba(0,0,0,0.6); margin-bottom: 32px; max-width: 540px;">
+        Enrich, score, segment, and route insurance opportunities in real time. The only platform that turns raw data into risk-scored, ready-to-convert prospects.
+      </p>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <a href="#contact" class="pill-black">Schedule a Demo</a>
+        <a href="#process" class="pill-outline-blue">See How It Works</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- THIN DIVIDER                                  -->
+<!-- ============================================ -->
+<div class="divider"></div>
+
+
+<!-- ============================================ -->
+<!-- CAPABILITIES                                  -->
+<!-- ============================================ -->
+<section id="capabilities" style="padding: 120px 0;">
+  <div class="swiss-grid">
+
+    <!-- Section label -->
+    <div style="grid-column: 1 / -1; margin-bottom: 64px;">
+      <div class="label" style="color: #999;">01 &mdash; Capabilities</div>
+    </div>
+
+    <!-- Capability 1 -->
+    <div class="cap-number" style="grid-column: 1 / 3;">
+      <div class="number-watermark">01</div>
+    </div>
+    <div class="cap-title" style="grid-column: 3 / 7; display: flex; align-items: center;">
+      <h3 class="heading-lg">Real-Time Enrichment</h3>
+    </div>
+    <div class="cap-desc" style="grid-column: 7 / 13; display: flex; align-items: center;">
+      <p class="body-md" style="color: #666;">Append 150+ data points to every incoming opportunity instantly. Property data, credit indicators, prior coverage, claims history &mdash; all verified and matched in under 50 milliseconds.</p>
+    </div>
+    <div style="grid-column: 1 / -1; margin: 24px 0;"><div class="divider-light"></div></div>
+
+    <!-- Capability 2 -->
+    <div class="cap-number" style="grid-column: 1 / 3;">
+      <div class="number-watermark">02</div>
+    </div>
+    <div class="cap-title" style="grid-column: 3 / 7; display: flex; align-items: center;">
+      <h3 class="heading-lg">Predictive Scoring</h3>
+    </div>
+    <div class="cap-desc" style="grid-column: 7 / 13; display: flex; align-items: center;">
+      <p class="body-md" style="color: #666;">Machine learning models trained on millions of insurance transactions predict conversion probability, lifetime value, and risk profile before you make a single call.</p>
+    </div>
+    <div style="grid-column: 1 / -1; margin: 24px 0;"><div class="divider-light"></div></div>
+
+    <!-- Capability 3 -->
+    <div class="cap-number" style="grid-column: 1 / 3;">
+      <div class="number-watermark">03</div>
+    </div>
+    <div class="cap-title" style="grid-column: 3 / 7; display: flex; align-items: center;">
+      <h3 class="heading-lg">Dynamic Segmentation</h3>
+    </div>
+    <div class="cap-desc" style="grid-column: 7 / 13; display: flex; align-items: center;">
+      <p class="body-md" style="color: #666;">Automatically segment opportunities by quality tier, intent signals, geography, and custom criteria. Route high-value prospects to your best closers in real time.</p>
+    </div>
+    <div style="grid-column: 1 / -1; margin: 24px 0;"><div class="divider-light"></div></div>
+
+    <!-- Capability 4 -->
+    <div class="cap-number" style="grid-column: 1 / 3;">
+      <div class="number-watermark">04</div>
+    </div>
+    <div class="cap-title" style="grid-column: 3 / 7; display: flex; align-items: center;">
+      <h3 class="heading-lg">Intelligent Routing</h3>
+    </div>
+    <div class="cap-desc" style="grid-column: 7 / 13; display: flex; align-items: center;">
+      <p class="body-md" style="color: #666;">Rule-based and ML-powered distribution ensures every opportunity reaches the right buyer at the right time via API, webhook, or direct CRM injection.</p>
+    </div>
+    <div style="grid-column: 1 / -1; margin: 24px 0;"><div class="divider-light"></div></div>
+
+    <!-- Capability 5 -->
+    <div class="cap-number" style="grid-column: 1 / 3;">
+      <div class="number-watermark">05</div>
+    </div>
+    <div class="cap-title" style="grid-column: 3 / 7; display: flex; align-items: center;">
+      <h3 class="heading-lg">Full-Funnel Analytics</h3>
+    </div>
+    <div class="cap-desc" style="grid-column: 7 / 13; display: flex; align-items: center;">
+      <p class="body-md" style="color: #666;">Track every opportunity from first touch to closed policy. Real-time dashboards, cohort analysis, and revenue attribution give you complete visibility into your pipeline.</p>
+    </div>
+
+    <!-- Blue accent line after last capability -->
+    <div style="grid-column: 3 / 13; margin-top: 24px;">
+      <div class="divider-blue"></div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- PROCESS                                       -->
+<!-- ============================================ -->
+<section id="process" style="padding: 120px 0; border-top: 1px solid #000;">
+  <div class="swiss-grid">
+
+    <!-- Section label -->
+    <div style="grid-column: 1 / -1; margin-bottom: 24px;">
+      <div class="label" style="color: #999;">02 &mdash; Process</div>
+    </div>
+
+    <!-- Headline -->
+    <div style="grid-column: 1 / 9; margin-bottom: 80px;">
+      <h2 class="display-md">Four steps.<br>Sub-250 milliseconds.</h2>
+    </div>
+
+    <!-- Connecting line -->
+    <div class="connecting-line" style="grid-column: 1 / -1; position: relative; height: 0; margin-bottom: -28px;">
+      <div style="position: absolute; top: 28px; left: 0; right: 0; height: 1px; background: #000;"></div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="process-step" style="grid-column: 1 / 4;">
+      <div class="display-sm" style="color: #2563eb; margin-bottom: 20px;">01</div>
+      <h3 class="heading-sm" style="margin-bottom: 12px;">Ingest</h3>
+      <p class="body-sm" style="color: #666;">Raw opportunity data arrives via API, form post, or batch upload. Any format, any volume.</p>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="process-step" style="grid-column: 4 / 7;">
+      <div class="display-sm" style="color: #2563eb; margin-bottom: 20px;">02</div>
+      <h3 class="heading-sm" style="margin-bottom: 12px;">Enrich</h3>
+      <p class="body-sm" style="color: #666;">150+ data points appended in real time. Property, credit, coverage, claims &mdash; all verified.</p>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="process-step" style="grid-column: 7 / 10;">
+      <div class="display-sm" style="color: #2563eb; margin-bottom: 20px;">03</div>
+      <h3 class="heading-sm" style="margin-bottom: 12px;">Score</h3>
+      <p class="body-sm" style="color: #666;">ML models predict conversion probability, lifetime value, and risk. Every prospect gets a composite score.</p>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="process-step" style="grid-column: 10 / 13;">
+      <div class="display-sm" style="color: #2563eb; margin-bottom: 20px;">04</div>
+      <h3 class="heading-sm" style="margin-bottom: 12px;">Route</h3>
+      <p class="body-sm" style="color: #666;">Intelligent distribution to the right buyer at the right price, via API, webhook, or CRM injection.</p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- COMPARISON                                    -->
+<!-- ============================================ -->
+<section id="comparison" style="padding: 120px 0; border-top: 1px solid #000;">
+  <div class="swiss-grid">
+
+    <!-- Section label -->
+    <div style="grid-column: 1 / -1; margin-bottom: 64px;">
+      <div class="label" style="color: #999;">03 &mdash; Comparison</div>
+    </div>
+
+    <!-- Table -->
+    <div class="comparison-table" style="grid-column: 1 / -1;">
+
+      <!-- Header row -->
+      <div class="comparison-row" style="border-bottom: 2px solid #000; padding-bottom: 16px;">
+        <div class="label" style="color: #000;">Metric</div>
+        <div class="label" style="color: #999;">Industry Standard</div>
+        <div class="label" style="color: #2563eb;">The Switchboard</div>
+      </div>
+
+      <!-- Row 1 -->
+      <div class="comparison-row comparison-row-alt" style="padding-left: 16px; padding-right: 16px;">
+        <div class="body-md" style="font-weight: 600;">Processing Speed</div>
+        <div class="body-md" style="color: #999;">2&ndash;5 seconds</div>
+        <div class="body-md" style="color: #2563eb; font-weight: 700;">&lt;250 milliseconds</div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="comparison-row" style="padding-left: 16px; padding-right: 16px;">
+        <div class="body-md" style="font-weight: 600;">Data Points</div>
+        <div class="body-md" style="color: #999;">15&ndash;30 fields</div>
+        <div class="body-md" style="color: #2563eb; font-weight: 700;">150+ enriched fields</div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="comparison-row comparison-row-alt" style="padding-left: 16px; padding-right: 16px;">
+        <div class="body-md" style="font-weight: 600;">Scoring Method</div>
+        <div class="body-md" style="color: #999;">Rule-based filters</div>
+        <div class="body-md" style="color: #2563eb; font-weight: 700;">ML predictive models</div>
+      </div>
+
+      <!-- Row 4 -->
+      <div class="comparison-row" style="padding-left: 16px; padding-right: 16px;">
+        <div class="body-md" style="font-weight: 600;">Attribution</div>
+        <div class="body-md" style="color: #999;">Last-click only</div>
+        <div class="body-md" style="color: #2563eb; font-weight: 700;">Full-funnel, multi-touch</div>
+      </div>
+
+      <!-- Row 5 -->
+      <div class="comparison-row comparison-row-alt" style="padding-left: 16px; padding-right: 16px; border-bottom: 1px solid #eee;">
+        <div class="body-md" style="font-weight: 600;">Integration Time</div>
+        <div class="body-md" style="color: #999;">4&ndash;6 weeks</div>
+        <div class="body-md" style="color: #2563eb; font-weight: 700;">48 hours</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- TESTIMONIAL                                   -->
+<!-- ============================================ -->
+<section style="padding: 120px 0; border-top: 1px solid #000;">
+  <div class="swiss-grid">
+
+    <!-- Section label -->
+    <div style="grid-column: 1 / -1; margin-bottom: 64px;">
+      <div class="label" style="color: #999;">04 &mdash; Proof</div>
+    </div>
+
+    <!-- Quote -->
+    <div style="grid-column: 1 / 10; position: relative; padding-left: 32px;">
+      <!-- Blue accent bar -->
+      <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #2563eb;"></div>
+      <blockquote style="margin: 0;">
+        <p style="font-weight: 400; font-size: 24px; line-height: 1.5; color: #000; max-width: 800px; margin-bottom: 32px;">
+          &ldquo;We switched from manual scoring to The Switchboard and saw conversion rates triple in 90 days. The enrichment depth is unlike anything else in the market &mdash; we&rsquo;re making decisions on data we never had access to before.&rdquo;
+        </p>
+        <footer>
+          <div style="font-weight: 600; font-size: 15px; color: #000;">Sarah Chen</div>
+          <div style="font-size: 14px; color: #999; margin-top: 2px;">VP of Operations, National Auto Insurance Group</div>
+        </footer>
+      </blockquote>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- STATS BAR (THE ONLY DARK SECTION)             -->
+<!-- ============================================ -->
+<section class="stats-bar" style="padding: 80px 0;">
+  <div class="swiss-grid">
+
+    <div style="grid-column: 1 / 4; text-align: center;">
+      <div style="font-weight: 900; font-size: 56px; line-height: 1; letter-spacing: -0.02em; color: #fff;">10M+</div>
+      <div style="font-size: 14px; color: rgba(255,255,255,0.5); margin-top: 8px;">opportunities processed</div>
+    </div>
+
+    <div style="grid-column: 4 / 7; text-align: center;">
+      <div style="font-weight: 900; font-size: 56px; line-height: 1; letter-spacing: -0.02em; color: #fff;">&lt;250ms</div>
+      <div style="font-size: 14px; color: rgba(255,255,255,0.5); margin-top: 8px;">end-to-end latency</div>
+    </div>
+
+    <div style="grid-column: 7 / 10; text-align: center;">
+      <div style="font-weight: 900; font-size: 56px; line-height: 1; letter-spacing: -0.02em; color: #fff;">340%</div>
+      <div style="font-size: 14px; color: rgba(255,255,255,0.5); margin-top: 8px;">average ROI increase</div>
+    </div>
+
+    <div style="grid-column: 10 / 13; text-align: center;">
+      <div style="font-weight: 900; font-size: 56px; line-height: 1; letter-spacing: -0.02em; color: #fff;">50+</div>
+      <div style="font-size: 14px; color: rgba(255,255,255,0.5); margin-top: 8px;">enterprise partners</div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- CASE STUDIES                                   -->
+<!-- ============================================ -->
+<section id="results" style="padding: 120px 0;">
+  <div class="swiss-grid">
+
+    <!-- Section label -->
+    <div style="grid-column: 1 / -1; margin-bottom: 64px;">
+      <div class="label" style="color: #999;">05 &mdash; Results</div>
+    </div>
+
+    <!-- Case Study 1 -->
+    <div class="case-card" style="grid-column: 1 / 5;">
+      <div style="aspect-ratio: 16/9; background: #f0f0f0; margin-bottom: 24px;"></div>
+      <div class="overline" style="font-size: 12px; margin-bottom: 12px;">Auto Insurance</div>
+      <h3 class="heading-sm" style="margin-bottom: 8px;">National carrier increases close rate by 340%</h3>
+      <p class="body-sm" style="color: #666; margin-bottom: 16px;">Real-time enrichment and predictive scoring transformed their opportunity pipeline from guesswork to precision.</p>
+      <a href="#" style="color: #2563eb; font-size: 14px; font-weight: 600; text-decoration: none;">Read More &rarr;</a>
+    </div>
+
+    <!-- Case Study 2 -->
+    <div class="case-card" style="grid-column: 5 / 9;">
+      <div style="aspect-ratio: 16/9; background: #f0f0f0; margin-bottom: 24px;"></div>
+      <div class="overline" style="font-size: 12px; margin-bottom: 12px;">Home Insurance</div>
+      <h3 class="heading-sm" style="margin-bottom: 8px;">Regional agency cuts acquisition cost 62%</h3>
+      <p class="body-sm" style="color: #666; margin-bottom: 16px;">Dynamic segmentation and intelligent routing eliminated waste and focused spend on high-intent shoppers.</p>
+      <a href="#" style="color: #2563eb; font-size: 14px; font-weight: 600; text-decoration: none;">Read More &rarr;</a>
+    </div>
+
+    <!-- Case Study 3 -->
+    <div class="case-card" style="grid-column: 9 / 13;">
+      <div style="aspect-ratio: 16/9; background: #f0f0f0; margin-bottom: 24px;"></div>
+      <div class="overline" style="font-size: 12px; margin-bottom: 12px;">Health Insurance</div>
+      <h3 class="heading-sm" style="margin-bottom: 8px;">Marketplace scales 5x without adding headcount</h3>
+      <p class="body-sm" style="color: #666; margin-bottom: 16px;">Full-funnel analytics and automated routing enabled exponential growth with the same operations team.</p>
+      <a href="#" style="color: #2563eb; font-size: 14px; font-weight: 600; text-decoration: none;">Read More &rarr;</a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- FINAL CTA                                     -->
+<!-- ============================================ -->
+<section id="contact" style="padding: 200px 0; border-top: 1px solid #000;">
+  <div class="swiss-grid">
+
+    <div style="grid-column: 1 / 9;">
+      <h2 class="display-xl" style="margin-bottom: 0;">Let&rsquo;s talk.</h2>
+    </div>
+
+    <div style="grid-column: 1 / -1; margin: 40px 0;">
+      <div class="divider"></div>
+    </div>
+
+    <div style="grid-column: 1 / 7;">
+      <p class="body-lg" style="color: rgba(0,0,0,0.6); margin-bottom: 40px; max-width: 500px;">
+        See how The Switchboard transforms your insurance distribution with real-time intelligence. No commitment. No pitch deck. Just a conversation about your data.
+      </p>
+      <a href="#" class="pill-black" style="padding: 16px 40px; font-size: 16px;">Schedule a Demo</a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================ -->
+<!-- FOOTER                                        -->
+<!-- ============================================ -->
+<footer style="border-top: 1px solid #000; padding: 48px 0;">
+  <div class="swiss-grid">
+
+    <div class="footer-left" style="grid-column: 1 / 5;">
+      <div style="font-weight: 700; font-size: 16px; color: #000; margin-bottom: 8px;">The Switchboard</div>
+      <div style="font-size: 13px; color: #999;">Insurance intelligence platform</div>
+    </div>
+
+    <div class="footer-right" style="grid-column: 5 / 13; display: flex; justify-content: flex-end; align-items: center; gap: 32px; flex-wrap: wrap;">
+      <a href="#capabilities" style="font-size: 13px; color: #666; text-decoration: none;">Capabilities</a>
+      <a href="#process" style="font-size: 13px; color: #666; text-decoration: none;">Process</a>
+      <a href="#comparison" style="font-size: 13px; color: #666; text-decoration: none;">Comparison</a>
+      <a href="#results" style="font-size: 13px; color: #666; text-decoration: none;">Results</a>
+      <a href="#contact" style="font-size: 13px; color: #666; text-decoration: none;">Contact</a>
+    </div>
+
+    <div style="grid-column: 1 / -1; margin-top: 48px; text-align: center;">
+      <div style="font-size: 12px; color: #bbb;">&copy; 2026 The Switchboard. All rights reserved.</div>
+    </div>
+
+  </div>
+</footer>
+
+
+</body>
+</html>
