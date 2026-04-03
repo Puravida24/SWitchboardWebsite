@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Switchboard — Where Experience Meets Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Instrument Serif', 'Georgia', 'serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        cream: { DEFAULT: '#faf9f7', dark: '#f5f0eb', deeper: '#efe8e0' },
+                        brass: { DEFAULT: '#c9a96e', light: '#d4bc8a', dark: '#a8894e' },
+                        charcoal: '#1c1917',
+                        navy: { DEFAULT: '#030818', light: '#0a1628', mid: '#0d1f3c', deep: '#071230' },
+                        signal: '#2563eb',
+                        cyan: '#06b6d4',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* ===== BASE ===== */
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .font-experience { font-family: 'Instrument Serif', Georgia, serif; }
+
+        /* ===== GRADIENTS ===== */
+        .bg-warm { background: linear-gradient(135deg, #faf9f7 0%, #f5f0eb 50%, #efe8e0 100%); }
+        .bg-data { background: linear-gradient(135deg, #030818 0%, #0a1628 30%, #0d1f3c 60%, #071230 100%); }
+        .bg-merge { background: linear-gradient(90deg, #faf9f7 0%, #f5f0eb 15%, #c9a96e22 25%, #1a1715 45%, #0a1628 65%, #030818 100%); }
+        .bg-merge-vertical { background: linear-gradient(180deg, #faf9f7 0%, #f5f0eb 15%, #1a1715 45%, #0a1628 65%, #030818 100%); }
+
+        /* ===== NOISE TEXTURE ===== */
+        .noise::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ===== GLOW EFFECTS ===== */
+        .glow-blue { box-shadow: 0 0 40px rgba(37, 99, 235, 0.15), 0 0 80px rgba(6, 182, 212, 0.08); }
+        .glow-gold { box-shadow: 0 0 40px rgba(201, 169, 110, 0.15), 0 0 80px rgba(201, 169, 110, 0.08); }
+        .glow-merge { box-shadow: 0 0 60px rgba(201, 169, 110, 0.12), 0 0 60px rgba(37, 99, 235, 0.12); }
+
+        /* ===== GLASSMORPHIC ===== */
+        .glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-warm {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            box-shadow: 0 8px 32px rgba(28, 25, 23, 0.06), 0 2px 8px rgba(201, 169, 110, 0.08);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        @keyframes pulse-glow { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        @keyframes data-flow { 0% { transform: translateY(100%); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-100%); opacity: 0; } }
+        @keyframes merge-line { 0% { background-position: 0% 0%; } 100% { background-position: 0% 200%; } }
+        @keyframes scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes node-pulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.5); opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes convergeLine { 0% { height: 0; } 100% { height: 100%; } }
+
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+        .animate-data-flow { animation: data-flow 3s ease-in-out infinite; }
+        .animate-merge-line {
+            background: linear-gradient(180deg, #c9a96e, #2563eb, #06b6d4, #c9a96e);
+            background-size: 100% 200%;
+            animation: merge-line 4s linear infinite;
+        }
+
+        /* ===== SCROLLING REVEAL ===== */
+        [x-intersect] { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .revealed { opacity: 1 !important; transform: translateY(0) !important; }
+
+        /* ===== MERGE LINE ===== */
+        .merge-line-vertical {
+            width: 2px;
+            background: linear-gradient(180deg, #c9a96e 0%, #d4bc8a 20%, #888 50%, #2563eb 80%, #06b6d4 100%);
+            background-size: 100% 200%;
+            animation: merge-line 4s linear infinite;
+        }
+
+        /* ===== CAPABILITY CARD ===== */
+        .capability-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+        .capability-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 50%; height: 100%;
+            background: linear-gradient(135deg, #faf9f7 0%, #f5f0eb 100%);
+            z-index: 0;
+        }
+        .capability-card::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 50%; height: 100%;
+            background: linear-gradient(135deg, #0a1628 0%, #030818 100%);
+            z-index: 0;
+        }
+
+        /* ===== MERGE BUTTON ===== */
+        .btn-merge {
+            background: linear-gradient(135deg, #c9a96e 0%, #a8894e 30%, #2563eb 70%, #06b6d4 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-merge::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #d4bc8a 0%, #c9a96e 30%, #2563eb 70%, #06b6d4 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .btn-merge:hover::before { opacity: 1; }
+
+        /* ===== DATA NODES ===== */
+        .data-node {
+            position: absolute;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: #2563eb;
+            box-shadow: 0 0 8px #2563eb, 0 0 16px rgba(37, 99, 235, 0.3);
+            animation: node-pulse 3s ease-in-out infinite;
+        }
+
+        /* ===== FLOW LINES ===== */
+        .flow-line {
+            position: absolute;
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(180deg, transparent, #2563eb, transparent);
+            animation: data-flow 2.5s ease-in-out infinite;
+        }
+
+        /* ===== WARM CARD ===== */
+        .warm-card {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            box-shadow: 0 4px 24px rgba(28, 25, 23, 0.06), 0 1px 4px rgba(201, 169, 110, 0.1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .warm-card:hover {
+            box-shadow: 0 12px 48px rgba(28, 25, 23, 0.1), 0 4px 16px rgba(201, 169, 110, 0.15);
+            transform: translateY(-4px);
+        }
+
+        /* ===== TECH CARD ===== */
+        .tech-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(37, 99, 235, 0.15);
+            box-shadow: 0 4px 24px rgba(37, 99, 235, 0.08), 0 0 40px rgba(6, 182, 212, 0.04);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .tech-card:hover {
+            border-color: rgba(37, 99, 235, 0.3);
+            box-shadow: 0 12px 48px rgba(37, 99, 235, 0.15), 0 0 60px rgba(6, 182, 212, 0.08);
+            transform: translateY(-4px);
+        }
+
+        /* ===== CONVERGENCE VISUALIZATION ===== */
+        .convergence-viz {
+            position: relative;
+        }
+        .convergence-input {
+            width: 120px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .convergence-arrow {
+            width: 60px;
+            height: 2px;
+            position: relative;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #030818; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #c9a96e, #2563eb); border-radius: 4px; }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 768px) {
+            .hero-split { flex-direction: column !important; }
+            .hero-experience, .hero-data, .hero-merge { width: 100% !important; min-height: 300px; }
+            .bg-merge { background: linear-gradient(180deg, #faf9f7 0%, #f5f0eb 15%, #1a1715 45%, #0a1628 65%, #030818 100%); }
+        }
+    </style>
+</head>
+
+<body class="bg-cream" x-data="{ scrollY: 0 }" @scroll.window="scrollY = window.scrollY">
+
+<!-- ============================= -->
+<!-- NAVIGATION                     -->
+<!-- ============================= -->
+<nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+     :class="scrollY > 50 ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-brass/10' : 'bg-transparent'"
+     x-data="{ open: false }">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="relative w-10 h-10">
+                    <!-- Gold-to-blue gradient mark -->
+                    <div class="absolute inset-0 rounded-lg overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-brass via-brass-dark to-signal"></div>
+                        <div class="absolute inset-[2px] rounded-md bg-white flex items-center justify-center">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 3L4 9v6l8 6 8-6V9l-8-6z" stroke="url(#navGrad)" stroke-width="1.5" fill="none"/>
+                                <circle cx="12" cy="12" r="3" fill="url(#navGrad)"/>
+                                <defs><linearGradient id="navGrad" x1="4" y1="3" x2="20" y2="21"><stop stop-color="#c9a96e"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-experience text-xl text-charcoal tracking-wide">The Switchboard</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#platform" class="text-sm text-charcoal/60 hover:text-charcoal transition-colors">Platform</a>
+                <a href="#capabilities" class="text-sm text-charcoal/60 hover:text-charcoal transition-colors">Capabilities</a>
+                <a href="#results" class="text-sm text-charcoal/60 hover:text-charcoal transition-colors">Results</a>
+                <a href="#contact" class="text-sm text-charcoal/60 hover:text-charcoal transition-colors">Contact</a>
+                <a href="#contact" class="btn-merge px-5 py-2.5 rounded-full text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-shadow relative z-10">
+                    <span class="relative z-10">Book a Demo</span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu -->
+            <button @click="open = !open" class="md:hidden p-2 text-charcoal">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path x-show="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    <path x-show="open" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div x-show="open" x-transition class="md:hidden pb-6 space-y-4">
+            <a href="#platform" class="block text-sm text-charcoal/70">Platform</a>
+            <a href="#capabilities" class="block text-sm text-charcoal/70">Capabilities</a>
+            <a href="#results" class="block text-sm text-charcoal/70">Results</a>
+            <a href="#contact" class="block text-sm text-charcoal/70">Contact</a>
+            <a href="#contact" class="btn-merge inline-block px-5 py-2.5 rounded-full text-sm font-semibold text-white relative z-10"><span class="relative z-10">Book a Demo</span></a>
+        </div>
+    </div>
+</nav>
+
+
+<!-- ============================= -->
+<!-- HERO — THE SHOWPIECE           -->
+<!-- ============================= -->
+<section class="relative min-h-screen flex flex-col">
+    <!-- Top headline area -->
+    <div class="relative z-10 pt-32 pb-12 px-6 text-center" style="background: linear-gradient(180deg, #faf9f7 0%, #faf9f7 60%, transparent 100%);">
+        <div class="max-w-4xl mx-auto">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brass/20 bg-white/60 backdrop-blur mb-8">
+                <div class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-brass to-signal animate-pulse"></div>
+                <span class="text-xs font-medium tracking-widest uppercase" style="background: linear-gradient(90deg, #c9a96e, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Insurance Intelligence Platform</span>
+            </div>
+
+            <h1 class="text-5xl sm:text-6xl lg:text-7xl leading-[1.1] mb-6 text-charcoal">
+                <span class="font-experience">Where </span>
+                <span class="font-experience italic" style="color: #c9a96e;">Experience</span>
+                <br class="sm:hidden">
+                <span class="font-sans font-light text-charcoal/40 text-4xl sm:text-5xl lg:text-6xl mx-3">Meets</span>
+                <br class="sm:hidden">
+                <span class="font-sans font-bold" style="background: linear-gradient(135deg, #2563eb, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Data</span>
+                <span class="font-experience text-charcoal/30">.</span>
+            </h1>
+
+            <p class="text-lg sm:text-xl text-charcoal/60 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
+                The Switchboard encodes decades of insurance expertise into real-time machine intelligence. Every opportunity enriched, scored, and routed with the precision of data and the wisdom of experience.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#contact" class="btn-merge px-8 py-4 rounded-full text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all relative z-10 hover:scale-105">
+                    <span class="relative z-10">Book a Demo</span>
+                </a>
+                <a href="#platform" class="group glass-warm px-8 py-4 rounded-full text-base font-medium text-charcoal hover:shadow-lg transition-all">
+                    See the Platform
+                    <span class="inline-block ml-2 group-hover:translate-x-1 transition-transform">&rarr;</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- THE SPLIT — Two Worlds Meet -->
+    <div class="flex-1 flex flex-col md:flex-row hero-split relative min-h-[500px] lg:min-h-[550px]">
+
+        <!-- LEFT — Experience -->
+        <div class="hero-experience relative w-full md:w-[40%] bg-warm flex items-center justify-center p-8 lg:p-12 overflow-hidden">
+            <div class="absolute inset-0 opacity-[0.02]" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23c9a96e&quot; fill-opacity=&quot;1&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+            <div class="relative z-10 text-center md:text-left space-y-8">
+                <div class="inline-block px-3 py-1 rounded border border-brass/30 bg-brass/5">
+                    <span class="font-experience text-brass text-xs tracking-[0.3em] uppercase">Experience</span>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="font-experience text-7xl lg:text-8xl text-brass/80 leading-none">25<span class="text-5xl lg:text-6xl">+</span></div>
+                    <div class="font-experience text-charcoal/50 text-lg italic">years of insurance expertise</div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="font-experience text-charcoal/40 text-base italic flex items-center gap-3 justify-center md:justify-start">
+                        <span class="w-8 h-px bg-brass/40"></span> Risk intuition
+                    </div>
+                    <div class="font-experience text-charcoal/40 text-base italic flex items-center gap-3 justify-center md:justify-start">
+                        <span class="w-8 h-px bg-brass/40"></span> Market knowledge
+                    </div>
+                    <div class="font-experience text-charcoal/40 text-base italic flex items-center gap-3 justify-center md:justify-start">
+                        <span class="w-8 h-px bg-brass/40"></span> Carrier relationships
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTER — The Merge Zone -->
+        <div class="hero-merge relative w-full md:w-[20%] flex items-center justify-center overflow-hidden" style="background: linear-gradient(135deg, #efe8e0 0%, #a8894e33 20%, #1a1715 50%, #0a162899 80%, #030818 100%);">
+            <!-- Animated merge line -->
+            <div class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[2px] animate-merge-line rounded-full"></div>
+
+            <!-- Glow orbs -->
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full bg-brass/10 blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full bg-signal/10 blur-3xl animate-pulse" style="animation-delay: 1.5s;"></div>
+
+            <div class="relative z-10 text-center px-4">
+                <!-- The Switchboard mark -->
+                <div class="relative w-20 h-20 mx-auto mb-4 glow-merge rounded-2xl flex items-center justify-center" style="background: linear-gradient(135deg, rgba(201,169,110,0.15), rgba(37,99,235,0.15)); border: 1px solid rgba(255,255,255,0.1);">
+                    <svg class="w-10 h-10" viewBox="0 0 40 40" fill="none">
+                        <circle cx="20" cy="20" r="16" stroke="url(#mergeGrad)" stroke-width="1"/>
+                        <circle cx="20" cy="20" r="6" fill="url(#mergeGrad)"/>
+                        <line x1="8" y1="12" x2="14" y2="17" stroke="#c9a96e" stroke-width="0.8" opacity="0.6"/>
+                        <line x1="8" y1="20" x2="14" y2="20" stroke="#c9a96e" stroke-width="0.8" opacity="0.6"/>
+                        <line x1="8" y1="28" x2="14" y2="23" stroke="#c9a96e" stroke-width="0.8" opacity="0.6"/>
+                        <line x1="26" y1="17" x2="32" y2="12" stroke="#2563eb" stroke-width="0.8" opacity="0.6"/>
+                        <line x1="26" y1="20" x2="32" y2="20" stroke="#2563eb" stroke-width="0.8" opacity="0.6"/>
+                        <line x1="26" y1="23" x2="32" y2="28" stroke="#2563eb" stroke-width="0.8" opacity="0.6"/>
+                        <defs>
+                            <linearGradient id="mergeGrad" x1="4" y1="4" x2="36" y2="36">
+                                <stop stop-color="#c9a96e"/>
+                                <stop offset="1" stop-color="#2563eb"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <p class="text-[10px] tracking-[0.2em] uppercase font-medium" style="background: linear-gradient(90deg, #c9a96e, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Where Experience<br>Meets Data</p>
+            </div>
+        </div>
+
+        <!-- RIGHT — Data -->
+        <div class="hero-data relative w-full md:w-[40%] bg-data flex items-center justify-center p-8 lg:p-12 overflow-hidden noise">
+            <!-- Animated data nodes -->
+            <div class="data-node" style="top: 15%; left: 20%; animation-delay: 0s;"></div>
+            <div class="data-node" style="top: 35%; left: 75%; animation-delay: 0.8s;"></div>
+            <div class="data-node" style="top: 60%; left: 30%; animation-delay: 1.6s;"></div>
+            <div class="data-node" style="top: 80%; left: 65%; animation-delay: 2.4s;"></div>
+            <div class="data-node" style="top: 25%; left: 50%; animation-delay: 0.4s;"></div>
+            <div class="data-node" style="top: 70%; left: 85%; animation-delay: 1.2s;"></div>
+
+            <!-- Flow lines -->
+            <div class="flow-line" style="left: 25%; top: 10%; animation-delay: 0s;"></div>
+            <div class="flow-line" style="left: 50%; top: 30%; animation-delay: 0.7s;"></div>
+            <div class="flow-line" style="left: 70%; top: 20%; animation-delay: 1.4s;"></div>
+            <div class="flow-line" style="left: 40%; top: 60%; animation-delay: 2.1s;"></div>
+            <div class="flow-line" style="left: 80%; top: 50%; animation-delay: 0.3s;"></div>
+
+            <!-- Grid overlay -->
+            <div class="absolute inset-0 opacity-[0.04]" style="background-image: linear-gradient(rgba(37,99,235,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.3) 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+            <div class="relative z-10 text-center md:text-right space-y-8">
+                <div class="inline-block px-3 py-1 rounded border border-signal/30 bg-signal/5">
+                    <span class="font-sans text-signal text-xs tracking-[0.3em] uppercase font-medium">Data</span>
+                </div>
+
+                <div class="space-y-4" x-data="{ counts: { records: 0, speed: 0, accuracy: 0 }, started: false }"
+                     x-intersect="if(!started) { started=true; let i=setInterval(()=>{ counts.records=Math.min(counts.records+7,343); counts.speed=Math.min(counts.speed+1,5); counts.accuracy=Math.min(counts.accuracy+2,94); if(counts.records>=343&&counts.accuracy>=94) clearInterval(i); },30) }">
+                    <div>
+                        <div class="font-sans text-3xl lg:text-4xl font-bold text-white/90 tabular-nums">
+                            <span x-text="counts.records">0</span><span class="text-signal">M</span>
+                        </div>
+                        <div class="text-white/30 text-xs font-medium tracking-wider uppercase mt-1">Records Processed</div>
+                    </div>
+                    <div>
+                        <div class="font-sans text-3xl lg:text-4xl font-bold text-white/90 tabular-nums">
+                            &lt;<span x-text="counts.speed">0</span><span class="text-cyan">ms</span>
+                        </div>
+                        <div class="text-white/30 text-xs font-medium tracking-wider uppercase mt-1">Scoring Latency</div>
+                    </div>
+                    <div>
+                        <div class="font-sans text-3xl lg:text-4xl font-bold text-white/90 tabular-nums">
+                            <span x-text="counts.accuracy">0</span><span class="text-signal">%</span>
+                        </div>
+                        <div class="text-white/30 text-xs font-medium tracking-wider uppercase mt-1">Prediction Accuracy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================= -->
+<!-- STATS — The Merge Bar          -->
+<!-- ============================= -->
+<section class="relative overflow-hidden" x-data="{ visible: false }" x-intersect="visible = true">
+    <div class="bg-merge py-20 px-6 relative">
+        <div class="absolute inset-0 opacity-[0.02]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E');"></div>
+        <div class="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 relative z-10">
+            <!-- Warm stats -->
+            <div class="text-center" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.6s ease 0.1s;">
+                <div class="font-experience text-5xl lg:text-6xl text-brass mb-2">25<span class="text-3xl">+</span></div>
+                <div class="font-experience text-sm text-charcoal/50 italic">Years of Experience</div>
+            </div>
+            <div class="text-center" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.6s ease 0.2s;">
+                <div class="font-experience text-5xl lg:text-6xl text-brass mb-2">500<span class="text-3xl">+</span></div>
+                <div class="font-experience text-sm text-charcoal/50 italic">Carrier Relationships</div>
+            </div>
+            <!-- Data stats -->
+            <div class="text-center" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.6s ease 0.3s;">
+                <div class="font-sans text-5xl lg:text-6xl font-bold text-white mb-2">343<span class="text-signal text-3xl">M</span></div>
+                <div class="text-sm text-white/40 font-medium">Records Enriched</div>
+            </div>
+            <div class="text-center" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.6s ease 0.4s;">
+                <div class="font-sans text-5xl lg:text-6xl font-bold text-white mb-2">&lt;5<span class="text-cyan text-3xl">ms</span></div>
+                <div class="text-sm text-white/40 font-medium">Scoring Latency</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================= -->
+<!-- THE EXPERIENCE                 -->
+<!-- ============================= -->
+<section class="bg-warm relative py-24 lg:py-32 overflow-hidden" id="platform" x-data="{ visible: false }" x-intersect="visible = true">
+    <!-- Subtle warm pattern -->
+    <div class="absolute inset-0 opacity-[0.015]" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23c9a96e&quot; fill-opacity=&quot;1&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="max-w-2xl mb-16" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease;">
+            <div class="inline-block px-3 py-1 rounded border border-brass/20 bg-brass/5 mb-6">
+                <span class="font-experience text-brass text-xs tracking-[0.3em] uppercase">The Experience</span>
+            </div>
+            <h2 class="font-experience text-4xl lg:text-5xl text-charcoal leading-tight mb-6">
+                Built by insurance operators, <span class="italic text-brass">not</span> technologists.
+            </h2>
+            <p class="text-charcoal/50 text-lg leading-relaxed font-light">
+                We didn't just build technology — we encoded decades of expertise. Every model, every rule, every threshold reflects real underwriting wisdom and distribution knowledge.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+            <div class="warm-card rounded-2xl p-8" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.15s;">
+                <div class="w-12 h-12 rounded-xl bg-brass/10 flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-brass" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <h3 class="font-experience text-2xl text-charcoal mb-3">Carrier Expertise</h3>
+                <p class="text-charcoal/50 leading-relaxed text-sm">Deep relationships with 500+ carriers. We understand appetite, pricing nuance, and distribution channels because we've lived it.</p>
+            </div>
+
+            <div class="warm-card rounded-2xl p-8" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.3s;">
+                <div class="w-12 h-12 rounded-xl bg-brass/10 flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-brass" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
+                <h3 class="font-experience text-2xl text-charcoal mb-3">Risk Intuition</h3>
+                <p class="text-charcoal/50 leading-relaxed text-sm">Our scoring models are built on patterns that only come from decades of underwriting experience. Machine learning trained on human wisdom.</p>
+            </div>
+
+            <div class="warm-card rounded-2xl p-8" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.45s;">
+                <div class="w-12 h-12 rounded-xl bg-brass/10 flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-brass" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <h3 class="font-experience text-2xl text-charcoal mb-3">Market Intelligence</h3>
+                <p class="text-charcoal/50 leading-relaxed text-sm">Understanding which markets are hardening, which carriers are expanding appetite, and where the opportunities are shifting.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================= -->
+<!-- THE DATA                       -->
+<!-- ============================= -->
+<section class="bg-data relative py-24 lg:py-32 overflow-hidden noise" x-data="{ visible: false }" x-intersect="visible = true">
+    <!-- Grid overlay -->
+    <div class="absolute inset-0 opacity-[0.04]" style="background-image: linear-gradient(rgba(37,99,235,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.3) 1px, transparent 1px); background-size: 60px 60px;"></div>
+
+    <!-- Glow orbs -->
+    <div class="absolute top-20 right-20 w-96 h-96 rounded-full bg-signal/5 blur-[100px]"></div>
+    <div class="absolute bottom-20 left-20 w-72 h-72 rounded-full bg-cyan/5 blur-[80px]"></div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="max-w-2xl mb-16" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease;">
+            <div class="inline-block px-3 py-1 rounded border border-signal/20 bg-signal/5 mb-6">
+                <span class="font-sans text-signal text-xs tracking-[0.3em] uppercase font-medium">The Data</span>
+            </div>
+            <h2 class="font-sans text-4xl lg:text-5xl text-white font-bold leading-tight mb-6">
+                Powered by <span class="text-transparent bg-clip-text bg-gradient-to-r from-signal to-cyan">343 million</span> records.
+            </h2>
+            <p class="text-white/40 text-lg leading-relaxed font-light">
+                Real-time enrichment, ML scoring models, and intelligent decision engines. Every algorithm trained on real insurance outcomes — not generic data science.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+            <div class="tech-card rounded-2xl p-8" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.15s;">
+                <div class="w-12 h-12 rounded-xl bg-signal/10 flex items-center justify-center mb-6 border border-signal/20">
+                    <svg class="w-6 h-6 text-signal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                </div>
+                <h3 class="font-sans text-xl text-white font-semibold mb-3">Real-Time Enrichment</h3>
+                <p class="text-white/40 leading-relaxed text-sm">343M consumer records queried in under 250ms. Every opportunity enriched with demographic, behavioral, and credit data instantly.</p>
+                <div class="mt-4 pt-4 border-t border-white/5 flex items-center gap-2">
+                    <span class="text-cyan text-xs font-mono">&lt;250ms</span>
+                    <span class="text-white/20 text-xs">response time</span>
+                </div>
+            </div>
+
+            <div class="tech-card rounded-2xl p-8" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.3s;">
+                <div class="w-12 h-12 rounded-xl bg-signal/10 flex items-center justify-center mb-6 border border-signal/20">
+                    <svg class="w-6 h-6 text-signal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </div>
+                <h3 class="font-sans text-xl text-white font-semibold mb-3">ML Scoring</h3>
+                <p class="text-white/40 leading-relaxed text-sm">Proprietary machine learning models predict conversion probability, lifetime value, and risk profile. 94% prediction accuracy on insurance outcomes.</p>
+                <div class="mt-4 pt-4 border-t border-white/5 flex items-center gap-2">
+                    <span class="text-cyan text-xs font-mono">&lt;5ms</span>
+                    <span class="text-white/20 text-xs">scoring latency</span>
+                </div>
+            </div>
+
+            <div class="tech-card rounded-2xl p-8" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.45s;">
+                <div class="w-12 h-12 rounded-xl bg-signal/10 flex items-center justify-center mb-6 border border-signal/20">
+                    <svg class="w-6 h-6 text-signal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <h3 class="font-sans text-xl text-white font-semibold mb-3">Intelligent Routing</h3>
+                <p class="text-white/40 leading-relaxed text-sm">Real-time auction engine matches every opportunity to the highest-value buyer. Dynamic pricing based on 47 scoring dimensions.</p>
+                <div class="mt-4 pt-4 border-t border-white/5 flex items-center gap-2">
+                    <span class="text-cyan text-xs font-mono">47</span>
+                    <span class="text-white/20 text-xs">scoring dimensions</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================= -->
+<!-- THE SWITCHBOARD — Convergence  -->
+<!-- ============================= -->
+<section class="relative py-24 lg:py-32 overflow-hidden" x-data="{ visible: false }" x-intersect="visible = true">
+    <!-- The merge background -->
+    <div class="absolute inset-0" style="background: linear-gradient(135deg, #efe8e0 0%, #c9a96e22 15%, #1a1715 40%, #0a1628 70%, #030818 100%);"></div>
+    <!-- Noise -->
+    <div class="absolute inset-0 opacity-[0.02]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E');"></div>
+
+    <div class="max-w-5xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-16" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease;">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8" style="border: 1px solid rgba(201,169,110,0.2); background: linear-gradient(90deg, rgba(201,169,110,0.08), rgba(37,99,235,0.08));">
+                <div class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-brass to-signal animate-pulse"></div>
+                <span class="text-xs font-medium tracking-widest uppercase" style="background: linear-gradient(90deg, #c9a96e, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">The Convergence</span>
+            </div>
+            <h2 class="text-4xl lg:text-5xl leading-tight mb-6">
+                <span class="font-experience text-brass">The</span>
+                <span class="font-sans font-bold text-white"> Switchboard</span>
+            </h2>
+            <p class="text-lg max-w-2xl mx-auto leading-relaxed" style="color: rgba(255,255,255,0.5);">
+                Where human expertise becomes machine intelligence. The Switchboard doesn't replace insurance knowledge — it <em class="font-experience text-brass/80 not-italic">amplifies</em> it.
+            </p>
+        </div>
+
+        <!-- Convergence Visualization -->
+        <div class="relative max-w-4xl mx-auto" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.2s;">
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
+
+                <!-- Experience Inputs -->
+                <div class="flex flex-col gap-3 md:mr-6">
+                    <div class="convergence-input bg-white/80 border border-brass/20 font-experience text-charcoal text-xs italic">Risk Intuition</div>
+                    <div class="convergence-input bg-white/80 border border-brass/20 font-experience text-charcoal text-xs italic">Market Knowledge</div>
+                    <div class="convergence-input bg-white/80 border border-brass/20 font-experience text-charcoal text-xs italic">Carrier Appetite</div>
+                </div>
+
+                <!-- Arrows left -->
+                <div class="hidden md:flex flex-col gap-3">
+                    <div class="w-16 h-[2px]" style="background: linear-gradient(90deg, #c9a96e, #c9a96e88);"></div>
+                    <div class="w-16 h-[2px]" style="background: linear-gradient(90deg, #c9a96e, #c9a96eaa);"></div>
+                    <div class="w-16 h-[2px]" style="background: linear-gradient(90deg, #c9a96e, #c9a96e88);"></div>
+                </div>
+
+                <!-- The Switchboard Center -->
+                <div class="relative mx-4 my-6 md:my-0">
+                    <div class="w-28 h-28 rounded-2xl glow-merge flex items-center justify-center animate-float" style="background: linear-gradient(135deg, rgba(201,169,110,0.15), rgba(37,99,235,0.2)); border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="text-center">
+                            <svg class="w-10 h-10 mx-auto mb-1" viewBox="0 0 40 40" fill="none">
+                                <circle cx="20" cy="20" r="14" stroke="url(#convGrad)" stroke-width="1.5" opacity="0.6"/>
+                                <circle cx="20" cy="20" r="5" fill="url(#convGrad)"/>
+                                <defs>
+                                    <linearGradient id="convGrad" x1="6" y1="6" x2="34" y2="34">
+                                        <stop stop-color="#c9a96e"/>
+                                        <stop offset="1" stop-color="#2563eb"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="text-[8px] tracking-wider uppercase font-medium" style="background: linear-gradient(90deg, #c9a96e, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Switchboard</div>
+                        </div>
+                    </div>
+                    <!-- Glow behind -->
+                    <div class="absolute inset-0 -m-4 rounded-3xl bg-gradient-to-r from-brass/10 to-signal/10 blur-2xl"></div>
+                </div>
+
+                <!-- Arrows right -->
+                <div class="hidden md:flex flex-col gap-3">
+                    <div class="w-16 h-[2px]" style="background: linear-gradient(90deg, #2563eb88, #2563eb);"></div>
+                    <div class="w-16 h-[2px]" style="background: linear-gradient(90deg, #2563ebaa, #2563eb);"></div>
+                    <div class="w-16 h-[2px]" style="background: linear-gradient(90deg, #2563eb88, #2563eb);"></div>
+                </div>
+
+                <!-- Data Outputs -->
+                <div class="flex flex-col gap-3 md:ml-6">
+                    <div class="convergence-input glass border border-signal/20 font-sans text-signal text-xs font-medium">Enriched Profile</div>
+                    <div class="convergence-input glass border border-signal/20 font-sans text-cyan text-xs font-medium">Risk Score: 94</div>
+                    <div class="convergence-input glass border border-signal/20 font-sans text-signal text-xs font-medium">Optimal Route</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================= -->
+<!-- CAPABILITIES — The Merge Cards -->
+<!-- ============================= -->
+<section class="bg-data relative py-24 lg:py-32 overflow-hidden noise" id="capabilities" x-data="{ visible: false }" x-intersect="visible = true">
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(37,99,235,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.3) 1px, transparent 1px); background-size: 80px 80px;"></div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-16" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease;">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 mb-8">
+                <span class="text-xs font-medium tracking-widest uppercase" style="background: linear-gradient(90deg, #c9a96e, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Capabilities</span>
+            </div>
+            <h2 class="text-4xl lg:text-5xl leading-tight mb-6">
+                <span class="font-experience text-brass/80 italic">Expertise</span>
+                <span class="font-sans font-bold text-white"> encoded into every layer.</span>
+            </h2>
+            <p class="text-white/40 text-lg max-w-2xl mx-auto font-light">
+                Five intelligence layers — each one combining human insurance knowledge with machine precision.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Card 1: Enrichment -->
+            <div class="tech-card rounded-2xl p-8 group" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.1s;">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brass/20 to-signal/20 flex items-center justify-center border border-white/10">
+                        <svg class="w-5 h-5 text-brass" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+                    </div>
+                    <h3 class="text-white font-semibold text-lg">Enrichment</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-2">
+                        <span class="w-1 h-1 rounded-full bg-brass mt-2 shrink-0"></span>
+                        <span class="font-experience text-brass/60 text-sm italic">Expert-curated data sources</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="w-1 h-1 rounded-full bg-signal mt-2 shrink-0"></span>
+                        <span class="font-sans text-signal/80 text-sm font-medium">343M records, &lt;250ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Scoring -->
+            <div class="tech-card rounded-2xl p-8 group" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.2s;">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brass/20 to-signal/20 flex items-center justify-center border border-white/10">
+                        <svg class="w-5 h-5 text-signal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                    <h3 class="text-white font-semibold text-lg">Scoring</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-2">
+                        <span class="w-1 h-1 rounded-full bg-brass mt-2 shrink-0"></span>
+                        <span class="font-experience text-brass/60 text-sm italic">Risk models built by underwriters</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="w-1 h-1 rounded-full bg-signal mt-2 shrink-0"></span>
+                        <span class="font-sans text-signal/80 text-sm font-medium">ML predictions, &lt;5ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Segmentation -->
+            <div class="tech-card rounded-2xl p-8 group" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.3s;">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brass/20 to-signal/20 flex items-center justify-center border border-white/10">
+                        <svg class="w-5 h-5 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    </div>
+                    <h3 class="text-white font-semibold text-lg">Segmentation</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-2">
+                        <span class="w-1 h-1 rounded-full bg-brass mt-2 shrink-0"></span>
+                        <span class="font-experience text-brass/60 text-sm italic">Buyer appetite knowledge</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="w-1 h-1 rounded-full bg-signal mt-2 shrink-0"></span>
+                        <span class="font-sans text-signal/80 text-sm font-medium">Dynamic tier assignment</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Routing -->
+            <div class="tech-card rounded-2xl p-8 group" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.4s;">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brass/20 to-signal/20 flex items-center justify-center border border-white/10">
+                        <svg class="w-5 h-5 text-signal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <h3 class="text-white font-semibold text-lg">Routing</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-2">
+                        <span class="w-1 h-1 rounded-full bg-brass mt-2 shrink-0"></span>
+                        <span class="font-experience text-brass/60 text-sm italic">Carrier relationship mapping</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="w-1 h-1 rounded-full bg-signal mt-2 shrink-0"></span>
+                        <span class="font-sans text-signal/80 text-sm font-medium">Real-time auction logic</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Analytics -->
+            <div class="tech-card rounded-2xl p-8 group md:col-span-2 lg:col-span-1" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.5s;">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brass/20 to-signal/20 flex items-center justify-center border border-white/10">
+                        <svg class="w-5 h-5 text-brass" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <h3 class="text-white font-semibold text-lg">Analytics</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-2">
+                        <span class="w-1 h-1 rounded-full bg-brass mt-2 shrink-0"></span>
+                        <span class="font-experience text-brass/60 text-sm italic">Operational wisdom</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="w-1 h-1 rounded-full bg-signal mt-2 shrink-0"></span>
+                        <span class="font-sans text-signal/80 text-sm font-medium">Closed-loop attribution</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================= -->
+<!-- TESTIMONIAL — The Merge        -->
+<!-- ============================= -->
+<section class="relative py-24 lg:py-32 overflow-hidden" x-data="{ visible: false }" x-intersect="visible = true">
+    <div class="absolute inset-0 bg-merge"></div>
+    <div class="absolute inset-0 opacity-[0.02]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E');"></div>
+
+    <div class="max-w-4xl mx-auto px-6 relative z-10 text-center" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease;">
+        <!-- Decorative quote -->
+        <div class="mb-8">
+            <svg class="w-12 h-12 mx-auto" viewBox="0 0 48 48" fill="none">
+                <path d="M14 24c-4 0-6-2-6-6s2-6 6-6 6 2 6 6l-2 12h-4V24zm18 0c-4 0-6-2-6-6s2-6 6-6 6 2 6 6l-2 12h-4V24z" fill="url(#quoteGrad)" opacity="0.3"/>
+                <defs><linearGradient id="quoteGrad" x1="8" y1="12" x2="42" y2="36"><stop stop-color="#c9a96e"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>
+            </svg>
+        </div>
+
+        <blockquote class="text-2xl lg:text-3xl leading-relaxed mb-8">
+            <span class="font-experience italic" style="color: rgba(201,169,110,0.8);">The Switchboard combines something no other platform has</span>
+            <span class="text-white/30 mx-1">&mdash;</span>
+            <span class="font-sans font-light text-white/70">real insurance expertise encoded into real-time technology.</span>
+        </blockquote>
+
+        <div class="flex items-center justify-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-brass/30 to-signal/30 flex items-center justify-center border border-white/10">
+                <span class="font-experience text-white/60 text-lg">VP</span>
+            </div>
+            <div class="text-left">
+                <div class="text-white/60 font-medium text-sm">VP of Distribution</div>
+                <div class="text-white/30 text-xs">Top-10 National Carrier</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================= -->
+<!-- CASE STUDIES                    -->
+<!-- ============================= -->
+<section class="bg-data relative py-24 lg:py-32 overflow-hidden noise" id="results" x-data="{ visible: false }" x-intersect="visible = true">
+    <div class="absolute top-0 right-0 w-96 h-96 rounded-full bg-signal/5 blur-[120px]"></div>
+    <div class="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-brass/5 blur-[100px]"></div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-16" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease;">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 mb-8">
+                <span class="text-xs font-medium tracking-widest uppercase" style="background: linear-gradient(90deg, #c9a96e, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Results</span>
+            </div>
+            <h2 class="text-4xl lg:text-5xl text-white font-bold leading-tight">
+                Where the <span class="font-experience italic text-brass/80 font-normal">proof</span> meets the numbers.
+            </h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Case Study 1 -->
+            <div class="group relative rounded-2xl overflow-hidden" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.15s;">
+                <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(201,169,110,0.08), rgba(37,99,235,0.12));"></div>
+                <div class="absolute inset-0 border border-white/10 rounded-2xl group-hover:border-signal/20 transition-colors"></div>
+                <div class="relative p-8 lg:p-10">
+                    <div class="flex items-center gap-2 mb-6">
+                        <span class="px-2 py-0.5 rounded bg-brass/10 border border-brass/20 font-experience text-brass text-xs italic">Auto Insurance</span>
+                        <span class="px-2 py-0.5 rounded bg-signal/10 border border-signal/20 text-signal text-xs font-medium">P&amp;C</span>
+                    </div>
+                    <h3 class="text-white text-xl font-semibold mb-4">National Carrier Partnership</h3>
+                    <p class="text-white/40 text-sm leading-relaxed mb-8">A top-10 national carrier leveraged The Switchboard's enrichment and scoring to transform their distribution strategy.</p>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-brass to-signal">+340%</div>
+                            <div class="text-white/30 text-xs mt-1">Conversion Rate</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-brass to-signal">-62%</div>
+                            <div class="text-white/30 text-xs mt-1">Cost per Acquisition</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-brass to-signal">4.2x</div>
+                            <div class="text-white/30 text-xs mt-1">Return on Spend</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Study 2 -->
+            <div class="group relative rounded-2xl overflow-hidden" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease 0.3s;">
+                <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(201,169,110,0.12));"></div>
+                <div class="absolute inset-0 border border-white/10 rounded-2xl group-hover:border-brass/20 transition-colors"></div>
+                <div class="relative p-8 lg:p-10">
+                    <div class="flex items-center gap-2 mb-6">
+                        <span class="px-2 py-0.5 rounded bg-brass/10 border border-brass/20 font-experience text-brass text-xs italic">Health Insurance</span>
+                        <span class="px-2 py-0.5 rounded bg-signal/10 border border-signal/20 text-signal text-xs font-medium">ACA</span>
+                    </div>
+                    <h3 class="text-white text-xl font-semibold mb-4">Regional Agency Group</h3>
+                    <p class="text-white/40 text-sm leading-relaxed mb-8">A 200-agent regional group used The Switchboard's intelligent routing to match high-intent shoppers with the right specialists.</p>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-signal to-brass">+189%</div>
+                            <div class="text-white/30 text-xs mt-1">Contact Rate</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-signal to-brass">-48%</div>
+                            <div class="text-white/30 text-xs mt-1">Time to Quote</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-signal to-brass">92%</div>
+                            <div class="text-white/30 text-xs mt-1">Satisfaction Score</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================= -->
+<!-- CTA — The Final Merge          -->
+<!-- ============================= -->
+<section class="relative py-24 lg:py-32 overflow-hidden" id="contact" x-data="{ visible: false }" x-intersect="visible = true">
+    <div class="absolute inset-0" style="background: linear-gradient(135deg, #efe8e0 0%, #c9a96e22 15%, #1a1715 40%, #0a1628 65%, #030818 100%);"></div>
+    <div class="absolute inset-0 opacity-[0.02]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E');"></div>
+
+    <!-- Glow orbs -->
+    <div class="absolute top-1/2 left-1/4 -translate-y-1/2 w-64 h-64 rounded-full bg-brass/8 blur-[80px]"></div>
+    <div class="absolute top-1/2 right-1/4 -translate-y-1/2 w-64 h-64 rounded-full bg-signal/8 blur-[80px]"></div>
+
+    <div class="max-w-3xl mx-auto px-6 text-center relative z-10" :class="visible ? 'revealed' : ''" style="opacity: 0; transform: translateY(30px); transition: all 0.8s ease;">
+        <h2 class="text-4xl lg:text-5xl leading-tight mb-6">
+            <span class="font-experience italic" style="color: #c9a96e;">Where will experience</span>
+            <br>
+            <span class="font-sans font-bold text-white">meet <em class="font-experience italic text-cyan not-italic font-normal">your</em> data?</span>
+        </h2>
+
+        <p class="text-lg mb-10 font-light" style="color: rgba(255,255,255,0.4);">
+            See how The Switchboard can transform your distribution strategy. Schedule a personalized demo with our team.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <a href="#" class="btn-merge px-10 py-4 rounded-full text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all relative z-10 hover:scale-105">
+                <span class="relative z-10">Book Your Demo</span>
+            </a>
+            <a href="#" class="group px-8 py-4 rounded-full text-base font-medium text-white/60 hover:text-white/80 transition-colors border border-white/10 hover:border-white/20">
+                sales@theswitchboard.com
+            </a>
+        </div>
+
+        <!-- Trust signals -->
+        <div class="flex flex-wrap items-center justify-center gap-6 text-xs">
+            <div class="flex items-center gap-2 text-white/30">
+                <svg class="w-4 h-4 text-brass/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                SOC 2 Compliant
+            </div>
+            <div class="flex items-center gap-2 text-white/30">
+                <svg class="w-4 h-4 text-signal/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                TCPA Compliant
+            </div>
+            <div class="flex items-center gap-2 text-white/30">
+                <svg class="w-4 h-4 text-brass/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+                99.9% Uptime SLA
+            </div>
+            <div class="flex items-center gap-2 text-white/30">
+                <svg class="w-4 h-4 text-signal/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                Sub-5ms Response
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================= -->
+<!-- FOOTER                         -->
+<!-- ============================= -->
+<footer class="bg-data relative overflow-hidden noise">
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(37,99,235,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.2) 1px, transparent 1px); background-size: 60px 60px;"></div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <!-- Top border — the merge line -->
+        <div class="h-px w-full" style="background: linear-gradient(90deg, #c9a96e, #c9a96e66, #88888833, #2563eb66, #2563eb);"></div>
+
+        <div class="py-16 grid md:grid-cols-4 gap-12">
+            <!-- Brand -->
+            <div class="md:col-span-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-8 h-8 rounded-lg overflow-hidden">
+                        <div class="w-full h-full bg-gradient-to-br from-brass to-signal flex items-center justify-center">
+                            <div class="w-[calc(100%-3px)] h-[calc(100%-3px)] rounded-md bg-navy flex items-center justify-center">
+                                <div class="w-2 h-2 rounded-full bg-gradient-to-br from-brass to-signal"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="font-experience text-lg text-white/80">The Switchboard</span>
+                </div>
+                <p class="text-white/30 text-sm leading-relaxed">Where insurance experience meets machine intelligence.</p>
+            </div>
+
+            <!-- Platform -->
+            <div>
+                <h4 class="text-xs tracking-widest uppercase mb-4" style="background: linear-gradient(90deg, #c9a96e, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Platform</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-white/30 hover:text-brass text-sm transition-colors">Enrichment</a></li>
+                    <li><a href="#" class="text-white/30 hover:text-signal text-sm transition-colors">Scoring</a></li>
+                    <li><a href="#" class="text-white/30 hover:text-brass text-sm transition-colors">Segmentation</a></li>
+                    <li><a href="#" class="text-white/30 hover:text-signal text-sm transition-colors">Routing</a></li>
+                    <li><a href="#" class="text-white/30 hover:text-brass text-sm transition-colors">Analytics</a></li>
+                </ul>
+            </div>
+
+            <!-- Company -->
+            <div>
+                <h4 class="text-xs tracking-widest uppercase mb-4" style="background: linear-gradient(90deg, #c9a96e, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Company</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-white/30 hover:text-brass text-sm transition-colors font-experience italic">Our Story</a></li>
+                    <li><a href="#" class="text-white/30 hover:text-signal text-sm transition-colors">Careers</a></li>
+                    <li><a href="#" class="text-white/30 hover:text-brass text-sm transition-colors font-experience italic">Partners</a></li>
+                    <li><a href="#" class="text-white/30 hover:text-signal text-sm transition-colors">Blog</a></li>
+                </ul>
+            </div>
+
+            <!-- Connect -->
+            <div>
+                <h4 class="text-xs tracking-widest uppercase mb-4" style="background: linear-gradient(90deg, #c9a96e, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Connect</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-white/30 hover:text-brass text-sm transition-colors">Book a Demo</a></li>
+                    <li><a href="#" class="text-white/30 hover:text-signal text-sm transition-colors">sales@theswitchboard.com</a></li>
+                    <li><a href="#" class="text-white/30 hover:text-brass text-sm transition-colors">Documentation</a></li>
+                    <li><a href="#" class="text-white/30 hover:text-signal text-sm transition-colors">API Reference</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom -->
+        <div class="h-px w-full" style="background: linear-gradient(90deg, #c9a96e33, #88888811, #2563eb33);"></div>
+        <div class="py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-white/20 text-xs">&copy; 2026 The Switchboard. All rights reserved.</p>
+            <div class="flex items-center gap-6">
+                <a href="#" class="text-white/20 hover:text-white/40 text-xs transition-colors">Privacy Policy</a>
+                <a href="#" class="text-white/20 hover:text-white/40 text-xs transition-colors">Terms of Service</a>
+                <a href="#" class="text-white/20 hover:text-white/40 text-xs transition-colors">Compliance</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
