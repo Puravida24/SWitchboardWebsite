@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy Mockup C — Brutalist Kit | The Switchboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-blue': '#2563EB',
+                        'brand-dark': '#0A0A0A',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #0A0A0A; }
+
+        .hero-headline {
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -0.03em;
+        }
+
+        .massive-number {
+            font-size: clamp(80px, 18vw, 200px);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.04em;
+        }
+
+        .stat-number {
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.03em;
+        }
+
+        .capability-num {
+            font-size: clamp(14px, 1.5vw, 18px);
+            font-weight: 900;
+            letter-spacing: 0.15em;
+        }
+
+        .section-headline {
+            font-size: clamp(32px, 5vw, 64px);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.03em;
+        }
+
+        .overline {
+            font-size: clamp(11px, 1.2vw, 14px);
+            font-weight: 700;
+            letter-spacing: 0.2em;
+        }
+
+        .brutalist-border {
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .blue-accent { color: #2563EB; }
+        .blue-bg { background: #2563EB; }
+
+        ::selection {
+            background: #2563EB;
+            color: white;
+        }
+    </style>
+</head>
+<body class="text-white antialiased" x-data="{ scrolled: false }" @scroll.window="scrolled = window.scrollY > 50">
+
+    <!-- MOCKUP BANNER -->
+    <div class="fixed top-0 left-0 right-0 z-50 blue-bg text-white text-center py-2 overline tracking-widest">
+        COPY MOCKUP C — BRUTALIST KIT
+    </div>
+
+    <!-- NAV -->
+    <nav class="fixed top-8 left-0 right-0 z-40 px-6 md:px-12 py-6 flex items-center justify-between"
+         :class="scrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-sm' : ''">
+        <div class="text-white font-black text-xl tracking-tight">THE SWITCHBOARD</div>
+        <a href="#cta-final" class="hidden md:block brutalist-border px-6 py-3 text-sm font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-150">
+            See It Live
+        </a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24 pt-32 pb-20 relative overflow-hidden">
+        <div class="relative z-10 max-w-6xl">
+            <p class="overline blue-accent mb-8">INSURANCE INTELLIGENCE</p>
+            <h1 class="hero-headline text-white mb-8">
+                Raw data in.<br>Revenue out.
+            </h1>
+            <p class="text-white/50 text-lg md:text-xl font-medium max-w-xl mb-12 leading-relaxed">
+                The Switchboard. Insurance intelligence. Real time.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 items-start">
+                <a href="#cta-final" class="blue-bg text-white px-10 py-4 font-black text-sm tracking-widest uppercase hover:bg-blue-700 transition-colors">
+                    See It Live
+                </a>
+                <p class="text-white/30 text-sm font-medium pt-4 sm:pt-4 tracking-wide">
+                    Or don't. Your competitors will.
+                </p>
+            </div>
+        </div>
+        <!-- Decorative slash -->
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 text-white/[0.03] font-black select-none pointer-events-none hidden lg:block" style="font-size: 500px; line-height: 1;">
+            /
+        </div>
+    </section>
+
+    <!-- MASSIVE NUMBER SECTION -->
+    <section class="relative px-6 md:px-12 lg:px-24 py-32 overflow-hidden">
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+            <span class="massive-number text-white/[0.08]">343,000,000</span>
+        </div>
+        <div class="relative z-10 text-center">
+            <p class="text-white/60 text-lg md:text-2xl font-medium tracking-wide">
+                consumer records enriched in real time
+            </p>
+        </div>
+    </section>
+
+    <!-- DIVIDER -->
+    <div class="mx-6 md:mx-12 lg:mx-24 border-t border-white/10"></div>
+
+    <!-- CAPABILITIES -->
+    <section class="px-6 md:px-12 lg:px-24 py-24 md:py-32">
+        <div class="max-w-5xl">
+            <div class="space-y-0">
+                <!-- 01 ENRICH -->
+                <div class="brutalist-border border-t-0 border-l-0 border-r-0 py-8 md:py-10 group">
+                    <div class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-6">
+                        <span class="capability-num blue-accent">01</span>
+                        <span class="text-white font-black text-xl md:text-2xl tracking-tight uppercase">ENRICH</span>
+                        <span class="text-white/40 font-medium text-base md:text-lg">— 343M records. 85 attributes. Under 250ms.</span>
+                    </div>
+                </div>
+                <!-- 02 SCORE -->
+                <div class="brutalist-border border-t-0 border-l-0 border-r-0 py-8 md:py-10 group">
+                    <div class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-6">
+                        <span class="capability-num blue-accent">02</span>
+                        <span class="text-white font-black text-xl md:text-2xl tracking-tight uppercase">SCORE</span>
+                        <span class="text-white/40 font-medium text-base md:text-lg">— ML models. &lt;5ms. Conversion predicted before you blink.</span>
+                    </div>
+                </div>
+                <!-- 03 SEGMENT -->
+                <div class="brutalist-border border-t-0 border-l-0 border-r-0 py-8 md:py-10 group">
+                    <div class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-6">
+                        <span class="capability-num blue-accent">03</span>
+                        <span class="text-white font-black text-xl md:text-2xl tracking-tight uppercase">SEGMENT</span>
+                        <span class="text-white/40 font-medium text-base md:text-lg">— Dynamic tiers. Buyer appetite matched. Zero waste.</span>
+                    </div>
+                </div>
+                <!-- 04 ROUTE -->
+                <div class="brutalist-border border-t-0 border-l-0 border-r-0 py-8 md:py-10 group">
+                    <div class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-6">
+                        <span class="capability-num blue-accent">04</span>
+                        <span class="text-white font-black text-xl md:text-2xl tracking-tight uppercase">ROUTE</span>
+                        <span class="text-white/40 font-medium text-base md:text-lg">— Right opportunity. Right buyer. Right price. Real time.</span>
+                    </div>
+                </div>
+                <!-- 05 ANALYZE -->
+                <div class="py-8 md:py-10 group">
+                    <div class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-6">
+                        <span class="capability-num blue-accent">05</span>
+                        <span class="text-white font-black text-xl md:text-2xl tracking-tight uppercase">ANALYZE</span>
+                        <span class="text-white/40 font-medium text-base md:text-lg">— Closed loop. True ROI. Not vanity metrics.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DIVIDER -->
+    <div class="mx-6 md:mx-12 lg:mx-24 border-t border-white/10"></div>
+
+    <!-- PROCESS -->
+    <section class="px-6 md:px-12 lg:px-24 py-24 md:py-32">
+        <div class="max-w-4xl">
+            <h2 class="section-headline text-white mb-16">
+                STOP GUESSING.<br>
+                <span class="blue-accent">START KNOWING.</span>
+            </h2>
+            <div class="space-y-6 md:space-y-8">
+                <div class="flex items-baseline gap-4 md:gap-6">
+                    <span class="text-white/20 font-black text-4xl md:text-6xl">1.</span>
+                    <span class="text-white font-bold text-xl md:text-2xl">Data enters.</span>
+                </div>
+                <div class="flex items-baseline gap-4 md:gap-6">
+                    <span class="text-white/20 font-black text-4xl md:text-6xl">2.</span>
+                    <span class="text-white font-bold text-xl md:text-2xl">Intelligence applies.</span>
+                </div>
+                <div class="flex items-baseline gap-4 md:gap-6">
+                    <span class="text-white/20 font-black text-4xl md:text-6xl">3.</span>
+                    <span class="text-white font-bold text-xl md:text-2xl">Decisions execute.</span>
+                </div>
+                <div class="flex items-baseline gap-4 md:gap-6">
+                    <span class="text-white/20 font-black text-4xl md:text-6xl">4.</span>
+                    <span class="text-white font-bold text-xl md:text-2xl">Revenue follows.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DIVIDER -->
+    <div class="mx-6 md:mx-12 lg:mx-24 border-t border-white/10"></div>
+
+    <!-- STATS -->
+    <section class="px-6 md:px-12 lg:px-24 py-24 md:py-32">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
+            <div>
+                <div class="stat-number blue-accent">467%</div>
+                <div class="text-white/40 font-medium text-sm tracking-widest uppercase mt-3">Conversion Lift</div>
+            </div>
+            <div>
+                <div class="stat-number text-white">42%</div>
+                <div class="text-white/40 font-medium text-sm tracking-widest uppercase mt-3">CPA Reduction</div>
+            </div>
+            <div>
+                <div class="stat-number text-white">$2.4B</div>
+                <div class="text-white/40 font-medium text-sm tracking-widest uppercase mt-3">Premiums Influenced</div>
+            </div>
+            <div>
+                <div class="stat-number blue-accent">&lt;5ms</div>
+                <div class="text-white/40 font-medium text-sm tracking-widest uppercase mt-3">Latency</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DIVIDER -->
+    <div class="mx-6 md:mx-12 lg:mx-24 border-t border-white/10"></div>
+
+    <!-- TESTIMONIAL -->
+    <section class="px-6 md:px-12 lg:px-24 py-24 md:py-32">
+        <div class="max-w-4xl">
+            <div class="text-6xl md:text-8xl font-black text-white/10 leading-none mb-4 select-none">"</div>
+            <blockquote class="text-white text-xl md:text-3xl font-bold leading-snug tracking-tight -mt-12 md:-mt-16">
+                The Switchboard cut our CPA by 42% in Q1. We should have switched a year ago.
+            </blockquote>
+            <cite class="block mt-8 text-white/40 font-medium text-base not-italic">
+                — Sarah Chen
+            </cite>
+        </div>
+    </section>
+
+    <!-- DIVIDER -->
+    <div class="mx-6 md:mx-12 lg:mx-24 border-t border-white/10"></div>
+
+    <!-- FINAL CTA -->
+    <section id="cta-final" class="px-6 md:px-12 lg:px-24 py-32 md:py-48 text-center">
+        <h2 class="section-headline text-white mb-6">
+            One platform. Zero guesswork.
+        </h2>
+        <div class="mt-12">
+            <a href="#" class="inline-block blue-bg text-white px-12 py-5 font-black text-sm tracking-widest uppercase hover:bg-blue-700 transition-colors">
+                Start a Conversation
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="px-6 md:px-12 lg:px-24 py-8 border-t border-white/10">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-white/30 text-xs font-medium tracking-widest uppercase">
+            <span>The Switchboard &copy; 2026</span>
+            <span>Insurance Intelligence Platform</span>
+        </div>
+    </footer>
+
+</body>
+</html>
