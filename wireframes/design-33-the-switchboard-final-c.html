@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Switchboard — Insurance Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #030818; color: #e2e8f0; overflow-x: hidden; }
+
+/* ===== NOISE TEXTURE ===== */
+.noise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  pointer-events: none;
+  z-index: 1;
+}
+.noise { position: relative; }
+.noise > * { position: relative; z-index: 2; }
+
+/* ===== TYPOGRAPHY ===== */
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+.font-serif { font-family: 'Instrument Serif', serif; }
+
+/* ===== UTILITY ===== */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.container-narrow { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+/* ===== GLASSMORPHIC CARDS ===== */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.3),
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+.glass:hover {
+  border-color: rgba(37, 99, 235, 0.2);
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.3),
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 0 30px rgba(37, 99, 235, 0.08);
+}
+.glass-strong {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 1px rgba(255, 255, 255, 0.15) inset;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 15px;
+  border: none; border-radius: 10px; cursor: pointer; text-decoration: none;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35), 0 0 0 1px rgba(37, 99, 235, 0.2);
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(37, 99, 235, 0.5), 0 0 0 1px rgba(37, 99, 235, 0.3);
+}
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px;
+  background: transparent;
+  color: #c9a96e; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 15px;
+  border: 1px solid rgba(201, 169, 110, 0.4); border-radius: 10px; cursor: pointer; text-decoration: none;
+  transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+  border-color: #c9a96e;
+  box-shadow: 0 0 20px rgba(201, 169, 110, 0.15);
+  transform: translateY(-2px);
+}
+
+/* ===== GLOW PULSE ===== */
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 4px #22c55e, 0 0 8px rgba(34, 197, 94, 0.4); opacity: 1; }
+  50% { box-shadow: 0 0 8px #22c55e, 0 0 16px rgba(34, 197, 94, 0.6); opacity: 0.7; }
+}
+@keyframes pulse-blue {
+  0%, 100% { box-shadow: 0 0 4px #2563eb, 0 0 8px rgba(37, 99, 235, 0.4); }
+  50% { box-shadow: 0 0 8px #2563eb, 0 0 16px rgba(37, 99, 235, 0.6); }
+}
+@keyframes float-particle {
+  0% { offset-distance: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+@keyframes glow-text {
+  0%, 100% { text-shadow: 0 0 20px rgba(37, 99, 235, 0.3), 0 0 40px rgba(37, 99, 235, 0.15); }
+  50% { text-shadow: 0 0 30px rgba(37, 99, 235, 0.5), 0 0 60px rgba(37, 99, 235, 0.25); }
+}
+@keyframes counter-tick {
+  0%, 90% { opacity: 1; }
+  95% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: #22c55e;
+  animation: pulse-green 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.status-dot-amber {
+  width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;
+  animation: pulse-green 2s ease-in-out infinite;
+  box-shadow: 0 0 4px #f59e0b, 0 0 8px rgba(245, 158, 11, 0.4);
+  flex-shrink: 0;
+}
+
+/* ===== HEADER ===== */
+header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(3, 8, 24, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+header .inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 18px; color: #fff; text-decoration: none;
+  letter-spacing: -0.02em;
+}
+.logo-dot { color: #c9a96e; }
+.header-live {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.05em;
+}
+.header-live .status-dot { width: 6px; height: 6px; }
+nav { display: flex; align-items: center; gap: 32px; }
+nav a {
+  font-size: 14px; font-weight: 500; color: rgba(255, 255, 255, 0.6);
+  text-decoration: none; transition: color 0.2s;
+}
+nav a:hover { color: #fff; }
+.header-cta {
+  padding: 8px 20px; font-size: 13px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  transition: all 0.3s;
+}
+.header-cta:hover { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5); transform: translateY(-1px); }
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  padding-top: 120px;
+  background: linear-gradient(180deg, #030818 0%, #0a1628 40%, #0d1f3c 100%);
+  text-align: center;
+  overflow: hidden;
+}
+.hero-text { margin-bottom: 48px; }
+.hero h1 {
+  font-size: clamp(40px, 6vw, 72px); font-weight: 800; color: #fff;
+  letter-spacing: -0.03em; line-height: 1.05;
+  text-shadow: 0 0 40px rgba(37, 99, 235, 0.2), 0 0 80px rgba(37, 99, 235, 0.1);
+  animation: glow-text 4s ease-in-out infinite;
+}
+.hero-sub {
+  font-family: 'Instrument Serif', serif; font-style: italic;
+  font-size: clamp(20px, 3vw, 28px); color: #c9a96e;
+  margin-top: 12px; letter-spacing: 0.01em;
+}
+.hero-desc {
+  font-size: 17px; color: rgba(255, 255, 255, 0.5);
+  max-width: 560px; margin: 20px auto 0; line-height: 1.7;
+}
+
+/* ===== OPERATOR CONSOLE ===== */
+.console-wrapper {
+  width: 100%; max-width: 1100px; margin: 0 auto;
+  padding: 0 16px 60px;
+}
+.console {
+  position: relative;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 32px 80px rgba(0, 0, 0, 0.6),
+    0 0 120px rgba(37, 99, 235, 0.08),
+    0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+.console::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.008) 2px,
+    rgba(255, 255, 255, 0.008) 4px
+  );
+  pointer-events: none;
+  animation: scan-line 8s linear infinite;
+  z-index: 3;
+}
+.console-glow {
+  position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 80%; height: 80%;
+  background: radial-gradient(ellipse, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.console-top {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  position: relative; z-index: 2;
+}
+.console-top-title { display: flex; align-items: center; gap: 10px; }
+.console-top-meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.console-top-meta span { display: flex; align-items: center; gap: 6px; }
+.uptime-val { color: #22c55e; }
+
+/* JACK GRID */
+.jack-grid {
+  padding: 24px;
+  position: relative; z-index: 2;
+}
+.jack-row {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 12px;
+}
+.jack-row:last-child { margin-bottom: 0; }
+.jack-row-label {
+  width: 100px; flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.35);
+}
+.jacks {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  flex: 1;
+}
+.jack {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 10px 4px 8px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.3s;
+  cursor: default;
+}
+.jack:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+.jack-port {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid;
+  position: relative;
+  margin-bottom: 6px;
+  transition: all 0.3s;
+}
+.jack-port::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 6px; height: 6px; border-radius: 50%;
+}
+/* Blue = Sources */
+.jack-blue .jack-port { border-color: rgba(37, 99, 235, 0.5); }
+.jack-blue .jack-port::after { background: #2563eb; box-shadow: 0 0 6px #2563eb; }
+.jack-blue.active .jack-port { border-color: #2563eb; box-shadow: 0 0 12px rgba(37, 99, 235, 0.4); }
+.jack-blue.dim .jack-port { border-color: rgba(37, 99, 235, 0.2); }
+.jack-blue.dim .jack-port::after { background: rgba(37, 99, 235, 0.3); box-shadow: none; }
+/* Amber = Enrichment */
+.jack-amber .jack-port { border-color: rgba(245, 158, 11, 0.5); }
+.jack-amber .jack-port::after { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
+.jack-amber.active .jack-port { border-color: #f59e0b; box-shadow: 0 0 12px rgba(245, 158, 11, 0.4); }
+/* Purple = Routing */
+.jack-purple .jack-port { border-color: rgba(139, 92, 246, 0.5); }
+.jack-purple .jack-port::after { background: #8b5cf6; box-shadow: 0 0 6px #8b5cf6; }
+.jack-purple.active .jack-port { border-color: #8b5cf6; box-shadow: 0 0 12px rgba(139, 92, 246, 0.4); }
+/* Green = Delivery */
+.jack-green .jack-port { border-color: rgba(16, 185, 129, 0.5); }
+.jack-green .jack-port::after { background: #10b981; box-shadow: 0 0 6px #10b981; }
+.jack-green.active .jack-port { border-color: #10b981; box-shadow: 0 0 12px rgba(16, 185, 129, 0.4); }
+
+.jack-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* SVG PATCH CORDS */
+.patch-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* STATUS PANEL */
+.console-status {
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px;
+  padding: 14px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.02em;
+  position: relative; z-index: 2;
+}
+.console-status .stat-item {
+  display: flex; align-items: center; gap: 6px;
+}
+.stat-val { color: rgba(255, 255, 255, 0.7); font-weight: 600; }
+.stat-val-blue { color: #60a5fa; }
+.stat-val-green { color: #34d399; }
+.stat-val-amber { color: #fbbf24; }
+
+.console-buttons {
+  display: flex; justify-content: center; gap: 16px;
+  margin-top: 40px;
+}
+
+/* ===== LIVE STATS ===== */
+.stats-section {
+  padding: 100px 0;
+  background: linear-gradient(180deg, #0d1f3c, #0a1628, #030818);
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.stat-card {
+  padding: 36px 24px;
+  text-align: center;
+  transition: all 0.4s;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(37, 99, 235, 0.1);
+}
+.stat-number {
+  font-size: clamp(36px, 4vw, 52px); font-weight: 900; color: #fff;
+  letter-spacing: -0.03em;
+  text-shadow: 0 0 30px rgba(37, 99, 235, 0.3), 0 0 60px rgba(37, 99, 235, 0.15);
+  line-height: 1;
+}
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 12px;
+}
+.stat-detail {
+  font-size: 13px; color: rgba(255, 255, 255, 0.35);
+  margin-top: 8px;
+}
+
+/* ===== CAPABILITIES (LIGHT SECTION) ===== */
+.capabilities-section {
+  padding: 120px 0;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  position: relative;
+}
+.capabilities-section::before {
+  content: '';
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.section-title {
+  font-size: clamp(28px, 3vw, 40px); font-weight: 800;
+  letter-spacing: -0.03em; line-height: 1.15;
+  margin-bottom: 16px;
+}
+.section-title-dark { color: #0f172a; }
+.section-title-light { color: #fff; text-shadow: 0 0 30px rgba(37, 99, 235, 0.15); }
+.section-subtitle {
+  font-size: 16px; color: #64748b;
+  max-width: 500px; line-height: 1.7;
+}
+.section-subtitle-dark { color: rgba(255, 255, 255, 0.45); }
+.capabilities-header { text-align: center; margin-bottom: 60px; }
+.capabilities-header .section-subtitle { margin: 0 auto; }
+.cap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.cap-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 24px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    0 12px 40px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+.cap-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 20px 60px rgba(0, 0, 0, 0.1);
+}
+.cap-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+.cap-icon svg { width: 24px; height: 24px; color: #fff; }
+.cap-card h3 {
+  font-size: 16px; font-weight: 700; color: #0f172a;
+  margin-bottom: 8px; letter-spacing: -0.01em;
+}
+.cap-card p {
+  font-size: 14px; color: #64748b; line-height: 1.65;
+}
+
+/* ===== HOW IT WORKS ===== */
+.how-section {
+  padding: 120px 0;
+  background: linear-gradient(180deg, #030818, #0a1628, #0d1f3c);
+}
+.how-header { text-align: center; margin-bottom: 64px; }
+.how-header .section-subtitle-dark { margin: 0 auto; max-width: 500px; }
+.steps-track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  position: relative;
+  max-width: 1000px; margin: 0 auto;
+}
+.steps-track::before {
+  content: '';
+  position: absolute;
+  top: 40px; left: 12.5%; right: 12.5%;
+  height: 2px;
+  background: linear-gradient(90deg, #2563eb, #8b5cf6, #06b6d4, #10b981);
+  opacity: 0.3;
+  z-index: 0;
+}
+.step-card {
+  padding: 32px 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 16px;
+}
+.step-num-1 { color: #2563eb; }
+.step-num-2 { color: #8b5cf6; }
+.step-num-3 { color: #06b6d4; }
+.step-num-4 { color: #10b981; }
+.step-icon-ring {
+  width: 56px; height: 56px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.step-card h3 {
+  font-size: 17px; font-weight: 700; color: #fff;
+  margin-bottom: 8px;
+}
+.step-card p {
+  font-size: 13px; color: rgba(255, 255, 255, 0.4);
+  line-height: 1.65;
+}
+
+/* ===== SYSTEM STATUS ===== */
+.sys-status-section {
+  padding: 100px 0;
+  background: linear-gradient(180deg, #0d1f3c, #0a1628);
+}
+.sys-panel {
+  max-width: 700px; margin: 0 auto;
+  overflow: hidden;
+}
+.sys-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.sys-header-left {
+  display: flex; align-items: center; gap: 12px;
+}
+.sys-header h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; font-weight: 600;
+  color: #22c55e;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.sys-header-right {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: rgba(255, 255, 255, 0.35);
+}
+.sys-rows { padding: 8px 0; }
+.sys-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 28px;
+  transition: background 0.2s;
+}
+.sys-row:hover { background: rgba(255, 255, 255, 0.02); }
+.sys-row-left {
+  display: flex; align-items: center; gap: 12px;
+}
+.sys-row-name {
+  font-size: 14px; font-weight: 500; color: rgba(255, 255, 255, 0.7);
+}
+.sys-row-right {
+  display: flex; align-items: center; gap: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+}
+.sys-uptime { color: #34d399; font-weight: 600; }
+
+/* ===== TESTIMONIAL ===== */
+.testimonial-section {
+  padding: 100px 0;
+  background: linear-gradient(180deg, #0a1628, #030818);
+}
+.testimonial-card {
+  max-width: 700px; margin: 0 auto;
+  padding: 48px 40px;
+  text-align: center;
+}
+.testimonial-quote {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(22px, 3vw, 30px);
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  font-style: italic;
+  margin-bottom: 28px;
+}
+.testimonial-author {
+  font-size: 14px; font-weight: 600; color: rgba(255, 255, 255, 0.6);
+}
+.testimonial-role {
+  font-size: 13px; color: rgba(255, 255, 255, 0.35);
+  margin-top: 4px;
+}
+
+/* ===== CASE STUDIES ===== */
+.cases-section {
+  padding: 100px 0;
+  background: linear-gradient(180deg, #030818, #0a1628);
+}
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 900px; margin: 0 auto;
+}
+.case-card { padding: 36px 32px; }
+.case-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px;
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  color: #60a5fa;
+  margin-bottom: 20px;
+}
+.case-card h3 {
+  font-size: 18px; font-weight: 700; color: #fff;
+  margin-bottom: 10px; letter-spacing: -0.01em;
+}
+.case-card p {
+  font-size: 14px; color: rgba(255, 255, 255, 0.45);
+  line-height: 1.65; margin-bottom: 20px;
+}
+.case-metrics {
+  display: flex; gap: 24px;
+}
+.case-metric-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px; font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 12px rgba(37, 99, 235, 0.3);
+}
+.case-metric-label {
+  font-size: 11px; color: rgba(255, 255, 255, 0.35);
+  margin-top: 2px;
+}
+
+/* ===== CTA ===== */
+.cta-section {
+  padding: 120px 0;
+  background: linear-gradient(180deg, #0a1628, #0d1f3c, #0a1628);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.cta-section > * { position: relative; z-index: 2; }
+.cta-headline {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(36px, 5vw, 56px);
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.cta-sub {
+  font-size: 17px; color: rgba(255, 255, 255, 0.45);
+  max-width: 460px; margin: 0 auto 40px;
+  line-height: 1.7;
+}
+.cta-buttons { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+/* ===== GOLD DIVIDER ===== */
+.gold-divider {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, #c9a96e, transparent);
+  margin: 0 auto;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 60px 0 30px;
+  background: #020612;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+.footer-brand p {
+  font-size: 14px; color: rgba(255, 255, 255, 0.35);
+  line-height: 1.65; max-width: 280px; margin-top: 12px;
+}
+.footer-col h4 {
+  font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 16px;
+}
+.footer-col a {
+  display: block;
+  font-size: 14px; color: rgba(255, 255, 255, 0.35);
+  text-decoration: none; margin-bottom: 10px;
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: rgba(255, 255, 255, 0.7); }
+.footer-bottom {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+.footer-bottom p {
+  font-size: 13px; color: rgba(255, 255, 255, 0.25);
+}
+.footer-status {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: rgba(255, 255, 255, 0.25);
+}
+
+/* ===== MOBILE MENU ===== */
+.mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+.mobile-toggle span { display: block; width: 20px; height: 2px; background: #fff; margin: 4px 0; border-radius: 1px; transition: all 0.3s; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .steps-track { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .steps-track::before { display: none; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .jack-row-label { width: 70px; font-size: 8px; }
+  .jacks { gap: 4px; }
+  .jack { padding: 8px 2px 6px; }
+  .jack-port { width: 16px; height: 16px; }
+  .jack-label { font-size: 7px; }
+}
+@media (max-width: 768px) {
+  nav { display: none; }
+  .mobile-toggle { display: block; }
+  nav.open {
+    display: flex; flex-direction: column;
+    position: absolute; top: 64px; left: 0; right: 0;
+    background: rgba(3, 8, 24, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 16px;
+  }
+  .header-live { display: none; }
+  .hero { padding-top: 100px; min-height: auto; padding-bottom: 40px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .cap-grid { grid-template-columns: 1fr; }
+  .cases-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .steps-track { grid-template-columns: 1fr; }
+  .console-top { font-size: 9px; padding: 10px 16px; }
+  .jack-grid { padding: 16px 10px; }
+  .jack-row { flex-direction: column; gap: 4px; align-items: stretch; }
+  .jack-row-label { width: auto; text-align: center; }
+  .jacks { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .console-status { font-size: 9px; gap: 10px; padding: 10px 16px; flex-wrap: wrap; }
+  .testimonial-card { padding: 32px 24px; }
+  .sys-row { padding: 12px 20px; flex-wrap: wrap; gap: 8px; }
+  .sys-row-right { gap: 12px; }
+}
+@media (max-width: 480px) {
+  .hero h1 { font-size: 32px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .cta-headline { font-size: 28px; }
+  .console-buttons { flex-direction: column; align-items: center; }
+  .jacks { grid-template-columns: repeat(4, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="inner">
+    <a href="#" class="logo">The Switchboard<span class="logo-dot">.</span></a>
+    <div class="header-live">
+      <div class="status-dot" style="width:6px;height:6px;"></div>
+      <span>LIVE</span>
+      <span style="color:rgba(255,255,255,0.3);">&middot;</span>
+      <span id="opsCounter">1,247 ops/sec</span>
+    </div>
+    <nav id="mainNav">
+      <a href="#capabilities">Platform</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#case-studies">Results</a>
+      <a href="#system-status">Status</a>
+      <a href="#cta" class="header-cta">Request Demo</a>
+    </nav>
+    <button class="mobile-toggle" onclick="document.getElementById('mainNav').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero noise">
+  <div class="hero-text">
+    <h1>The Intelligence Operator.</h1>
+    <p class="hero-sub">Where experience meets data.</p>
+    <p class="hero-desc">Receive, enrich, score, route, and deliver insurance opportunities in real time. One platform. Zero guesswork.</p>
+  </div>
+
+  <!-- OPERATOR CONSOLE -->
+  <div class="console-wrapper">
+    <div class="console" id="operatorConsole">
+      <div class="console-glow"></div>
+
+      <!-- TOP BAR -->
+      <div class="console-top">
+        <div class="console-top-title">
+          <span>SWITCHBOARD INTELLIGENCE CONSOLE v2.4</span>
+          <div class="status-dot" style="width:6px;height:6px;"></div>
+          <span style="color:#22c55e;">LIVE</span>
+        </div>
+        <div class="console-top-meta">
+          <span>Connections: <span class="stat-val">247</span></span>
+          <span>Uptime: <span class="uptime-val">99.97%</span></span>
+        </div>
+      </div>
+
+      <!-- JACK GRID -->
+      <div class="jack-grid" id="jackGrid">
+        <!-- Row 1: SOURCES (blue) -->
+        <div class="jack-row">
+          <div class="jack-row-label">Sources</div>
+          <div class="jacks">
+            <div class="jack jack-blue active"><div class="jack-port"></div><span class="jack-label">Forms</span></div>
+            <div class="jack jack-blue active"><div class="jack-port"></div><span class="jack-label">API-1</span></div>
+            <div class="jack jack-blue active"><div class="jack-port"></div><span class="jack-label">API-2</span></div>
+            <div class="jack jack-blue active"><div class="jack-port"></div><span class="jack-label">Partners</span></div>
+            <div class="jack jack-blue active"><div class="jack-port"></div><span class="jack-label">Calls</span></div>
+            <div class="jack jack-blue active"><div class="jack-port"></div><span class="jack-label">Feed</span></div>
+            <div class="jack jack-blue dim"><div class="jack-port"></div><span class="jack-label">Upload</span></div>
+            <div class="jack jack-blue dim"><div class="jack-port"></div><span class="jack-label">Direct</span></div>
+          </div>
+        </div>
+        <!-- Row 2: ENRICHMENT (amber) -->
+        <div class="jack-row">
+          <div class="jack-row-label">Enrichment</div>
+          <div class="jacks">
+            <div class="jack jack-amber active"><div class="jack-port"></div><span class="jack-label">EQ-1</span></div>
+            <div class="jack jack-amber active"><div class="jack-port"></div><span class="jack-label">EQ-2</span></div>
+            <div class="jack jack-amber active"><div class="jack-port"></div><span class="jack-label">DEMO</span></div>
+            <div class="jack jack-amber active"><div class="jack-port"></div><span class="jack-label">RISK</span></div>
+            <div class="jack jack-amber active"><div class="jack-port"></div><span class="jack-label">CREDIT</span></div>
+            <div class="jack jack-amber active"><div class="jack-port"></div><span class="jack-label">GEO</span></div>
+            <div class="jack jack-amber active"><div class="jack-port"></div><span class="jack-label">VEH</span></div>
+            <div class="jack jack-amber active"><div class="jack-port"></div><span class="jack-label">PROP</span></div>
+          </div>
+        </div>
+        <!-- Row 3: ROUTING (purple) -->
+        <div class="jack-row">
+          <div class="jack-row-label">Routing</div>
+          <div class="jacks">
+            <div class="jack jack-purple active"><div class="jack-port"></div><span class="jack-label">T1-A</span></div>
+            <div class="jack jack-purple active"><div class="jack-port"></div><span class="jack-label">T1-B</span></div>
+            <div class="jack jack-purple active"><div class="jack-port"></div><span class="jack-label">T2-A</span></div>
+            <div class="jack jack-purple active"><div class="jack-port"></div><span class="jack-label">T2-B</span></div>
+            <div class="jack jack-purple active"><div class="jack-port"></div><span class="jack-label">T3</span></div>
+            <div class="jack jack-purple active"><div class="jack-port"></div><span class="jack-label">POOL</span></div>
+            <div class="jack jack-purple active"><div class="jack-port"></div><span class="jack-label">ANLYT</span></div>
+            <div class="jack jack-purple active"><div class="jack-port"></div><span class="jack-label">CRM</span></div>
+          </div>
+        </div>
+        <!-- Row 4: DELIVERY (green) -->
+        <div class="jack-row">
+          <div class="jack-row-label">Delivery</div>
+          <div class="jacks">
+            <div class="jack jack-green active"><div class="jack-port"></div><span class="jack-label">Carrier-A</span></div>
+            <div class="jack jack-green active"><div class="jack-port"></div><span class="jack-label">Carrier-B</span></div>
+            <div class="jack jack-green active"><div class="jack-port"></div><span class="jack-label">Carrier-C</span></div>
+            <div class="jack jack-green active"><div class="jack-port"></div><span class="jack-label">Agency-1</span></div>
+            <div class="jack jack-green active"><div class="jack-port"></div><span class="jack-label">Agency-2</span></div>
+            <div class="jack jack-green active"><div class="jack-port"></div><span class="jack-label">Dashboard</span></div>
+            <div class="jack jack-green active"><div class="jack-port"></div><span class="jack-label">Export</span></div>
+            <div class="jack jack-green active"><div class="jack-port"></div><span class="jack-label">Archive</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SVG PATCH CORDS -->
+      <svg class="patch-overlay" id="patchCords" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;">
+        <defs>
+          <linearGradient id="cordBlueAmber" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#2563eb" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.6"/>
+          </linearGradient>
+          <linearGradient id="cordAmberPurple" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.6"/>
+          </linearGradient>
+          <linearGradient id="cordPurpleGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#10b981" stop-opacity="0.6"/>
+          </linearGradient>
+          <linearGradient id="cordBluePurple" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#2563eb" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.5"/>
+          </linearGradient>
+          <filter id="cordGlow">
+            <feGaussianBlur stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+      </svg>
+
+      <!-- STATUS PANEL -->
+      <div class="console-status">
+        <div class="stat-item">Sources: <span class="stat-val-blue">6/8</span></div>
+        <div class="stat-item"><div class="status-dot-amber" style="width:6px;height:6px;"></div> Enrichment Queue: <span class="stat-val-amber">12</span></div>
+        <div class="stat-item">Routes/sec: <span class="stat-val" id="routesSec">1,247</span></div>
+        <div class="stat-item">Match Rate: <span class="stat-val-green">94.2%</span></div>
+        <div class="stat-item">Avg Score: <span class="stat-val">734</span></div>
+        <div class="stat-item">Latency: <span class="stat-val-green">4.7ms</span></div>
+      </div>
+    </div>
+
+    <div class="console-buttons">
+      <a href="#cta" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        See It Live
+      </a>
+      <a href="#how-it-works" class="btn-secondary">How It Works</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LIVE STATS ===== -->
+<section class="stats-section noise">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card glass">
+        <div class="stat-number" data-target="10">10M+</div>
+        <div class="stat-label">Opportunities Processed</div>
+        <div class="stat-detail">Across all verticals, last 12 months</div>
+      </div>
+      <div class="stat-card glass">
+        <div class="stat-number">&lt; 5ms</div>
+        <div class="stat-label">Avg Routing Latency</div>
+        <div class="stat-detail">From intake to delivery endpoint</div>
+      </div>
+      <div class="stat-card glass">
+        <div class="stat-number">343M</div>
+        <div class="stat-label">Data Points Enriched</div>
+        <div class="stat-detail">Real-time enrichment engine</div>
+      </div>
+      <div class="stat-card glass">
+        <div class="stat-number">94.2%</div>
+        <div class="stat-label">Match Rate</div>
+        <div class="stat-detail">Industry average: ~68%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CAPABILITIES (LIGHT SECTION) ===== -->
+<section class="capabilities-section" id="capabilities">
+  <div class="container">
+    <div class="capabilities-header">
+      <p class="section-title section-title-dark">The Complete Intelligence Stack</p>
+      <p class="section-subtitle">Five integrated systems working in concert. No gaps. No manual handoffs. No third-party dependencies.</p>
+    </div>
+    <div class="cap-grid">
+      <div class="cap-card">
+        <div class="cap-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Data Enrichment</h3>
+        <p>Layer demographic, risk, credit, geographic, and vehicle data onto every opportunity in real time.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <h3>ML Scoring</h3>
+        <p>Proprietary models score every opportunity on conversion probability, fraud risk, and buyer intent.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <h3>Smart Segmentation</h3>
+        <p>Automatically segment opportunities by tier, geography, product match, and buyer readiness.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        </div>
+        <h3>Intelligent Routing</h3>
+        <p>Route to the highest-value buyer in under 5ms. Tier-based, geography-aware, capacity-balanced.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        </div>
+        <h3>Real-Time Analytics</h3>
+        <p>Full pipeline visibility: source quality, conversion rates, revenue attribution, buyer performance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="how-section noise" id="how-it-works">
+  <div class="container">
+    <div class="how-header">
+      <p class="section-title section-title-light">Receive. Identify. Route. Connect.</p>
+      <p class="section-subtitle section-subtitle-dark">Four stages. Milliseconds. Every signal processed, scored, and delivered to the right destination.</p>
+    </div>
+    <div class="steps-track">
+      <div class="step-card glass">
+        <div class="step-num step-num-1 font-mono">01 &mdash; Receive</div>
+        <div class="step-icon-ring">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <h3>Receive Signal</h3>
+        <p>Ingest from any source: forms, APIs, partner feeds, calls. Normalize instantly.</p>
+      </div>
+      <div class="step-card glass">
+        <div class="step-num step-num-2 font-mono">02 &mdash; Identify</div>
+        <div class="step-icon-ring">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3>Identify &amp; Enrich</h3>
+        <p>Layer 40+ data attributes. Score for quality, intent, and fraud risk in real time.</p>
+      </div>
+      <div class="step-card glass">
+        <div class="step-num step-num-3 font-mono">03 &mdash; Route</div>
+        <div class="step-icon-ring">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+        </div>
+        <h3>Route Intelligently</h3>
+        <p>Match to optimal buyer by tier, capacity, geography, and real-time bidding rules.</p>
+      </div>
+      <div class="step-card glass">
+        <div class="step-num step-num-4 font-mono">04 &mdash; Connect</div>
+        <div class="step-icon-ring">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h3>Connect &amp; Confirm</h3>
+        <p>Deliver via API, webhook, or dashboard. Full delivery confirmation and attribution tracking.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SYSTEM STATUS ===== -->
+<section class="sys-status-section noise" id="system-status">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px;">
+      <p class="section-title section-title-light">System Status</p>
+      <p class="section-subtitle section-subtitle-dark" style="margin:8px auto 0;max-width:400px;">Real-time platform health. Because uptime is everything.</p>
+    </div>
+    <div class="sys-panel glass-strong">
+      <div class="sys-header">
+        <div class="sys-header-left">
+          <div class="status-dot"></div>
+          <h3>All Systems Operational</h3>
+        </div>
+        <div class="sys-header-right">Updated <span id="statusTime">12s</span> ago</div>
+      </div>
+      <div class="sys-rows">
+        <div class="sys-row">
+          <div class="sys-row-left">
+            <div class="status-dot"></div>
+            <span class="sys-row-name">Enrichment Engine</span>
+          </div>
+          <div class="sys-row-right">
+            <span class="sys-uptime">99.98%</span>
+            <span>3.2ms</span>
+          </div>
+        </div>
+        <div class="sys-row">
+          <div class="sys-row-left">
+            <div class="status-dot"></div>
+            <span class="sys-row-name">Scoring ML Pipeline</span>
+          </div>
+          <div class="sys-row-right">
+            <span class="sys-uptime">99.97%</span>
+            <span>4.1ms</span>
+          </div>
+        </div>
+        <div class="sys-row">
+          <div class="sys-row-left">
+            <div class="status-dot"></div>
+            <span class="sys-row-name">Routing Engine</span>
+          </div>
+          <div class="sys-row-right">
+            <span class="sys-uptime">99.99%</span>
+            <span>1.8ms</span>
+          </div>
+        </div>
+        <div class="sys-row">
+          <div class="sys-row-left">
+            <div class="status-dot"></div>
+            <span class="sys-row-name">Analytics Pipeline</span>
+          </div>
+          <div class="sys-row-right">
+            <span class="sys-uptime">99.95%</span>
+            <span>8.4ms</span>
+          </div>
+        </div>
+        <div class="sys-row">
+          <div class="sys-row-left">
+            <div class="status-dot"></div>
+            <span class="sys-row-name">Partner API Gateway</span>
+          </div>
+          <div class="sys-row-right">
+            <span class="sys-uptime">99.97%</span>
+            <span>2.6ms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIAL ===== -->
+<section class="testimonial-section noise">
+  <div class="container">
+    <div class="testimonial-card glass-strong">
+      <div class="gold-divider" style="margin-bottom:32px;"></div>
+      <p class="testimonial-quote">"We replaced three vendors and a spreadsheet with The Switchboard. Match rates went from 71% to 94% in the first month. The routing intelligence alone paid for itself in week one."</p>
+      <p class="testimonial-author">Sarah Chen</p>
+      <p class="testimonial-role">VP of Operations, National Insurance Group</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CASE STUDIES ===== -->
+<section class="cases-section noise" id="case-studies">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px;">
+      <p class="section-title section-title-light">Proven Results</p>
+      <p class="section-subtitle section-subtitle-dark" style="margin:8px auto 0;max-width:440px;">Real outcomes from real partners. No vanity metrics.</p>
+    </div>
+    <div class="cases-grid">
+      <div class="case-card glass">
+        <div class="case-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+          +147% Revenue
+        </div>
+        <h3>Regional Carrier Scales Nationwide</h3>
+        <p>A mid-size carrier struggling with opportunity quality deployed The Switchboard's enrichment and scoring engine. Within 90 days, conversion rates doubled.</p>
+        <div class="case-metrics">
+          <div>
+            <div class="case-metric-val font-mono">94.2%</div>
+            <div class="case-metric-label">Match Rate</div>
+          </div>
+          <div>
+            <div class="case-metric-val font-mono">2.1x</div>
+            <div class="case-metric-label">Conversion Lift</div>
+          </div>
+          <div>
+            <div class="case-metric-val font-mono">$2.4M</div>
+            <div class="case-metric-label">Annual Revenue Added</div>
+          </div>
+        </div>
+      </div>
+      <div class="case-card glass">
+        <div class="case-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          -73% Response Time
+        </div>
+        <h3>Agency Network Automates Routing</h3>
+        <p>A 200+ agency network replaced manual assignment with intelligent routing. Response times dropped from hours to seconds, close rates jumped 34%.</p>
+        <div class="case-metrics">
+          <div>
+            <div class="case-metric-val font-mono">4.7ms</div>
+            <div class="case-metric-label">Avg Routing</div>
+          </div>
+          <div>
+            <div class="case-metric-val font-mono">+34%</div>
+            <div class="case-metric-label">Close Rate</div>
+          </div>
+          <div>
+            <div class="case-metric-val font-mono">200+</div>
+            <div class="case-metric-label">Agencies Connected</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section noise" id="cta">
+  <div class="gold-divider" style="margin-bottom:40px;"></div>
+  <h2 class="cta-headline">Make the connection.</h2>
+  <p class="cta-sub">See how The Switchboard transforms your pipeline with enriched, scored, and intelligently routed opportunities.</p>
+  <div class="cta-buttons">
+    <a href="#" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      Request a Demo
+    </a>
+    <a href="#" class="btn-secondary">Talk to Our Team</a>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="logo" style="font-size:16px;">The Switchboard<span class="logo-dot">.</span></span>
+        <p>The intelligence layer for insurance distribution. Enrich, score, route, and deliver at the speed your business demands.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="#">Enrichment</a>
+        <a href="#">Scoring</a>
+        <a href="#">Routing</a>
+        <a href="#">Analytics</a>
+        <a href="#">API Docs</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Blog</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="#">Documentation</a>
+        <a href="#">Case Studies</a>
+        <a href="#">System Status</a>
+        <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 The Switchboard. All rights reserved.</p>
+      <div class="footer-status">
+        <div class="status-dot" style="width:6px;height:6px;"></div>
+        <span>System Status: Operational</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== PATCH CORD RENDERING =====
+(function() {
+  const svg = document.getElementById('patchCords');
+  const grid = document.getElementById('jackGrid');
+  if (!svg || !grid) return;
+
+  function getJackCenter(rowIdx, jackIdx) {
+    const rows = grid.querySelectorAll('.jack-row');
+    if (!rows[rowIdx]) return null;
+    const jacks = rows[rowIdx].querySelectorAll('.jack');
+    if (!jacks[jackIdx]) return null;
+    const port = jacks[jackIdx].querySelector('.jack-port');
+    if (!port) return null;
+    const consoleEl = document.getElementById('operatorConsole');
+    const consoleRect = consoleEl.getBoundingClientRect();
+    const portRect = port.getBoundingClientRect();
+    return {
+      x: portRect.left + portRect.width / 2 - consoleRect.left,
+      y: portRect.top + portRect.height / 2 - consoleRect.top
+    };
+  }
+
+  function drawCords() {
+    // Clear existing
+    while (svg.querySelector('path.cord')) {
+      svg.querySelector('path.cord').remove();
+    }
+    while (svg.querySelector('circle.particle')) {
+      svg.querySelector('circle.particle').remove();
+    }
+
+    const cords = [
+      // [fromRow, fromJack, toRow, toJack, gradientId]
+      [0, 0, 1, 0, 'cordBlueAmber'],   // Forms -> EQ-1
+      [0, 1, 1, 2, 'cordBlueAmber'],   // API-1 -> DEMO
+      [0, 3, 1, 3, 'cordBlueAmber'],   // Partners -> RISK
+      [0, 4, 1, 5, 'cordBlueAmber'],   // Calls -> GEO
+      [1, 0, 2, 0, 'cordAmberPurple'], // EQ-1 -> T1-A
+      [1, 3, 2, 2, 'cordAmberPurple'], // RISK -> T2-A
+      [1, 5, 2, 5, 'cordAmberPurple'], // GEO -> POOL
+      [2, 0, 3, 0, 'cordPurpleGreen'], // T1-A -> Carrier-A
+      [2, 2, 3, 3, 'cordPurpleGreen'], // T2-A -> Agency-1
+      [0, 5, 2, 6, 'cordBluePurple'],  // Feed -> ANLYT
+    ];
+
+    cords.forEach(([r1, j1, r2, j2, grad], i) => {
+      const from = getJackCenter(r1, j1);
+      const to = getJackCenter(r2, j2);
+      if (!from || !to) return;
+
+      const midY = (from.y + to.y) / 2;
+      const dx = (to.x - from.x) * 0.15;
+      const d = `M ${from.x} ${from.y} C ${from.x + dx} ${midY}, ${to.x - dx} ${midY}, ${to.x} ${to.y}`;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('class', 'cord');
+      path.setAttribute('d', d);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', `url(#${grad})`);
+      path.setAttribute('stroke-width', '2');
+      path.setAttribute('filter', 'url(#cordGlow)');
+      path.setAttribute('opacity', '0.7');
+      svg.appendChild(path);
+
+      // Animated particle
+      const particle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      particle.setAttribute('class', 'particle');
+      particle.setAttribute('r', '3');
+      particle.setAttribute('fill', '#fff');
+      particle.setAttribute('opacity', '0');
+      particle.style.offsetPath = `path("${d}")`;
+      particle.style.animation = `float-particle ${2.5 + i * 0.3}s ease-in-out ${i * 0.4}s infinite`;
+      svg.appendChild(particle);
+    });
+  }
+
+  // Draw on load and resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(drawCords, 100);
+  });
+
+  // Initial draw after fonts load
+  if (document.fonts) {
+    document.fonts.ready.then(() => setTimeout(drawCords, 100));
+  } else {
+    setTimeout(drawCords, 300);
+  }
+})();
+
+// ===== LIVE COUNTER ANIMATION =====
+(function() {
+  const opsEl = document.getElementById('opsCounter');
+  const routesEl = document.getElementById('routesSec');
+  const statusTimeEl = document.getElementById('statusTime');
+  let ops = 1247;
+  let statusSec = 12;
+
+  setInterval(() => {
+    ops += Math.floor(Math.random() * 7) - 3;
+    ops = Math.max(1200, Math.min(1300, ops));
+    const formatted = ops.toLocaleString() + ' ops/sec';
+    if (opsEl) opsEl.textContent = formatted;
+    if (routesEl) routesEl.textContent = ops.toLocaleString();
+  }, 2000);
+
+  setInterval(() => {
+    statusSec++;
+    if (statusSec > 30) statusSec = 1;
+    if (statusTimeEl) statusTimeEl.textContent = statusSec + 's';
+  }, 1000);
+})();
+
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Close mobile nav
+      document.getElementById('mainNav').classList.remove('open');
+    }
+  });
+});
+
+// ===== INTERSECTION OBSERVER FOR FADE-IN =====
+(function() {
+  const style = document.createElement('style');
+  style.textContent = `
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+  `;
+  document.head.appendChild(style);
+
+  const targets = document.querySelectorAll('.stat-card, .cap-card, .step-card, .case-card, .sys-panel, .testimonial-card');
+  targets.forEach((el, i) => {
+    el.classList.add('fade-up');
+    el.style.transitionDelay = (i % 4) * 0.1 + 's';
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  targets.forEach(el => observer.observe(el));
+})();
+</script>
+
+</body>
+</html>

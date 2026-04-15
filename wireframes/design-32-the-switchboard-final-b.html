@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Switchboard — Insurance Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   RESET & FOUNDATIONS
+   ═══════════════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream-1: #faf9f7;
+  --cream-2: #f5f0eb;
+  --cream-3: #efe8e0;
+  --charcoal-1: #1c1917;
+  --charcoal-2: #211f1c;
+  --charcoal-3: #292524;
+  --gold: #c9a96e;
+  --gold-glow: rgba(201, 169, 110, 0.35);
+  --gold-soft: rgba(201, 169, 110, 0.12);
+  --blue: #2563eb;
+  --blue-glow: rgba(37, 99, 235, 0.4);
+  --warm-gray: #78716c;
+  --warm-gray-light: #a8a29e;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Inter', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --shadow-card: 0 4px 6px rgba(28,25,23,0.04), 0 12px 24px rgba(28,25,23,0.08), 0 24px 48px rgba(28,25,23,0.04);
+  --shadow-card-hover: 0 8px 16px rgba(28,25,23,0.06), 0 20px 40px rgba(28,25,23,0.12), 0 32px 64px rgba(28,25,23,0.06);
+  --shadow-deep: 0 8px 16px rgba(28,25,23,0.08), 0 24px 48px rgba(28,25,23,0.12), 0 48px 96px rgba(28,25,23,0.08);
+}
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--sans);
+  color: var(--charcoal-1);
+  background: var(--cream-1);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* Paper texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════════ */
+h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1.1; }
+
+.overline {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.label-mono {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SIGNAL DOT — the subtle tech indicator
+   ═══════════════════════════════════════════════════════ */
+.signal-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 8px var(--blue-glow), 0 0 16px var(--blue-glow);
+  animation: pulse-dot 3s ease-in-out infinite;
+}
+
+.signal-dot-gold {
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold-glow), 0 0 16px var(--gold-glow);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════════════ */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 0 2rem;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(250,249,247,0.92) 0%, rgba(245,240,235,0.88) 100%);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid rgba(201,169,110,0.15);
+  box-shadow: 0 1px 3px rgba(28,25,23,0.04), 0 4px 12px rgba(28,25,23,0.03);
+}
+
+.logo {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  color: var(--charcoal-1);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.logo span { color: var(--gold); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--charcoal-3);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--charcoal-1); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  font-family: var(--serif) !important;
+  font-size: 0.85rem !important;
+  padding: 0.5rem 1.5rem;
+  border: 1.5px solid var(--gold);
+  border-radius: 100px;
+  color: var(--charcoal-1) !important;
+  transition: all 0.3s ease;
+}
+
+.nav-cta::after { display: none !important; }
+
+.nav-cta:hover {
+  background: var(--gold);
+  color: white !important;
+  box-shadow: 0 4px 16px var(--gold-glow);
+}
+
+.mobile-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.mobile-toggle span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: var(--charcoal-1);
+  transition: all 0.3s;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 2rem 80px;
+  background: linear-gradient(180deg, var(--cream-1) 0%, var(--cream-2) 50%, var(--cream-3) 100%);
+  position: relative;
+}
+
+.hero-overline {
+  margin-bottom: 2rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  letter-spacing: -0.03em;
+  color: var(--charcoal-1);
+  max-width: 900px;
+  margin: 0 auto 2rem;
+  line-height: 1.05;
+}
+
+.hero-sub {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  color: var(--warm-gray);
+  max-width: 680px;
+  margin: 0 auto 3rem;
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 3.5rem;
+}
+
+.btn-primary {
+  font-family: var(--serif);
+  font-size: 1rem;
+  padding: 0.85rem 2.5rem;
+  background: var(--charcoal-1);
+  color: var(--cream-1);
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  letter-spacing: 0.01em;
+}
+
+.btn-primary:hover {
+  background: var(--charcoal-3);
+  box-shadow: 0 8px 24px rgba(28,25,23,0.2);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  font-family: var(--serif);
+  font-size: 1rem;
+  padding: 0.85rem 2.5rem;
+  background: transparent;
+  color: var(--charcoal-1);
+  border: 1.5px solid var(--gold);
+  border-radius: 100px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  letter-spacing: 0.01em;
+}
+
+.btn-secondary:hover {
+  background: rgba(201,169,110,0.08);
+  box-shadow: 0 4px 16px var(--gold-glow);
+  transform: translateY(-1px);
+}
+
+/* Hero divider with signal dot */
+.hero-signal {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3.5rem;
+}
+
+.hero-signal-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.hero-signal .signal-dot {
+  margin: 0 1rem;
+  width: 8px;
+  height: 8px;
+}
+
+/* Hero stats */
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-stat {
+  text-align: center;
+  padding: 0 2.5rem;
+  position: relative;
+}
+
+.hero-stat:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 40px;
+  background: var(--gold);
+  opacity: 0.4;
+}
+
+.hero-stat-number {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  color: var(--charcoal-1);
+  display: block;
+  line-height: 1.2;
+}
+
+.hero-stat-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--warm-gray);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION: THE EXPERIENCE (warm bg)
+   ═══════════════════════════════════════════════════════ */
+.section-warm {
+  background: linear-gradient(180deg, var(--cream-3) 0%, var(--cream-2) 50%, var(--cream-1) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.section-dark {
+  background: linear-gradient(180deg, var(--charcoal-1) 0%, var(--charcoal-2) 100%);
+  color: var(--cream-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.section-padding {
+  padding: 120px 2rem;
+}
+
+.section-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.section-inner-wide {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* The Experience */
+.experience-section {
+  position: relative;
+}
+
+.experience-bg-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--serif);
+  font-size: clamp(10rem, 20vw, 16rem);
+  color: var(--charcoal-1);
+  opacity: 0.045;
+  pointer-events: none;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.experience-section h2 {
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  letter-spacing: -0.02em;
+  margin-bottom: 3rem;
+  color: var(--charcoal-1);
+}
+
+.experience-section h2 .signal-dot {
+  vertical-align: middle;
+  margin-left: 0.75rem;
+  width: 5px;
+  height: 5px;
+}
+
+.experience-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.experience-cols p {
+  font-size: 1.05rem;
+  color: var(--warm-gray);
+  line-height: 1.85;
+  font-weight: 300;
+}
+
+.experience-cols p strong {
+  color: var(--charcoal-1);
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION: THE INTELLIGENCE (dark bg)
+   ═══════════════════════════════════════════════════════ */
+.intelligence-list {
+  list-style: none;
+  counter-reset: intel-counter;
+}
+
+.intelligence-item {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 1.5rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid rgba(201,169,110,0.15);
+  align-items: start;
+}
+
+.intelligence-item:first-child {
+  padding-top: 0;
+}
+
+.intelligence-item:last-child {
+  border-bottom: none;
+}
+
+.intel-number-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.intel-number {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  color: rgba(245,240,235,0.25);
+  line-height: 1;
+}
+
+.intel-number .signal-dot {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 0.35rem;
+  width: 5px;
+  height: 5px;
+}
+
+.intelligence-item h3 {
+  font-size: 1.35rem;
+  color: var(--cream-2);
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.01em;
+}
+
+.intelligence-item p {
+  font-size: 0.95rem;
+  color: var(--warm-gray-light);
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION: THE SWITCHBOARD (warm bg, visualization)
+   ═══════════════════════════════════════════════════════ */
+.switchboard-section h2 {
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  text-align: center;
+  letter-spacing: -0.02em;
+  margin-bottom: 4rem;
+}
+
+.switchboard-viz {
+  max-width: 780px;
+  margin: 0 auto 3rem;
+  position: relative;
+  padding: 3rem 0;
+}
+
+.switchboard-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  position: relative;
+}
+
+.flow-sources, .flow-destinations {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 180px;
+}
+
+.flow-label {
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  padding: 0.65rem 1rem;
+  border-radius: 6px;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.flow-label-gold {
+  background: rgba(201,169,110,0.08);
+  border: 1px solid rgba(201,169,110,0.2);
+  color: var(--charcoal-1);
+  text-align: right;
+}
+
+.flow-label-blue {
+  background: rgba(37,99,235,0.04);
+  border: 1px solid rgba(37,99,235,0.12);
+  color: var(--charcoal-1);
+  text-align: left;
+}
+
+.flow-center {
+  width: 200px;
+  text-align: center;
+  position: relative;
+  margin: 0 2rem;
+}
+
+.flow-center-orb {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,169,110,0.15) 0%, rgba(201,169,110,0.03) 60%, transparent 70%);
+  border: 1px solid rgba(201,169,110,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: orb-breathe 4s ease-in-out infinite;
+}
+
+@keyframes orb-breathe {
+  0%, 100% { box-shadow: 0 0 20px rgba(201,169,110,0.1), 0 0 40px rgba(201,169,110,0.05); }
+  50% { box-shadow: 0 0 30px rgba(201,169,110,0.2), 0 0 60px rgba(201,169,110,0.08); }
+}
+
+.flow-center-orb .signal-dot-gold {
+  width: 10px;
+  height: 10px;
+}
+
+.flow-center-label {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--warm-gray);
+}
+
+/* Connection lines */
+.flow-lines-left, .flow-lines-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  pointer-events: none;
+}
+
+.flow-lines-left { left: 180px; }
+.flow-lines-right { right: 180px; }
+
+.flow-line {
+  position: absolute;
+  height: 1px;
+  width: 100%;
+}
+
+.flow-line-gold { background: linear-gradient(90deg, var(--gold), rgba(201,169,110,0.3)); }
+.flow-line-blue { background: linear-gradient(270deg, var(--blue), rgba(37,99,235,0.15)); }
+
+/* Animated dot on one line */
+.flow-dot-animated {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 6px var(--gold-glow);
+  top: 50%;
+  transform: translateY(-50%);
+  animation: flow-travel 3s ease-in-out infinite;
+}
+
+@keyframes flow-travel {
+  0% { left: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+.switchboard-tagline {
+  text-align: center;
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  color: var(--warm-gray);
+  font-style: italic;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════
+   STATS BREAK
+   ═══════════════════════════════════════════════════════ */
+.stats-break {
+  background: linear-gradient(180deg, var(--charcoal-2) 0%, var(--charcoal-1) 50%, var(--charcoal-2) 100%);
+  padding: 100px 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-break::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(201,169,110,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: clamp(2rem, 6vw, 6rem);
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-family: var(--serif);
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  color: var(--cream-2);
+  line-height: 1;
+  text-shadow: 0 0 40px var(--gold-glow), 0 0 80px rgba(201,169,110,0.15);
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.stat-label {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--warm-gray-light);
+}
+
+/* ═══════════════════════════════════════════════════════
+   TESTIMONIAL
+   ═══════════════════════════════════════════════════════ */
+.testimonial-section {
+  background: linear-gradient(180deg, var(--cream-1) 0%, var(--cream-2) 50%, var(--cream-1) 100%);
+  padding: 120px 2rem;
+  text-align: center;
+}
+
+.testimonial-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.testimonial-quote {
+  position: relative;
+  padding-left: 2.5rem;
+  text-align: left;
+}
+
+.testimonial-quote::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--gold);
+  border-radius: 2px;
+  box-shadow: 0 0 12px var(--gold-glow), 0 0 24px rgba(201,169,110,0.15);
+}
+
+.testimonial-quote blockquote {
+  font-family: var(--serif);
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+  line-height: 1.55;
+  color: var(--charcoal-1);
+  font-style: italic;
+}
+
+.testimonial-attribution {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-left: 2.5rem;
+}
+
+.testimonial-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--cream-3), var(--warm-gray-light));
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 0 4px rgba(201,169,110,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--charcoal-1);
+}
+
+.testimonial-meta {
+  text-align: left;
+}
+
+.testimonial-name {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--charcoal-1);
+}
+
+.testimonial-role {
+  font-size: 0.8rem;
+  color: var(--warm-gray);
+  margin-top: 0.15rem;
+}
+
+/* ═══════════════════════════════════════════════════════
+   CASE STUDIES
+   ═══════════════════════════════════════════════════════ */
+.casestudies-section {
+  background: linear-gradient(180deg, var(--cream-1) 0%, var(--cream-2) 100%);
+  padding: 120px 2rem;
+}
+
+.casestudies-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.casestudies-header h2 {
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.casestudies-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.case-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  box-shadow: var(--shadow-card);
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.case-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px);
+}
+
+.case-card-header {
+  padding: 2rem 1.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--charcoal-1) 0%, var(--charcoal-2) 60%, #2a2725 100%);
+  position: relative;
+}
+
+.case-card-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top right, rgba(201,169,110,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.case-category {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.case-card-header h3 {
+  font-size: 1.3rem;
+  color: var(--cream-2);
+  letter-spacing: -0.01em;
+  position: relative;
+  z-index: 1;
+  line-height: 1.25;
+}
+
+.case-card-body {
+  padding: 1.5rem 1.75rem 1.75rem;
+}
+
+.case-card-body p {
+  font-size: 0.9rem;
+  color: var(--warm-gray);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+  font-weight: 300;
+}
+
+.case-read-more {
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  color: var(--charcoal-1);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.3s;
+}
+
+.case-read-more:hover {
+  color: var(--gold);
+  gap: 0.65rem;
+}
+
+/* ═══════════════════════════════════════════════════════
+   CTA SECTION
+   ═══════════════════════════════════════════════════════ */
+.cta-section {
+  background: linear-gradient(180deg, var(--charcoal-1) 0%, var(--charcoal-2) 100%);
+  padding: 160px 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,169,110,0.08) 0%, rgba(201,169,110,0.02) 40%, transparent 60%);
+  pointer-events: none;
+}
+
+.cta-section h2 {
+  font-size: clamp(4rem, 8vw, 6rem);
+  color: var(--cream-2);
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.cta-sub {
+  font-size: 1.1rem;
+  color: var(--warm-gray-light);
+  max-width: 480px;
+  margin: 0 auto 3rem;
+  font-weight: 300;
+  line-height: 1.7;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-cta-gold {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  padding: 1rem 3rem;
+  background: transparent;
+  color: var(--cream-2);
+  border: 1.5px solid var(--gold);
+  border-radius: 100px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+}
+
+.btn-cta-gold:hover {
+  background: var(--gold);
+  color: var(--charcoal-1);
+  box-shadow: 0 0 32px var(--gold-glow), 0 0 64px rgba(201,169,110,0.12);
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════ */
+.site-footer {
+  background: var(--charcoal-1);
+  border-top: 1px solid rgba(201,169,110,0.1);
+  padding: 60px 2rem 40px;
+}
+
+.footer-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 3rem;
+}
+
+.footer-brand .logo {
+  font-size: 1.2rem;
+  color: var(--cream-2);
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.footer-brand p {
+  font-size: 0.85rem;
+  color: var(--warm-gray);
+  line-height: 1.7;
+  max-width: 280px;
+  font-weight: 300;
+}
+
+.footer-col h4 {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--warm-gray-light);
+  margin-bottom: 1.25rem;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col li {
+  margin-bottom: 0.6rem;
+}
+
+.footer-col a {
+  font-size: 0.85rem;
+  color: var(--warm-gray);
+  text-decoration: none;
+  transition: color 0.3s;
+  font-weight: 300;
+}
+
+.footer-col a:hover {
+  color: var(--gold);
+}
+
+.footer-bottom {
+  max-width: 1080px;
+  margin: 3rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(201,169,110,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-bottom p {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  font-weight: 300;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-bottom-links a {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-bottom-links a:hover { color: var(--gold); }
+
+/* ═══════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════ */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered delays */
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+.delay-5 { transition-delay: 0.5s; }
+
+/* Counter animation */
+@keyframes count-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   MOBILE RESPONSIVE
+   ═══════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .casestudies-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .casestudies-grid .case-card:last-child {
+    grid-column: 1 / -1;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-header {
+    padding: 0 1.25rem;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(250,249,247,0.97) 0%, rgba(245,240,235,0.97) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    flex-direction: column;
+    padding: 1.5rem 2rem 2rem;
+    gap: 1.25rem;
+    border-bottom: 1px solid rgba(201,169,110,0.15);
+    box-shadow: 0 8px 24px rgba(28,25,23,0.08);
+  }
+
+  .nav-links.active { display: flex; }
+
+  .mobile-toggle { display: flex; }
+
+  .hero { padding: 100px 1.5rem 60px; min-height: auto; }
+  .hero h1 { font-size: 2.5rem; }
+  .hero-sub { font-size: 1rem; }
+
+  .hero-stats {
+    gap: 0;
+  }
+  .hero-stat {
+    padding: 0 1.25rem;
+  }
+  .hero-stat-number { font-size: 1.2rem; }
+
+  .section-padding { padding: 80px 1.5rem; }
+
+  .experience-cols {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .experience-bg-number {
+    font-size: 8rem;
+  }
+
+  .intelligence-item {
+    grid-template-columns: 40px 1fr;
+    gap: 1rem;
+    padding: 1.75rem 0;
+  }
+
+  /* Switchboard viz mobile */
+  .switchboard-flow {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .flow-sources, .flow-destinations {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .flow-label { text-align: center; font-size: 0.8rem; padding: 0.5rem 0.75rem; }
+  .flow-center { margin: 0; width: auto; }
+  .flow-lines-left, .flow-lines-right { display: none; }
+
+  .stats-grid { gap: 2rem; }
+  .stat-number { font-size: 3rem; }
+
+  .casestudies-grid {
+    grid-template-columns: 1fr;
+  }
+  .casestudies-grid .case-card:last-child {
+    max-width: none;
+  }
+
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .cta-section { padding: 100px 1.5rem; }
+  .cta-section h2 { font-size: 3.5rem; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 2rem; }
+  .hero-stat { padding: 0.75rem 1rem; }
+  .hero-stat:not(:last-child)::after { display: none; }
+  .hero-stats { flex-direction: column; gap: 0.5rem; }
+
+  .stat-number { font-size: 2.5rem; }
+  .stats-grid { flex-direction: column; gap: 2.5rem; }
+
+  .experience-bg-number { font-size: 6rem; }
+
+  .cta-section h2 { font-size: 2.5rem; }
+
+  .footer-inner { grid-template-columns: 1fr; }
+  .footer-brand { grid-column: auto; }
+
+  .flow-sources, .flow-destinations { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════
+     HEADER
+     ════════════════════════════════════════════════════ -->
+<header class="site-header">
+  <a href="#" class="logo">The <span>Switchboard</span></a>
+  <nav>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#intelligence">Intelligence</a></li>
+      <li><a href="#platform">Platform</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#stories">Stories</a></li>
+      <li><a href="#contact" class="nav-cta">Get in Touch</a></li>
+    </ul>
+  </nav>
+  <div class="mobile-toggle" id="mobileToggle" onclick="document.getElementById('navLinks').classList.toggle('active')">
+    <span></span><span></span><span></span>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════════
+     HERO
+     ════════════════════════════════════════════════════ -->
+<section class="hero">
+  <p class="overline hero-overline fade-up">Where Experience Meets Data</p>
+  <h1 class="fade-up delay-1">The precision layer for profitable insurance growth.</h1>
+  <p class="hero-sub fade-up delay-2">Twenty-five years of insurance expertise. Three hundred forty-three million data points. One platform.</p>
+  <div class="hero-buttons fade-up delay-3">
+    <a href="#contact" class="btn-primary">Start a Conversation</a>
+    <a href="#platform" class="btn-secondary">See the Platform</a>
+  </div>
+  <div class="hero-signal fade-up delay-4">
+    <div class="hero-signal-line"></div>
+    <span class="signal-dot"></span>
+    <div class="hero-signal-line"></div>
+  </div>
+  <div class="hero-stats fade-up delay-4">
+    <div class="hero-stat">
+      <span class="hero-stat-number">25+</span>
+      <span class="hero-stat-label">Years</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-number">343M</span>
+      <span class="hero-stat-label">Records</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-number">&lt;5ms</span>
+      <span class="hero-stat-label">Response</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-number">94%</span>
+      <span class="hero-stat-label">Accuracy</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     THE EXPERIENCE
+     ════════════════════════════════════════════════════ -->
+<section class="section-warm section-padding experience-section" id="experience">
+  <div class="experience-bg-number">25+</div>
+  <div class="section-inner">
+    <h2 class="fade-up">The Experience. <span class="signal-dot"></span></h2>
+    <div class="experience-cols">
+      <p class="fade-up delay-1">
+        <strong>Insurance is not a data problem.</strong> It is a judgment problem. Every carrier, every agency, every MGA operates in a world where the difference between a profitable book and a failing one comes down to knowing which opportunities deserve attention &mdash; and which do not.
+      </p>
+      <p class="fade-up delay-2">
+        We built The Switchboard because <strong>we spent twenty-five years inside that world.</strong> We watched billions in premiums flow through systems that could not tell a $12,000 commercial account from a $200 personal auto quote. The intelligence existed. It simply was not connected. Until now.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     THE INTELLIGENCE
+     ════════════════════════════════════════════════════ -->
+<section class="section-dark section-padding" id="intelligence">
+  <div class="section-inner">
+    <h2 class="fade-up" style="font-size: clamp(2.5rem, 4vw, 3.5rem); letter-spacing: -0.02em; margin-bottom: 3rem; color: var(--cream-2);">The Intelligence.</h2>
+    <ol class="intelligence-list">
+      <li class="intelligence-item fade-up delay-1">
+        <div class="intel-number-wrap">
+          <span class="intel-number">01 <span class="signal-dot"></span></span>
+        </div>
+        <div>
+          <h3>Enrich</h3>
+          <p>Every incoming opportunity is instantly augmented with firmographic, demographic, and behavioral data drawn from 343 million records. You see the full picture before the first conversation.</p>
+        </div>
+      </li>
+      <li class="intelligence-item fade-up delay-2">
+        <div class="intel-number-wrap">
+          <span class="intel-number">02 <span class="signal-dot"></span></span>
+        </div>
+        <div>
+          <h3>Score</h3>
+          <p>Our proprietary risk-scoring models &mdash; trained on two decades of insurance outcome data &mdash; assign a precision score to every opportunity. High-value prospects rise. Low-quality noise falls away.</p>
+        </div>
+      </li>
+      <li class="intelligence-item fade-up delay-3">
+        <div class="intel-number-wrap">
+          <span class="intel-number">03 <span class="signal-dot"></span></span>
+        </div>
+        <div>
+          <h3>Segment</h3>
+          <p>Opportunities are automatically grouped by line of business, geography, policy type, and predicted lifetime value. Your team spends time on the right accounts, not all accounts.</p>
+        </div>
+      </li>
+      <li class="intelligence-item fade-up delay-4">
+        <div class="intel-number-wrap">
+          <span class="intel-number">04 <span class="signal-dot"></span></span>
+        </div>
+        <div>
+          <h3>Route</h3>
+          <p>Intelligent distribution sends each scored, segmented opportunity to the right person at the right time. No manual sorting. No cherry-picking. No wasted motion.</p>
+        </div>
+      </li>
+      <li class="intelligence-item fade-up delay-5">
+        <div class="intel-number-wrap">
+          <span class="intel-number">05 <span class="signal-dot"></span></span>
+        </div>
+        <div>
+          <h3>Analyze</h3>
+          <p>Real-time dashboards reveal which sources, segments, and agents convert &mdash; and which do not. The data loop closes. Your strategy sharpens with every cycle.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     THE SWITCHBOARD (Visualization)
+     ════════════════════════════════════════════════════ -->
+<section class="section-warm section-padding switchboard-section" id="platform">
+  <div class="section-inner-wide">
+    <h2 class="fade-up">The Switchboard.</h2>
+    <div class="switchboard-viz fade-up delay-1">
+      <div class="switchboard-flow">
+        <div class="flow-sources">
+          <div class="flow-label flow-label-gold">Web Forms</div>
+          <div class="flow-label flow-label-gold">Aggregators</div>
+          <div class="flow-label flow-label-gold">Referral Partners</div>
+        </div>
+        <div class="flow-center">
+          <div class="flow-center-orb">
+            <span class="signal-dot signal-dot-gold"></span>
+          </div>
+          <div class="flow-center-label">The Switchboard</div>
+        </div>
+        <div class="flow-destinations">
+          <div class="flow-label flow-label-blue">Top Producers</div>
+          <div class="flow-label flow-label-blue">Specialty Teams</div>
+          <div class="flow-label flow-label-blue">Nurture Flows</div>
+        </div>
+      </div>
+    </div>
+    <p class="switchboard-tagline fade-up delay-2">Where intuition becomes intelligence.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     STATS BREAK
+     ════════════════════════════════════════════════════ -->
+<section class="stats-break" id="results">
+  <div class="stats-grid">
+    <div class="stat-item fade-up">
+      <span class="stat-number" data-target="467">467%</span>
+      <span class="stat-label">Conversion Lift</span>
+    </div>
+    <div class="stat-item fade-up delay-1">
+      <span class="stat-number">$2.4B</span>
+      <span class="stat-label">Premiums Influenced</span>
+    </div>
+    <div class="stat-item fade-up delay-2">
+      <span class="stat-number">50+</span>
+      <span class="stat-label">Agency Partners</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     TESTIMONIAL
+     ════════════════════════════════════════════════════ -->
+<section class="testimonial-section">
+  <div class="testimonial-inner fade-up">
+    <div class="testimonial-quote">
+      <blockquote>
+        &ldquo;We went from drowning in unqualified traffic to working a curated book of risk-scored opportunities. The Switchboard did not just improve our numbers &mdash; it changed how we think about growth.&rdquo;
+      </blockquote>
+    </div>
+    <div class="testimonial-attribution">
+      <div class="testimonial-avatar">MR</div>
+      <div class="testimonial-meta">
+        <div class="testimonial-name">Michael Reeves</div>
+        <div class="testimonial-role">VP of Operations, Meridian Insurance Group</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     CASE STUDIES
+     ════════════════════════════════════════════════════ -->
+<section class="casestudies-section" id="stories">
+  <div class="casestudies-header">
+    <p class="overline fade-up">Case Studies</p>
+    <h2 class="fade-up delay-1">Stories from the field.</h2>
+  </div>
+  <div class="casestudies-grid">
+    <article class="case-card fade-up delay-1">
+      <div class="case-card-header">
+        <span class="case-category">Commercial Lines</span>
+        <h3>From 2% to 11% Close Rate in 90 Days</h3>
+      </div>
+      <div class="case-card-body">
+        <p>A mid-market agency replaced manual prospect sorting with Switchboard scoring. The result: 5.5x improvement in close rates and a 340% increase in premium per producer.</p>
+        <a href="#" class="case-read-more">Read &rarr;</a>
+      </div>
+    </article>
+    <article class="case-card fade-up delay-2">
+      <div class="case-card-header">
+        <span class="case-category">Personal Lines</span>
+        <h3>Cutting Acquisition Cost by 62%</h3>
+      </div>
+      <div class="case-card-body">
+        <p>A national carrier used Switchboard segmentation to redirect spend from low-value channels to high-intent shoppers, reducing cost-per-acquisition from $187 to $71.</p>
+        <a href="#" class="case-read-more">Read &rarr;</a>
+      </div>
+    </article>
+    <article class="case-card fade-up delay-3">
+      <div class="case-card-header">
+        <span class="case-category">MGA / Wholesale</span>
+        <h3>Real-Time Routing for Specialty Risk</h3>
+      </div>
+      <div class="case-card-body">
+        <p>An MGA handling surplus lines integrated Switchboard routing to match specialty opportunities with the right underwriters in under five milliseconds.</p>
+        <a href="#" class="case-read-more">Read &rarr;</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     CTA
+     ════════════════════════════════════════════════════ -->
+<section class="cta-section" id="contact">
+  <h2 class="fade-up">Let's talk.</h2>
+  <p class="cta-sub fade-up delay-1">No pitch decks. No pressure. Just a conversation about what intelligence could do for your book of business.</p>
+  <a href="#" class="btn-cta-gold fade-up delay-2">Start the Conversation</a>
+</section>
+
+<!-- ════════════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="logo">The <span>Switchboard</span></a>
+      <p>The intelligence layer for insurance distribution. Enrich. Score. Segment. Route. Analyze.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="#">Enrichment</a></li>
+        <li><a href="#">Scoring</a></li>
+        <li><a href="#">Segmentation</a></li>
+        <li><a href="#">Routing</a></li>
+        <li><a href="#">Analytics</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Case Studies</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <ul>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">Schedule a Call</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 The Switchboard. All rights reserved.</p>
+    <div class="footer-bottom-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Security</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════════════════
+     SCRIPTS
+     ════════════════════════════════════════════════════ -->
+<script>
+// Intersection Observer for fade-up animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, {
+  threshold: 0.1,
+  rootMargin: '0px 0px -40px 0px'
+});
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Close mobile nav if open
+      document.getElementById('navLinks').classList.remove('active');
+    }
+  });
+});
+
+// Header scroll effect
+let lastScroll = 0;
+const header = document.querySelector('.site-header');
+window.addEventListener('scroll', () => {
+  const currentScroll = window.pageYOffset;
+  if (currentScroll > 100) {
+    header.style.boxShadow = '0 2px 8px rgba(28,25,23,0.06), 0 8px 24px rgba(28,25,23,0.04)';
+  } else {
+    header.style.boxShadow = '0 1px 3px rgba(28,25,23,0.04), 0 4px 12px rgba(28,25,23,0.03)';
+  }
+  lastScroll = currentScroll;
+}, { passive: true });
+</script>
+</body>
+</html>
