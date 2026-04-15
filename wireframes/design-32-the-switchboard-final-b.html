@@ -1320,32 +1320,113 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 </section>
 
 <!-- ════════════════════════════════════════════════════
-     THE SWITCHBOARD (Visualization)
+     THE SWITCHBOARD (Visualization) — PREMIUM
      ════════════════════════════════════════════════════ -->
-<section class="section-warm section-padding switchboard-section" id="platform">
-  <div class="section-inner-wide">
-    <h2 class="fade-up">The Switchboard.</h2>
-    <div class="switchboard-viz fade-up delay-1">
-      <div class="switchboard-flow">
-        <div class="flow-sources">
-          <div class="flow-label flow-label-gold">Web Forms</div>
-          <div class="flow-label flow-label-gold">Aggregators</div>
-          <div class="flow-label flow-label-gold">Referral Partners</div>
-        </div>
-        <div class="flow-center">
-          <div class="flow-center-orb">
-            <span class="signal-dot signal-dot-gold"></span>
-          </div>
-          <div class="flow-center-label">The Switchboard</div>
-        </div>
-        <div class="flow-destinations">
-          <div class="flow-label flow-label-blue">Top Producers</div>
-          <div class="flow-label flow-label-blue">Specialty Teams</div>
-          <div class="flow-label flow-label-blue">Nurture Flows</div>
-        </div>
-      </div>
+<section class="section-warm section-padding switchboard-section" id="platform" style="background:linear-gradient(180deg,#efe8e0 0%,#1c1917 40%,#1c1917 100%);position:relative;overflow:hidden;padding:100px 0 120px;">
+  <div style="position:absolute;inset:0;background-image:url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%22.03%22/%3E%3C/svg%3E');pointer-events:none;"></div>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(37,99,235,0.06) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1;">
+    <h2 class="fade-up" style="font-family:'Instrument Serif',serif;font-size:clamp(48px,6vw,80px);color:#faf9f7;text-align:center;margin-bottom:60px;text-shadow:0 0 40px rgba(201,169,110,0.15);">The Switchboard.</h2>
+
+    <!-- SVG Visualization -->
+    <div class="fade-up delay-1" style="position:relative;max-width:900px;margin:0 auto;">
+      <svg viewBox="0 0 900 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <defs>
+          <linearGradient id="cordGold" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#c9a96e" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#2563eb" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#2563eb" stop-opacity="0.8"/>
+          </linearGradient>
+          <linearGradient id="cordGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#c9a96e" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#10b981" stop-opacity="0.8"/>
+          </linearGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glowBig"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+
+        <!-- Center Hub — The Switchboard -->
+        <circle cx="450" cy="200" r="70" fill="rgba(255,255,255,0.03)" stroke="rgba(201,169,110,0.3)" stroke-width="1" filter="url(#glowBig)"/>
+        <circle cx="450" cy="200" r="50" fill="rgba(37,99,235,0.05)" stroke="rgba(37,99,235,0.3)" stroke-width="1"/>
+        <circle cx="450" cy="200" r="25" fill="radial-gradient(circle,#2563eb,transparent)">
+          <animate attributeName="r" values="22;28;22" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="450" cy="200" r="25" fill="#2563eb" opacity="0.8" filter="url(#glow)">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="450" cy="200" r="6" fill="#ffffff" opacity="0.9"/>
+
+        <!-- Outer pulsing rings -->
+        <circle cx="450" cy="200" r="70" fill="none" stroke="rgba(37,99,235,0.15)" stroke-width="1">
+          <animate attributeName="r" values="70;85;70" dur="4s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.3;0;0.3" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="450" cy="200" r="50" fill="none" stroke="rgba(201,169,110,0.15)" stroke-width="1">
+          <animate attributeName="r" values="50;65;50" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.3;0;0.3" dur="3s" repeatCount="indefinite"/>
+        </circle>
+
+        <!-- Source nodes (left, gold) -->
+        <circle cx="80" cy="100" r="8" fill="#c9a96e" opacity="0.9" filter="url(#glow)"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/></circle>
+        <circle cx="80" cy="200" r="8" fill="#c9a96e" opacity="0.9" filter="url(#glow)"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/></circle>
+        <circle cx="80" cy="300" r="8" fill="#c9a96e" opacity="0.9" filter="url(#glow)"><animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/></circle>
+
+        <!-- Destination nodes (right, blue/green) -->
+        <circle cx="820" cy="100" r="8" fill="#10b981" opacity="0.9" filter="url(#glow)"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.2s" repeatCount="indefinite"/></circle>
+        <circle cx="820" cy="200" r="8" fill="#2563eb" opacity="0.9" filter="url(#glow)"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.8s" repeatCount="indefinite"/></circle>
+        <circle cx="820" cy="300" r="8" fill="#10b981" opacity="0.9" filter="url(#glow)"><animate attributeName="opacity" values="0.6;1;0.6" dur="3.2s" repeatCount="indefinite"/></circle>
+
+        <!-- Connection paths (gold → blue gradient, curved) -->
+        <path d="M88,100 C250,100 300,160 380,190" stroke="url(#cordGold)" stroke-width="2" stroke-dasharray="6 4" opacity="0.7" filter="url(#glow)">
+          <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.5s" repeatCount="indefinite"/>
+        </path>
+        <path d="M88,200 C250,200 300,200 380,200" stroke="url(#cordGold)" stroke-width="2" stroke-dasharray="6 4" opacity="0.7" filter="url(#glow)">
+          <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.2s" repeatCount="indefinite"/>
+        </path>
+        <path d="M88,300 C250,300 300,240 380,210" stroke="url(#cordGold)" stroke-width="2" stroke-dasharray="6 4" opacity="0.7" filter="url(#glow)">
+          <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.8s" repeatCount="indefinite"/>
+        </path>
+        <path d="M520,190 C600,160 700,100 812,100" stroke="url(#cordGreen)" stroke-width="2" stroke-dasharray="6 4" opacity="0.7" filter="url(#glow)">
+          <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.4s" repeatCount="indefinite"/>
+        </path>
+        <path d="M520,200 C600,200 700,200 812,200" stroke="url(#cordGreen)" stroke-width="2" stroke-dasharray="6 4" opacity="0.7" filter="url(#glow)">
+          <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.6s" repeatCount="indefinite"/>
+        </path>
+        <path d="M520,210 C600,240 700,300 812,300" stroke="url(#cordGreen)" stroke-width="2" stroke-dasharray="6 4" opacity="0.7" filter="url(#glow)">
+          <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.3s" repeatCount="indefinite"/>
+        </path>
+
+        <!-- Flowing dots along paths -->
+        <circle r="4" fill="#c9a96e" filter="url(#glow)"><animateMotion path="M88,100 C250,100 300,160 380,190" dur="2.5s" repeatCount="indefinite"/></circle>
+        <circle r="4" fill="#c9a96e" filter="url(#glow)"><animateMotion path="M88,200 C250,200 300,200 380,200" dur="2s" repeatCount="indefinite"/></circle>
+        <circle r="4" fill="#c9a96e" filter="url(#glow)"><animateMotion path="M88,300 C250,300 300,240 380,210" dur="3s" repeatCount="indefinite"/></circle>
+        <circle r="3" fill="#10b981" filter="url(#glow)"><animateMotion path="M520,190 C600,160 700,100 812,100" dur="2.2s" repeatCount="indefinite"/></circle>
+        <circle r="3" fill="#2563eb" filter="url(#glow)"><animateMotion path="M520,200 C600,200 700,200 812,200" dur="2.8s" repeatCount="indefinite"/></circle>
+        <circle r="3" fill="#10b981" filter="url(#glow)"><animateMotion path="M520,210 C600,240 700,300 812,300" dur="2.5s" repeatCount="indefinite"/></circle>
+
+        <!-- Source labels -->
+        <text x="110" y="105" fill="#c9a96e" font-family="'Instrument Serif',serif" font-size="16" opacity="0.9">Web Forms</text>
+        <text x="110" y="205" fill="#c9a96e" font-family="'Instrument Serif',serif" font-size="16" opacity="0.9">Aggregators</text>
+        <text x="110" y="305" fill="#c9a96e" font-family="'Instrument Serif',serif" font-size="16" opacity="0.9">Referral Partners</text>
+
+        <!-- Destination labels -->
+        <text x="710" y="105" fill="#10b981" font-family="Inter,sans-serif" font-size="14" font-weight="600" opacity="0.9">Top Producers</text>
+        <text x="710" y="205" fill="#60a5fa" font-family="Inter,sans-serif" font-size="14" font-weight="600" opacity="0.9">Specialty Teams</text>
+        <text x="710" y="305" fill="#10b981" font-family="Inter,sans-serif" font-size="14" font-weight="600" opacity="0.9">Nurture Flows</text>
+
+        <!-- Center label -->
+        <text x="450" y="290" text-anchor="middle" fill="rgba(250,249,247,0.4)" font-family="'JetBrains Mono',monospace" font-size="11" letter-spacing="0.15em">THE SWITCHBOARD</text>
+
+        <!-- Processing labels inside hub area -->
+        <text x="450" y="175" text-anchor="middle" fill="rgba(250,249,247,0.25)" font-family="Inter,sans-serif" font-size="9" letter-spacing="0.1em">ENRICH · SCORE · ROUTE</text>
+
+        <!-- Live indicator -->
+        <circle cx="450" cy="320" r="4" fill="#10b981"><animate attributeName="opacity" values="1;0.4;1" dur="1.5s" repeatCount="indefinite"/></circle>
+        <text x="465" y="324" fill="rgba(250,249,247,0.3)" font-family="'JetBrains Mono',monospace" font-size="10">1,247 ops/sec</text>
+      </svg>
     </div>
-    <p class="switchboard-tagline fade-up delay-2">Where intuition becomes intelligence.</p>
+
+    <p class="fade-up delay-2" style="font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(24px,3vw,36px);color:rgba(250,249,247,0.5);text-align:center;margin-top:48px;">Where intuition becomes intelligence.</p>
   </div>
 </section>
 
