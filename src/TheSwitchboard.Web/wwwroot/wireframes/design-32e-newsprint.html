@@ -1288,11 +1288,19 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .ecosystem-track { display: flex; gap: 2rem; width: max-content; animation: ecoMarquee 40s linear infinite; }
 .ecosystem-marquee:hover .ecosystem-track { animation-play-state: paused; }
 @keyframes ecoMarquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 1rem)); } }
-.ecosystem-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 1.75rem 2.25rem; border: 1px solid rgba(0, 51, 153,0.14); border-radius: 12px; background: #ffffff; transition: all 0.35s ease; box-shadow: 0 1px 3px rgba(28,25,23,0.04), 0 4px 12px rgba(28,25,23,0.03); min-width: 230px; min-height: 150px; flex-shrink: 0; }
+.ecosystem-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; padding: 1.5rem 2.5rem; border: 1px solid rgba(0, 51, 153,0.18); border-radius: 10px; background: #ffffff; transition: all 0.35s ease; box-shadow: 0 1px 3px rgba(28,25,23,0.04), 0 4px 12px rgba(28,25,23,0.03); min-width: 220px; min-height: 100px; flex-shrink: 0; }
 .ecosystem-card:hover { border-color: rgba(0, 51, 153,0.45); box-shadow: 0 8px 28px rgba(28,25,23,0.12), 0 2px 6px rgba(28,25,23,0.05); transform: translateY(-3px); }
-.ecosystem-card img { max-height: 44px; max-width: 160px; width: auto; height: auto; object-fit: contain; filter: grayscale(100%) opacity(0.72); transition: filter 0.4s ease, opacity 0.4s ease; }
-.ecosystem-card:hover img { filter: grayscale(0%) opacity(1); }
-.ecosystem-card img.logo-fallback { max-height: 38px; max-width: 38px; border-radius: 6px; }
+.ecosystem-wordmark {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--charcoal-1);
+  text-align: center;
+  line-height: 1.15;
+  transition: color 0.3s ease, letter-spacing 0.3s ease;
+}
+.ecosystem-card:hover .ecosystem-wordmark { color: var(--gold); letter-spacing: 0.02em; }
 .ecosystem-name { font-family: var(--sans); font-size: 0.72rem; font-weight: 400; color: var(--warm-gray); letter-spacing: 0.06em; text-align: center; }
 .ecosystem-note { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--warm-gray); text-align: center; margin-top: 2.5rem; }
 @media (max-width: 768px) {
@@ -2314,22 +2322,22 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   </div>
   <div class="ecosystem-marquee fade-up delay-2">
     <div class="ecosystem-track">
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/rightsure.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=rightsure.com&amp;sz=256';this.classList.add('logo-fallback');" alt="RightSure" loading="lazy"/><span class="ecosystem-name">RightSure</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/rootinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=rootinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Root Insurance" loading="lazy"/><span class="ecosystem-name">Root Insurance</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/floridaoneinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=floridaoneinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Florida One" loading="lazy"/><span class="ecosystem-name">Florida One</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/progressivecommercial.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=progressivecommercial.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Progressive Commercial" loading="lazy"/><span class="ecosystem-name">Progressive Commercial</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/amfam.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=amfam.com&amp;sz=256';this.classList.add('logo-fallback');" alt="American Family" loading="lazy"/><span class="ecosystem-name">American Family</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/nextinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=nextinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Next Insurance" loading="lazy"/><span class="ecosystem-name">Next Insurance</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/nextcallclub.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=nextcallclub.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Next Call Club" loading="lazy"/><span class="ecosystem-name">Next Call Club</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/aspiregeneral.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=aspiregeneral.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Aspire General" loading="lazy"/><span class="ecosystem-name">Aspire General</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/rightsure.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=rightsure.com&amp;sz=256';this.classList.add('logo-fallback');" alt="RightSure" loading="lazy"/><span class="ecosystem-name">RightSure</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/rootinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=rootinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Root Insurance" loading="lazy"/><span class="ecosystem-name">Root Insurance</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/floridaoneinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=floridaoneinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Florida One" loading="lazy"/><span class="ecosystem-name">Florida One</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/progressivecommercial.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=progressivecommercial.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Progressive Commercial" loading="lazy"/><span class="ecosystem-name">Progressive Commercial</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/amfam.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=amfam.com&amp;sz=256';this.classList.add('logo-fallback');" alt="American Family" loading="lazy"/><span class="ecosystem-name">American Family</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/nextinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=nextinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Next Insurance" loading="lazy"/><span class="ecosystem-name">Next Insurance</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/nextcallclub.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=nextcallclub.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Next Call Club" loading="lazy"/><span class="ecosystem-name">Next Call Club</span></div>
-      <div class="ecosystem-card"><img src="https://logo.clearbit.com/aspiregeneral.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=aspiregeneral.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Aspire General" loading="lazy"/><span class="ecosystem-name">Aspire General</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">RightSure</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Root Insurance</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Florida One</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Progressive Commercial</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">American Family</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Next Insurance</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Next Call Club</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Aspire General</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">RightSure</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Root Insurance</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Florida One</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Progressive Commercial</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">American Family</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Next Insurance</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Next Call Club</span></div>
+      <div class="ecosystem-card"><span class="ecosystem-wordmark">Aspire General</span></div>
     </div>
   </div>
   <p class="ecosystem-note fade-up delay-3">Trademarks property of their respective owners</p>
@@ -2462,121 +2470,24 @@ window.addEventListener('scroll', () => {
   lastScroll = currentScroll;
 }, { passive: true });
 
-// Live Ops — clock, counter drift, dynamic row insertion, KPI updates
+// Live Ops — minimal: clock tick + processed counter drift only (heavy motion disabled to prevent tab crash)
 (function(){
   const clock = document.getElementById('opsClock');
   const processed = document.getElementById('kpiProcessed');
-  const rows = document.getElementById('opsRows');
   if (!clock) return;
   const pad = n => String(n).padStart(2,'0');
   let count = 18528;
-  let seq = 1248;
-
-  // Clock tick every second
   function tick(){
     const d = new Date();
     clock.textContent = `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
   }
   tick(); setInterval(tick, 1000);
-
-  // Processed counter drifts every 1.8s
   if (processed) {
     setInterval(() => {
-      count += Math.floor(Math.random() * 4) + 1;
+      count += Math.floor(Math.random() * 3) + 1;
       processed.textContent = count.toLocaleString('en-US');
-    }, 1800);
+    }, 2400);
   }
-
-  // Queue / Rate / Err — pulse updates
-  const kpiQueue = document.querySelector('[data-kpi="queue"]');
-  const kpiRate = document.querySelector('[data-kpi="rate"]');
-  if (kpiQueue) {
-    let q = 147;
-    setInterval(() => {
-      q += Math.floor(Math.random() * 11) - 5;
-      if (q < 120) q = 120 + Math.floor(Math.random() * 10);
-      if (q > 180) q = 180 - Math.floor(Math.random() * 10);
-      kpiQueue.textContent = q;
-    }, 2200);
-  }
-  if (kpiRate) {
-    setInterval(() => {
-      const r = 1200 + Math.floor(Math.random() * 90);
-      kpiRate.textContent = r.toLocaleString('en-US') + '/HR';
-    }, 3100);
-  }
-
-  // Dynamic row insertion — every 4.5-7s a new row pushes in from the top
-  if (!rows) return;
-  const accounts = [
-    { name: 'Cortland Fleet Co.',   state: 'TX', line: 'COM AUTO',  vMin: 8000, vMax: 24000,  route: 'P-12' },
-    { name: 'Moreno Household',     state: 'NM', line: 'HOME',      vMin: 1800, vMax: 4200,   route: 'P-07' },
-    { name: 'Aspen Builders Grp.',  state: 'CO', line: 'CONTRACTOR',vMin: 5200, vMax: 18400,  route: 'UW-A' },
-    { name: 'Okafor, Adaeze',       state: 'GA', line: 'PERS AUTO', vMin: 1200, vMax: 2600,   route: 'P-21' },
-    { name: 'Redwood Risk LLC',     state: 'CA', line: 'SPECIALTY', vMin: 14000,vMax: 62000,  route: 'UW-A' },
-    { name: 'Paulson Holdings',     state: 'FL', line: 'COM PROP',  vMin: 3400, vMax: 9200,   route: 'P-34' },
-    { name: 'Northrop & Sons',      state: 'MN', line: 'CONTRACTOR',vMin: 4200, vMax: 14200,  route: 'UW-B' },
-    { name: 'Delacruz Rental',      state: 'AZ', line: 'COM PROP',  vMin: 2800, vMax: 7200,   route: 'NURTURE' },
-    { name: 'K. Nakamura',          state: 'WA', line: 'HOME',      vMin: 2100, vMax: 4800,   route: 'P-07' },
-    { name: 'Bridgeway Logistics',  state: 'NV', line: 'COM AUTO',  vMin: 9200, vMax: 28400,  route: 'P-12' },
-    { name: 'Silvana E.',           state: 'IL', line: 'PERS AUTO', vMin: 1100, vMax: 2400,   route: 'NURTURE' },
-    { name: 'Harbor Point Mutual',  state: 'MA', line: 'SPECIALTY', vMin: 18000,vMax: 52000,  route: 'UW-A' },
-    { name: 'Coastline Apparel',    state: 'NC', line: 'COM PROP',  vMin: 4400, vMax: 11200,  route: 'P-34' },
-    { name: 'Tran Family',          state: 'OR', line: 'HOME',      vMin: 2200, vMax: 4600,   route: 'UW-B' },
-  ];
-  const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-  const pickAccount = () => accounts[Math.floor(Math.random() * accounts.length)];
-
-  function makeRow(acct) {
-    const id = String(++seq).padStart(6, '0');
-    const score = rand(580, 980);
-    const value = rand(acct.vMin, acct.vMax);
-    const ms = (Math.random() * 5 + 1.8).toFixed(1);
-    const scoreColor = score >= 750 ? '#b4c8ff' : 'rgba(250,249,247,0.75)';
-    const scoreShadow = score >= 750 ? 'text-shadow:0 0 10px rgba(147,180,255,0.5);font-weight:500;' : '';
-    const routeColor = acct.route === 'NURTURE' ? 'rgba(250,249,247,0.55)' : '#10b981';
-    const valueStr = '$' + value.toLocaleString('en-US');
-    const html = `
-      <div class="ops-row" style="display:grid;grid-template-columns:56px 1fr 36px 96px 60px 92px 84px 46px;gap:14px;padding:10px 22px;font-size:12px;font-variant-numeric:tabular-nums;border-bottom:1px solid rgba(255,255,255,0.035);background:rgba(16,185,129,0.18);animation:opsRowInsert 0.5s ease-out 1, opsRowNew 3.5s ease-out 1 0.5s;">
-        <span style="color:rgba(180,200,255,0.9);">${id}</span>
-        <span style="color:#faf9f7;">${acct.name}</span>
-        <span style="color:rgba(250,249,247,0.5);">${acct.state}</span>
-        <span style="color:rgba(250,249,247,0.65);">${acct.line}</span>
-        <span style="color:${scoreColor};text-align:right;${scoreShadow}">${score}</span>
-        <span style="color:#faf9f7;text-align:right;">${valueStr}</span>
-        <span style="color:${routeColor};">&rarr; ${acct.route}</span>
-        <span style="color:rgba(250,249,247,0.5);text-align:right;">${ms}</span>
-      </div>`;
-    return html;
-  }
-
-  function pushNewRow() {
-    const acct = pickAccount();
-    rows.insertAdjacentHTML('afterbegin', makeRow(acct));
-    // Keep max 8 rows — remove oldest
-    while (rows.children.length > 8) {
-      const last = rows.lastElementChild;
-      last.style.transition = 'opacity 0.4s ease, max-height 0.4s ease';
-      last.style.opacity = '0';
-      last.style.maxHeight = '0';
-      setTimeout(() => last.remove(), 400);
-    }
-    // Schedule next
-    setTimeout(pushNewRow, 3800 + Math.random() * 3200);
-  }
-  setTimeout(pushNewRow, 2500);
-
-  // Random score flash on existing rows (simulates re-scoring)
-  setInterval(() => {
-    const liveRows = Array.from(rows.children).slice(0, 6);
-    if (!liveRows.length) return;
-    const target = liveRows[Math.floor(Math.random() * liveRows.length)];
-    const scoreCell = target.children[4];
-    if (!scoreCell) return;
-    const original = scoreCell.style.cssText;
-    scoreCell.style.cssText = original + ';color:#fff !important;text-shadow:0 0 16px rgba(147,180,255,0.9),0 0 28px rgba(147,180,255,0.5) !important;transition:all 0.3s ease;';
-    setTimeout(() => { scoreCell.style.cssText = original; }, 420);
-  }, 2700);
 })();
 
 // Contact form submission (placeholder — wire to backend later)
