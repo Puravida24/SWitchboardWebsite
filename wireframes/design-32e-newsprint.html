@@ -1612,6 +1612,72 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .site-header { background: rgba(250,249,247,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(28,25,23,0.08); }
 
 /* ═══════════════════════════════════════════════════════
+   LIVE TICKER — newspaper "breaking news" strip
+   ═══════════════════════════════════════════════════════ */
+.live-ticker {
+  max-width: 1100px;
+  margin: 16px auto 0;
+  background: linear-gradient(180deg, #0a0806 0%, #060504 100%);
+  border: 1px solid rgba(147,180,255,0.32);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15), 0 0 0 1px rgba(147,180,255,0.06), inset 0 0 24px rgba(0,0,0,0.4);
+  padding: 13px 0;
+  position: relative;
+}
+.live-ticker-label {
+  position: absolute;
+  top: 50%;
+  left: 18px;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: #a4bfff;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(147,180,255,0.5);
+  z-index: 2;
+  background: linear-gradient(90deg, #0a0806 0%, #0a0806 78%, transparent 100%);
+  padding: 6px 22px 6px 0;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.live-ticker-label::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981, 0 0 14px rgba(16,185,129,0.5);
+  animation: tickerPulse 1.6s ease-in-out infinite;
+}
+.live-ticker-track {
+  display: flex;
+  gap: 46px;
+  padding-left: 155px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  white-space: nowrap;
+  animation: tickerScroll 70s linear infinite;
+}
+.live-ticker:hover .live-ticker-track { animation-play-state: paused; }
+.live-ticker-item { color: rgba(250,249,247,0.85); font-variant-numeric: tabular-nums; }
+.live-ticker-item .t-id { color: #a4bfff; margin-right: 8px; font-weight: 500; }
+.live-ticker-item .t-route { color: #10b981; margin-left: 6px; font-weight: 500; }
+.live-ticker-item .t-nurture { color: rgba(250,249,247,0.5); margin-left: 6px; }
+.live-ticker-item .t-dollar { color: #faf9f7; font-weight: 500; }
+.live-ticker-item .t-sep { color: rgba(147,180,255,0.3); margin: 0 6px; }
+@keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes tickerPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+@media (max-width: 640px) {
+  .live-ticker-track { padding-left: 120px; font-size: 10.5px; gap: 32px; }
+  .live-ticker-label { font-size: 9px; padding: 6px 14px 6px 0; }
+}
+
+/* ═══════════════════════════════════════════════════════
    AUDIENCE STRIPS — editorial alternating rows
    ═══════════════════════════════════════════════════════ */
 .audience-strips-section {
@@ -1747,6 +1813,32 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
     <span class="masthead-left">Vol. I · № 1</span>
     <span class="masthead-center"><strong>Insurance Intelligence</strong> <em>&mdash; a daily record</em></span>
     <span class="masthead-right">Orem, UT · April 2026</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     LIVE TICKER — breaking-news strip under the masthead
+     ════════════════════════════════════════════════════ -->
+<div class="live-ticker" aria-label="Live activity ticker">
+  <span class="live-ticker-label">Live Feed</span>
+  <div class="live-ticker-track">
+    <span class="live-ticker-item"><span class="t-id">001247</span>Bright Fleet LLC <span class="t-sep">·</span> UT <span class="t-sep">·</span> COM AUTO <span class="t-sep">·</span> <span class="t-dollar">$12,400</span><span class="t-route">&rarr; P-12</span></span>
+    <span class="live-ticker-item"><span class="t-id">001246</span>Summit Risk Holdings <span class="t-sep">·</span> CA <span class="t-sep">·</span> SPECIALTY <span class="t-sep">·</span> <span class="t-dollar">$31,200</span><span class="t-route">&rarr; UW-A</span></span>
+    <span class="live-ticker-item"><span class="t-id">001245</span>Marcia T. <span class="t-sep">·</span> AZ <span class="t-sep">·</span> HOME <span class="t-sep">·</span> <span class="t-dollar">$2,340</span><span class="t-route">&rarr; P-07</span></span>
+    <span class="live-ticker-item"><span class="t-id">001244</span>Jason P. <span class="t-sep">·</span> TX <span class="t-sep">·</span> PERS AUTO <span class="t-sep">·</span> <span class="t-dollar">$1,840</span><span class="t-route">&rarr; P-21</span></span>
+    <span class="live-ticker-item"><span class="t-id">001243</span>Hayward Rental Group <span class="t-sep">·</span> NV <span class="t-sep">·</span> COM PROP <span class="t-sep">·</span> <span class="t-dollar">$4,100</span><span class="t-nurture">&rarr; NURTURE</span></span>
+    <span class="live-ticker-item"><span class="t-id">001242</span>Chen Household <span class="t-sep">·</span> CA <span class="t-sep">·</span> HOME <span class="t-sep">·</span> <span class="t-dollar">$3,280</span><span class="t-route">&rarr; UW-B</span></span>
+    <span class="live-ticker-item"><span class="t-id">001241</span>Apex Builders Mutual <span class="t-sep">·</span> CO <span class="t-sep">·</span> CONTRACTOR <span class="t-sep">·</span> <span class="t-dollar">$9,450</span><span class="t-route">&rarr; P-34</span></span>
+    <span class="live-ticker-item"><span class="t-id">001240</span>Hayes Family <span class="t-sep">·</span> FL <span class="t-sep">·</span> PERS AUTO <span class="t-sep">·</span> <span class="t-dollar">$1,420</span><span class="t-nurture">&rarr; NURTURE</span></span>
+    <!-- Duplicate set for seamless loop -->
+    <span class="live-ticker-item"><span class="t-id">001247</span>Bright Fleet LLC <span class="t-sep">·</span> UT <span class="t-sep">·</span> COM AUTO <span class="t-sep">·</span> <span class="t-dollar">$12,400</span><span class="t-route">&rarr; P-12</span></span>
+    <span class="live-ticker-item"><span class="t-id">001246</span>Summit Risk Holdings <span class="t-sep">·</span> CA <span class="t-sep">·</span> SPECIALTY <span class="t-sep">·</span> <span class="t-dollar">$31,200</span><span class="t-route">&rarr; UW-A</span></span>
+    <span class="live-ticker-item"><span class="t-id">001245</span>Marcia T. <span class="t-sep">·</span> AZ <span class="t-sep">·</span> HOME <span class="t-sep">·</span> <span class="t-dollar">$2,340</span><span class="t-route">&rarr; P-07</span></span>
+    <span class="live-ticker-item"><span class="t-id">001244</span>Jason P. <span class="t-sep">·</span> TX <span class="t-sep">·</span> PERS AUTO <span class="t-sep">·</span> <span class="t-dollar">$1,840</span><span class="t-route">&rarr; P-21</span></span>
+    <span class="live-ticker-item"><span class="t-id">001243</span>Hayward Rental Group <span class="t-sep">·</span> NV <span class="t-sep">·</span> COM PROP <span class="t-sep">·</span> <span class="t-dollar">$4,100</span><span class="t-nurture">&rarr; NURTURE</span></span>
+    <span class="live-ticker-item"><span class="t-id">001242</span>Chen Household <span class="t-sep">·</span> CA <span class="t-sep">·</span> HOME <span class="t-sep">·</span> <span class="t-dollar">$3,280</span><span class="t-route">&rarr; UW-B</span></span>
+    <span class="live-ticker-item"><span class="t-id">001241</span>Apex Builders Mutual <span class="t-sep">·</span> CO <span class="t-sep">·</span> CONTRACTOR <span class="t-sep">·</span> <span class="t-dollar">$9,450</span><span class="t-route">&rarr; P-34</span></span>
+    <span class="live-ticker-item"><span class="t-id">001240</span>Hayes Family <span class="t-sep">·</span> FL <span class="t-sep">·</span> PERS AUTO <span class="t-sep">·</span> <span class="t-dollar">$1,420</span><span class="t-nurture">&rarr; NURTURE</span></span>
   </div>
 </div>
 
