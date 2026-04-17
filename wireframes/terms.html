@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — The Switchboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream-1: #faf9f7;
+  --cream-2: #f5f0eb;
+  --cream-3: #efe8e0;
+  --charcoal-1: #1c1917;
+  --charcoal-2: #211f1c;
+  --charcoal-3: #292524;
+  --gold: #c9a96e;
+  --gold-glow: rgba(201, 169, 110, 0.35);
+  --warm-gray: #78716c;
+  --warm-gray-light: #a8a29e;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Inter', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--sans);
+  color: var(--charcoal-1);
+  background: var(--cream-1);
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  opacity: 0.5;
+}
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.15; letter-spacing: -0.015em; }
+
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 2rem;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(250,249,247,0.92) 0%, rgba(245,240,235,0.88) 100%);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid rgba(201,169,110,0.15);
+  box-shadow: 0 1px 3px rgba(28,25,23,0.04), 0 4px 12px rgba(28,25,23,0.03);
+}
+
+.logo {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  color: var(--charcoal-1);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.logo span { color: var(--gold); }
+
+.back-link {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  color: var(--charcoal-3);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.3s;
+}
+
+.back-link:hover { color: var(--gold); }
+
+.legal-hero {
+  padding: 140px 2rem 60px;
+  background: linear-gradient(180deg, var(--cream-1) 0%, var(--cream-2) 100%);
+  text-align: center;
+}
+
+.legal-overline {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.25rem;
+}
+
+.legal-hero h1 {
+  font-size: clamp(2.4rem, 5vw, 3.75rem);
+  color: var(--charcoal-1);
+  margin-bottom: 1rem;
+}
+
+.legal-meta {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--warm-gray);
+}
+
+.legal-body {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 60px 2rem 120px;
+}
+
+.legal-body h2 {
+  font-size: 1.75rem;
+  color: var(--charcoal-1);
+  margin: 3rem 0 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(201,169,110,0.2);
+}
+
+.legal-body h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.legal-body h3 {
+  font-size: 1.2rem;
+  color: var(--charcoal-1);
+  margin: 1.75rem 0 0.75rem;
+}
+
+.legal-body p {
+  font-size: 1rem;
+  color: var(--charcoal-3);
+  margin-bottom: 1.25rem;
+  line-height: 1.8;
+}
+
+.legal-body ul {
+  margin: 0 0 1.5rem 1.25rem;
+  padding: 0;
+}
+
+.legal-body li {
+  font-size: 1rem;
+  color: var(--charcoal-3);
+  margin-bottom: 0.6rem;
+  line-height: 1.75;
+}
+
+.legal-body strong {
+  color: var(--charcoal-1);
+  font-weight: 500;
+}
+
+.legal-body a {
+  color: var(--charcoal-1);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
+  transition: color 0.3s;
+}
+
+.legal-body a:hover { color: var(--gold); }
+
+.contact-block {
+  margin-top: 2rem;
+  padding: 1.75rem 2rem;
+  background: rgba(201,169,110,0.06);
+  border: 1px solid rgba(201,169,110,0.2);
+  border-radius: 8px;
+}
+
+.contact-block p { margin: 0 0 0.35rem; font-size: 0.95rem; }
+.contact-block p:last-child { margin-bottom: 0; }
+
+.site-footer {
+  background: var(--charcoal-1);
+  border-top: 1px solid rgba(201,169,110,0.1);
+  padding: 48px 2rem 32px;
+}
+
+.footer-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer-inner .logo { font-size: 1.1rem; color: var(--cream-2); }
+.footer-inner .logo span { color: var(--gold); }
+
+.footer-links { display: flex; gap: 1.75rem; flex-wrap: wrap; }
+
+.footer-links a {
+  font-size: 0.8rem;
+  color: var(--warm-gray-light);
+  text-decoration: none;
+  font-weight: 300;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover { color: var(--gold); }
+
+.footer-bottom {
+  max-width: 1080px;
+  margin: 2rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(201,169,110,0.08);
+  font-size: 0.72rem;
+  color: var(--warm-gray);
+  font-weight: 300;
+}
+
+@media (max-width: 640px) {
+  .legal-body { padding: 40px 1.5rem 80px; }
+  .legal-body h2 { font-size: 1.4rem; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="design-32-the-switchboard-final-b.html" class="logo">The <span>Switchboard</span></a>
+  <a href="design-32-the-switchboard-final-b.html" class="back-link">&larr; Back</a>
+</header>
+
+<section class="legal-hero">
+  <p class="legal-overline">Legal</p>
+  <h1>Terms of Service</h1>
+  <p class="legal-meta">Effective April 16, 2026</p>
+</section>
+
+<main class="legal-body">
+
+<p>These Terms of Service (&ldquo;Terms&rdquo;) govern your access to and use of the website located at <strong>theswitchboardmarketing.com</strong> (the &ldquo;Site&rdquo;), operated by The Switchboard, LLC (&ldquo;The Switchboard,&rdquo; &ldquo;we,&rdquo; or &ldquo;us&rdquo;). By accessing or using the Site, you agree to be bound by these Terms. If you do not agree, do not use the Site.</p>
+
+<p>These Terms govern use of the Site only. Access to our product platform is governed by a separate written agreement between The Switchboard and each customer.</p>
+
+<h2>1. Use of the Site</h2>
+<p>You may use the Site solely for lawful purposes and in a manner consistent with these Terms. You agree not to:</p>
+<ul>
+  <li>Use the Site in any way that violates applicable federal, state, local, or international law</li>
+  <li>Attempt to gain unauthorized access to any portion of the Site, related systems, or networks</li>
+  <li>Interfere with, disrupt, or impose an unreasonable load on the Site or its infrastructure</li>
+  <li>Use any automated means to access, scrape, or harvest content from the Site without our prior written permission</li>
+  <li>Use the Site to transmit viruses, malware, or any other harmful code</li>
+  <li>Reproduce, duplicate, copy, sell, or exploit any portion of the Site for commercial purposes without our express written consent</li>
+</ul>
+
+<h2>2. Intellectual Property</h2>
+<p>The Site and all of its contents &mdash; including text, graphics, logos, icons, images, audio, video, software, and the overall design and selection and arrangement of the foregoing &mdash; are the property of The Switchboard or its licensors and are protected by United States and international copyright, trademark, and other intellectual property laws.</p>
+
+<p>&ldquo;The Switchboard,&rdquo; the Switchboard logo, and related marks are trademarks of The Switchboard, LLC. No license or right is granted to use any of our marks without our prior written permission.</p>
+
+<p>You may view and print individual pages of the Site for your own personal, non-commercial reference. Any other use requires our prior written consent.</p>
+
+<h2>3. Third-Party Links</h2>
+<p>The Site may contain links to third-party websites or resources. We provide these links for convenience only and do not control, endorse, or assume responsibility for any third-party content. Your interactions with any third party found through the Site are solely between you and that third party.</p>
+
+<h2>4. Privacy</h2>
+<p>Your use of the Site is also governed by our <a href="privacy.html">Privacy Policy</a>, which is incorporated into these Terms by reference. Please review it to understand how we collect and use information.</p>
+
+<h2>5. Disclaimers</h2>
+<p>The Site and all content, information, and materials made available through it are provided on an &ldquo;as is&rdquo; and &ldquo;as available&rdquo; basis. To the fullest extent permitted by law, The Switchboard disclaims all warranties, express or implied, including without limitation warranties of merchantability, fitness for a particular purpose, non-infringement, and any warranties arising out of course of dealing or usage of trade.</p>
+
+<p>We do not warrant that the Site will be uninterrupted, error-free, secure, or free of viruses or other harmful components. Content on the Site is intended for general informational purposes only and does not constitute legal, financial, insurance, or professional advice.</p>
+
+<h2>6. Limitation of Liability</h2>
+<p>To the fullest extent permitted by law, in no event shall The Switchboard, its affiliates, officers, employees, agents, suppliers, or licensors be liable for any indirect, incidental, special, consequential, exemplary, or punitive damages &mdash; including loss of profits, revenue, data, or business opportunities &mdash; arising out of or in connection with your use of or inability to use the Site, whether based in contract, tort, strict liability, or any other theory, even if we have been advised of the possibility of such damages.</p>
+
+<p>Our total aggregate liability arising out of or relating to the Site or these Terms will not exceed one hundred U.S. dollars ($100.00).</p>
+
+<h2>7. Indemnification</h2>
+<p>You agree to defend, indemnify, and hold harmless The Switchboard, LLC and its officers, directors, employees, and agents from and against any claims, liabilities, damages, losses, and expenses &mdash; including reasonable attorneys&rsquo; fees &mdash; arising out of or in any way connected with your access to or use of the Site, your violation of these Terms, or your violation of any rights of another party.</p>
+
+<h2>8. Governing Law and Venue</h2>
+<p>These Terms and any dispute arising out of or relating to them or the Site are governed by the laws of the State of Utah, without regard to its conflict-of-laws principles. You agree that any legal action or proceeding arising under or relating to these Terms will be brought exclusively in the state or federal courts located in Utah County, Utah, and you consent to the personal jurisdiction and venue of those courts.</p>
+
+<h2>9. Changes to These Terms</h2>
+<p>We may update these Terms from time to time. When we do, we will revise the &ldquo;Effective&rdquo; date at the top of this page. Material changes will be communicated through a notice on the Site. Your continued use of the Site after any change constitutes your acceptance of the revised Terms.</p>
+
+<h2>10. Severability and Waiver</h2>
+<p>If any provision of these Terms is held invalid or unenforceable, that provision will be modified to the minimum extent necessary to make it enforceable, and the remaining provisions will continue in full force and effect. Our failure to enforce any right or provision of these Terms will not be deemed a waiver of that right or provision.</p>
+
+<h2>11. Entire Agreement</h2>
+<p>These Terms, together with our Privacy Policy, constitute the entire agreement between you and The Switchboard regarding your use of the Site and supersede any prior agreements or understandings relating to the Site.</p>
+
+<h2>12. Contact Us</h2>
+<p>If you have questions about these Terms, please reach out.</p>
+<div class="contact-block">
+  <p><strong>The Switchboard, LLC</strong></p>
+  <p>1849 W 645 S, Orem, Utah 84059</p>
+  <p>Email: <a href="mailto:legal@theswitchboardmarketing.com">legal@theswitchboardmarketing.com</a></p>
+</div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="design-32-the-switchboard-final-b.html" class="logo">The <span>Switchboard</span></a>
+    <div class="footer-links">
+      <a href="design-32-the-switchboard-final-b.html">Home</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:hello@theswitchboardmarketing.com">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 The Switchboard, LLC. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>
