@@ -2678,11 +2678,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <label for="cf-message">What brings you here?</label>
         <textarea id="cf-message" name="message" placeholder="A sentence or two is plenty."></textarea>
       </div>
-      <label class="form-checkbox">
-        <input type="checkbox" id="cf-tcpa" name="tcpa">
-        <span>By checking this box and providing my phone number, I consent to receive calls and SMS from The Switchboard about my inquiry. Message frequency varies. Message &amp; data rates may apply. Reply STOP to unsubscribe. Consent is not a condition of any purchase.</span>
-      </label>
-      <p class="form-consent">By submitting, you agree to our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>. We&rsquo;ll use your information to respond to your inquiry and may follow up about our platform. We do not sell your data.</p>
+      <p class="form-consent">By submitting, you agree to our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>. We&rsquo;ll use your information to respond to your inquiry and may follow up about our platform. If you provide a phone number, you also consent to receive calls and SMS from The Switchboard about your inquiry &mdash; message frequency varies, message &amp; data rates may apply, reply STOP to unsubscribe. Consent is not a condition of any purchase. We do not sell your data.</p>
       <button type="submit" class="form-submit">Start the Conversation</button>
     </form>
     <div class="form-success" id="contactSuccess">
@@ -2839,14 +2835,8 @@ if (contactForm) {
     const name = document.getElementById('cf-name').value.trim();
     const email = document.getElementById('cf-email').value.trim();
     const company = document.getElementById('cf-company').value.trim();
-    const phone = document.getElementById('cf-phone').value.trim();
-    const tcpa = document.getElementById('cf-tcpa').checked;
     if (!name || !email || !company) {
       alert('Please fill in your name, email, and company.');
-      return;
-    }
-    if (phone && !tcpa) {
-      alert('To receive calls or SMS, please check the consent box. Or remove your phone number to submit without it.');
       return;
     }
     // TODO: POST to /api/contact once backend is wired up
