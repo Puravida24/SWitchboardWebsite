@@ -1608,6 +1608,113 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 
 /* NAV — subdued to match editorial tone */
 .site-header { background: rgba(250,249,247,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(28,25,23,0.08); }
+
+/* ═══════════════════════════════════════════════════════
+   AUDIENCE STRIPS — editorial alternating rows
+   ═══════════════════════════════════════════════════════ */
+.audience-strips-section {
+  background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream-3) 50%, var(--cream-2) 100%);
+  padding: 100px 2rem 80px;
+  position: relative;
+}
+.audience-strips {
+  max-width: 1100px;
+  margin: 40px auto 0;
+}
+.audience-strip {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) 1.4fr;
+  gap: 80px;
+  align-items: center;
+  padding: 64px 0;
+  border-bottom: 1px solid rgba(0,51,153,0.15);
+  position: relative;
+}
+.audience-strip:last-child { border-bottom: none; }
+.audience-strip.reversed { grid-template-columns: 1.4fr minmax(240px, 1fr); }
+.audience-strip.reversed .audience-visual { order: 2; text-align: right; align-items: flex-end; }
+.audience-strip.reversed .audience-body { order: 1; }
+
+.audience-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  color: var(--gold);
+}
+.audience-serial {
+  font-family: var(--serif);
+  font-size: clamp(5rem, 9vw, 8.5rem);
+  line-height: 0.85;
+  color: var(--gold);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  opacity: 0.95;
+  text-shadow: 0 0 24px rgba(0,51,153,0.12);
+}
+.audience-kicker {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  padding-top: 4px;
+  border-top: 1px solid var(--gold);
+  display: inline-block;
+}
+.audience-icon {
+  width: 88px;
+  height: 88px;
+  margin-top: 8px;
+  opacity: 0.78;
+}
+
+.audience-body h3 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.6vw, 3.2rem);
+  line-height: 1.05;
+  color: var(--charcoal-1);
+  margin: 0 0 1.1rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.audience-body p {
+  font-family: var(--serif);
+  font-size: 1.12rem;
+  line-height: 1.6;
+  color: var(--charcoal-1);
+  opacity: 0.88;
+  margin: 0 0 1.6rem;
+  max-width: 58ch;
+}
+.strip-cta {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--gold);
+  transition: all 0.3s ease;
+  display: inline-block;
+  font-weight: 500;
+}
+.strip-cta:hover { color: #002477; border-color: #002477; letter-spacing: 0.26em; }
+
+@media (max-width: 860px) {
+  .audience-strip,
+  .audience-strip.reversed {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 48px 0;
+  }
+  .audience-strip.reversed .audience-visual { order: 1; text-align: left; align-items: flex-start; }
+  .audience-strip.reversed .audience-body { order: 2; }
+  .audience-serial { font-size: 4rem; }
+  .audience-icon { width: 56px; height: 56px; }
+}
 </style>
 </head>
 <body>
@@ -1982,40 +2089,76 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 <!-- ════════════════════════════════════════════════════
      BUILT FOR (Option A — Audiences)
      ════════════════════════════════════════════════════ -->
-<section class="builtfor-section" id="stories">
-  <div class="section-header-centered">
-    <span class="overline fade-up">Who It’s For</span>
+<section class="audience-strips-section" id="stories">
+  <div class="newsprint-section-head">
+    <div class="newsprint-section-kicker-wrap fade-up"><span class="newsprint-section-kicker">Who It’s For</span></div>
     <h2 class="fade-up delay-1">One platform. Every distributor.</h2>
-    <p class="section-lede fade-up delay-2">The Switchboard was engineered for the three audiences that shape insurance distribution &mdash; carriers, agencies, and wholesalers. Different workflows, different economics, one intelligence layer underneath.</p>
+    <p class="deck fade-up delay-2">Engineered for the three audiences that shape insurance distribution — carriers, agencies, wholesalers. Different workflows, different economics, one intelligence layer underneath.</p>
   </div>
-  <div class="trio-grid">
-    <div class="trio-card trio-card-light audience-card fade-up delay-1">
-      <span class="trio-kicker">Carriers</span>
-      <h3>Stop buying blind.</h3>
-      <p>Enrich every inbound prospect with firmographic, demographic, and behavioral signal before a single dollar is spent on acquisition. See risk, fit, and expected value in real time &mdash; not after the quarterly review.</p>
-      <div class="audience-card-footer">
-        <span class="mini-label">For carriers</span>
-        <a href="#contact">See how it fits &rarr;</a>
+  <div class="audience-strips">
+    <!-- Strip 1: Carriers — visual LEFT -->
+    <article class="audience-strip fade-up">
+      <div class="audience-visual">
+        <span class="audience-serial">01</span>
+        <span class="audience-kicker">Carriers</span>
+        <svg class="audience-icon" viewBox="0 0 72 72" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M36 8 L58 16 L58 36 C58 50 48 60 36 64 C24 60 14 50 14 36 L14 16 Z" fill="currentColor" fill-opacity="0.08"/>
+          <path d="M24 34 L32 42 L48 26" stroke-width="1.6"/>
+          <line x1="36" y1="8" x2="36" y2="64" stroke-opacity="0.2"/>
+        </svg>
       </div>
-    </div>
-    <div class="trio-card trio-card-light audience-card fade-up delay-2">
-      <span class="trio-kicker">Agencies</span>
-      <h3>Work the right book.</h3>
-      <p>Risk-scored prospects surface the high-value accounts and push noise to the bottom. Your producers spend time where it compounds &mdash; on the accounts most likely to close, renew, and expand.</p>
-      <div class="audience-card-footer">
-        <span class="mini-label">For agencies</span>
-        <a href="#contact">Put it to work &rarr;</a>
+      <div class="audience-body">
+        <h3>Stop buying blind.</h3>
+        <p>Enrich every inbound prospect with firmographic, demographic, and behavioral signal before a single dollar is spent on acquisition. See risk, fit, and expected value in real time — not after the quarterly review.</p>
+        <a href="#contact" class="strip-cta">See how it fits &rarr;</a>
       </div>
-    </div>
-    <div class="trio-card trio-card-light audience-card fade-up delay-3">
-      <span class="trio-kicker">MGAs &amp; Wholesalers</span>
-      <h3>Match in milliseconds.</h3>
-      <p>Route specialty risk to the right underwriter in under five milliseconds. No manual sorting. No cherry-picking. No dropped handoffs between intake and bind.</p>
-      <div class="audience-card-footer">
-        <span class="mini-label">For wholesale</span>
-        <a href="#contact">Wire it in &rarr;</a>
+    </article>
+    <!-- Strip 2: Agencies — visual RIGHT -->
+    <article class="audience-strip reversed fade-up">
+      <div class="audience-visual">
+        <span class="audience-serial">02</span>
+        <span class="audience-kicker">Agencies</span>
+        <svg class="audience-icon" viewBox="0 0 72 72" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="14" y="14" width="44" height="48" rx="2" fill="currentColor" fill-opacity="0.08"/>
+          <line x1="14" y1="14" x2="58" y2="14" stroke-width="1.6"/>
+          <line x1="14" y1="14" x2="14" y2="62" stroke-width="1.6"/>
+          <line x1="22" y1="26" x2="50" y2="26" stroke-opacity="0.55"/>
+          <line x1="22" y1="34" x2="50" y2="34" stroke-opacity="0.55"/>
+          <line x1="22" y1="42" x2="42" y2="42" stroke-opacity="0.55"/>
+          <line x1="22" y1="50" x2="46" y2="50" stroke-opacity="0.55"/>
+          <circle cx="50" cy="42" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="46" cy="50" r="1.5" fill="currentColor" stroke="none"/>
+        </svg>
       </div>
-    </div>
+      <div class="audience-body">
+        <h3>Work the right book.</h3>
+        <p>Risk-scored prospects surface the high-value accounts and push noise to the bottom. Your producers spend time where it compounds — on the accounts most likely to close, renew, and expand.</p>
+        <a href="#contact" class="strip-cta">Put it to work &rarr;</a>
+      </div>
+    </article>
+    <!-- Strip 3: MGAs & Wholesalers — visual LEFT -->
+    <article class="audience-strip fade-up">
+      <div class="audience-visual">
+        <span class="audience-serial">03</span>
+        <span class="audience-kicker">MGAs &amp; Wholesalers</span>
+        <svg class="audience-icon" viewBox="0 0 72 72" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="14" cy="36" r="4" fill="currentColor" fill-opacity="0.18"/>
+          <circle cx="58" cy="18" r="4" fill="currentColor" fill-opacity="0.18"/>
+          <circle cx="58" cy="36" r="4" fill="currentColor" fill-opacity="0.18"/>
+          <circle cx="58" cy="54" r="4" fill="currentColor" fill-opacity="0.18"/>
+          <circle cx="36" cy="36" r="6" fill="currentColor" fill-opacity="0.15" stroke-width="1.4"/>
+          <line x1="18" y1="36" x2="30" y2="36" stroke-width="1.3"/>
+          <line x1="42" y1="34" x2="54" y2="20" stroke-width="1.3"/>
+          <line x1="42" y1="36" x2="54" y2="36" stroke-width="1.3"/>
+          <line x1="42" y1="38" x2="54" y2="52" stroke-width="1.3"/>
+        </svg>
+      </div>
+      <div class="audience-body">
+        <h3>Match in milliseconds.</h3>
+        <p>Route specialty risk to the right underwriter in under five milliseconds. No manual sorting. No cherry-picking. No dropped handoffs between intake and bind.</p>
+        <a href="#contact" class="strip-cta">Wire it in &rarr;</a>
+      </div>
+    </article>
   </div>
 </section>
 
