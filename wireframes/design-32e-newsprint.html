@@ -1885,7 +1885,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   <div class="masthead-rules">
     <span class="masthead-left">Vol. I · № 1</span>
     <span class="masthead-center"><strong>Insurance Intelligence</strong> <em>&mdash; a daily record</em></span>
-    <span class="masthead-right">Orem, UT · April 2026</span>
+    <span class="masthead-right" id="mastheadDate">Orem, UT · April 17, 2026</span>
   </div>
 </div>
 
@@ -2468,6 +2468,15 @@ window.addEventListener('scroll', () => {
   }
   lastScroll = currentScroll;
 }, { passive: true });
+
+// Masthead date — auto-updates to today's date in "Orem, UT · April 17, 2026" format
+(function(){
+  const el = document.getElementById('mastheadDate');
+  if (!el) return;
+  const d = new Date();
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  el.textContent = `Orem, UT · ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+})();
 
 // Live Ops — minimal: clock tick + processed counter drift only (heavy motion disabled to prevent tab crash)
 (function(){
