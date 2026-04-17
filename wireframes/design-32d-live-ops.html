@@ -1304,7 +1304,9 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 
 /* Live Ops Terminal animations */
 @keyframes opsPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
-@keyframes opsRowNew { 0% { background: rgba(16,185,129,0.12); } 30% { background: rgba(16,185,129,0.08); } 100% { background: rgba(0, 51, 153,0.04); } }
+@keyframes opsRowNew { 0% { background: rgba(16,185,129,0.12); } 30% { background: rgba(16,185,129,0.08); } 100% { background: rgba(147,180,255,0.04); } }
+@keyframes opsRowInsert { 0% { opacity: 0; transform: translateY(-8px); max-height: 0; padding-top: 0; padding-bottom: 0; } 100% { opacity: 1; transform: translateY(0); max-height: 60px; padding-top: 10px; padding-bottom: 10px; } }
+@keyframes opsScoreFlash { 0%, 100% { text-shadow: 0 0 10px rgba(147,180,255,0.5); } 50% { text-shadow: 0 0 18px rgba(147,180,255,0.9), 0 0 28px rgba(147,180,255,0.5); color: #fff; } }
 .ops-row:hover { background: rgba(0, 51, 153,0.06) !important; }
 
 @media (max-width: 900px) {
@@ -1574,7 +1576,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         </div>
 
         <!-- TABLE HEADER -->
-        <div style="display:grid;grid-template-columns:56px 1fr 36px 96px 60px 92px 84px 46px;gap:14px;padding:11px 22px 10px;background:rgba(147,180,255,0.05);border-bottom:1px solid rgba(147,180,255,0.22);font-size:8.5px;letter-spacing:0.2em;color:rgba(0, 51, 153,0.75);">
+        <div style="display:grid;grid-template-columns:56px 1fr 36px 96px 60px 92px 84px 46px;gap:14px;padding:11px 22px 10px;background:rgba(147,180,255,0.06);border-bottom:1px solid rgba(147,180,255,0.28);font-size:9.5px;letter-spacing:0.22em;color:#a4bfff;font-weight:600;text-shadow:0 0 10px rgba(147,180,255,0.25);">
           <span>ID</span><span>ACCOUNT</span><span>ST</span><span>LINE</span><span style="text-align:right;">SCORE</span><span style="text-align:right;">VALUE</span><span>ROUTE</span><span style="text-align:right;">MS</span>
         </div>
 
@@ -1665,8 +1667,8 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <!-- FOOTER STRIP -->
         <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 22px;background:rgba(0,0,0,0.45);border-top:1px solid rgba(147,180,255,0.22);font-size:9.5px;letter-spacing:0.18em;">
           <div style="display:flex;gap:22px;">
-            <span style="color:rgba(180,200,255,0.9);font-weight:500;">QUEUE · <span style="color:#faf9f7;">147</span></span>
-            <span style="color:rgba(180,200,255,0.9);font-weight:500;">RATE · <span style="color:#faf9f7;">1,247/HR</span></span>
+            <span style="color:rgba(180,200,255,0.9);font-weight:500;">QUEUE · <span data-kpi="queue" style="color:#faf9f7;">147</span></span>
+            <span style="color:rgba(180,200,255,0.9);font-weight:500;">RATE · <span data-kpi="rate" style="color:#faf9f7;">1,247/HR</span></span>
             <span style="color:rgba(180,200,255,0.9);font-weight:500;">ERR · <span style="color:#10b981;">0.02%</span></span>
           </div>
           <div style="display:flex;gap:22px;">
@@ -1901,24 +1903,121 @@ window.addEventListener('scroll', () => {
   lastScroll = currentScroll;
 }, { passive: true });
 
-// Live Ops clock + processed counter drift
+// Live Ops — clock, counter drift, dynamic row insertion, KPI updates
 (function(){
   const clock = document.getElementById('opsClock');
   const processed = document.getElementById('kpiProcessed');
+  const rows = document.getElementById('opsRows');
   if (!clock) return;
   const pad = n => String(n).padStart(2,'0');
-  let count = 18447;
+  let count = 18528;
+  let seq = 1248;
+
+  // Clock tick every second
   function tick(){
     const d = new Date();
     clock.textContent = `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
   }
   tick(); setInterval(tick, 1000);
+
+  // Processed counter drifts every 1.8s
   if (processed) {
     setInterval(() => {
-      count += Math.floor(Math.random() * 3) + 1;
+      count += Math.floor(Math.random() * 4) + 1;
       processed.textContent = count.toLocaleString('en-US');
-    }, 2400);
+    }, 1800);
   }
+
+  // Queue / Rate / Err — pulse updates
+  const kpiQueue = document.querySelector('[data-kpi="queue"]');
+  const kpiRate = document.querySelector('[data-kpi="rate"]');
+  if (kpiQueue) {
+    let q = 147;
+    setInterval(() => {
+      q += Math.floor(Math.random() * 11) - 5;
+      if (q < 120) q = 120 + Math.floor(Math.random() * 10);
+      if (q > 180) q = 180 - Math.floor(Math.random() * 10);
+      kpiQueue.textContent = q;
+    }, 2200);
+  }
+  if (kpiRate) {
+    setInterval(() => {
+      const r = 1200 + Math.floor(Math.random() * 90);
+      kpiRate.textContent = r.toLocaleString('en-US') + '/HR';
+    }, 3100);
+  }
+
+  // Dynamic row insertion — every 4.5-7s a new row pushes in from the top
+  if (!rows) return;
+  const accounts = [
+    { name: 'Cortland Fleet Co.',   state: 'TX', line: 'COM AUTO',  vMin: 8000, vMax: 24000,  route: 'P-12' },
+    { name: 'Moreno Household',     state: 'NM', line: 'HOME',      vMin: 1800, vMax: 4200,   route: 'P-07' },
+    { name: 'Aspen Builders Grp.',  state: 'CO', line: 'CONTRACTOR',vMin: 5200, vMax: 18400,  route: 'UW-A' },
+    { name: 'Okafor, Adaeze',       state: 'GA', line: 'PERS AUTO', vMin: 1200, vMax: 2600,   route: 'P-21' },
+    { name: 'Redwood Risk LLC',     state: 'CA', line: 'SPECIALTY', vMin: 14000,vMax: 62000,  route: 'UW-A' },
+    { name: 'Paulson Holdings',     state: 'FL', line: 'COM PROP',  vMin: 3400, vMax: 9200,   route: 'P-34' },
+    { name: 'Northrop & Sons',      state: 'MN', line: 'CONTRACTOR',vMin: 4200, vMax: 14200,  route: 'UW-B' },
+    { name: 'Delacruz Rental',      state: 'AZ', line: 'COM PROP',  vMin: 2800, vMax: 7200,   route: 'NURTURE' },
+    { name: 'K. Nakamura',          state: 'WA', line: 'HOME',      vMin: 2100, vMax: 4800,   route: 'P-07' },
+    { name: 'Bridgeway Logistics',  state: 'NV', line: 'COM AUTO',  vMin: 9200, vMax: 28400,  route: 'P-12' },
+    { name: 'Silvana E.',           state: 'IL', line: 'PERS AUTO', vMin: 1100, vMax: 2400,   route: 'NURTURE' },
+    { name: 'Harbor Point Mutual',  state: 'MA', line: 'SPECIALTY', vMin: 18000,vMax: 52000,  route: 'UW-A' },
+    { name: 'Coastline Apparel',    state: 'NC', line: 'COM PROP',  vMin: 4400, vMax: 11200,  route: 'P-34' },
+    { name: 'Tran Family',          state: 'OR', line: 'HOME',      vMin: 2200, vMax: 4600,   route: 'UW-B' },
+  ];
+  const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+  const pickAccount = () => accounts[Math.floor(Math.random() * accounts.length)];
+
+  function makeRow(acct) {
+    const id = String(++seq).padStart(6, '0');
+    const score = rand(580, 980);
+    const value = rand(acct.vMin, acct.vMax);
+    const ms = (Math.random() * 5 + 1.8).toFixed(1);
+    const scoreColor = score >= 750 ? '#b4c8ff' : 'rgba(250,249,247,0.75)';
+    const scoreShadow = score >= 750 ? 'text-shadow:0 0 10px rgba(147,180,255,0.5);font-weight:500;' : '';
+    const routeColor = acct.route === 'NURTURE' ? 'rgba(250,249,247,0.55)' : '#10b981';
+    const valueStr = '$' + value.toLocaleString('en-US');
+    const html = `
+      <div class="ops-row" style="display:grid;grid-template-columns:56px 1fr 36px 96px 60px 92px 84px 46px;gap:14px;padding:10px 22px;font-size:12px;font-variant-numeric:tabular-nums;border-bottom:1px solid rgba(255,255,255,0.035);background:rgba(16,185,129,0.18);animation:opsRowInsert 0.5s ease-out 1, opsRowNew 3.5s ease-out 1 0.5s;">
+        <span style="color:rgba(180,200,255,0.9);">${id}</span>
+        <span style="color:#faf9f7;">${acct.name}</span>
+        <span style="color:rgba(250,249,247,0.5);">${acct.state}</span>
+        <span style="color:rgba(250,249,247,0.65);">${acct.line}</span>
+        <span style="color:${scoreColor};text-align:right;${scoreShadow}">${score}</span>
+        <span style="color:#faf9f7;text-align:right;">${valueStr}</span>
+        <span style="color:${routeColor};">&rarr; ${acct.route}</span>
+        <span style="color:rgba(250,249,247,0.5);text-align:right;">${ms}</span>
+      </div>`;
+    return html;
+  }
+
+  function pushNewRow() {
+    const acct = pickAccount();
+    rows.insertAdjacentHTML('afterbegin', makeRow(acct));
+    // Keep max 8 rows — remove oldest
+    while (rows.children.length > 8) {
+      const last = rows.lastElementChild;
+      last.style.transition = 'opacity 0.4s ease, max-height 0.4s ease';
+      last.style.opacity = '0';
+      last.style.maxHeight = '0';
+      setTimeout(() => last.remove(), 400);
+    }
+    // Schedule next
+    setTimeout(pushNewRow, 3800 + Math.random() * 3200);
+  }
+  setTimeout(pushNewRow, 2500);
+
+  // Random score flash on existing rows (simulates re-scoring)
+  setInterval(() => {
+    const liveRows = Array.from(rows.children).slice(0, 6);
+    if (!liveRows.length) return;
+    const target = liveRows[Math.floor(Math.random() * liveRows.length)];
+    const scoreCell = target.children[4];
+    if (!scoreCell) return;
+    const original = scoreCell.style.cssText;
+    scoreCell.style.cssText = original + ';color:#fff !important;text-shadow:0 0 16px rgba(147,180,255,0.9),0 0 28px rgba(147,180,255,0.5) !important;transition:all 0.3s ease;';
+    setTimeout(() => { scoreCell.style.cssText = original; }, 420);
+  }, 2700);
 })();
 
 // Contact form submission (placeholder — wire to backend later)
