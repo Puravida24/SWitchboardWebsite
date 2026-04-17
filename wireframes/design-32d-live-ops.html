@@ -1187,6 +1187,12 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .trio-card-featured { border: 1px solid rgba(0, 51, 153,0.45); background: rgba(0, 51, 153,0.05); }
 
 .trio-kicker { font-family: var(--mono); font-size: 0.65rem; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.25rem; display: block; }
+.trio-card-dark .trio-kicker { color: #93b4ff; }
+.trio-card-dark .trio-number { color: rgba(147,180,255,0.55); }
+.trio-card-dark.trio-card-featured { border-color: rgba(147,180,255,0.5); background: rgba(147,180,255,0.05); }
+.trio-card-dark .made-stamp path { fill: #93b4ff !important; }
+.trio-card-dark .made-stamp circle { stroke: #93b4ff !important; }
+.trio-card-dark p strong { color: #ffffff; }
 
 .trio-number { font-family: var(--serif); font-size: 2.5rem; line-height: 1; display: block; margin-bottom: 1.25rem; color: var(--gold); opacity: 0.9; }
 .trio-card-dark .trio-number { color: rgba(0, 51, 153,0.5); }
@@ -1217,6 +1223,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 /* Built-for section */
 .builtfor-section { background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream-3) 50%, var(--cream-2) 100%); padding: 120px 2rem; }
 .audience-card { cursor: default; }
+.audience-card p { min-height: 10.5rem; }
 .audience-card-footer { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(0, 51, 153,0.18); display: flex; align-items: center; justify-content: space-between; }
 .audience-card-footer .mini-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-gray); }
 .audience-card-footer a { font-family: var(--serif); font-size: 0.9rem; color: var(--charcoal-1); text-decoration: none; transition: all 0.3s; display: inline-flex; gap: 0.3rem; }
@@ -1262,15 +1269,16 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 
 /* Partners / Ecosystem section */
 .ecosystem-section { background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream-1) 100%); padding: 120px 2rem; }
-.ecosystem-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.75rem; max-width: 1100px; margin: 0 auto; }
-.ecosystem-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 2.25rem 1.25rem; border: 1px solid rgba(0, 51, 153,0.18); border-radius: 10px; background: #ffffff; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(28,25,23,0.03); min-height: 150px; }
-.ecosystem-card:hover { border-color: rgba(0, 51, 153,0.4); box-shadow: 0 8px 24px rgba(28,25,23,0.08); transform: translateY(-2px); }
+.ecosystem-marquee { overflow: hidden; max-width: 1200px; margin: 0 auto; padding: 1rem 0; -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%); }
+.ecosystem-track { display: flex; gap: 2rem; width: max-content; animation: ecoMarquee 40s linear infinite; }
+.ecosystem-marquee:hover .ecosystem-track { animation-play-state: paused; }
+@keyframes ecoMarquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 1rem)); } }
+.ecosystem-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.85rem; padding: 1.5rem 1.75rem; border: 1px solid rgba(0, 51, 153,0.18); border-radius: 10px; background: #ffffff; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(28,25,23,0.03); min-width: 200px; min-height: 120px; flex-shrink: 0; }
+.ecosystem-card:hover { border-color: rgba(0, 51, 153,0.45); box-shadow: 0 8px 24px rgba(28,25,23,0.1); transform: translateY(-2px); }
 .ecosystem-card img { width: 48px; height: 48px; object-fit: contain; filter: grayscale(20%) contrast(0.95); transition: filter 0.3s; }
 .ecosystem-card:hover img { filter: grayscale(0%) contrast(1); }
 .ecosystem-name { font-family: var(--serif); font-size: 0.95rem; color: var(--charcoal-1); letter-spacing: -0.005em; text-align: center; line-height: 1.2; }
 .ecosystem-note { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--warm-gray); text-align: center; margin-top: 2.5rem; }
-@media (max-width: 900px) { .ecosystem-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px) { .ecosystem-grid { grid-template-columns: 1fr; } }
 @media (max-width: 768px) {
   .trio-grid { grid-template-columns: 1fr; gap: 1.5rem; }
   .form-row { grid-template-columns: 1fr; }
@@ -1716,15 +1724,25 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
     <h2 class="fade-up delay-1">Connected to the operators shaping insurance.</h2>
     <p class="section-lede fade-up delay-2">Switchboard is built to plug into the carriers, MGAs, and marketplaces across personal, commercial, and specialty lines.</p>
   </div>
-  <div class="ecosystem-grid fade-up delay-2">
-    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rightsure.com&amp;sz=128" alt="RightSure" loading="lazy"/><span class="ecosystem-name">RightSure</span></div>
-    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rootinsurance.com&amp;sz=128" alt="Root Insurance" loading="lazy"/><span class="ecosystem-name">Root Insurance</span></div>
-    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=floridaoneinsurance.com&amp;sz=128" alt="Florida One Insurance" loading="lazy"/><span class="ecosystem-name">Florida One</span></div>
-    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=progressivecommercial.com&amp;sz=128" alt="Progressive Commercial" loading="lazy"/><span class="ecosystem-name">Progressive Commercial</span></div>
-    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=amfam.com&amp;sz=128" alt="American Family" loading="lazy"/><span class="ecosystem-name">American Family</span></div>
-    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextinsurance.com&amp;sz=128" alt="Next Insurance" loading="lazy"/><span class="ecosystem-name">Next Insurance</span></div>
-    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextcallclub.com&amp;sz=128" alt="Next Call Club" loading="lazy"/><span class="ecosystem-name">Next Call Club</span></div>
-    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=aspiregeneral.com&amp;sz=128" alt="Aspire General" loading="lazy"/><span class="ecosystem-name">Aspire General</span></div>
+  <div class="ecosystem-marquee fade-up delay-2">
+    <div class="ecosystem-track">
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rightsure.com&amp;sz=128" alt="RightSure" loading="lazy"/><span class="ecosystem-name">RightSure</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rootinsurance.com&amp;sz=128" alt="Root Insurance" loading="lazy"/><span class="ecosystem-name">Root Insurance</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=floridaoneinsurance.com&amp;sz=128" alt="Florida One" loading="lazy"/><span class="ecosystem-name">Florida One</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=progressivecommercial.com&amp;sz=128" alt="Progressive Commercial" loading="lazy"/><span class="ecosystem-name">Progressive Commercial</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=amfam.com&amp;sz=128" alt="American Family" loading="lazy"/><span class="ecosystem-name">American Family</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextinsurance.com&amp;sz=128" alt="Next Insurance" loading="lazy"/><span class="ecosystem-name">Next Insurance</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextcallclub.com&amp;sz=128" alt="Next Call Club" loading="lazy"/><span class="ecosystem-name">Next Call Club</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=aspiregeneral.com&amp;sz=128" alt="Aspire General" loading="lazy"/><span class="ecosystem-name">Aspire General</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rightsure.com&amp;sz=128" alt="RightSure" loading="lazy"/><span class="ecosystem-name">RightSure</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rootinsurance.com&amp;sz=128" alt="Root Insurance" loading="lazy"/><span class="ecosystem-name">Root Insurance</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=floridaoneinsurance.com&amp;sz=128" alt="Florida One" loading="lazy"/><span class="ecosystem-name">Florida One</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=progressivecommercial.com&amp;sz=128" alt="Progressive Commercial" loading="lazy"/><span class="ecosystem-name">Progressive Commercial</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=amfam.com&amp;sz=128" alt="American Family" loading="lazy"/><span class="ecosystem-name">American Family</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextinsurance.com&amp;sz=128" alt="Next Insurance" loading="lazy"/><span class="ecosystem-name">Next Insurance</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextcallclub.com&amp;sz=128" alt="Next Call Club" loading="lazy"/><span class="ecosystem-name">Next Call Club</span></div>
+      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=aspiregeneral.com&amp;sz=128" alt="Aspire General" loading="lazy"/><span class="ecosystem-name">Aspire General</span></div>
+    </div>
   </div>
   <p class="ecosystem-note fade-up delay-3">Logos shown for identification of the ecosystem we serve</p>
 </section>
