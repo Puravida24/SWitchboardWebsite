@@ -1675,11 +1675,12 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   .ops-terminal { min-width: 0 !important; font-size: 10.5px; }
   .ops-terminal-hint { display: none !important; }
 
-  /* Header: tight, two-line Phoenix label + version on right */
+  /* Header: tight, single-line Phoenix label + right-side cluster */
   .ops-terminal > div:first-child {
     flex-wrap: nowrap !important;
     gap: 8px !important;
     padding: 8px 12px !important;
+    align-items: center !important;
   }
   .ops-terminal > div:first-child > div {
     flex: 0 1 auto !important;
@@ -1691,7 +1692,31 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   .ops-terminal > div:first-child > div:last-child {
     flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 6px !important;
+    gap: 4px 8px !important;
+  }
+  /* Crunch the PHOENIX · LIVE OPS label letter-spacing on mobile so it stops wrapping */
+  .ops-terminal > div:first-child > div:first-child > span:nth-child(2) > span:first-child {
+    font-size: 10px !important;
+    letter-spacing: 0.14em !important;
+    white-space: nowrap;
+  }
+  /* Hide the subtext "THE SWITCHBOARD PLATFORM" on narrow phones — already shown in the section above */
+  .ops-terminal > div:first-child > div:first-child > span:nth-child(2) > span:last-child {
+    display: none !important;
+  }
+  /* Shrink version, timestamp, and LIVE badge */
+  .ops-terminal > div:first-child > div:first-child > span:nth-child(3) {
+    font-size: 8px !important;
+    letter-spacing: 0.18em !important;
+    padding-left: 8px !important;
+  }
+  #opsClock {
+    font-size: 8.5px !important;
+    letter-spacing: 0.02em !important;
+  }
+  .ops-terminal > div:first-child > div:last-child > span:last-child {
+    font-size: 8.5px !important;
+    letter-spacing: 0.18em !important;
   }
 
   /* KPI strip: 2 cols, denser */
@@ -1783,10 +1808,13 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   }
   .ops-row > span:nth-child(8)::after { content: 'ms'; color: rgba(147,180,255,0.35); font-size: 8px; margin-left: 1px; }
 
-  /* Move SCR/VAL/ROUTE/MS onto their own line below state/line by forcing block display on the 5th */
-  .ops-row > span:nth-child(5) {
+  /* Put SCR/VAL/ROUTE/MS on one line below the state/line metadata */
+  .ops-row > span:nth-child(4)::after {
+    content: '';
     display: block !important;
-    margin-top: 2px !important;
+    height: 3px;
+  }
+  .ops-row > span:nth-child(5) {
     margin-left: 0 !important;
   }
 
