@@ -1331,14 +1331,15 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .footer-tagline em { color: var(--navy-light, #93b4ff); font-style: italic; }
 .footer-mini { display: none; }
 
-/* Four-column links */
+/* Two-column links */
 .footer-cols {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px;
-  padding-bottom: 40px;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  max-width: 720px;
+  margin: 0 auto 28px;
+  padding-bottom: 32px;
   border-bottom: 1px solid rgba(147,180,255,0.15);
-  margin-bottom: 28px;
 }
 .footer-col { display: flex; flex-direction: column; gap: 10px; }
 .footer-col-title {
@@ -2708,7 +2709,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
       <div class="footer-tagline"><em>Insurance Intelligence</em> &mdash; where experience meets data.</div>
     </div>
 
-    <!-- Four-column editorial links (desktop / tablet) -->
+    <!-- Two-column editorial links -->
     <div class="footer-cols">
       <div class="footer-col">
         <span class="footer-col-title">Platform</span>
@@ -2716,17 +2717,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <a href="#intelligence">The Intelligence</a>
         <a href="#stories">Who It’s For</a>
         <a href="#partners">Roster</a>
-      </div>
-      <div class="footer-col">
-        <span class="footer-col-title">The Stack</span>
-        <a href="#results">Built In-House</a>
-        <a href="#results">American Made</a>
-        <a href="#results">Run on EOS</a>
-      </div>
-      <div class="footer-col">
-        <span class="footer-col-title">Correspondence</span>
         <a href="#contact">Start a Conversation</a>
-        <a href="mailto:hello@theswitchboardmarketing.com">hello@theswitchboardmarketing.com</a>
       </div>
       <div class="footer-col">
         <span class="footer-col-title">Of Record</span>
@@ -2744,10 +2735,10 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
       <a href="accessibility.html">Accessibility</a>
     </nav>
 
-    <!-- Colophon: editorial signature block -->
+    <!-- Imprint: minimal legal address -->
     <div class="footer-imprint">
       <p class="footer-imprint-line">
-        <strong>Published in Orem, Utah</strong> by The Switchboard, LLC &middot; 1849 W 645 S, Orem, Utah 84059 &middot; Vol. I · № 1. Set in <em>Instrument Serif</em>, Inter, and JetBrains Mono. Every line of code, every data pipeline, every model — shipped in-house.
+        The Switchboard, LLC &middot; 1849 W 645 S, Orem, Utah 84059
       </p>
     </div>
 
