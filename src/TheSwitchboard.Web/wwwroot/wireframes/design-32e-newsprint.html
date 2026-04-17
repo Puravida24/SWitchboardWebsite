@@ -1258,6 +1258,10 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .form-consent { font-family: var(--sans); font-size: 0.78rem; color: var(--warm-gray); line-height: 1.55; margin: 1.25rem 0 0.5rem; font-weight: 300; text-align: left; }
 .form-consent a { color: var(--charcoal-1); text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 2px; }
 .form-consent a:hover { color: var(--gold); }
+.form-checkbox { display: flex; align-items: flex-start; gap: 0.625rem; margin-top: 1.25rem; font-family: var(--sans); font-size: 0.78rem; line-height: 1.55; color: var(--warm-gray); font-weight: 300; cursor: pointer; text-align: left; }
+.form-checkbox input[type="checkbox"] { flex: 0 0 auto; margin-top: 3px; width: 16px; height: 16px; accent-color: var(--gold); cursor: pointer; }
+.form-checkbox span { flex: 1 1 auto; }
+.label-optional { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.12em; color: var(--warm-gray); opacity: 0.7; font-weight: 300; margin-left: 4px; text-transform: none; }
 .form-submit { width: 100%; font-family: var(--serif); font-size: 1.05rem; padding: 1rem 2rem; background: var(--gold); color: #ffffff; border: none; border-radius: 100px; cursor: pointer; transition: all 0.3s ease; margin-top: 0.75rem; letter-spacing: 0.01em; }
 .form-submit:hover { background: #d4b77c; box-shadow: 0 0 32px var(--gold-glow); transform: translateY(-1px); }
 .form-footer-note { font-size: 0.8rem; color: var(--warm-gray); text-align: center; margin-top: 1.5rem; font-weight: 300; }
@@ -1604,6 +1608,20 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   .built-here-section, .process-section, .builtfor-section { padding: 64px 1.25rem; }
   .intelligence-strip-section { padding: 64px 1.25rem; }
   .audience-strips-section { padding: 64px 1.25rem 48px; }
+
+  /* Ecosystem partner cards — shrink so they don't dominate viewport */
+  .ecosystem-track { gap: 0.9rem; }
+  .ecosystem-card { min-width: 148px; min-height: 60px; padding: 0.75rem 1rem; border-radius: 8px; }
+  .ecosystem-wordmark { font-size: 0.95rem; line-height: 1.1; }
+
+  /* Footer — compact single-column link list */
+  .footer-cols { gap: 20px; padding-bottom: 24px; margin-bottom: 18px; }
+  .footer-col { gap: 6px; }
+  .footer-col-title { font-size: 0.58rem; letter-spacing: 0.24em; margin-bottom: 2px; padding-bottom: 6px; }
+  .footer-col a { font-size: 0.88rem; line-height: 1.25; }
+  .footer-imprint-line { font-size: 0.75rem; line-height: 1.55; }
+  .footer-bottom { font-size: 0.7rem; }
+  .footer-stamp { font-size: 0.55rem !important; letter-spacing: 0.16em !important; }
 }
 
 @media (max-width: 480px) {
@@ -1683,9 +1701,17 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   .masthead-center em { display: none; }
 }
 @media (max-width: 560px) {
-  .masthead-rules { flex-direction: column; text-align: center; gap: 8px; padding: 14px 0; }
-  .masthead-left, .masthead-right { font-size: 0.62rem; letter-spacing: 0.16em; }
-  .masthead-center strong { font-size: 0.78rem; }
+  .masthead-rules { flex-direction: row; flex-wrap: nowrap; justify-content: center; text-align: center; gap: 0; padding: 10px 4px; }
+  .masthead-left, .masthead-right { display: none; }
+  .masthead-center { font-size: 0.95rem; min-width: 0; }
+  .masthead-center strong { font-size: 0.7rem; letter-spacing: 0.2em; }
+  .masthead-center em { display: none; }
+}
+@media (max-width: 640px) {
+  .banner-byline { display: none; }
+  .hero.hero-newsprint { padding: 24px 1.25rem 48px; }
+  .hero-buttons { gap: 12px; }
+  .hero-buttons .btn-secondary { display: none; }
 }
 
 /* EDITION STAMP — corner mark */
@@ -2460,7 +2486,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         </div>
       </div></div><p class="ops-terminal-hint">↔ swipe to view all columns</p>
     </div>
-    <p class="figure-caption fade-up delay-2"><strong>Fig. 1</strong>Live operations terminal &mdash; every inbound record enriched, scored, and routed in under five milliseconds. Sample data shown; production volumes remain privileged.</p>
+    <p class="figure-caption fade-up delay-2">Sample traffic. Live in production.</p>
   </div>
 </section>
 
@@ -2634,20 +2660,28 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
           <input type="text" id="cf-company" name="company" required autocomplete="organization">
         </div>
         <div class="form-field">
-          <label for="cf-role">Role</label>
-          <select id="cf-role" name="role">
-            <option value="">Select&hellip;</option>
-            <option value="carrier">Carrier</option>
-            <option value="agency">Agency</option>
-            <option value="mga">MGA / Wholesaler</option>
-            <option value="other">Other</option>
-          </select>
+          <label for="cf-phone">Phone <span class="label-optional">(optional)</span></label>
+          <input type="tel" id="cf-phone" name="phone" autocomplete="tel" placeholder="(555) 555-5555">
         </div>
+      </div>
+      <div class="form-field">
+        <label for="cf-role">Role</label>
+        <select id="cf-role" name="role">
+          <option value="">Select&hellip;</option>
+          <option value="carrier">Carrier</option>
+          <option value="agency">Agency</option>
+          <option value="mga">MGA / Wholesaler</option>
+          <option value="other">Other</option>
+        </select>
       </div>
       <div class="form-field">
         <label for="cf-message">What brings you here?</label>
         <textarea id="cf-message" name="message" placeholder="A sentence or two is plenty."></textarea>
       </div>
+      <label class="form-checkbox">
+        <input type="checkbox" id="cf-tcpa" name="tcpa">
+        <span>By checking this box and providing my phone number, I consent to receive calls and SMS from The Switchboard about my inquiry. Message frequency varies. Message &amp; data rates may apply. Reply STOP to unsubscribe. Consent is not a condition of any purchase.</span>
+      </label>
       <p class="form-consent">By submitting, you agree to our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>. We&rsquo;ll use your information to respond to your inquiry and may follow up about our platform. We do not sell your data.</p>
       <button type="submit" class="form-submit">Start the Conversation</button>
     </form>
@@ -2805,8 +2839,14 @@ if (contactForm) {
     const name = document.getElementById('cf-name').value.trim();
     const email = document.getElementById('cf-email').value.trim();
     const company = document.getElementById('cf-company').value.trim();
+    const phone = document.getElementById('cf-phone').value.trim();
+    const tcpa = document.getElementById('cf-tcpa').checked;
     if (!name || !email || !company) {
       alert('Please fill in your name, email, and company.');
+      return;
+    }
+    if (phone && !tcpa) {
+      alert('To receive calls or SMS, please check the consent box. Or remove your phone number to submit without it.');
       return;
     }
     // TODO: POST to /api/contact once backend is wired up
