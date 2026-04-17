@@ -1341,9 +1341,8 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   background: linear-gradient(90deg, rgba(147,180,255,0.6), #d4e0ff);
   box-shadow: 0 0 8px rgba(147,180,255,0.4);
 }
-.pv-bar-enrich { animation: pvBarFill 0.7s ease-out 0.35s forwards; }
-.pv-bar-score { animation: pvBarFill 0.7s ease-out 0.75s forwards; width: 0; --pv-bar-target: 84.7%; }
-.pv-bar-score { animation-name: pvBarFillScore; }
+.pv-bar-enrich { animation: pvBarFill 2.2s cubic-bezier(0.22, 0.61, 0.36, 1) 0.5s forwards; }
+.pv-bar-score { animation: pvBarFillScore 1.6s cubic-bezier(0.22, 0.61, 0.36, 1) 3.0s forwards; width: 0; }
 .pv-status { color: #10b981; font-size: 10px; letter-spacing: 0.1em; opacity: 0; }
 .pv-status.shown { animation: pvFadeIn 0.25s ease both; }
 .pv-route, .pv-latency { color: #10b981; font-size: 11px; opacity: 0; }
@@ -1372,9 +1371,38 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 
 /* Stagger the vignette lines */
 .phoenix-vignette.active .pv-line:nth-child(1) { animation-delay: 0.05s; }
-.phoenix-vignette.active .pv-line:nth-child(2) { animation-delay: 0.25s; }
-.phoenix-vignette.active .pv-line:nth-child(3) { animation-delay: 0.65s; }
-.phoenix-vignette.active .pv-line:nth-child(4) { animation-delay: 1.1s; }
+.phoenix-vignette.active .pv-line:nth-child(2) { animation-delay: 0.35s; }
+.phoenix-vignette.active .pv-line:nth-child(3) { animation-delay: 2.9s; }
+.phoenix-vignette.active .pv-line:nth-child(4) { animation-delay: 4.7s; }
+
+/* Signal stream — ticking under ENRICH */
+.pv-signals {
+  grid-column: 2 / 4;
+  margin-top: 6px;
+  font-size: 9.5px;
+  color: rgba(147,180,255,0.55);
+  letter-spacing: 0.06em;
+  min-height: 14px;
+  font-family: var(--mono);
+  line-height: 1.5;
+  overflow: hidden;
+}
+.pv-signal-item {
+  display: inline-block;
+  opacity: 0;
+  margin-right: 10px;
+  animation: pvSignalPop 0.3s ease both;
+}
+.pv-signal-item.ok::after { content: ' ✓'; color: #10b981; }
+@keyframes pvSignalPop { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Score counter styling */
+.pv-score-counter {
+  font-variant-numeric: tabular-nums;
+  color: #d4e0ff;
+  font-weight: 500;
+  font-size: 12px;
+}
 
 /* Footer — institutional, Stripe-grade restraint */
 .site-footer { background: var(--charcoal-1); border-top: 1px solid rgba(147,180,255,0.15); padding: 28px 2rem 22px; }
@@ -2855,6 +2883,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
             <span class="pv-key">ENRICH</span>
             <span class="pv-bar"><span class="pv-bar-fill pv-bar-enrich"></span></span>
             <span class="pv-status pv-status-enrich">&nbsp;</span>
+            <span class="pv-signals" id="pvSignals"></span>
           </div>
           <div class="pv-line">
             <span class="pv-key">SCORE</span>
@@ -3036,18 +3065,58 @@ function runPhoenixVignette({ name, company, role }) {
   vignette.classList.add('active');
   vignette.setAttribute('aria-hidden', 'false');
 
-  // Staged reveals that match the CSS animation timeline
+  // Signal stream — tick through enrichment sources during the ENRICH bar fill
+  const signals = [
+    'firmographic',
+    'demographic',
+    'behavioral',
+    'carrier_history',
+    'policy_mix',
+    'loss_ratio',
+    'geo_risk',
+    'fraud_signals',
+    'intent_score',
+    'lifetime_value',
+    'channel_affinity',
+    'response_window'
+  ];
+  const signalsEl = document.getElementById('pvSignals');
+  signalsEl.innerHTML = '';
+  signals.forEach((sig, i) => {
+    setTimeout(() => {
+      const item = document.createElement('span');
+      item.className = 'pv-signal-item ok';
+      item.textContent = sig;
+      signalsEl.appendChild(item);
+    }, 700 + i * 170);
+  });
+
+  // Enrich status after bar completes
   setTimeout(() => {
     document.querySelector('.pv-status-enrich').textContent = '✓ 12 signals';
     document.querySelector('.pv-status-enrich').classList.add('shown');
-  }, 1050);
+  }, 2800);
 
+  // Score counter — tick up from 0 to 847 over 1.6s (in sync with the bar)
+  const scoreStatus = document.querySelector('.pv-status-score');
+  scoreStatus.innerHTML = '<span class="pv-score-counter">0</span> <span style="opacity:0.5;">/ 1000</span>';
+  scoreStatus.classList.add('shown');
+  const scoreCounter = scoreStatus.querySelector('.pv-score-counter');
   setTimeout(() => {
-    const status = document.querySelector('.pv-status-score');
-    status.textContent = '847 / 1000';
-    status.classList.add('shown');
-  }, 1500);
+    const start = performance.now();
+    const duration = 1600;
+    const target = 847;
+    function tick(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      scoreCounter.textContent = Math.floor(eased * target);
+      if (progress < 1) requestAnimationFrame(tick);
+      else scoreCounter.textContent = target;
+    }
+    requestAnimationFrame(tick);
+  }, 3000);
 
+  // Route destination + latency
   setTimeout(() => {
     const routeMap = {
       carrier: '→ Carrier Desk',
@@ -3058,24 +3127,27 @@ function runPhoenixVignette({ name, company, role }) {
     const route = routeMap[role] || '→ Senior Engagement';
     document.getElementById('pvRoute').textContent = route;
     document.getElementById('pvRoute').classList.add('shown');
+  }, 5000);
+
+  setTimeout(() => {
     const latency = (2 + Math.random() * 2).toFixed(1);
     document.getElementById('pvLatency').textContent = `${latency}ms`;
     document.getElementById('pvLatency').classList.add('shown');
-  }, 1900);
+  }, 5400);
 
   setTimeout(() => {
     document.getElementById('pvComplete').classList.add('shown');
-  }, 2300);
+  }, 5900);
 
-  // Fade out and swap to success after 3.4s total
+  // Fade out and swap to success after ~7.2s total
   setTimeout(() => {
     vignette.classList.add('finishing');
     setTimeout(() => {
       vignette.classList.remove('active', 'finishing');
       vignette.setAttribute('aria-hidden', 'true');
       success.classList.add('active');
-    }, 400);
-  }, 3400);
+    }, 500);
+  }, 7200);
 }
 </script>
 </body>
