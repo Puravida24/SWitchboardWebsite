@@ -1260,6 +1260,17 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .footer-stamp { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(201,169,110,0.55); }
 @media (max-width: 640px) { .footer-row, .footer-meta { flex-direction: column; align-items: flex-start; } }
 
+/* Partners / Ecosystem section */
+.ecosystem-section { background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream-1) 100%); padding: 120px 2rem; }
+.ecosystem-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.75rem; max-width: 1100px; margin: 0 auto; }
+.ecosystem-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 2.25rem 1.25rem; border: 1px solid rgba(201,169,110,0.18); border-radius: 10px; background: #ffffff; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(28,25,23,0.03); min-height: 150px; }
+.ecosystem-card:hover { border-color: rgba(201,169,110,0.4); box-shadow: 0 8px 24px rgba(28,25,23,0.08); transform: translateY(-2px); }
+.ecosystem-card img { width: 48px; height: 48px; object-fit: contain; filter: grayscale(20%) contrast(0.95); transition: filter 0.3s; }
+.ecosystem-card:hover img { filter: grayscale(0%) contrast(1); }
+.ecosystem-name { font-family: var(--serif); font-size: 0.95rem; color: var(--charcoal-1); letter-spacing: -0.005em; text-align: center; line-height: 1.2; }
+.ecosystem-note { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--warm-gray); text-align: center; margin-top: 2.5rem; }
+@media (max-width: 900px) { .ecosystem-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .ecosystem-grid { grid-template-columns: 1fr; } }
 @media (max-width: 768px) {
   .trio-grid { grid-template-columns: 1fr; gap: 1.5rem; }
   .form-row { grid-template-columns: 1fr; }
@@ -1635,6 +1646,28 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 </section>
 
 <!-- ════════════════════════════════════════════════════
+     PARTNERS / ECOSYSTEM
+     ════════════════════════════════════════════════════ -->
+<section class="ecosystem-section" id="partners">
+  <div class="section-header-centered">
+    <span class="overline fade-up">Partners</span>
+    <h2 class="fade-up delay-1">Connected to the operators shaping insurance.</h2>
+    <p class="section-lede fade-up delay-2">Switchboard is built to plug into the carriers, MGAs, and marketplaces across personal, commercial, and specialty lines.</p>
+  </div>
+  <div class="ecosystem-grid fade-up delay-2">
+    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rightsure.com&amp;sz=128" alt="RightSure" loading="lazy"/><span class="ecosystem-name">RightSure</span></div>
+    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rootinsurance.com&amp;sz=128" alt="Root Insurance" loading="lazy"/><span class="ecosystem-name">Root Insurance</span></div>
+    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=floridaoneinsurance.com&amp;sz=128" alt="Florida One Insurance" loading="lazy"/><span class="ecosystem-name">Florida One</span></div>
+    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=progressivecommercial.com&amp;sz=128" alt="Progressive Commercial" loading="lazy"/><span class="ecosystem-name">Progressive Commercial</span></div>
+    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=amfam.com&amp;sz=128" alt="American Family" loading="lazy"/><span class="ecosystem-name">American Family</span></div>
+    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextinsurance.com&amp;sz=128" alt="Next Insurance" loading="lazy"/><span class="ecosystem-name">Next Insurance</span></div>
+    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextcallclub.com&amp;sz=128" alt="Next Call Club" loading="lazy"/><span class="ecosystem-name">Next Call Club</span></div>
+    <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=aspiregeneral.com&amp;sz=128" alt="Aspire General" loading="lazy"/><span class="ecosystem-name">Aspire General</span></div>
+  </div>
+  <p class="ecosystem-note fade-up delay-3">Logos shown for identification of the ecosystem we serve</p>
+</section>
+
+<!-- ════════════════════════════════════════════════════
      CONTACT
      ════════════════════════════════════════════════════ -->
 <section class="cta-section" id="contact">
@@ -1699,7 +1732,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   </div>
   <div class="footer-meta">
     <span class="footer-meta-copy">&copy; 2026 The Switchboard, LLC</span>
-    <span class="footer-stamp">Built in America · Orem, UT · S/N 000001</span>
+    <span class="footer-stamp">Built in America · Run on EOS · Orem, UT</span>
   </div>
 </footer>
 
