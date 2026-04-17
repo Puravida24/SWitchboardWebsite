@@ -1287,11 +1287,12 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .ecosystem-track { display: flex; gap: 2rem; width: max-content; animation: ecoMarquee 40s linear infinite; }
 .ecosystem-marquee:hover .ecosystem-track { animation-play-state: paused; }
 @keyframes ecoMarquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 1rem)); } }
-.ecosystem-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.85rem; padding: 1.5rem 1.75rem; border: 1px solid rgba(0, 51, 153,0.18); border-radius: 10px; background: #ffffff; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(28,25,23,0.03); min-width: 200px; min-height: 120px; flex-shrink: 0; }
-.ecosystem-card:hover { border-color: rgba(0, 51, 153,0.45); box-shadow: 0 8px 24px rgba(28,25,23,0.1); transform: translateY(-2px); }
-.ecosystem-card img { width: 48px; height: 48px; object-fit: contain; filter: grayscale(20%) contrast(0.95); transition: filter 0.3s; }
-.ecosystem-card:hover img { filter: grayscale(0%) contrast(1); }
-.ecosystem-name { font-family: var(--serif); font-size: 0.95rem; color: var(--charcoal-1); letter-spacing: -0.005em; text-align: center; line-height: 1.2; }
+.ecosystem-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 1.75rem 2.25rem; border: 1px solid rgba(0, 51, 153,0.14); border-radius: 12px; background: #ffffff; transition: all 0.35s ease; box-shadow: 0 1px 3px rgba(28,25,23,0.04), 0 4px 12px rgba(28,25,23,0.03); min-width: 230px; min-height: 150px; flex-shrink: 0; }
+.ecosystem-card:hover { border-color: rgba(0, 51, 153,0.45); box-shadow: 0 8px 28px rgba(28,25,23,0.12), 0 2px 6px rgba(28,25,23,0.05); transform: translateY(-3px); }
+.ecosystem-card img { max-height: 44px; max-width: 160px; width: auto; height: auto; object-fit: contain; filter: grayscale(100%) opacity(0.72); transition: filter 0.4s ease, opacity 0.4s ease; }
+.ecosystem-card:hover img { filter: grayscale(0%) opacity(1); }
+.ecosystem-card img.logo-fallback { max-height: 38px; max-width: 38px; border-radius: 6px; }
+.ecosystem-name { font-family: var(--sans); font-size: 0.72rem; font-weight: 400; color: var(--warm-gray); letter-spacing: 0.06em; text-align: center; }
 .ecosystem-note { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--warm-gray); text-align: center; margin-top: 2.5rem; }
 @media (max-width: 768px) {
   .trio-grid { grid-template-columns: 1fr; gap: 1.5rem; }
@@ -1310,8 +1311,19 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   .ops-terminal { font-size: 10px; }
   .ops-terminal .ops-row, .ops-terminal > div:nth-child(3), .ops-terminal > div:nth-child(4) > div { font-size: 10.5px !important; }
   .ops-terminal > div:nth-child(2) { grid-template-columns: repeat(2, 1fr) !important; }
-  .ops-terminal > div:nth-child(2) > div { padding: 12px 16px !important; border-right: none !important; border-bottom: 1px solid rgba(0, 51, 153,0.08); }
+  .ops-terminal > div:nth-child(2) > div { padding: 12px 16px !important; border-right: none !important; border-bottom: 1px solid rgba(147,180,255,0.12); }
 }
+/* Live Ops Terminal — mobile: horizontal scroll + header stacking */
+@media (max-width: 700px) {
+  .ops-terminal-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 4px; scrollbar-width: thin; scrollbar-color: rgba(147,180,255,0.35) transparent; }
+  .ops-terminal-scroll::-webkit-scrollbar { height: 6px; }
+  .ops-terminal-scroll::-webkit-scrollbar-thumb { background: rgba(147,180,255,0.35); border-radius: 3px; }
+  .ops-terminal { min-width: 720px; }
+  .ops-terminal > div:first-child { flex-wrap: wrap; gap: 8px 16px !important; padding: 10px 16px !important; }
+  .ops-terminal > div:first-child > div:first-child { flex: 1 1 100%; }
+  .ops-terminal-hint { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--warm-gray); text-align: center; margin-top: 10px; opacity: 0.7; }
+}
+.ops-terminal-hint { display: none; }
 
 @media (max-width: 480px) {
   .hero h1 { font-size: 2rem; }
@@ -1519,13 +1531,14 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 
     <!-- LIVE OPS TERMINAL (institutional, Bloomberg-grade) -->
     <div class="fade-up delay-1" style="position:relative;max-width:1000px;margin:0 auto;">
-      <div class="ops-terminal" style="background:linear-gradient(180deg,#0a0806 0%,#060504 100%);border:1px solid rgba(147,180,255,0.32);border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,0.55),0 0 0 1px rgba(147,180,255,0.08),inset 0 0 40px rgba(0,0,0,0.4);font-family:'JetBrains Mono',ui-monospace,monospace;overflow:hidden;">
+      <div class="ops-terminal-scroll"><div class="ops-terminal" style="background:linear-gradient(180deg,#0a0806 0%,#060504 100%);border:1px solid rgba(147,180,255,0.38);border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,0.55),0 0 0 1px rgba(147,180,255,0.12),inset 0 0 40px rgba(0,0,0,0.4);font-family:'JetBrains Mono',ui-monospace,monospace;overflow:hidden;">
 
         <!-- HEADER BAR -->
         <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 22px;background:rgba(147,180,255,0.08);border-bottom:1px solid rgba(147,180,255,0.22);">
-          <div style="display:flex;align-items:center;gap:18px;">
-            <span style="color:#93b4ff;font-size:10.5px;letter-spacing:0.24em;font-weight:500;">SWITCHBOARD · LIVE OPS</span>
-            <span style="color:rgba(147,180,255,0.5);font-size:9.5px;letter-spacing:0.18em;">v2.1.7</span>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <span style="display:inline-block;width:7px;height:7px;background:#10b981;border-radius:50%;box-shadow:0 0 8px #10b981,0 0 16px rgba(16,185,129,0.45);flex-shrink:0;"></span>
+            <span style="color:#d4e0ff;font-size:11.5px;letter-spacing:0.32em;font-weight:600;text-shadow:0 0 14px rgba(147,180,255,0.55),0 0 28px rgba(147,180,255,0.25);">SWITCHBOARD · LIVE OPS</span>
+            <span style="color:rgba(212,224,255,0.45);font-size:9px;letter-spacing:0.22em;border-left:1px solid rgba(147,180,255,0.25);padding-left:14px;">v2.1.7</span>
           </div>
           <div style="display:flex;align-items:center;gap:22px;">
             <span id="opsClock" style="color:rgba(250,249,247,0.55);font-size:10.5px;letter-spacing:0.05em;font-variant-numeric:tabular-nums;">2026-04-17 13:47:33 UTC</span>
@@ -1539,23 +1552,23 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <!-- KPI STRIP -->
         <div style="display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid rgba(147,180,255,0.2);">
           <div style="padding:18px 22px;border-right:1px solid rgba(147,180,255,0.15);">
-            <div style="color:rgba(250,249,247,0.35);font-size:8.5px;letter-spacing:0.2em;margin-bottom:6px;">PROCESSED · TODAY</div>
+            <div style="color:rgba(212,224,255,0.65);font-size:8.5px;letter-spacing:0.22em;margin-bottom:6px;font-weight:500;">PROCESSED · TODAY</div>
             <div id="kpiProcessed" style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;">18,447</div>
           </div>
           <div style="padding:18px 22px;border-right:1px solid rgba(147,180,255,0.15);">
-            <div style="color:rgba(250,249,247,0.35);font-size:8.5px;letter-spacing:0.2em;margin-bottom:6px;">MATCH RATE</div>
+            <div style="color:rgba(212,224,255,0.65);font-size:8.5px;letter-spacing:0.22em;margin-bottom:6px;font-weight:500;">MATCH RATE</div>
             <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;">97.1<span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;">%</span></div>
           </div>
           <div style="padding:18px 22px;border-right:1px solid rgba(147,180,255,0.15);">
-            <div style="color:rgba(250,249,247,0.35);font-size:8.5px;letter-spacing:0.2em;margin-bottom:6px;">ROUTED</div>
+            <div style="color:rgba(212,224,255,0.65);font-size:8.5px;letter-spacing:0.22em;margin-bottom:6px;font-weight:500;">ROUTED</div>
             <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;">17,921</div>
           </div>
           <div style="padding:18px 22px;border-right:1px solid rgba(147,180,255,0.15);">
-            <div style="color:rgba(250,249,247,0.35);font-size:8.5px;letter-spacing:0.2em;margin-bottom:6px;">P50 / P99 LATENCY</div>
+            <div style="color:rgba(212,224,255,0.65);font-size:8.5px;letter-spacing:0.22em;margin-bottom:6px;font-weight:500;">P50 / P99 LATENCY</div>
             <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;">3.8<span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;margin-right:8px;">ms</span><span style="color:rgba(250,249,247,0.4);">/</span> 9.2<span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;">ms</span></div>
           </div>
           <div style="padding:18px 22px;">
-            <div style="color:rgba(250,249,247,0.35);font-size:8.5px;letter-spacing:0.2em;margin-bottom:6px;">UPTIME · 90D</div>
+            <div style="color:rgba(212,224,255,0.65);font-size:8.5px;letter-spacing:0.22em;margin-bottom:6px;font-weight:500;">UPTIME · 90D</div>
             <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;">99.99<span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;">%</span></div>
           </div>
         </div>
@@ -1572,43 +1585,43 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
             <span style="color:#faf9f7;">Bright Fleet LLC</span>
             <span style="color:rgba(250,249,247,0.5);">UT</span>
             <span style="color:rgba(250,249,247,0.65);">COM AUTO</span>
-            <span style="color:#93b4ff;text-align:right;">847</span>
+            <span style="color:#b4c8ff;text-align:right;text-shadow:0 0 10px rgba(147,180,255,0.5);font-weight:500;">847</span>
             <span style="color:#faf9f7;text-align:right;">$12,400</span>
             <span style="color:#10b981;">→ P-12</span>
             <span style="color:rgba(250,249,247,0.5);text-align:right;">4.2</span>
           </div>
           <div class="ops-row" style="display:grid;grid-template-columns:56px 1fr 36px 96px 60px 92px 84px 46px;gap:14px;padding:10px 22px;font-size:12px;font-variant-numeric:tabular-nums;border-bottom:1px solid rgba(255,255,255,0.035);">
-            <span style="color:rgba(147,180,255,0.55);">001246</span>
+            <span style="color:rgba(180,200,255,0.8);">001246</span>
             <span style="color:rgba(250,249,247,0.92);">Summit Risk Holdings</span>
             <span style="color:rgba(250,249,247,0.5);">CA</span>
             <span style="color:rgba(250,249,247,0.65);">SPECIALTY</span>
-            <span style="color:#93b4ff;text-align:right;">964</span>
+            <span style="color:#b4c8ff;text-align:right;text-shadow:0 0 10px rgba(147,180,255,0.5);font-weight:500;">964</span>
             <span style="color:#faf9f7;text-align:right;">$31,200</span>
             <span style="color:#10b981;">→ UW-A</span>
             <span style="color:rgba(250,249,247,0.5);text-align:right;">2.1</span>
           </div>
           <div class="ops-row" style="display:grid;grid-template-columns:56px 1fr 36px 96px 60px 92px 84px 46px;gap:14px;padding:10px 22px;font-size:12px;font-variant-numeric:tabular-nums;border-bottom:1px solid rgba(255,255,255,0.035);">
-            <span style="color:rgba(147,180,255,0.55);">001245</span>
+            <span style="color:rgba(180,200,255,0.8);">001245</span>
             <span style="color:rgba(250,249,247,0.92);">Marcia T.</span>
             <span style="color:rgba(250,249,247,0.5);">AZ</span>
             <span style="color:rgba(250,249,247,0.65);">HOME</span>
-            <span style="color:#93b4ff;text-align:right;">792</span>
+            <span style="color:#b4c8ff;text-align:right;text-shadow:0 0 10px rgba(147,180,255,0.5);font-weight:500;">792</span>
             <span style="color:#faf9f7;text-align:right;">$2,340</span>
             <span style="color:#10b981;">→ P-07</span>
             <span style="color:rgba(250,249,247,0.5);text-align:right;">3.8</span>
           </div>
           <div class="ops-row" style="display:grid;grid-template-columns:56px 1fr 36px 96px 60px 92px 84px 46px;gap:14px;padding:10px 22px;font-size:12px;font-variant-numeric:tabular-nums;border-bottom:1px solid rgba(255,255,255,0.035);">
-            <span style="color:rgba(147,180,255,0.55);">001244</span>
+            <span style="color:rgba(180,200,255,0.8);">001244</span>
             <span style="color:rgba(250,249,247,0.92);">Jason P.</span>
             <span style="color:rgba(250,249,247,0.5);">TX</span>
             <span style="color:rgba(250,249,247,0.65);">PERS AUTO</span>
-            <span style="color:#93b4ff;text-align:right;">881</span>
+            <span style="color:#b4c8ff;text-align:right;text-shadow:0 0 10px rgba(147,180,255,0.5);font-weight:500;">881</span>
             <span style="color:#faf9f7;text-align:right;">$1,840</span>
             <span style="color:#10b981;">→ P-21</span>
             <span style="color:rgba(250,249,247,0.5);text-align:right;">3.1</span>
           </div>
           <div class="ops-row" style="display:grid;grid-template-columns:56px 1fr 36px 96px 60px 92px 84px 46px;gap:14px;padding:10px 22px;font-size:12px;font-variant-numeric:tabular-nums;border-bottom:1px solid rgba(255,255,255,0.035);">
-            <span style="color:rgba(147,180,255,0.55);">001243</span>
+            <span style="color:rgba(180,200,255,0.8);">001243</span>
             <span style="color:rgba(250,249,247,0.92);">Hayward Rental Group</span>
             <span style="color:rgba(250,249,247,0.5);">NV</span>
             <span style="color:rgba(250,249,247,0.65);">COM PROP</span>
@@ -1618,27 +1631,27 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
             <span style="color:rgba(250,249,247,0.5);text-align:right;">5.4</span>
           </div>
           <div class="ops-row" style="display:grid;grid-template-columns:56px 1fr 36px 96px 60px 92px 84px 46px;gap:14px;padding:10px 22px;font-size:12px;font-variant-numeric:tabular-nums;border-bottom:1px solid rgba(255,255,255,0.035);">
-            <span style="color:rgba(147,180,255,0.55);">001242</span>
+            <span style="color:rgba(180,200,255,0.8);">001242</span>
             <span style="color:rgba(250,249,247,0.92);">Chen Household</span>
             <span style="color:rgba(250,249,247,0.5);">CA</span>
             <span style="color:rgba(250,249,247,0.65);">HOME</span>
-            <span style="color:#93b4ff;text-align:right;">823</span>
+            <span style="color:#b4c8ff;text-align:right;text-shadow:0 0 10px rgba(147,180,255,0.5);font-weight:500;">823</span>
             <span style="color:#faf9f7;text-align:right;">$3,280</span>
             <span style="color:#10b981;">→ UW-B</span>
             <span style="color:rgba(250,249,247,0.5);text-align:right;">3.4</span>
           </div>
           <div class="ops-row" style="display:grid;grid-template-columns:56px 1fr 36px 96px 60px 92px 84px 46px;gap:14px;padding:10px 22px;font-size:12px;font-variant-numeric:tabular-nums;border-bottom:1px solid rgba(255,255,255,0.035);">
-            <span style="color:rgba(147,180,255,0.55);">001241</span>
+            <span style="color:rgba(180,200,255,0.8);">001241</span>
             <span style="color:rgba(250,249,247,0.92);">Apex Builders Mutual</span>
             <span style="color:rgba(250,249,247,0.5);">CO</span>
             <span style="color:rgba(250,249,247,0.65);">CONTRACTOR</span>
-            <span style="color:#93b4ff;text-align:right;">762</span>
+            <span style="color:#b4c8ff;text-align:right;text-shadow:0 0 10px rgba(147,180,255,0.5);font-weight:500;">762</span>
             <span style="color:#faf9f7;text-align:right;">$9,450</span>
             <span style="color:#10b981;">→ P-34</span>
             <span style="color:rgba(250,249,247,0.5);text-align:right;">4.9</span>
           </div>
           <div class="ops-row" style="display:grid;grid-template-columns:56px 1fr 36px 96px 60px 92px 84px 46px;gap:14px;padding:10px 22px;font-size:12px;font-variant-numeric:tabular-nums;">
-            <span style="color:rgba(147,180,255,0.55);">001240</span>
+            <span style="color:rgba(180,200,255,0.8);">001240</span>
             <span style="color:rgba(250,249,247,0.92);">Hayes Family</span>
             <span style="color:rgba(250,249,247,0.5);">FL</span>
             <span style="color:rgba(250,249,247,0.65);">PERS AUTO</span>
@@ -1652,17 +1665,17 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <!-- FOOTER STRIP -->
         <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 22px;background:rgba(0,0,0,0.45);border-top:1px solid rgba(147,180,255,0.22);font-size:9.5px;letter-spacing:0.18em;">
           <div style="display:flex;gap:22px;">
-            <span style="color:rgba(147,180,255,0.75);">QUEUE · <span style="color:#faf9f7;">147</span></span>
-            <span style="color:rgba(147,180,255,0.75);">RATE · <span style="color:#faf9f7;">1,247/HR</span></span>
-            <span style="color:rgba(147,180,255,0.75);">ERR · <span style="color:#10b981;">0.02%</span></span>
+            <span style="color:rgba(180,200,255,0.9);font-weight:500;">QUEUE · <span style="color:#faf9f7;">147</span></span>
+            <span style="color:rgba(180,200,255,0.9);font-weight:500;">RATE · <span style="color:#faf9f7;">1,247/HR</span></span>
+            <span style="color:rgba(180,200,255,0.9);font-weight:500;">ERR · <span style="color:#10b981;">0.02%</span></span>
           </div>
           <div style="display:flex;gap:22px;">
             <span style="color:rgba(250,249,247,0.4);">BUILD · 2026.04.17.0840</span>
             <span style="color:rgba(250,249,247,0.4);">REGION · US-EAST</span>
-            <span style="color:rgba(147,180,255,0.65);">S/N 000001 · OREM UT</span>
+            <span style="color:rgba(180,200,255,0.85);font-weight:500;">S/N 000001 · OREM UT</span>
           </div>
         </div>
-      </div>
+      </div></div><p class="ops-terminal-hint">↔ swipe to view all columns</p>
     </div>
   </div>
 </section>
@@ -1755,22 +1768,22 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   </div>
   <div class="ecosystem-marquee fade-up delay-2">
     <div class="ecosystem-track">
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rightsure.com&amp;sz=128" alt="RightSure" loading="lazy"/><span class="ecosystem-name">RightSure</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rootinsurance.com&amp;sz=128" alt="Root Insurance" loading="lazy"/><span class="ecosystem-name">Root Insurance</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=floridaoneinsurance.com&amp;sz=128" alt="Florida One" loading="lazy"/><span class="ecosystem-name">Florida One</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=progressivecommercial.com&amp;sz=128" alt="Progressive Commercial" loading="lazy"/><span class="ecosystem-name">Progressive Commercial</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=amfam.com&amp;sz=128" alt="American Family" loading="lazy"/><span class="ecosystem-name">American Family</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextinsurance.com&amp;sz=128" alt="Next Insurance" loading="lazy"/><span class="ecosystem-name">Next Insurance</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextcallclub.com&amp;sz=128" alt="Next Call Club" loading="lazy"/><span class="ecosystem-name">Next Call Club</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=aspiregeneral.com&amp;sz=128" alt="Aspire General" loading="lazy"/><span class="ecosystem-name">Aspire General</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rightsure.com&amp;sz=128" alt="RightSure" loading="lazy"/><span class="ecosystem-name">RightSure</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=rootinsurance.com&amp;sz=128" alt="Root Insurance" loading="lazy"/><span class="ecosystem-name">Root Insurance</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=floridaoneinsurance.com&amp;sz=128" alt="Florida One" loading="lazy"/><span class="ecosystem-name">Florida One</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=progressivecommercial.com&amp;sz=128" alt="Progressive Commercial" loading="lazy"/><span class="ecosystem-name">Progressive Commercial</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=amfam.com&amp;sz=128" alt="American Family" loading="lazy"/><span class="ecosystem-name">American Family</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextinsurance.com&amp;sz=128" alt="Next Insurance" loading="lazy"/><span class="ecosystem-name">Next Insurance</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=nextcallclub.com&amp;sz=128" alt="Next Call Club" loading="lazy"/><span class="ecosystem-name">Next Call Club</span></div>
-      <div class="ecosystem-card"><img src="https://www.google.com/s2/favicons?domain=aspiregeneral.com&amp;sz=128" alt="Aspire General" loading="lazy"/><span class="ecosystem-name">Aspire General</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/rightsure.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=rightsure.com&amp;sz=256';this.classList.add('logo-fallback');" alt="RightSure" loading="lazy"/><span class="ecosystem-name">RightSure</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/rootinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=rootinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Root Insurance" loading="lazy"/><span class="ecosystem-name">Root Insurance</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/floridaoneinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=floridaoneinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Florida One" loading="lazy"/><span class="ecosystem-name">Florida One</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/progressivecommercial.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=progressivecommercial.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Progressive Commercial" loading="lazy"/><span class="ecosystem-name">Progressive Commercial</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/amfam.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=amfam.com&amp;sz=256';this.classList.add('logo-fallback');" alt="American Family" loading="lazy"/><span class="ecosystem-name">American Family</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/nextinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=nextinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Next Insurance" loading="lazy"/><span class="ecosystem-name">Next Insurance</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/nextcallclub.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=nextcallclub.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Next Call Club" loading="lazy"/><span class="ecosystem-name">Next Call Club</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/aspiregeneral.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=aspiregeneral.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Aspire General" loading="lazy"/><span class="ecosystem-name">Aspire General</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/rightsure.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=rightsure.com&amp;sz=256';this.classList.add('logo-fallback');" alt="RightSure" loading="lazy"/><span class="ecosystem-name">RightSure</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/rootinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=rootinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Root Insurance" loading="lazy"/><span class="ecosystem-name">Root Insurance</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/floridaoneinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=floridaoneinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Florida One" loading="lazy"/><span class="ecosystem-name">Florida One</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/progressivecommercial.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=progressivecommercial.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Progressive Commercial" loading="lazy"/><span class="ecosystem-name">Progressive Commercial</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/amfam.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=amfam.com&amp;sz=256';this.classList.add('logo-fallback');" alt="American Family" loading="lazy"/><span class="ecosystem-name">American Family</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/nextinsurance.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=nextinsurance.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Next Insurance" loading="lazy"/><span class="ecosystem-name">Next Insurance</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/nextcallclub.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=nextcallclub.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Next Call Club" loading="lazy"/><span class="ecosystem-name">Next Call Club</span></div>
+      <div class="ecosystem-card"><img src="https://logo.clearbit.com/aspiregeneral.com?size=400" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=aspiregeneral.com&amp;sz=256';this.classList.add('logo-fallback');" alt="Aspire General" loading="lazy"/><span class="ecosystem-name">Aspire General</span></div>
     </div>
   </div>
   <p class="ecosystem-note fade-up delay-3">Trademarks property of their respective owners</p>
