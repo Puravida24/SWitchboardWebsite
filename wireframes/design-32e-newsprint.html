@@ -1373,7 +1373,23 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   padding: 96px 1.25rem 0;
   position: relative;
 }
-@media (max-width: 640px) { .masthead { padding-top: 84px; } }
+.masthead-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 18px;
+  line-height: 0;
+  text-decoration: none;
+}
+.masthead-logo img {
+  height: 72px;
+  width: auto;
+  display: block;
+}
+@media (max-width: 640px) {
+  .masthead { padding-top: 84px; }
+  .masthead-logo img { height: 56px; }
+}
 .masthead-rules {
   border-top: 4px double var(--gold);
   border-bottom: 1px solid var(--gold);
@@ -1864,7 +1880,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
      HEADER
      ════════════════════════════════════════════════════ -->
 <header class="site-header">
-  <a href="#" class="logo" aria-label="The Switchboard"><img class="logo-img" src="assets/logo/switchboard-logo.png" alt="The Switchboard"/></a>
+  <span class="header-spacer" aria-hidden="true"></span>
   <nav>
     <ul class="nav-links" id="navLinks">
       <li><a href="#platform">Platform</a></li>
@@ -1882,6 +1898,9 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
      MASTHEAD (newspaper nameplate strip)
      ════════════════════════════════════════════════════ -->
 <div class="masthead">
+  <a href="#" class="masthead-logo" aria-label="The Switchboard">
+    <img src="assets/logo/switchboard-logo.png" alt="The Switchboard"/>
+  </a>
   <div class="masthead-rules">
     <span class="masthead-left">Vol. I · № 1</span>
     <span class="masthead-center"><strong>Insurance Intelligence</strong> <em>&mdash; a daily record</em></span>
