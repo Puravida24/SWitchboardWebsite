@@ -1331,16 +1331,57 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .footer-tagline em { color: var(--navy-light, #93b4ff); font-style: italic; }
 .footer-mini { display: none; }
 
-/* Two-column links */
-.footer-cols {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  max-width: 720px;
-  margin: 0 auto 28px;
-  padding-bottom: 32px;
-  border-bottom: 1px solid rgba(147,180,255,0.15);
+/* Inline footer nav: primary (serif) row + legal (smaller) row */
+.footer-nav-inline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 28px;
+  padding-bottom: 18px;
+  margin-bottom: 14px;
 }
+.footer-nav-inline a {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  color: rgba(250,249,247,0.78);
+  text-decoration: none;
+  letter-spacing: 0.005em;
+  transition: color 0.25s ease;
+}
+.footer-nav-inline a:hover { color: #ffffff; }
+.footer-nav-inline .footer-nav-cta {
+  color: var(--navy-light);
+  font-style: italic;
+}
+.footer-nav-inline .footer-nav-cta:hover { color: #ffffff; }
+
+.footer-nav-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 2px 10px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(147,180,255,0.15);
+  margin-bottom: 22px;
+}
+.footer-nav-legal a {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: rgba(250,249,247,0.55);
+  text-decoration: none;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+.footer-nav-legal a:hover { color: var(--navy-light); }
+.footer-nav-sep {
+  color: rgba(250,249,247,0.25);
+  font-size: 0.78rem;
+}
+
+/* Legacy two-column grid — kept hidden in case anything else references it */
+.footer-cols { display: none; }
 .footer-col { display: flex; flex-direction: column; gap: 10px; }
 .footer-col-title {
   font-family: var(--mono);
@@ -1619,18 +1660,17 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   .switchboard-section .deck { margin-bottom: 32px !important; }
   .switchboard-section h2 { font-size: clamp(1.75rem, 7vw, 2.6rem) !important; margin: 10px auto 14px !important; }
 
-  /* Footer — ultra-minimal on mobile: logo + tagline + inline links + copyright */
+  /* Footer — ultra-minimal on mobile */
   .site-footer-newsprint { padding: 24px 1.25rem 16px; }
   .footer-nameplate { padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid rgba(147,180,255,0.12); }
   .footer-nameplate .footer-logo img { height: 30px; }
   .footer-tagline { font-size: 0.78rem; }
-  .footer-cols { display: none; }
-  .footer-mini { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; margin-bottom: 12px; }
-  .footer-mini a { font-family: var(--serif); font-size: 0.82rem; color: rgba(250,249,247,0.78); text-decoration: none; padding: 2px 0; transition: color 0.2s; }
-  .footer-mini a:hover { color: var(--gold); }
-  .footer-imprint { display: none; }
+  .footer-nav-inline { gap: 4px 16px; padding-bottom: 10px; margin-bottom: 10px; }
+  .footer-nav-inline a { font-size: 0.88rem; }
+  .footer-nav-legal { gap: 2px 8px; padding-bottom: 14px; margin-bottom: 14px; }
+  .footer-nav-legal a { font-size: 0.72rem; }
   .footer-stamp { display: none !important; }
-  .footer-bottom { padding: 8px 0 0; justify-content: center; }
+  .footer-bottom { padding: 4px 0 0; justify-content: center; }
   .footer-copy { font-size: 0.62rem !important; text-align: center; color: rgba(250,249,247,0.45) !important; }
 }
 
@@ -2709,31 +2749,22 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
       <div class="footer-tagline"><em>Insurance Intelligence</em> &mdash; where experience meets data.</div>
     </div>
 
-    <!-- Two-column editorial links -->
-    <div class="footer-cols">
-      <div class="footer-col">
-        <span class="footer-col-title">Platform</span>
-        <a href="#platform">The Switchboard</a>
-        <a href="#intelligence">The Intelligence</a>
-        <a href="#stories">Who It’s For</a>
-        <a href="#partners">Roster</a>
-        <a href="#contact">Start a Conversation</a>
-      </div>
-      <div class="footer-col">
-        <span class="footer-col-title">Of Record</span>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="terms.html">Terms of Service</a>
-        <a href="accessibility.html">Accessibility</a>
-      </div>
-    </div>
-
-    <!-- Minimal mobile nav (shown only on phones) -->
-    <nav class="footer-mini" aria-label="Footer">
-      <a href="#contact">Contact</a>
+    <!-- Inline footer nav: primary row + legal row -->
+    <nav class="footer-nav-inline" aria-label="Footer primary">
+      <a href="#platform">The Switchboard</a>
+      <a href="#intelligence">The Intelligence</a>
+      <a href="#stories">Who It’s For</a>
+      <a href="#partners">Roster</a>
+      <a href="#contact" class="footer-nav-cta">Start a Conversation</a>
+    </nav>
+    <nav class="footer-nav-legal" aria-label="Footer legal">
       <a href="privacy.html">Privacy</a>
+      <span class="footer-nav-sep">·</span>
       <a href="terms.html">Terms</a>
+      <span class="footer-nav-sep">·</span>
       <a href="accessibility.html">Accessibility</a>
     </nav>
+
 
     <!-- Bottom bar (copyright + address + stamp all on one line) -->
     <div class="footer-bottom">
