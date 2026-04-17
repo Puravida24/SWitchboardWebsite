@@ -1608,6 +1608,71 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   justify-content: space-around;
 }
 
+
+/* ═══════════════════════════════════════════════════════
+   INTELLIGENCE STRIP — newsprint editorial five-move rail
+   ═══════════════════════════════════════════════════════ */
+.intelligence-strip-section {
+  background: linear-gradient(180deg, var(--cream-1) 0%, var(--cream-2) 100%);
+  padding: 100px 2rem 80px;
+}
+.intel-rail {
+  max-width: 1100px;
+  margin: 40px auto 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  border-top: 1px solid rgba(0,51,153,0.2);
+  border-bottom: 1px solid rgba(0,51,153,0.2);
+}
+.intel-step {
+  padding: 36px 24px;
+  border-right: 1px solid rgba(0,51,153,0.12);
+  position: relative;
+}
+.intel-step:last-child { border-right: none; }
+.intel-step-num {
+  display: block;
+  font-family: var(--serif);
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--gold);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+  opacity: 0.85;
+  text-shadow: 0 0 18px rgba(0,51,153,0.1);
+}
+.intel-step-title {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  color: var(--charcoal-1);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  margin: 0 0 10px;
+  line-height: 1.1;
+}
+.intel-step-body {
+  font-family: var(--serif);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--charcoal-1);
+  opacity: 0.85;
+  margin: 0;
+}
+@media (max-width: 960px) {
+  .intel-rail { grid-template-columns: repeat(2, 1fr); }
+  .intel-step { border-right: 1px solid rgba(0,51,153,0.12); border-bottom: 1px solid rgba(0,51,153,0.12); }
+  .intel-step:nth-child(2n) { border-right: none; }
+  .intel-step:nth-last-child(-n+1) { border-bottom: none; }
+}
+@media (max-width: 560px) {
+  .intel-rail { grid-template-columns: 1fr; }
+  .intel-step { border-right: none; border-bottom: 1px solid rgba(0,51,153,0.12); padding: 28px 0; }
+  .intel-step:last-child { border-bottom: none; }
+  .intel-step-num { font-size: 2.4rem; margin-bottom: 10px; }
+}
+
 /* NAV — subdued to match editorial tone */
 .site-header { background: rgba(250,249,247,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(28,25,23,0.08); }
 
@@ -1795,7 +1860,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   <nav>
     <ul class="nav-links" id="navLinks">
       <li><a href="#platform">Platform</a></li>
-      <li><a href="#results">Results</a></li>
+      <li><a href="#results">Stack</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="#contact" class="nav-cta">Get in Touch</a></li>
     </ul>
@@ -1929,56 +1994,38 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 <!-- ════════════════════════════════════════════════════
      THE INTELLIGENCE
      ════════════════════════════════════════════════════ -->
-<section class="section-dark section-padding" id="intelligence">
-  <div class="section-inner">
-    <h2 class="fade-up" style="font-size: clamp(2.5rem, 4vw, 3.5rem); letter-spacing: -0.02em; margin-bottom: 3rem; color: var(--charcoal-1);">The Intelligence.</h2>
-    <ol class="intelligence-list">
-      <li class="intelligence-item fade-up delay-1">
-        <div class="intel-number-wrap">
-          <span class="intel-number">01 <span class="signal-dot"></span></span>
-        </div>
-        <div>
-          <h3>Enrich</h3>
-          <p>Every incoming opportunity is instantly augmented with firmographic, demographic, and behavioral data. You see the full picture before the first conversation.</p>
-        </div>
-      </li>
-      <li class="intelligence-item fade-up delay-2">
-        <div class="intel-number-wrap">
-          <span class="intel-number">02 <span class="signal-dot"></span></span>
-        </div>
-        <div>
-          <h3>Score</h3>
-          <p>Our proprietary risk-scoring models &mdash; grounded in real insurance outcomes, not marketing proxies &mdash; assign a precision score to every record. High-value prospects rise. Low-quality noise falls away.</p>
-        </div>
-      </li>
-      <li class="intelligence-item fade-up delay-3">
-        <div class="intel-number-wrap">
-          <span class="intel-number">03 <span class="signal-dot"></span></span>
-        </div>
-        <div>
-          <h3>Segment</h3>
-          <p>Records are automatically grouped by line of business, geography, policy type, and predicted lifetime value. Your team spends time on the right accounts, not all accounts.</p>
-        </div>
-      </li>
-      <li class="intelligence-item fade-up delay-4">
-        <div class="intel-number-wrap">
-          <span class="intel-number">04 <span class="signal-dot"></span></span>
-        </div>
-        <div>
-          <h3>Route</h3>
-          <p>Intelligent distribution sends each scored, segmented prospect to the right person at the right time. No manual sorting. No cherry-picking. No wasted motion.</p>
-        </div>
-      </li>
-      <li class="intelligence-item fade-up delay-5">
-        <div class="intel-number-wrap">
-          <span class="intel-number">05 <span class="signal-dot"></span></span>
-        </div>
-        <div>
-          <h3>Analyze</h3>
-          <p>Real-time dashboards reveal which sources, segments, and agents convert &mdash; and which do not. The data loop closes. Your strategy sharpens with every cycle.</p>
-        </div>
-      </li>
-    </ol>
+<section class="intelligence-strip-section" id="intelligence">
+  <div class="newsprint-section-head">
+    <div class="newsprint-section-kicker-wrap fade-up"><span class="newsprint-section-kicker">The Intelligence</span></div>
+    <h2 class="fade-up delay-1">Five moves, in order, every time.</h2>
+    <p class="deck fade-up delay-2">What happens to every inbound record between the source and the underwriter &mdash; in under five milliseconds, without a human in the loop.</p>
+  </div>
+  <div class="intel-rail">
+    <article class="intel-step fade-up">
+      <span class="intel-step-num">01</span>
+      <h3 class="intel-step-title">Enrich.</h3>
+      <p class="intel-step-body">Every inbound record is instantly augmented with firmographic, demographic, and behavioral signal. The full picture &mdash; before the first conversation.</p>
+    </article>
+    <article class="intel-step fade-up delay-1">
+      <span class="intel-step-num">02</span>
+      <h3 class="intel-step-title">Score.</h3>
+      <p class="intel-step-body">Proprietary models, grounded in real insurance outcomes &mdash; not marketing proxies &mdash; assign a precision score. High-value rises. Noise falls away.</p>
+    </article>
+    <article class="intel-step fade-up delay-2">
+      <span class="intel-step-num">03</span>
+      <h3 class="intel-step-title">Segment.</h3>
+      <p class="intel-step-body">Records auto-group by line of business, geography, policy type, and predicted lifetime value. Your team works the right book, not all of it.</p>
+    </article>
+    <article class="intel-step fade-up delay-3">
+      <span class="intel-step-num">04</span>
+      <h3 class="intel-step-title">Route.</h3>
+      <p class="intel-step-body">Each scored, segmented prospect lands with the right person at the right time. No manual sorting. No cherry-picking. No wasted motion.</p>
+    </article>
+    <article class="intel-step fade-up delay-4">
+      <span class="intel-step-num">05</span>
+      <h3 class="intel-step-title">Analyze.</h3>
+      <p class="intel-step-body">Real-time dashboards reveal which sources, segments, and producers convert &mdash; and which do not. The data loop closes. Strategy sharpens every cycle.</p>
+    </article>
   </div>
 </section>
 
@@ -1989,7 +2036,9 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   <div style="position:absolute;inset:0;background-image:url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%22.03%22/%3E%3C/svg%3E');pointer-events:none;"></div>
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(0, 51, 153,0.04) 0%,transparent 70%);pointer-events:none;"></div>
   <div style="max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1;">
-    <h2 class="fade-up" style="font-family:'Instrument Serif',serif;font-size:clamp(48px,6vw,80px);color:#1c1917;text-align:center;margin-bottom:60px;text-shadow:0 0 40px rgba(0, 51, 153,0.15);">The Switchboard.</h2>
+    <div class="newsprint-section-kicker-wrap fade-up"><span class="newsprint-section-kicker">The Platform · Live</span></div>
+    <h2 class="fade-up delay-1" style="font-family:'Instrument Serif',serif;font-size:clamp(2.2rem, 4vw, 3.4rem);color:#1c1917;text-align:center;margin:14px auto 18px;font-weight:400;letter-spacing:-0.01em;line-height:1.05;">The Switchboard.</h2>
+    <p class="deck fade-up delay-2" style="text-align:center;max-width:54ch;margin:0 auto 60px;">Every inbound record, enriched and scored and routed before the first conversation.</p>
 
     <!-- LIVE OPS TERMINAL (institutional, Bloomberg-grade) -->
     <div class="fade-up delay-1" style="position:relative;max-width:1000px;margin:0 auto;">
@@ -2148,12 +2197,10 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
      ════════════════════════════════════════════════════ -->
 <section class="built-here-section" id="results">
   <div class="built-here-inner">
-    <div class="section-header-centered">
-      <span class="overline fade-up">Our Stack · Our Standards</span>
+    <div class="newsprint-section-head">
+      <div class="newsprint-section-kicker-wrap fade-up"><span class="newsprint-section-kicker">Our Stack · Our Standards</span></div>
       <h2 class="fade-up delay-1">Built here. Built right.</h2>
-      <p class="section-lede fade-up delay-2">
-        We did not assemble this platform out of third-party tools and hope. We shipped it ourselves &mdash; every line of code, every data pipeline, every model &mdash; in-house, in the United States.
-      </p>
+      <p class="deck fade-up delay-2">We did not assemble this out of third-party tools and hope. Every line of code, every data pipeline, every model &mdash; shipped in-house, in the United States.</p>
     </div>
     <div class="trio-grid">
       <div class="trio-card trio-card-light trio-card-featured fade-up delay-1">
@@ -2260,10 +2307,10 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
      PARTNERS / ECOSYSTEM
      ════════════════════════════════════════════════════ -->
 <section class="ecosystem-section" id="partners">
-  <div class="section-header-centered">
-    <span class="overline fade-up">Partners</span>
+  <div class="newsprint-section-head">
+    <div class="newsprint-section-kicker-wrap fade-up"><span class="newsprint-section-kicker">The Roster</span></div>
     <h2 class="fade-up delay-1">Some of the brands we help segment risk for.</h2>
-    <p class="section-lede fade-up delay-2">Carriers, agencies, and marketplaces across auto, home, and commercial &mdash; wired into the same intelligence layer.</p>
+    <p class="deck fade-up delay-2">Carriers, agencies, and marketplaces across auto, home, and commercial &mdash; wired into the same intelligence layer.</p>
   </div>
   <div class="ecosystem-marquee fade-up delay-2">
     <div class="ecosystem-track">
@@ -2292,8 +2339,11 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
      CONTACT
      ════════════════════════════════════════════════════ -->
 <section class="cta-section" id="contact">
-  <h2 class="fade-up">Let's talk.</h2>
-  <p class="cta-sub fade-up delay-1">No pitch decks. No pressure. Just a conversation about what intelligence could do for your book of business.</p>
+  <div class="newsprint-section-head">
+    <div class="newsprint-section-kicker-wrap fade-up"><span class="newsprint-section-kicker">Correspondence</span></div>
+    <h2 class="fade-up delay-1">Let&rsquo;s talk.</h2>
+    <p class="deck fade-up delay-2">No pitch decks. No pressure. Just a conversation about what intelligence could do for your book of business.</p>
+  </div>
 
   <div class="contact-form-wrap fade-up delay-2">
     <form class="contact-form" id="contactForm" novalidate>
