@@ -1364,9 +1364,9 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   position: relative;
 }
 .masthead-rules {
-  border-top: 3px double var(--gold);
+  border-top: 4px double var(--gold);
   border-bottom: 1px solid var(--gold);
-  padding: 12px 4px;
+  padding: 18px 4px 16px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -1376,16 +1376,19 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   font-size: 0.82rem;
   color: var(--charcoal-1);
 }
-.masthead-left, .masthead-right { flex: 0 0 auto; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--warm-gray); white-space: nowrap; }
-.masthead-center { flex: 1 1 auto; font-family: var(--serif); font-size: 0.95rem; letter-spacing: 0.04em; text-align: center; color: var(--charcoal-1); min-width: 140px; }
-.masthead-center strong { font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.78rem; color: var(--gold); }
-.masthead-center em { font-style: italic; }
-@media (max-width: 640px) {
-  .masthead-rules { flex-direction: column; text-align: center; gap: 6px; padding: 10px 0; }
-  .masthead-left, .masthead-right { font-size: 0.56rem; letter-spacing: 0.18em; }
-  .masthead-center { font-size: 0.82rem; }
-  .masthead-center strong { font-size: 0.68rem; display: block; margin-bottom: 2px; }
+.masthead-left, .masthead-right { flex: 0 0 auto; font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--charcoal-1); white-space: nowrap; font-weight: 500; }
+.masthead-center { flex: 1 1 auto; font-family: var(--serif); font-size: 1.1rem; letter-spacing: 0.04em; text-align: center; color: var(--charcoal-1); min-width: 200px; }
+.masthead-center strong { font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; font-size: 0.95rem; color: var(--gold); }
+.masthead-center em { font-style: italic; color: var(--charcoal-1); opacity: 0.7; font-size: 0.9rem; margin-left: 6px; }
+@media (max-width: 760px) {
+  .masthead-left, .masthead-right { font-size: 0.68rem; letter-spacing: 0.18em; }
+  .masthead-center strong { font-size: 0.82rem; }
   .masthead-center em { display: none; }
+}
+@media (max-width: 560px) {
+  .masthead-rules { flex-direction: column; text-align: center; gap: 8px; padding: 14px 0; }
+  .masthead-left, .masthead-right { font-size: 0.62rem; letter-spacing: 0.16em; }
+  .masthead-center strong { font-size: 0.78rem; }
 }
 
 /* EDITION STAMP — corner mark */
