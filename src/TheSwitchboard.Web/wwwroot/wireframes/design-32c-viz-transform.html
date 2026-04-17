@@ -1243,13 +1243,22 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .form-success h3 { font-family: var(--serif); font-size: 2rem; color: var(--cream-2); margin-bottom: 1rem; }
 .form-success p { font-size: 1rem; color: var(--warm-gray-light); font-weight: 300; }
 
-/* Simplified footer */
-.footer-simple { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem; max-width: 1080px; margin: 0 auto; }
-.footer-simple-left { display: flex; flex-direction: column; gap: 0.75rem; max-width: 360px; }
-.footer-simple-tagline { font-size: 0.82rem; color: var(--warm-gray); font-weight: 300; line-height: 1.7; }
-.footer-simple-links { display: flex; gap: 1.75rem; flex-wrap: wrap; }
-.footer-simple-links a { font-size: 0.82rem; color: var(--warm-gray-light); text-decoration: none; font-weight: 300; transition: color 0.3s; }
-.footer-simple-links a:hover { color: var(--gold); }
+/* Footer — institutional, Stripe-grade restraint */
+.site-footer { background: var(--charcoal-1); border-top: 1px solid rgba(201,169,110,0.12); padding: 70px 2rem 32px; }
+.footer-row { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding-bottom: 28px; border-bottom: 1px solid rgba(201,169,110,0.08); flex-wrap: wrap; gap: 1.5rem; }
+.footer-logo { font-family: var(--serif); font-size: 1.2rem; color: var(--cream-2); text-decoration: none; letter-spacing: -0.015em; }
+.footer-logo span { color: var(--gold); }
+.footer-logo:focus { outline: none; }
+.footer-logo:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; border-radius: 2px; }
+.footer-nav { display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; }
+.footer-nav a { font-family: var(--sans); font-size: 0.82rem; color: var(--warm-gray-light); text-decoration: none; font-weight: 300; letter-spacing: 0.02em; transition: color 0.3s; }
+.footer-nav a:hover { color: var(--gold); }
+.footer-nav a:focus { outline: none; }
+.footer-nav a:focus-visible { outline: 1px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+.footer-meta { max-width: 1100px; margin: 22px auto 0; display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+.footer-meta-copy { font-family: var(--sans); font-size: 0.72rem; color: var(--warm-gray); font-weight: 300; }
+.footer-stamp { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(201,169,110,0.55); }
+@media (max-width: 640px) { .footer-row, .footer-meta { flex-direction: column; align-items: flex-start; } }
 
 @media (max-width: 768px) {
   .trio-grid { grid-template-columns: 1fr; gap: 1.5rem; }
@@ -1857,24 +1866,19 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
      FOOTER
      ════════════════════════════════════════════════════ -->
 <footer class="site-footer">
-  <div class="footer-simple">
-    <div class="footer-simple-left">
-      <a href="#" class="logo">The <span>Switchboard</span></a>
-      <p class="footer-simple-tagline">The intelligence layer for insurance distribution. Built in America. Built in-house.</p>
-    </div>
-    <div class="footer-simple-links">
+  <div class="footer-row">
+    <a href="#" class="footer-logo">The <span>Switchboard</span></a>
+    <nav class="footer-nav">
       <a href="#platform">Platform</a>
       <a href="#results">Our Stack</a>
       <a href="#contact">Contact</a>
       <a href="privacy.html">Privacy</a>
       <a href="terms.html">Terms</a>
-    </div>
+    </nav>
   </div>
-  <div class="footer-bottom">
-    <p>&copy; 2026 The Switchboard, LLC. All rights reserved.</p>
-    <div class="footer-bottom-links">
-      <a href="mailto:hello@theswitchboardmarketing.com">hello@theswitchboardmarketing.com</a>
-    </div>
+  <div class="footer-meta">
+    <span class="footer-meta-copy">&copy; 2026 The Switchboard, LLC</span>
+    <span class="footer-stamp">Built in America · Orem, UT · S/N 000001</span>
   </div>
 </footer>
 
