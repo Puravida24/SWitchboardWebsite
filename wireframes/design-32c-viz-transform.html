@@ -20,11 +20,11 @@
   --charcoal-1: #1c1917;
   --charcoal-2: #211f1c;
   --charcoal-3: #292524;
-  --gold: #c9a96e;
-  --gold-glow: rgba(201, 169, 110, 0.35);
-  --gold-soft: rgba(201, 169, 110, 0.12);
-  --blue: #2563eb;
-  --blue-glow: rgba(37, 99, 235, 0.4);
+  --gold: #003399;
+  --gold-glow: rgba(0, 51, 153, 0.35);
+  --gold-soft: rgba(0, 51, 153, 0.12);
+  --blue: #003399;
+  --blue-glow: rgba(0, 51, 153, 0.4);
   --warm-gray: #78716c;
   --warm-gray-light: #a8a29e;
   --serif: 'Instrument Serif', Georgia, serif;
@@ -119,7 +119,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   background: linear-gradient(180deg, rgba(250,249,247,0.92) 0%, rgba(245,240,235,0.88) 100%);
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border-bottom: 1px solid rgba(201,169,110,0.15);
+  border-bottom: 1px solid rgba(0, 51, 153,0.15);
   box-shadow: 0 1px 3px rgba(28,25,23,0.04), 0 4px 12px rgba(28,25,23,0.03);
 }
 
@@ -279,7 +279,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 }
 
 .btn-secondary:hover {
-  background: rgba(201,169,110,0.08);
+  background: rgba(0, 51, 153,0.08);
   box-shadow: 0 4px 16px var(--gold-glow);
   transform: translateY(-1px);
 }
@@ -446,7 +446,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   grid-template-columns: 60px 1fr;
   gap: 1.5rem;
   padding: 2.5rem 0;
-  border-bottom: 1px solid rgba(201,169,110,0.15);
+  border-bottom: 1px solid rgba(0, 51, 153,0.15);
   align-items: start;
 }
 
@@ -535,15 +535,15 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 }
 
 .flow-label-gold {
-  background: rgba(201,169,110,0.08);
-  border: 1px solid rgba(201,169,110,0.2);
+  background: rgba(0, 51, 153,0.08);
+  border: 1px solid rgba(0, 51, 153,0.2);
   color: var(--charcoal-1);
   text-align: right;
 }
 
 .flow-label-blue {
-  background: rgba(37,99,235,0.04);
-  border: 1px solid rgba(37,99,235,0.12);
+  background: rgba(0, 51, 153,0.04);
+  border: 1px solid rgba(0, 51, 153,0.12);
   color: var(--charcoal-1);
   text-align: left;
 }
@@ -560,8 +560,8 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   height: 100px;
   margin: 0 auto 1rem;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(201,169,110,0.15) 0%, rgba(201,169,110,0.03) 60%, transparent 70%);
-  border: 1px solid rgba(201,169,110,0.25);
+  background: radial-gradient(circle, rgba(0, 51, 153,0.15) 0%, rgba(0, 51, 153,0.03) 60%, transparent 70%);
+  border: 1px solid rgba(0, 51, 153,0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -570,8 +570,8 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 }
 
 @keyframes orb-breathe {
-  0%, 100% { box-shadow: 0 0 20px rgba(201,169,110,0.1), 0 0 40px rgba(201,169,110,0.05); }
-  50% { box-shadow: 0 0 30px rgba(201,169,110,0.2), 0 0 60px rgba(201,169,110,0.08); }
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 51, 153,0.1), 0 0 40px rgba(0, 51, 153,0.05); }
+  50% { box-shadow: 0 0 30px rgba(0, 51, 153,0.2), 0 0 60px rgba(0, 51, 153,0.08); }
 }
 
 .flow-center-orb .signal-dot-gold {
@@ -605,8 +605,8 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   width: 100%;
 }
 
-.flow-line-gold { background: linear-gradient(90deg, var(--gold), rgba(201,169,110,0.3)); }
-.flow-line-blue { background: linear-gradient(270deg, var(--blue), rgba(37,99,235,0.15)); }
+.flow-line-gold { background: linear-gradient(90deg, var(--gold), rgba(0, 51, 153,0.3)); }
+.flow-line-blue { background: linear-gradient(270deg, var(--blue), rgba(0, 51, 153,0.15)); }
 
 /* Animated dot on one line */
 .flow-dot-animated {
@@ -653,7 +653,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, rgba(201,169,110,0.04) 0%, transparent 60%);
+  background: radial-gradient(ellipse at center, rgba(0, 51, 153,0.04) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -676,7 +676,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   font-size: clamp(3.5rem, 7vw, 6rem);
   color: var(--cream-2);
   line-height: 1;
-  text-shadow: 0 0 40px var(--gold-glow), 0 0 80px rgba(201,169,110,0.15);
+  text-shadow: 0 0 40px var(--gold-glow), 0 0 80px rgba(0, 51, 153,0.15);
   display: block;
   margin-bottom: 0.75rem;
 }
@@ -720,7 +720,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   width: 4px;
   background: var(--gold);
   border-radius: 2px;
-  box-shadow: 0 0 12px var(--gold-glow), 0 0 24px rgba(201,169,110,0.15);
+  box-shadow: 0 0 12px var(--gold-glow), 0 0 24px rgba(0, 51, 153,0.15);
 }
 
 .testimonial-quote blockquote {
@@ -745,7 +745,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   border-radius: 50%;
   background: linear-gradient(135deg, var(--cream-3), var(--warm-gray-light));
   border: 2px solid var(--gold);
-  box-shadow: 0 0 0 4px rgba(201,169,110,0.1);
+  box-shadow: 0 0 0 4px rgba(0, 51, 153,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -821,7 +821,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at top right, rgba(201,169,110,0.08) 0%, transparent 60%);
+  background: radial-gradient(ellipse at top right, rgba(0, 51, 153,0.08) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -894,7 +894,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(201,169,110,0.08) 0%, rgba(201,169,110,0.02) 40%, transparent 60%);
+  background: radial-gradient(circle, rgba(0, 51, 153,0.08) 0%, rgba(0, 51, 153,0.02) 40%, transparent 60%);
   pointer-events: none;
 }
 
@@ -937,7 +937,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .btn-cta-gold:hover {
   background: var(--gold);
   color: var(--charcoal-1);
-  box-shadow: 0 0 32px var(--gold-glow), 0 0 64px rgba(201,169,110,0.12);
+  box-shadow: 0 0 32px var(--gold-glow), 0 0 64px rgba(0, 51, 153,0.12);
   transform: translateY(-2px);
 }
 
@@ -946,7 +946,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
    ═══════════════════════════════════════════════════════ */
 .site-footer {
   background: var(--charcoal-1);
-  border-top: 1px solid rgba(201,169,110,0.1);
+  border-top: 1px solid rgba(0, 51, 153,0.1);
   padding: 60px 2rem 40px;
 }
 
@@ -1007,7 +1007,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   max-width: 1080px;
   margin: 3rem auto 0;
   padding-top: 2rem;
-  border-top: 1px solid rgba(201,169,110,0.08);
+  border-top: 1px solid rgba(0, 51, 153,0.08);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1093,7 +1093,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
     flex-direction: column;
     padding: 1.5rem 2rem 2rem;
     gap: 1.25rem;
-    border-bottom: 1px solid rgba(201,169,110,0.15);
+    border-bottom: 1px solid rgba(0, 51, 153,0.15);
     box-shadow: 0 8px 24px rgba(28,25,23,0.08);
   }
 
@@ -1179,17 +1179,17 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 
 .trio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 1080px; margin: 0 auto; }
 .trio-card { padding: 2.5rem 1.9rem; border-radius: 12px; transition: all 0.4s ease; position: relative; }
-.trio-card-dark { background: rgba(245,240,235,0.03); border: 1px solid rgba(201,169,110,0.18); }
-.trio-card-dark:hover { background: rgba(245,240,235,0.05); border-color: rgba(201,169,110,0.4); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.3); }
+.trio-card-dark { background: rgba(245,240,235,0.03); border: 1px solid rgba(0, 51, 153,0.18); }
+.trio-card-dark:hover { background: rgba(245,240,235,0.05); border-color: rgba(0, 51, 153,0.4); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.3); }
 .trio-card-light { background: #ffffff; box-shadow: var(--shadow-card); }
 .trio-card-light:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-4px); }
 
-.trio-card-featured { border: 1px solid rgba(201,169,110,0.45); background: rgba(201,169,110,0.05); }
+.trio-card-featured { border: 1px solid rgba(0, 51, 153,0.45); background: rgba(0, 51, 153,0.05); }
 
 .trio-kicker { font-family: var(--mono); font-size: 0.65rem; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.25rem; display: block; }
 
 .trio-number { font-family: var(--serif); font-size: 2.5rem; line-height: 1; display: block; margin-bottom: 1.25rem; color: var(--gold); opacity: 0.9; }
-.trio-card-dark .trio-number { color: rgba(201,169,110,0.5); }
+.trio-card-dark .trio-number { color: rgba(0, 51, 153,0.5); }
 
 .trio-card h3 { font-size: 1.5rem; letter-spacing: -0.01em; margin-bottom: 0.85rem; line-height: 1.2; }
 .trio-card-dark h3 { color: var(--cream-2); }
@@ -1208,7 +1208,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 
 /* Built-here section */
 .built-here-section { background: linear-gradient(180deg, var(--charcoal-2) 0%, var(--charcoal-1) 50%, var(--charcoal-2) 100%); padding: 120px 2rem; position: relative; overflow: hidden; }
-.built-here-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(201,169,110,0.05) 0%, transparent 60%); pointer-events: none; }
+.built-here-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(0, 51, 153,0.05) 0%, transparent 60%); pointer-events: none; }
 .built-here-inner { max-width: 1080px; margin: 0 auto; position: relative; z-index: 1; }
 
 /* Process section */
@@ -1217,7 +1217,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 /* Built-for section */
 .builtfor-section { background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream-3) 50%, var(--cream-2) 100%); padding: 120px 2rem; }
 .audience-card { cursor: default; }
-.audience-card-footer { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(201,169,110,0.18); display: flex; align-items: center; justify-content: space-between; }
+.audience-card-footer { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(0, 51, 153,0.18); display: flex; align-items: center; justify-content: space-between; }
 .audience-card-footer .mini-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-gray); }
 .audience-card-footer a { font-family: var(--serif); font-size: 0.9rem; color: var(--charcoal-1); text-decoration: none; transition: all 0.3s; display: inline-flex; gap: 0.3rem; }
 .audience-card-footer a:hover { color: var(--gold); gap: 0.55rem; }
@@ -1226,12 +1226,12 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
    NEW: CONTACT FORM
    ═══════════════════════════════════════════════════════ */
 .contact-form-wrap { max-width: 560px; margin: 3rem auto 0; position: relative; z-index: 1; }
-.contact-form { background: rgba(245,240,235,0.04); border: 1px solid rgba(201,169,110,0.25); border-radius: 16px; padding: 2.5rem; text-align: left; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.contact-form { background: rgba(245,240,235,0.04); border: 1px solid rgba(0, 51, 153,0.25); border-radius: 16px; padding: 2.5rem; text-align: left; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-field { margin-bottom: 1rem; }
 .form-field label { display: block; font-family: var(--mono); font-size: 0.62rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-gray-light); margin-bottom: 0.5rem; }
-.form-field input, .form-field textarea, .form-field select { width: 100%; padding: 0.8rem 1rem; background: rgba(28,25,23,0.5); border: 1px solid rgba(201,169,110,0.22); border-radius: 8px; color: var(--cream-1); font-family: var(--sans); font-size: 0.95rem; font-weight: 300; transition: border-color 0.3s, background 0.3s, box-shadow 0.3s; }
-.form-field input:focus, .form-field textarea:focus, .form-field select:focus { outline: none; border-color: var(--gold); background: rgba(28,25,23,0.7); box-shadow: 0 0 0 3px rgba(201,169,110,0.1); }
+.form-field input, .form-field textarea, .form-field select { width: 100%; padding: 0.8rem 1rem; background: rgba(28,25,23,0.5); border: 1px solid rgba(0, 51, 153,0.22); border-radius: 8px; color: var(--cream-1); font-family: var(--sans); font-size: 0.95rem; font-weight: 300; transition: border-color 0.3s, background 0.3s, box-shadow 0.3s; }
+.form-field input:focus, .form-field textarea:focus, .form-field select:focus { outline: none; border-color: var(--gold); background: rgba(28,25,23,0.7); box-shadow: 0 0 0 3px rgba(0, 51, 153,0.1); }
 .form-field textarea { min-height: 110px; resize: vertical; }
 .form-submit { width: 100%; font-family: var(--serif); font-size: 1.05rem; padding: 1rem 2rem; background: var(--gold); color: var(--charcoal-1); border: none; border-radius: 100px; cursor: pointer; transition: all 0.3s ease; margin-top: 0.75rem; letter-spacing: 0.01em; }
 .form-submit:hover { background: #d4b77c; box-shadow: 0 0 32px var(--gold-glow); transform: translateY(-1px); }
@@ -1244,8 +1244,8 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .form-success p { font-size: 1rem; color: var(--warm-gray-light); font-weight: 300; }
 
 /* Footer — institutional, Stripe-grade restraint */
-.site-footer { background: var(--charcoal-1); border-top: 1px solid rgba(201,169,110,0.12); padding: 70px 2rem 32px; }
-.footer-row { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding-bottom: 28px; border-bottom: 1px solid rgba(201,169,110,0.08); flex-wrap: wrap; gap: 1.5rem; }
+.site-footer { background: var(--charcoal-1); border-top: 1px solid rgba(0, 51, 153,0.12); padding: 70px 2rem 32px; }
+.footer-row { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding-bottom: 28px; border-bottom: 1px solid rgba(0, 51, 153,0.08); flex-wrap: wrap; gap: 1.5rem; }
 .footer-logo { font-family: var(--serif); font-size: 1.2rem; color: var(--cream-2); text-decoration: none; letter-spacing: -0.015em; }
 .footer-logo span { color: var(--gold); }
 .footer-logo:focus { outline: none; }
@@ -1257,14 +1257,14 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .footer-nav a:focus-visible { outline: 1px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
 .footer-meta { max-width: 1100px; margin: 22px auto 0; display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
 .footer-meta-copy { font-family: var(--sans); font-size: 0.72rem; color: var(--warm-gray); font-weight: 300; }
-.footer-stamp { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(201,169,110,0.55); }
+.footer-stamp { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(0, 51, 153,0.55); }
 @media (max-width: 640px) { .footer-row, .footer-meta { flex-direction: column; align-items: flex-start; } }
 
 /* Partners / Ecosystem section */
 .ecosystem-section { background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream-1) 100%); padding: 120px 2rem; }
 .ecosystem-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.75rem; max-width: 1100px; margin: 0 auto; }
-.ecosystem-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 2.25rem 1.25rem; border: 1px solid rgba(201,169,110,0.18); border-radius: 10px; background: #ffffff; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(28,25,23,0.03); min-height: 150px; }
-.ecosystem-card:hover { border-color: rgba(201,169,110,0.4); box-shadow: 0 8px 24px rgba(28,25,23,0.08); transform: translateY(-2px); }
+.ecosystem-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 2.25rem 1.25rem; border: 1px solid rgba(0, 51, 153,0.18); border-radius: 10px; background: #ffffff; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(28,25,23,0.03); min-height: 150px; }
+.ecosystem-card:hover { border-color: rgba(0, 51, 153,0.4); box-shadow: 0 8px 24px rgba(28,25,23,0.08); transform: translateY(-2px); }
 .ecosystem-card img { width: 48px; height: 48px; object-fit: contain; filter: grayscale(20%) contrast(0.95); transition: filter 0.3s; }
 .ecosystem-card:hover img { filter: grayscale(0%) contrast(1); }
 .ecosystem-name { font-family: var(--serif); font-size: 0.95rem; color: var(--charcoal-1); letter-spacing: -0.005em; text-align: center; line-height: 1.2; }
@@ -1434,18 +1434,18 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
      ════════════════════════════════════════════════════ -->
 <section class="section-warm section-padding switchboard-section" id="platform" style="background:linear-gradient(180deg,#efe8e0 0%,#1c1917 40%,#1c1917 100%);position:relative;overflow:hidden;padding:100px 0 120px;">
   <div style="position:absolute;inset:0;background-image:url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%22.03%22/%3E%3C/svg%3E');pointer-events:none;"></div>
-  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(37,99,235,0.06) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(0, 51, 153,0.06) 0%,transparent 70%);pointer-events:none;"></div>
   <div style="max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1;">
-    <h2 class="fade-up" style="font-family:'Instrument Serif',serif;font-size:clamp(48px,6vw,80px);color:#faf9f7;text-align:center;margin-bottom:60px;text-shadow:0 0 40px rgba(201,169,110,0.15);">The Switchboard.</h2>
+    <h2 class="fade-up" style="font-family:'Instrument Serif',serif;font-size:clamp(48px,6vw,80px);color:#faf9f7;text-align:center;margin-bottom:60px;text-shadow:0 0 40px rgba(0, 51, 153,0.15);">The Switchboard.</h2>
 
     <!-- SVG Visualization -->
     <div class="fade-up delay-1" style="position:relative;max-width:900px;margin:0 auto;">
       <svg viewBox="0 0 900 600" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
         <defs>
           <radialGradient id="jackRim" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#d4b780"/>
-            <stop offset="55%" stop-color="#a6845b"/>
-            <stop offset="100%" stop-color="#5c4224"/>
+            <stop offset="0%" stop-color="#1a4db8"/>
+            <stop offset="55%" stop-color="#002a80"/>
+            <stop offset="100%" stop-color="#001040"/>
           </radialGradient>
           <radialGradient id="jackHole" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="#000"/>
@@ -1453,9 +1453,9 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
             <stop offset="100%" stop-color="#261b11"/>
           </radialGradient>
           <radialGradient id="jackLit" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#ffe9b0"/>
-            <stop offset="40%" stop-color="#c9a96e"/>
-            <stop offset="100%" stop-color="#8a6c3c"/>
+            <stop offset="0%" stop-color="#c7d2ff"/>
+            <stop offset="40%" stop-color="#003399"/>
+            <stop offset="100%" stop-color="#002060"/>
           </radialGradient>
           <linearGradient id="panelBg" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="#2a2420"/>
@@ -1463,11 +1463,11 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
             <stop offset="100%" stop-color="#15110e"/>
           </linearGradient>
           <linearGradient id="cordA" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#c9a96e"/>
-            <stop offset="100%" stop-color="#8a6c3c"/>
+            <stop offset="0%" stop-color="#003399"/>
+            <stop offset="100%" stop-color="#002060"/>
           </linearGradient>
           <linearGradient id="cordB" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#d4b780"/>
+            <stop offset="0%" stop-color="#1a4db8"/>
             <stop offset="100%" stop-color="#6e4e28"/>
           </linearGradient>
           <linearGradient id="cordC" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -1479,8 +1479,8 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
             <stop offset="100%" stop-color="#065f46"/>
           </linearGradient>
           <linearGradient id="cordBlue" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#3b82f6"/>
-            <stop offset="100%" stop-color="#1e3a8a"/>
+            <stop offset="0%" stop-color="#003399"/>
+            <stop offset="100%" stop-color="#001f66"/>
           </linearGradient>
           <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
           <filter id="bigGlow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
@@ -1489,15 +1489,15 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
           <!-- Jack symbols -->
           <symbol id="jack" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="11" fill="url(#jackRim)"/>
-            <circle cx="12" cy="12" r="10.5" fill="none" stroke="#3a2815" stroke-width="0.5"/>
+            <circle cx="12" cy="12" r="10.5" fill="none" stroke="#000a24" stroke-width="0.5"/>
             <circle cx="12" cy="12" r="6" fill="url(#jackHole)"/>
             <circle cx="12" cy="12" r="2.5" fill="#000"/>
             <circle cx="9.5" cy="9.5" r="1" fill="#fff" opacity="0.15"/>
           </symbol>
           <symbol id="jackActive" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="13" fill="rgba(201,169,110,0.15)"/>
+            <circle cx="12" cy="12" r="13" fill="rgba(0, 51, 153,0.15)"/>
             <circle cx="12" cy="12" r="11" fill="url(#jackRim)"/>
-            <circle cx="12" cy="12" r="10.5" fill="none" stroke="#3a2815" stroke-width="0.5"/>
+            <circle cx="12" cy="12" r="10.5" fill="none" stroke="#000a24" stroke-width="0.5"/>
             <circle cx="12" cy="12" r="6" fill="url(#jackLit)"/>
             <circle cx="12" cy="12" r="3" fill="#fff" opacity="0.9"/>
             <circle cx="9.5" cy="9.5" r="1" fill="#fff" opacity="0.2"/>
@@ -1505,40 +1505,40 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         </defs>
 
         <!-- PANEL BACKGROUND -->
-        <rect x="10" y="10" width="880" height="580" rx="14" fill="url(#panelBg)" stroke="rgba(201,169,110,0.28)" stroke-width="1.5"/>
-        <rect x="18" y="18" width="864" height="564" rx="10" fill="none" stroke="rgba(201,169,110,0.08)" stroke-width="1"/>
+        <rect x="10" y="10" width="880" height="580" rx="14" fill="url(#panelBg)" stroke="rgba(0, 51, 153,0.28)" stroke-width="1.5"/>
+        <rect x="18" y="18" width="864" height="564" rx="10" fill="none" stroke="rgba(0, 51, 153,0.08)" stroke-width="1"/>
 
         <!-- Corner screws -->
         <g>
-          <circle cx="32" cy="32" r="5.5" fill="url(#jackRim)"/><line x1="28" y1="32" x2="36" y2="32" stroke="#3a2815" stroke-width="1"/>
-          <circle cx="868" cy="32" r="5.5" fill="url(#jackRim)"/><line x1="864" y1="32" x2="872" y2="32" stroke="#3a2815" stroke-width="1"/>
-          <circle cx="32" cy="568" r="5.5" fill="url(#jackRim)"/><line x1="28" y1="568" x2="36" y2="568" stroke="#3a2815" stroke-width="1"/>
-          <circle cx="868" cy="568" r="5.5" fill="url(#jackRim)"/><line x1="864" y1="568" x2="872" y2="568" stroke="#3a2815" stroke-width="1"/>
+          <circle cx="32" cy="32" r="5.5" fill="url(#jackRim)"/><line x1="28" y1="32" x2="36" y2="32" stroke="#000a24" stroke-width="1"/>
+          <circle cx="868" cy="32" r="5.5" fill="url(#jackRim)"/><line x1="864" y1="32" x2="872" y2="32" stroke="#000a24" stroke-width="1"/>
+          <circle cx="32" cy="568" r="5.5" fill="url(#jackRim)"/><line x1="28" y1="568" x2="36" y2="568" stroke="#000a24" stroke-width="1"/>
+          <circle cx="868" cy="568" r="5.5" fill="url(#jackRim)"/><line x1="864" y1="568" x2="872" y2="568" stroke="#000a24" stroke-width="1"/>
         </g>
 
         <!-- BRAND PLATE -->
-        <rect x="320" y="38" width="260" height="52" rx="3" fill="#0c0906" stroke="rgba(201,169,110,0.5)" stroke-width="0.75"/>
-        <rect x="323" y="41" width="254" height="46" rx="2" fill="none" stroke="rgba(201,169,110,0.15)" stroke-width="0.5"/>
-        <text x="450" y="62" text-anchor="middle" font-family="'Instrument Serif',serif" font-size="17" fill="#c9a96e" letter-spacing="0.12em">THE SWITCHBOARD</text>
-        <text x="450" y="79" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(201,169,110,0.55)" letter-spacing="0.28em">SERIES I · MADE IN AMERICA · ESTD 2026</text>
+        <rect x="320" y="38" width="260" height="52" rx="3" fill="#0c0906" stroke="rgba(0, 51, 153,0.5)" stroke-width="0.75"/>
+        <rect x="323" y="41" width="254" height="46" rx="2" fill="none" stroke="rgba(0, 51, 153,0.15)" stroke-width="0.5"/>
+        <text x="450" y="62" text-anchor="middle" font-family="'Instrument Serif',serif" font-size="17" fill="#003399" letter-spacing="0.12em">THE SWITCHBOARD</text>
+        <text x="450" y="79" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(0, 51, 153,0.55)" letter-spacing="0.28em">SERIES I · MADE IN AMERICA · ESTD 2026</text>
 
         <!-- ANALOG GAUGES (top corners) -->
         <!-- Left gauge: INBOUND -->
         <g transform="translate(100, 60)">
-          <circle r="26" fill="#0c0906" stroke="rgba(201,169,110,0.45)" stroke-width="1"/>
-          <circle r="23" fill="none" stroke="rgba(201,169,110,0.2)" stroke-width="0.5"/>
-          <path d="M-18,5 A18,18 0 0 1 18,5" stroke="rgba(201,169,110,0.55)" stroke-width="0.75" fill="none"/>
-          <g font-family="'JetBrains Mono',monospace" font-size="5" fill="rgba(201,169,110,0.55)">
+          <circle r="26" fill="#0c0906" stroke="rgba(0, 51, 153,0.45)" stroke-width="1"/>
+          <circle r="23" fill="none" stroke="rgba(0, 51, 153,0.2)" stroke-width="0.5"/>
+          <path d="M-18,5 A18,18 0 0 1 18,5" stroke="rgba(0, 51, 153,0.55)" stroke-width="0.75" fill="none"/>
+          <g font-family="'JetBrains Mono',monospace" font-size="5" fill="rgba(0, 51, 153,0.55)">
             <text x="-19" y="7" text-anchor="middle">0</text>
             <text x="0" y="-14" text-anchor="middle">50</text>
             <text x="19" y="7" text-anchor="middle">99</text>
           </g>
-          <line x1="0" y1="0" x2="0" y2="-16" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round" transform="rotate(-30)">
+          <line x1="0" y1="0" x2="0" y2="-16" stroke="#003399" stroke-width="1.2" stroke-linecap="round" transform="rotate(-30)">
             <animateTransform attributeName="transform" type="rotate" values="-40;35;-10;25;-5;20" dur="9s" repeatCount="indefinite"/>
           </line>
-          <circle r="2.5" fill="#c9a96e"/>
+          <circle r="2.5" fill="#003399"/>
           <circle r="0.8" fill="#000"/>
-          <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="6" fill="rgba(201,169,110,0.65)" letter-spacing="0.2em">INBOUND</text>
+          <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="6" fill="rgba(0, 51, 153,0.65)" letter-spacing="0.2em">INBOUND</text>
         </g>
 
         <!-- Right gauge: ROUTED -->
@@ -1560,8 +1560,8 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         </g>
 
         <!-- COLUMN LABELS -->
-        <text x="60" y="130" font-family="'JetBrains Mono',monospace" font-size="9" fill="rgba(201,169,110,0.7)" letter-spacing="0.22em">INBOUND · MARKETING</text>
-        <line x1="60" y1="137" x2="290" y2="137" stroke="rgba(201,169,110,0.3)" stroke-width="0.5"/>
+        <text x="60" y="130" font-family="'JetBrains Mono',monospace" font-size="9" fill="rgba(0, 51, 153,0.7)" letter-spacing="0.22em">INBOUND · MARKETING</text>
+        <line x1="60" y1="137" x2="290" y2="137" stroke="rgba(0, 51, 153,0.3)" stroke-width="0.5"/>
         <text x="450" y="130" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" fill="rgba(250,249,247,0.7)" letter-spacing="0.22em">PROCESSING</text>
         <line x1="325" y1="137" x2="575" y2="137" stroke="rgba(250,249,247,0.2)" stroke-width="0.5"/>
         <text x="840" y="130" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" fill="rgba(16,185,129,0.85)" letter-spacing="0.22em">ROUTED · INSURANCE</text>
@@ -1569,27 +1569,27 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 
         <!-- LEFT JACK BANK: 3 rows × 4 cols = 12 jacks -->
         <!-- Row 1 y=170 -->
-        <g><use href="#jackActive" x="64" y="158" width="24" height="24"/><text x="76" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.65)" letter-spacing="0.1em">WEB</text></g>
-        <g><use href="#jack" x="124" y="158" width="24" height="24"/><text x="136" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.4)" letter-spacing="0.1em">API</text></g>
-        <g><use href="#jackActive" x="184" y="158" width="24" height="24"/><text x="196" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.65)" letter-spacing="0.1em">CPR</text></g>
-        <g><use href="#jack" x="244" y="158" width="24" height="24"/><text x="256" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.4)" letter-spacing="0.1em">REF</text></g>
+        <g><use href="#jackActive" x="64" y="158" width="24" height="24"/><text x="76" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.65)" letter-spacing="0.1em">WEB</text></g>
+        <g><use href="#jack" x="124" y="158" width="24" height="24"/><text x="136" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.4)" letter-spacing="0.1em">API</text></g>
+        <g><use href="#jackActive" x="184" y="158" width="24" height="24"/><text x="196" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.65)" letter-spacing="0.1em">CPR</text></g>
+        <g><use href="#jack" x="244" y="158" width="24" height="24"/><text x="256" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.4)" letter-spacing="0.1em">REF</text></g>
 
         <!-- Row 2 y=230 -->
-        <g><use href="#jack" x="64" y="218" width="24" height="24"/><text x="76" y="256" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.4)" letter-spacing="0.1em">EXC</text></g>
-        <g><use href="#jackActive" x="124" y="218" width="24" height="24"/><text x="136" y="256" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.65)" letter-spacing="0.1em">NET</text></g>
-        <g><use href="#jack" x="184" y="218" width="24" height="24"/><text x="196" y="256" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.4)" letter-spacing="0.1em">CAL</text></g>
-        <g><use href="#jackActive" x="244" y="218" width="24" height="24"/><text x="256" y="256" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.65)" letter-spacing="0.1em">UPL</text></g>
+        <g><use href="#jack" x="64" y="218" width="24" height="24"/><text x="76" y="256" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.4)" letter-spacing="0.1em">EXC</text></g>
+        <g><use href="#jackActive" x="124" y="218" width="24" height="24"/><text x="136" y="256" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.65)" letter-spacing="0.1em">NET</text></g>
+        <g><use href="#jack" x="184" y="218" width="24" height="24"/><text x="196" y="256" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.4)" letter-spacing="0.1em">CAL</text></g>
+        <g><use href="#jackActive" x="244" y="218" width="24" height="24"/><text x="256" y="256" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.65)" letter-spacing="0.1em">UPL</text></g>
 
         <!-- Row 3 y=290 -->
-        <g><use href="#jack" x="64" y="278" width="24" height="24"/><text x="76" y="316" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.4)" letter-spacing="0.1em">TR1</text></g>
-        <g><use href="#jack" x="124" y="278" width="24" height="24"/><text x="136" y="316" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.4)" letter-spacing="0.1em">TR2</text></g>
-        <g><use href="#jackActive" x="184" y="278" width="24" height="24"/><text x="196" y="316" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.65)" letter-spacing="0.1em">BRK</text></g>
-        <g><use href="#jack" x="244" y="278" width="24" height="24"/><text x="256" y="316" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(201,169,110,0.4)" letter-spacing="0.1em">IND</text></g>
+        <g><use href="#jack" x="64" y="278" width="24" height="24"/><text x="76" y="316" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.4)" letter-spacing="0.1em">TR1</text></g>
+        <g><use href="#jack" x="124" y="278" width="24" height="24"/><text x="136" y="316" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.4)" letter-spacing="0.1em">TR2</text></g>
+        <g><use href="#jackActive" x="184" y="278" width="24" height="24"/><text x="196" y="316" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.65)" letter-spacing="0.1em">BRK</text></g>
+        <g><use href="#jack" x="244" y="278" width="24" height="24"/><text x="256" y="316" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(0, 51, 153,0.4)" letter-spacing="0.1em">IND</text></g>
 
         <!-- CENTER MONITOR — processing readout -->
         <!-- Brass bezel -->
         <rect x="310" y="150" width="280" height="240" rx="6" fill="url(#jackRim)" opacity="0.35"/>
-        <rect x="314" y="154" width="272" height="232" rx="4" fill="#050403" stroke="rgba(201,169,110,0.45)" stroke-width="0.75"/>
+        <rect x="314" y="154" width="272" height="232" rx="4" fill="#050403" stroke="rgba(0, 51, 153,0.45)" stroke-width="0.75"/>
         <!-- Corner rivets -->
         <circle cx="324" cy="164" r="2.5" fill="url(#jackRim)"/>
         <circle cx="576" cy="164" r="2.5" fill="url(#jackRim)"/>
@@ -1598,8 +1598,8 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <!-- Screen glass sheen -->
         <rect x="320" y="160" width="260" height="12" rx="2" fill="rgba(255,255,255,0.03)"/>
         <!-- Header strip -->
-        <rect x="320" y="160" width="260" height="22" fill="rgba(201,169,110,0.08)"/>
-        <text x="330" y="176" font-family="'JetBrains Mono',monospace" font-size="9" fill="#c9a96e" letter-spacing="0.15em">OP-00001247</text>
+        <rect x="320" y="160" width="260" height="22" fill="rgba(0, 51, 153,0.08)"/>
+        <text x="330" y="176" font-family="'JetBrains Mono',monospace" font-size="9" fill="#003399" letter-spacing="0.15em">OP-00001247</text>
         <circle cx="548" cy="171" r="3" fill="#10b981">
           <animate attributeName="opacity" values="1;0.3;1" dur="1.2s" repeatCount="indefinite"/>
         </circle>
@@ -1614,25 +1614,25 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
           <text x="574" y="228" text-anchor="end" fill="rgba(250,249,247,0.85)">Bright Fleet LLC</text>
 
           <text x="330" y="250" fill="rgba(250,249,247,0.4)">MATCH</text>
-          <text x="574" y="250" text-anchor="end" fill="#c9a96e">Commercial Auto</text>
+          <text x="574" y="250" text-anchor="end" fill="#003399">Commercial Auto</text>
 
           <text x="330" y="272" fill="rgba(250,249,247,0.4)">SCORE</text>
-          <text x="574" y="272" text-anchor="end" fill="#c9a96e">847 / 1000</text>
+          <text x="574" y="272" text-anchor="end" fill="#003399">847 / 1000</text>
 
           <text x="330" y="294" fill="rgba(250,249,247,0.4)">VALUE</text>
-          <text x="574" y="294" text-anchor="end" fill="#c9a96e">$12,400</text>
+          <text x="574" y="294" text-anchor="end" fill="#003399">$12,400</text>
 
           <text x="330" y="316" fill="rgba(250,249,247,0.4)">ROUTE</text>
           <text x="574" y="316" text-anchor="end" fill="#10b981">→ P-12 · M. Saylor</text>
         </g>
-        <line x1="328" y1="333" x2="572" y2="333" stroke="rgba(201,169,110,0.25)"/>
+        <line x1="328" y1="333" x2="572" y2="333" stroke="rgba(0, 51, 153,0.25)"/>
         <!-- Status line -->
         <text x="330" y="354" font-family="'JetBrains Mono',monospace" font-size="9" fill="rgba(16,185,129,0.75)">✓ DELIVERED · 4.2ms</text>
         <text x="570" y="354" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="9" fill="rgba(250,249,247,0.35)">CONN #7<tspan>
           <animate attributeName="opacity" values="1;0.4;1" dur="0.8s" repeatCount="indefinite"/>
         </tspan></text>
         <!-- Cursor -->
-        <rect x="330" y="369" width="8" height="2" fill="#c9a96e">
+        <rect x="330" y="369" width="8" height="2" fill="#003399">
           <animate attributeName="opacity" values="1;0;1" dur="0.9s" repeatCount="indefinite"/>
         </rect>
 
@@ -1673,41 +1673,41 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <path d="M196,302 Q330,470 570,470 Q730,450 696,302" stroke="url(#cordB)" stroke-width="3" fill="none" opacity="0.7" filter="url(#softGlow)"/>
 
         <!-- Traveling data dots along each cord -->
-        <circle r="4" fill="#ffe9b0" filter="url(#bigGlow)">
+        <circle r="4" fill="#c7d2ff" filter="url(#bigGlow)">
           <animateMotion path="M76,182 Q130,430 450,450 Q770,430 636,182" dur="3.2s" repeatCount="indefinite"/>
         </circle>
-        <circle r="3.5" fill="#ffe9b0" filter="url(#bigGlow)">
+        <circle r="3.5" fill="#c7d2ff" filter="url(#bigGlow)">
           <animateMotion path="M196,182 Q260,400 450,430 Q620,400 636,248" dur="2.8s" repeatCount="indefinite" begin="0.6s"/>
         </circle>
-        <circle r="3.5" fill="#ffe9b0" filter="url(#bigGlow)">
+        <circle r="3.5" fill="#c7d2ff" filter="url(#bigGlow)">
           <animateMotion path="M136,242 Q280,440 560,440 Q760,430 756,182" dur="3.6s" repeatCount="indefinite" begin="1.2s"/>
         </circle>
-        <circle r="3.5" fill="#ffe9b0" filter="url(#bigGlow)">
+        <circle r="3.5" fill="#c7d2ff" filter="url(#bigGlow)">
           <animateMotion path="M256,242 Q380,460 560,460 Q780,440 816,242" dur="3.0s" repeatCount="indefinite" begin="0.3s"/>
         </circle>
-        <circle r="3.5" fill="#ffe9b0" filter="url(#bigGlow)">
+        <circle r="3.5" fill="#c7d2ff" filter="url(#bigGlow)">
           <animateMotion path="M196,302 Q330,470 570,470 Q730,450 696,302" dur="3.4s" repeatCount="indefinite" begin="1.8s"/>
         </circle>
 
         <!-- BOTTOM STATUS STRIP -->
-        <rect x="42" y="490" width="816" height="66" rx="5" fill="rgba(0,0,0,0.45)" stroke="rgba(201,169,110,0.2)"/>
-        <rect x="46" y="494" width="808" height="58" rx="3" fill="none" stroke="rgba(201,169,110,0.08)"/>
+        <rect x="42" y="490" width="816" height="66" rx="5" fill="rgba(0,0,0,0.45)" stroke="rgba(0, 51, 153,0.2)"/>
+        <rect x="46" y="494" width="808" height="58" rx="3" fill="none" stroke="rgba(0, 51, 153,0.08)"/>
 
         <!-- Left: LIVE + active patches -->
         <circle cx="68" cy="511" r="4.5" fill="#10b981">
           <animate attributeName="opacity" values="1;0.25;1" dur="1.4s" repeatCount="indefinite"/>
         </circle>
         <text x="82" y="515" font-family="'JetBrains Mono',monospace" font-size="10" fill="#10b981" letter-spacing="0.2em">LIVE</text>
-        <line x1="125" y1="505" x2="125" y2="518" stroke="rgba(201,169,110,0.2)"/>
+        <line x1="125" y1="505" x2="125" y2="518" stroke="rgba(0, 51, 153,0.2)"/>
         <text x="138" y="515" font-family="'JetBrains Mono',monospace" font-size="10" fill="rgba(250,249,247,0.85)">1,247</text>
         <text x="180" y="515" font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(250,249,247,0.45)" letter-spacing="0.15em">ACTIVE PATCHES</text>
 
         <!-- Sub row -->
-        <text x="68" y="536" font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(201,169,110,0.55)" letter-spacing="0.15em">MATCH 97% · SCORE μ=812 · ROUTE 99.2% · LATENCY 4.2ms</text>
+        <text x="68" y="536" font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(0, 51, 153,0.55)" letter-spacing="0.15em">MATCH 97% · SCORE μ=812 · ROUTE 99.2% · LATENCY 4.2ms</text>
 
         <!-- Center: operation ticker -->
         <text x="450" y="515" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" fill="rgba(250,249,247,0.75)">CONN #1,247 · JANE DOE → P-12</text>
-        <text x="450" y="536" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(201,169,110,0.4)" letter-spacing="0.2em">OPERATOR ONLINE · AMERICAN TIMEZONES</text>
+        <text x="450" y="536" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(0, 51, 153,0.4)" letter-spacing="0.2em">OPERATOR ONLINE · AMERICAN TIMEZONES</text>
 
         <!-- Right: uptime, serial -->
         <text x="834" y="515" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="10" fill="rgba(250,249,247,0.6)">UPTIME 99.99%</text>
@@ -1734,9 +1734,9 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
     <div class="trio-grid">
       <div class="trio-card trio-card-dark trio-card-featured fade-up delay-1">
         <svg class="made-stamp" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <circle cx="22" cy="22" r="20.5" fill="none" stroke="#c9a96e" stroke-width="1" opacity="0.65"/>
-          <circle cx="22" cy="22" r="17.5" fill="none" stroke="#c9a96e" stroke-width="0.5" opacity="0.35"/>
-          <path d="M22 9.5 L23.8 16.6 L31.2 16.6 L25.2 21 L27.3 28.1 L22 23.6 L16.7 28.1 L18.8 21 L12.8 16.6 L20.2 16.6 Z" fill="#c9a96e" opacity="0.95"/>
+          <circle cx="22" cy="22" r="20.5" fill="none" stroke="#003399" stroke-width="1" opacity="0.65"/>
+          <circle cx="22" cy="22" r="17.5" fill="none" stroke="#003399" stroke-width="0.5" opacity="0.35"/>
+          <path d="M22 9.5 L23.8 16.6 L31.2 16.6 L25.2 21 L27.3 28.1 L22 23.6 L16.7 28.1 L18.8 21 L12.8 16.6 L20.2 16.6 Z" fill="#003399" opacity="0.95"/>
         </svg>
         <span class="trio-kicker">American Made</span>
         <h3>Built in America. Built in-house.</h3>
