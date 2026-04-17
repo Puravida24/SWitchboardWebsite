@@ -1421,9 +1421,6 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   .footer-tagline { font-size: 0.85rem; }
   .footer-bottom { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
-@media (max-width: 460px) {
-  .footer-cols { grid-template-columns: 1fr; gap: 24px; }
-}
 .footer-logo { font-family: var(--serif); font-size: 1.2rem; color: var(--cream-2); text-decoration: none; letter-spacing: -0.015em; }
 .footer-logo span { color: var(--gold); }
 .footer-logo:focus { outline: none; }
@@ -1614,16 +1611,19 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   .ecosystem-card { min-width: 148px; min-height: 60px; padding: 0.75rem 1rem; border-radius: 8px; }
   .ecosystem-wordmark { font-size: 0.95rem; line-height: 1.1; }
 
-  /* Footer — compact single-column link list */
-  .footer-cols { gap: 14px; padding-bottom: 18px; margin-bottom: 14px; }
+  /* Footer — ultra-compact: 2-col grid, no imprint, no stamp */
+  .site-footer-newsprint { padding: 28px 1.25rem 18px; }
+  .footer-nameplate { padding-bottom: 14px; margin-bottom: 14px; }
+  .footer-nameplate .footer-logo img { height: 32px; }
+  .footer-tagline { font-size: 0.78rem; }
+  .footer-cols { grid-template-columns: 1fr 1fr !important; gap: 14px 18px; padding-bottom: 14px; margin-bottom: 10px; }
   .footer-col { gap: 2px; }
-  .footer-col-title { font-size: 0.56rem; letter-spacing: 0.22em; margin-bottom: 2px; padding-bottom: 5px; }
-  .footer-col a { font-size: 0.8rem; line-height: 1.35; padding: 2px 0; }
-  .footer-imprint { padding: 14px 0; margin: 8px 0 0; }
-  .footer-imprint-line { font-size: 0.7rem; line-height: 1.5; }
-  .footer-bottom { font-size: 0.65rem; padding: 12px 0 0; gap: 6px !important; }
-  .footer-stamp { font-size: 0.52rem !important; letter-spacing: 0.14em !important; }
-  .footer-copy { font-size: 0.65rem !important; }
+  .footer-col-title { font-size: 0.52rem; letter-spacing: 0.18em; margin-bottom: 2px; padding-bottom: 4px; }
+  .footer-col a { font-size: 0.75rem; line-height: 1.3; padding: 1px 0; }
+  .footer-imprint { display: none; }
+  .footer-stamp { display: none !important; }
+  .footer-bottom { padding: 6px 0 0; }
+  .footer-copy { font-size: 0.6rem !important; }
 }
 
 @media (max-width: 480px) {
