@@ -2410,19 +2410,31 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
      SCRIPTS
      ════════════════════════════════════════════════════ -->
 <script>
-// Intersection Observer for fade-up animations
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
-}, {
-  threshold: 0.1,
-  rootMargin: '0px 0px -40px 0px'
-});
-
-document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+// Intersection Observer for fade-up animations — with safety-net fallback
+(function initFadeUp(){
+  const fades = document.querySelectorAll('.fade-up');
+  // Safety net #1: if IntersectionObserver is unsupported, show everything immediately
+  if (!('IntersectionObserver' in window)) {
+    fades.forEach(el => el.classList.add('visible'));
+    return;
+  }
+  try {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.01, rootMargin: '0px 0px -20px 0px' });
+    fades.forEach(el => observer.observe(el));
+  } catch (e) {
+    fades.forEach(el => el.classList.add('visible'));
+  }
+  // Safety net #2: if any fade-up hasn't become visible within 1500ms (observer failure, script error later on page), force visible
+  setTimeout(() => {
+    document.querySelectorAll('.fade-up:not(.visible)').forEach(el => el.classList.add('visible'));
+  }, 1500);
+})();
 
 // Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(link => {
