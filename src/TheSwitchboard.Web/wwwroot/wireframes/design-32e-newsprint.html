@@ -1255,6 +1255,9 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .form-field input, .form-field textarea, .form-field select { width: 100%; padding: 0.8rem 1rem; background: #ffffff; border: 1px solid rgba(0, 51, 153,0.22); border-radius: 8px; color: var(--charcoal-1); font-family: var(--sans); font-size: 0.95rem; font-weight: 300; transition: border-color 0.3s, background 0.3s, box-shadow 0.3s; }
 .form-field input:focus, .form-field textarea:focus, .form-field select:focus { outline: none; border-color: var(--gold); background: #ffffff; box-shadow: 0 0 0 3px rgba(0, 51, 153,0.1); }
 .form-field textarea { min-height: 110px; resize: vertical; }
+.form-consent { font-family: var(--sans); font-size: 0.78rem; color: var(--warm-gray); line-height: 1.55; margin: 1.25rem 0 0.5rem; font-weight: 300; text-align: left; }
+.form-consent a { color: var(--charcoal-1); text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 2px; }
+.form-consent a:hover { color: var(--gold); }
 .form-submit { width: 100%; font-family: var(--serif); font-size: 1.05rem; padding: 1rem 2rem; background: var(--gold); color: #ffffff; border: none; border-radius: 100px; cursor: pointer; transition: all 0.3s ease; margin-top: 0.75rem; letter-spacing: 0.01em; }
 .form-submit:hover { background: #d4b77c; box-shadow: 0 0 32px var(--gold-glow); transform: translateY(-1px); }
 .form-footer-note { font-size: 0.8rem; color: var(--warm-gray); text-align: center; margin-top: 1.5rem; font-weight: 300; }
@@ -2632,6 +2635,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <label for="cf-message">What brings you here?</label>
         <textarea id="cf-message" name="message" placeholder="A sentence or two is plenty."></textarea>
       </div>
+      <p class="form-consent">By submitting, you agree to our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>. We&rsquo;ll use your information to respond to your inquiry and may follow up about our platform. We do not sell your data.</p>
       <button type="submit" class="form-submit">Start the Conversation</button>
     </form>
     <div class="form-success" id="contactSuccess">
@@ -2677,13 +2681,14 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <span class="footer-col-title">Of Record</span>
         <a href="privacy.html">Privacy Policy</a>
         <a href="terms.html">Terms of Service</a>
+        <a href="accessibility.html">Accessibility</a>
       </div>
     </div>
 
     <!-- Colophon: editorial signature block -->
     <div class="footer-imprint">
       <p class="footer-imprint-line">
-        <strong>Published in Orem, Utah</strong> by The Switchboard, LLC. Vol. I · № 1. Set in <em>Instrument Serif</em>, Inter, and JetBrains Mono. Every line of code, every data pipeline, every model — shipped in-house.
+        <strong>Published in Orem, Utah</strong> by The Switchboard, LLC &middot; 1849 W 645 S, Orem, Utah 84059 &middot; Vol. I · № 1. Set in <em>Instrument Serif</em>, Inter, and JetBrains Mono. Every line of code, every data pipeline, every model — shipped in-house.
       </p>
     </div>
 

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accessibility Statement — The Switchboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream-1: #faf9f7;
+  --cream-2: #f5f0eb;
+  --cream-3: #efe8e0;
+  --charcoal-1: #1c1917;
+  --charcoal-2: #211f1c;
+  --charcoal-3: #292524;
+  --gold: #003399;
+  --gold-glow: rgba(0, 51, 153, 0.35);
+  --warm-gray: #78716c;
+  --warm-gray-light: #a8a29e;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Inter', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--sans);
+  color: var(--charcoal-1);
+  background: var(--cream-1);
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  opacity: 0.5;
+}
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.15; letter-spacing: -0.015em; }
+
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 2rem;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(250,249,247,0.92) 0%, rgba(245,240,235,0.88) 100%);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid rgba(0, 51, 153,0.15);
+  box-shadow: 0 1px 3px rgba(28,25,23,0.04), 0 4px 12px rgba(28,25,23,0.03);
+}
+
+.logo {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  color: var(--charcoal-1);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.logo span { color: var(--gold); }
+
+.back-link {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  color: var(--charcoal-3);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.3s;
+}
+
+.back-link:hover { color: var(--gold); }
+
+.legal-hero {
+  padding: 140px 2rem 60px;
+  background: linear-gradient(180deg, var(--cream-1) 0%, var(--cream-2) 100%);
+  text-align: center;
+}
+
+.legal-overline {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.25rem;
+}
+
+.legal-hero h1 {
+  font-size: clamp(2.4rem, 5vw, 3.75rem);
+  color: var(--charcoal-1);
+  margin-bottom: 1rem;
+}
+
+.legal-meta {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--warm-gray);
+}
+
+.legal-body {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 60px 2rem 120px;
+}
+
+.legal-body h2 {
+  font-size: 1.75rem;
+  color: var(--charcoal-1);
+  margin: 3rem 0 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 51, 153,0.2);
+}
+
+.legal-body h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.legal-body h3 {
+  font-size: 1.2rem;
+  color: var(--charcoal-1);
+  margin: 1.75rem 0 0.75rem;
+}
+
+.legal-body p {
+  font-size: 1rem;
+  color: var(--charcoal-3);
+  margin-bottom: 1.25rem;
+  line-height: 1.8;
+}
+
+.legal-body ul {
+  margin: 0 0 1.5rem 1.25rem;
+  padding: 0;
+}
+
+.legal-body li {
+  font-size: 1rem;
+  color: var(--charcoal-3);
+  margin-bottom: 0.6rem;
+  line-height: 1.75;
+}
+
+.legal-body strong {
+  color: var(--charcoal-1);
+  font-weight: 500;
+}
+
+.legal-body a {
+  color: var(--charcoal-1);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
+  transition: color 0.3s;
+}
+
+.legal-body a:hover { color: var(--gold); }
+
+.contact-block {
+  margin-top: 2rem;
+  padding: 1.75rem 2rem;
+  background: rgba(0, 51, 153,0.06);
+  border: 1px solid rgba(0, 51, 153,0.2);
+  border-radius: 8px;
+}
+
+.contact-block p { margin: 0 0 0.35rem; font-size: 0.95rem; }
+.contact-block p:last-child { margin-bottom: 0; }
+
+.site-footer {
+  background: var(--charcoal-1);
+  border-top: 1px solid rgba(0, 51, 153,0.1);
+  padding: 48px 2rem 32px;
+}
+
+.footer-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer-inner .logo { font-size: 1.1rem; color: var(--cream-2); }
+.footer-inner .logo span { color: var(--gold); }
+
+.footer-links { display: flex; gap: 1.75rem; flex-wrap: wrap; }
+
+.footer-links a {
+  font-size: 0.8rem;
+  color: var(--warm-gray-light);
+  text-decoration: none;
+  font-weight: 300;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover { color: var(--gold); }
+
+.footer-bottom {
+  max-width: 1080px;
+  margin: 2rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 51, 153,0.08);
+  font-size: 0.72rem;
+  color: var(--warm-gray);
+  font-weight: 300;
+}
+
+@media (max-width: 640px) {
+  .legal-body { padding: 40px 1.5rem 80px; }
+  .legal-body h2 { font-size: 1.4rem; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+}
+
+/* Brand logo image */
+.logo { display: flex; align-items: center; text-decoration: none; line-height: 0; }
+.logo-img { height: 38px; width: auto; display: block; }
+.footer-logo { display: flex; align-items: center; text-decoration: none; line-height: 0; }
+.footer-logo-img { height: 36px; width: auto; display: block; filter: brightness(0) invert(1); opacity: 0.92; }
+@media (max-width: 640px) { .logo-img { height: 32px; } .footer-logo-img { height: 30px; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="design-32-the-switchboard-final-b.html" class="logo" aria-label="The Switchboard"><img class="logo-img" src="assets/logo/switchboard-logo.png" alt="The Switchboard"/></a>
+  <a href="design-32-the-switchboard-final-b.html" class="back-link">&larr; Back</a>
+</header>
+
+<section class="legal-hero">
+  <p class="legal-overline">Commitment</p>
+  <h1>Accessibility Statement</h1>
+  <p class="legal-meta">Effective April 17, 2026 &middot; Last reviewed April 17, 2026</p>
+</section>
+
+<main class="legal-body">
+
+<p><em>The Switchboard, LLC is committed to making <strong>theswitchboardmarketing.com</strong> (the &ldquo;Site&rdquo;) accessible to the widest possible audience, including people with disabilities. We believe that good design is inclusive design, and we work to conform to the Web Content Accessibility Guidelines (WCAG) published by the World Wide Web Consortium.</em></p>
+
+<h2>1. Conformance status</h2>
+<p>This Site aims to conform to <strong>WCAG 2.2 Level AA</strong> as the technical standard for making web content more accessible. Conformance status is &ldquo;<strong>partially conformant</strong>&rdquo; &mdash; the Site largely meets the Level AA success criteria, but some content or features may not yet fully conform. We are actively remediating known gaps.</p>
+
+<h2>2. Measures we take</h2>
+<ul>
+  <li>Semantic HTML structure with proper landmark regions, headings, and document order</li>
+  <li>Sufficient color contrast for body text, interactive elements, and focus states</li>
+  <li>Visible focus indicators on all interactive elements</li>
+  <li>Keyboard operability across navigation, forms, and interactive components</li>
+  <li>Scalable typography using relative units that respect user zoom up to 200% without loss of content</li>
+  <li>Alternative text for meaningful images; decorative images marked <code>aria-hidden</code></li>
+  <li>Form inputs with programmatically associated labels and error messages</li>
+  <li>Skip-to-content link for keyboard users</li>
+  <li>Respect for the user&rsquo;s <code>prefers-reduced-motion</code> setting</li>
+  <li>Design review and manual testing incorporated into our build process</li>
+</ul>
+
+<h2>3. Known limitations</h2>
+<p>Despite our efforts, some areas of the Site may not yet be fully accessible:</p>
+<ul>
+  <li>The animated &ldquo;Live Operations Terminal&rdquo; visualization is decorative; a descriptive text alternative is provided to users of assistive technology, but motion cannot currently be paused independently of the operating system&rsquo;s reduced-motion setting.</li>
+  <li>The partner carousel relies on CSS animation; we are evaluating options to add explicit pause and keyboard controls.</li>
+  <li>Some mockup pages retained for team review may not meet the same standard as the production design.</li>
+</ul>
+<p>We expect to resolve these limitations in ongoing updates.</p>
+
+<h2>4. Compatibility</h2>
+<p>The Site is designed to be compatible with modern browsers and assistive technologies, including:</p>
+<ul>
+  <li>Browsers: current and prior major versions of Google Chrome, Apple Safari, Mozilla Firefox, and Microsoft Edge</li>
+  <li>Screen readers: VoiceOver (macOS, iOS), NVDA (Windows), JAWS (Windows), and TalkBack (Android)</li>
+  <li>Operating systems: current versions of macOS, iOS, Windows 10/11, and Android</li>
+</ul>
+<p>The Site may not render as intended on browsers or assistive technologies older than two major versions, or on specialty devices we have not been able to test.</p>
+
+<h2>5. Technical specifications</h2>
+<p>The Site relies on HTML5, CSS3, JavaScript, and WAI-ARIA attributes to achieve conformance. These technologies are supported by current browsers and assistive technologies.</p>
+
+<h2>6. Assessment approach</h2>
+<p>The Site has been evaluated using:</p>
+<ul>
+  <li>Automated accessibility scanners (axe, Lighthouse)</li>
+  <li>Manual code and design review against WCAG 2.2 AA</li>
+  <li>Keyboard-only navigation testing</li>
+  <li>Screen-reader spot-checks on primary flows (homepage, contact form, legal pages)</li>
+</ul>
+<p>Periodic third-party audits are planned as the Site and platform grow.</p>
+
+<h2>7. Feedback and assistance</h2>
+<p>We welcome your feedback on the accessibility of the Site. If you encounter barriers, have trouble accessing any content, need an alternative format, or would like to report a concern, please contact us and we will do our best to respond within <strong>five business days</strong>.</p>
+<div class="contact-block">
+  <p><strong>The Switchboard, LLC &mdash; Accessibility</strong></p>
+  <p>1849 W 645 S, Orem, Utah 84059, United States</p>
+  <p>Email: <a href="mailto:accessibility@theswitchboardmarketing.com">accessibility@theswitchboardmarketing.com</a></p>
+  <p>Please include the page URL, a description of the issue, and the assistive technology or browser you are using.</p>
+</div>
+
+<h2>8. Formal approval</h2>
+<p>This statement was prepared and approved by The Switchboard, LLC on April 17, 2026. It will be reviewed and updated at least annually and whenever significant changes are made to the Site.</p>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="design-32-the-switchboard-final-b.html" class="logo" aria-label="The Switchboard"><img class="logo-img" src="assets/logo/switchboard-logo.png" alt="The Switchboard"/></a>
+    <div class="footer-links">
+      <a href="design-32-the-switchboard-final-b.html">Home</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:hello@theswitchboardmarketing.com">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 The Switchboard, LLC. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>
