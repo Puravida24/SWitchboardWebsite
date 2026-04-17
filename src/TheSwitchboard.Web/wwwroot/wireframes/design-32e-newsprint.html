@@ -1410,8 +1410,11 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 
 @media (max-width: 720px) {
   .footer-cols { grid-template-columns: repeat(2, 1fr); gap: 28px 24px; }
-  .site-footer-newsprint { padding: 56px 1.25rem 24px; }
-  .footer-nameplate { padding-bottom: 28px; margin-bottom: 32px; }
+  .site-footer-newsprint { padding: 40px 1.25rem 22px; }
+  .footer-nameplate { padding-bottom: 22px; margin-bottom: 24px; }
+  .footer-nameplate .footer-logo { margin-bottom: 10px; }
+  .footer-nameplate .footer-logo img { height: 38px; }
+  .footer-tagline { font-size: 0.85rem; }
   .footer-bottom { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
 @media (max-width: 460px) {
@@ -1592,6 +1595,16 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   }
 }
 .ops-terminal-hint { display: none; }
+
+@media (max-width: 640px) {
+  .cta-section { padding: 72px 1.25rem 56px; }
+  .cta-section::before { width: 320px; height: 320px; }
+  .contact-form-wrap { margin-top: 2rem; }
+  .section-padding { padding: 64px 1.25rem; }
+  .built-here-section, .process-section, .builtfor-section { padding: 64px 1.25rem; }
+  .intelligence-strip-section { padding: 64px 1.25rem; }
+  .audience-strips-section { padding: 64px 1.25rem 48px; }
+}
 
 @media (max-width: 480px) {
   .hero h1 { font-size: 2rem; }
@@ -2653,7 +2666,6 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
     <!-- Newspaper nameplate repeat -->
     <div class="footer-nameplate">
       <a href="#" class="footer-logo" aria-label="The Switchboard"><img src="assets/logo/switchboard-logo.png" alt="The Switchboard"/></a>
-      <div class="footer-wordmark">The Switchboard.</div>
       <div class="footer-tagline"><em>Insurance Intelligence</em> &mdash; where experience meets data.</div>
     </div>
 
