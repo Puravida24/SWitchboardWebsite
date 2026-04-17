@@ -1616,6 +1616,22 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 .ecosystem-track { display: flex; gap: 2rem; width: max-content; animation: ecoMarquee 40s linear infinite; }
 .ecosystem-marquee:hover .ecosystem-track { animation-play-state: paused; }
 @keyframes ecoMarquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 1rem)); } }
+
+/* Touch devices: user can stop the marquee and scroll with their finger */
+.ecosystem-marquee.user-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.ecosystem-marquee.user-scroll::-webkit-scrollbar { display: none; }
+.ecosystem-marquee.user-scroll .ecosystem-track {
+  animation-play-state: paused;
+}
+.ecosystem-marquee.user-scroll .ecosystem-card {
+  scroll-snap-align: center;
+}
 .ecosystem-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; padding: 1.5rem 2.5rem; border: 1px solid rgba(0, 51, 153,0.18); border-radius: 10px; background: #ffffff; transition: all 0.35s ease; box-shadow: 0 1px 3px rgba(28,25,23,0.04), 0 4px 12px rgba(28,25,23,0.03); min-width: 220px; min-height: 100px; flex-shrink: 0; }
 .ecosystem-card:hover { border-color: rgba(0, 51, 153,0.45); box-shadow: 0 8px 28px rgba(28,25,23,0.12), 0 2px 6px rgba(28,25,23,0.05); transform: translateY(-3px); }
 .ecosystem-wordmark {
@@ -3028,6 +3044,57 @@ window.addEventListener('scroll', () => {
       processed.textContent = count.toLocaleString('en-US');
     }, 2400);
   }
+})();
+
+// Ecosystem carousel — let touch users pause and finger-scroll
+(function initEcosystemTouch(){
+  const marquee = document.querySelector('.ecosystem-marquee');
+  if (!marquee) return;
+  const track = marquee.querySelector('.ecosystem-track');
+  if (!track) return;
+  const supportsTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  if (!supportsTouch) return;
+
+  let resumeTimer = null;
+
+  function enterManualMode(){
+    // Capture current translateX of the animated track and convert to scrollLeft
+    const cs = window.getComputedStyle(track);
+    const matrix = cs.transform;
+    let currentX = 0;
+    if (matrix && matrix !== 'none') {
+      const m = matrix.match(/matrix\(([^)]+)\)/);
+      if (m) {
+        const parts = m[1].split(',').map(s => parseFloat(s.trim()));
+        currentX = parts[4] || 0; // tx in matrix(a,b,c,d,tx,ty)
+      }
+    }
+    // Freeze animation and convert offset to scrollLeft
+    marquee.classList.add('user-scroll');
+    track.style.transform = 'none';
+    marquee.scrollLeft = Math.max(0, -currentX);
+  }
+
+  function scheduleResume(){
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => {
+      // Resume marquee from current scroll position by re-arming the animation
+      marquee.classList.remove('user-scroll');
+      track.style.transform = '';
+      // Force reflow to restart animation cleanly
+      track.style.animation = 'none';
+      void track.offsetHeight;
+      track.style.animation = '';
+    }, 4500);
+  }
+
+  marquee.addEventListener('touchstart', () => {
+    clearTimeout(resumeTimer);
+    if (!marquee.classList.contains('user-scroll')) enterManualMode();
+  }, { passive: true });
+
+  marquee.addEventListener('touchend', scheduleResume, { passive: true });
+  marquee.addEventListener('touchcancel', scheduleResume, { passive: true });
 })();
 
 // Contact form submission (placeholder — wire to backend later)
