@@ -1329,6 +1329,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   font-style: normal;
 }
 .footer-tagline em { color: var(--navy-light, #93b4ff); font-style: italic; }
+.footer-mini { display: none; }
 
 /* Four-column links */
 .footer-cols {
@@ -1611,19 +1612,19 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   .ecosystem-card { min-width: 148px; min-height: 60px; padding: 0.75rem 1rem; border-radius: 8px; }
   .ecosystem-wordmark { font-size: 0.95rem; line-height: 1.1; }
 
-  /* Footer — ultra-compact: 2-col grid, no imprint, no stamp */
-  .site-footer-newsprint { padding: 28px 1.25rem 18px; }
-  .footer-nameplate { padding-bottom: 14px; margin-bottom: 14px; }
-  .footer-nameplate .footer-logo img { height: 32px; }
+  /* Footer — ultra-minimal on mobile: logo + tagline + inline links + copyright */
+  .site-footer-newsprint { padding: 24px 1.25rem 16px; }
+  .footer-nameplate { padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid rgba(147,180,255,0.12); }
+  .footer-nameplate .footer-logo img { height: 30px; }
   .footer-tagline { font-size: 0.78rem; }
-  .footer-cols { grid-template-columns: 1fr 1fr !important; gap: 14px 18px; padding-bottom: 14px; margin-bottom: 10px; }
-  .footer-col { gap: 2px; }
-  .footer-col-title { font-size: 0.52rem; letter-spacing: 0.18em; margin-bottom: 2px; padding-bottom: 4px; }
-  .footer-col a { font-size: 0.75rem; line-height: 1.3; padding: 1px 0; }
+  .footer-cols { display: none; }
+  .footer-mini { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; margin-bottom: 12px; }
+  .footer-mini a { font-family: var(--serif); font-size: 0.82rem; color: rgba(250,249,247,0.78); text-decoration: none; padding: 2px 0; transition: color 0.2s; }
+  .footer-mini a:hover { color: var(--gold); }
   .footer-imprint { display: none; }
   .footer-stamp { display: none !important; }
-  .footer-bottom { padding: 6px 0 0; }
-  .footer-copy { font-size: 0.6rem !important; }
+  .footer-bottom { padding: 8px 0 0; justify-content: center; }
+  .footer-copy { font-size: 0.62rem !important; text-align: center; color: rgba(250,249,247,0.45) !important; }
 }
 
 @media (max-width: 480px) {
@@ -2680,7 +2681,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <label for="cf-message">What brings you here?</label>
         <textarea id="cf-message" name="message" placeholder="A sentence or two is plenty."></textarea>
       </div>
-      <p class="form-consent">By submitting, you agree to our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>. We&rsquo;ll use your information to respond to your inquiry and may follow up about our platform. If you provide a phone number, you also consent to receive calls and SMS from The Switchboard about your inquiry &mdash; message frequency varies, message &amp; data rates may apply, reply STOP to unsubscribe. Consent is not a condition of any purchase. We do not sell your data.</p>
+      <p class="form-consent">By submitting, you agree to our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>. We&rsquo;ll use your information to respond to your inquiry and may follow up about our platform. If you provide a phone number, you also consent to receive calls from The Switchboard about your inquiry.</p>
       <button type="submit" class="form-submit">Start the Conversation</button>
     </form>
     <div class="form-success" id="contactSuccess">
@@ -2701,7 +2702,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
       <div class="footer-tagline"><em>Insurance Intelligence</em> &mdash; where experience meets data.</div>
     </div>
 
-    <!-- Four-column editorial links -->
+    <!-- Four-column editorial links (desktop / tablet) -->
     <div class="footer-cols">
       <div class="footer-col">
         <span class="footer-col-title">Platform</span>
@@ -2728,6 +2729,14 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <a href="accessibility.html">Accessibility</a>
       </div>
     </div>
+
+    <!-- Minimal mobile nav (shown only on phones) -->
+    <nav class="footer-mini" aria-label="Footer">
+      <a href="#contact">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="accessibility.html">Accessibility</a>
+    </nav>
 
     <!-- Colophon: editorial signature block -->
     <div class="footer-imprint">
