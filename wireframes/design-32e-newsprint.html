@@ -2779,7 +2779,13 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
 
 @media (max-width: 720px) {
   .scorecard[data-state="expanded"] { right: 10px; left: 10px; bottom: 10px; width: auto; max-height: 70vh; }
-  .scorecard[data-state="collapsed"] { right: 10px; }
+  /* Mobile collapsed pill — minimal: only green dot + "PHOENIX" + chevron */
+  .scorecard[data-state="collapsed"] { right: 12px; bottom: 14px; max-height: 40px; }
+  .scorecard[data-state="collapsed"] .sc-trigger { padding: 9px 14px 9px 12px; font-size: 10.5px; letter-spacing: 0.16em; }
+  .scorecard[data-state="collapsed"] .sc-trigger-sep,
+  .scorecard[data-state="collapsed"] .sc-trigger-id,
+  .scorecard[data-state="collapsed"] .sc-trigger-stat { display: none; }
+  .scorecard[data-state="collapsed"] .sc-chevron { margin-left: 8px; }
 }
 </style>
 </head>
