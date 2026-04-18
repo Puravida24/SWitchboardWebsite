@@ -90,4 +90,16 @@ public class CopyContractTests
         Assert.Contains("mailto:legal@theswitchboardmarketing.com", seo);
         Assert.DoesNotContain("mailto:security@theswitchboardmarketing.com", seo);
     }
+
+    [Fact]
+    public void H1_F_SpeedTrioCard_RewrittenToEditorialFragment()
+    {
+        // Old copy had "Engineered for Scale" / "Speed and precision at insurance scale"
+        // double-echo on "scale" and "engineered". Replaced with editorial fragment voice.
+        var home = Read("wireframes/design-32e-newsprint.html");
+        Assert.DoesNotContain("Engineered for Scale", home);
+        Assert.DoesNotContain("Speed and precision at insurance scale", home);
+        Assert.Contains("The speed most carriers can't buy", home);
+        Assert.Contains("Sub-five milliseconds", home);
+    }
 }
