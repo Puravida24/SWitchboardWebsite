@@ -2,3 +2,7 @@
 .pull-quote:before,.pull-quote:after{content:""!important;display:none!important}
 
 .banner-headline,.editorial-headline,.section-headline,.pull-quote,h1,h2{font-variant-ligatures:no-common-ligatures;font-feature-settings:"liga" 0,"clig" 0,"dlig" 0}
+
+.skip-link{position:absolute;top:-48px;left:8px;z-index:10000;padding:10px 16px;background:#1c1917;color:#faf9f7;font-family:var(--sans),system-ui,sans-serif;font-size:14px;font-weight:600;text-decoration:none;border-radius:4px;transition:top 0.15s ease}
+.skip-link:focus{top:8px;outline:2px solid #b4c8ff;outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;scroll-behavior:auto !important}}
