@@ -14,12 +14,11 @@ WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT=Production \
     ASPNETCORE_URLS=http://+:8080
 
-# Install curl for the HEALTHCHECK probe, create a non-root user, and clean up.
-# Doing this in the same RUN layer keeps the image smaller.
+# Install curl for the HEALTHCHECK probe. The aspnet:9.0 base image already
+# ships with a non-root 'app' user (uid 1654) — we just switch to it below.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl && \
-    rm -rf /var/lib/apt/lists/* && \
-    adduser --disabled-password --gecos '' --uid 10001 app
+    rm -rf /var/lib/apt/lists/*
 
 COPY --chown=app:app --from=build /app/publish .
 

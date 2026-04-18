@@ -60,9 +60,10 @@ public class InfraContractTests
     public void H2_D_Dockerfile_UsesNonRootUser()
     {
         var df = Read("Dockerfile");
-        // Must create an app user and switch to it before ENTRYPOINT.
-        Assert.Matches(@"(adduser|useradd|addgroup|groupadd).+app", df);
-        Assert.Contains("USER ", df);
+        // aspnet:9.0 base image ships with a pre-created non-root 'app' user.
+        // Dockerfile must switch to it (USER app) before the ENTRYPOINT.
+        Assert.Contains("USER app", df);
+        Assert.DoesNotContain("USER root", df);
     }
 
     [Fact]
