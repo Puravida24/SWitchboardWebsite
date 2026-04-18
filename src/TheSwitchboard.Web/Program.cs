@@ -116,7 +116,26 @@ try
     if (hasDatabase)
         healthChecks.AddNpgSql(connectionString!);
 
+    // Response compression — Railway's Fastly edge normally compresses but Lighthouse
+    // observed no compression on our HTML. Adding brotli + gzip at the app layer is
+    // belt-and-suspenders and handles cases where the edge cache misses.
+    builder.Services.AddResponseCompression(options =>
+    {
+        options.EnableForHttps = true;
+        options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.BrotliCompressionProvider>();
+        options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.GzipCompressionProvider>();
+        options.MimeTypes = Microsoft.AspNetCore.ResponseCompression.ResponseCompressionDefaults.MimeTypes.Concat(new[]
+        {
+            "application/xml",
+            "application/json",
+            "text/plain",
+            "image/svg+xml"
+        });
+    });
+
     var app = builder.Build();
+
+    app.UseResponseCompression();
 
     // H-02: honor X-Forwarded-For / X-Forwarded-Proto from the Railway proxy
     // so downstream middleware (rate limit, analytics) see the real client IP
