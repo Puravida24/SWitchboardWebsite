@@ -15,6 +15,7 @@ public interface IFormService
     Task<FormSubmission?> GetSubmissionByIdAsync(int id);
     Task<int> GetSubmissionCountAsync(string? formType = null, string? role = null);
     Task MarkEmailBouncedAsync(string email);
+    Task<FormSubmission?> RetryPhoenixForSubmissionAsync(int submissionId);
 }
 
 public class FormService : IFormService
@@ -66,6 +67,9 @@ public class FormService : IFormService
         return submission;
     }
 
+    // H-4 S2-15: dead-letter after 3 consecutive failures.
+    private const int MaxPhoenixAttempts = 3;
+
     private async Task DispatchPhoenixAsync(FormSubmission submission, Dictionary<string, string> sanitized)
     {
         submission.PhoenixSyncAttempts++;
@@ -73,17 +77,39 @@ public class FormService : IFormService
         try
         {
             var ok = await _crmService.SendFormSubmissionAsync(submission.FormType, sanitized);
-            submission.PhoenixSyncStatus = ok ? PhoenixSyncStatus.Sent : PhoenixSyncStatus.Failed;
+            submission.PhoenixSyncStatus = ok
+                ? PhoenixSyncStatus.Sent
+                : (submission.PhoenixSyncAttempts >= MaxPhoenixAttempts
+                    ? PhoenixSyncStatus.DeadLettered
+                    : PhoenixSyncStatus.Failed);
             submission.SentToPhoenix = ok;
             submission.PhoenixResponse = ok ? "sent" : "non-2xx";
         }
         catch (Exception ex)
         {
-            submission.PhoenixSyncStatus = PhoenixSyncStatus.Failed;
+            submission.PhoenixSyncStatus = submission.PhoenixSyncAttempts >= MaxPhoenixAttempts
+                ? PhoenixSyncStatus.DeadLettered
+                : PhoenixSyncStatus.Failed;
             submission.PhoenixResponse = ex.Message;
             _logger.LogWarning(ex, "Phoenix webhook failed for submission #{Id}", submission.Id);
         }
         await _db.SaveChangesAsync();
+    }
+
+    public async Task<FormSubmission?> RetryPhoenixForSubmissionAsync(int submissionId)
+    {
+        var submission = await _db.FormSubmissions.FindAsync(submissionId);
+        if (submission is null) return null;
+        if (submission.PhoenixSyncStatus is PhoenixSyncStatus.Sent or PhoenixSyncStatus.DeadLettered)
+            return submission;
+
+        Dictionary<string, string>? data;
+        try { data = JsonSerializer.Deserialize<Dictionary<string, string>>(submission.Data); }
+        catch { data = null; }
+        data ??= new();
+
+        await DispatchPhoenixAsync(submission, data);
+        return submission;
     }
 
     private async Task DispatchEmailsAsync(string formType, Dictionary<string, string> sanitized)

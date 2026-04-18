@@ -1,7 +1,9 @@
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TheSwitchboard.Web.Data;
 using TheSwitchboard.Web.Models.Site;
@@ -172,8 +174,55 @@ public class Slice1IntegrationTests : IClassFixture<SwitchboardWebApplicationFac
     }
 
     // ── S1-13 lockout after 5 failed attempts ──────────────────────────
-    [Fact(Skip = "Slow; requires 5 sequential logins. Covered manually + in Slice 1 CI smoke.")]
-    public Task S1_13_AdminLockout_After5FailedAttempts() => Task.CompletedTask;
+    // Uses an isolated factory (unique InMemory DB name) so locking the admin
+    // user does not poison the shared fixture for subsequent tests.
+    [Fact]
+    public async Task S1_13_AdminLockout_After5FailedAttempts()
+    {
+        using var factory = new LockoutFactory();
+        var client = factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        var loginPage = await client.GetAsync("/Admin/Login");
+        var html = await loginPage.Content.ReadAsStringAsync();
+        var token = Regex.Match(html,
+            @"name=""__RequestVerificationToken""[^>]*value=""([^""]+)""").Groups[1].Value;
+        var cookies = string.Join("; ",
+            loginPage.Headers.GetValues("Set-Cookie").Select(c => c.Split(';')[0]));
+
+        async Task<HttpResponseMessage> PostLoginAsync(string password)
+        {
+            using var req = new HttpRequestMessage(HttpMethod.Post, "/Admin/Login");
+            req.Headers.Add("Cookie", cookies);
+            req.Content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("Email", "admin@theswitchboard.local"),
+                new KeyValuePair<string, string>("Password", password),
+                new KeyValuePair<string, string>("__RequestVerificationToken", token),
+            });
+            return await client.SendAsync(req);
+        }
+
+        // 5 failed logins trip the lockout threshold (Identity MaxFailedAccessAttempts = 5).
+        for (int i = 0; i < 5; i++) await PostLoginAsync("Wrong-Password-" + i);
+
+        // The 6th attempt — even with the CORRECT password — must be rejected.
+        var res = await PostLoginAsync("SwitchboardDev2026!");
+        var body = await res.Content.ReadAsStringAsync();
+        Assert.Contains("locked", body, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private class LockoutFactory : SwitchboardWebApplicationFactory
+    {
+        private readonly string _dbName = "Lockout-" + Guid.NewGuid();
+        protected override void ConfigureWebHost(Microsoft.AspNetCore.Hosting.IWebHostBuilder builder)
+        {
+            base.ConfigureWebHost(builder);
+            builder.ConfigureAppConfiguration((_, config) =>
+                config.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    ["Database:InMemoryName"] = _dbName
+                }));
+        }
+    }
 
     // ── S1-14 /admin/* auth gate ───────────────────────────────────────
     [Theory]

@@ -223,8 +223,33 @@ public class Slice2IntegrationTests : IClassFixture<Slice2Factory>
     }
 
     // ── S2-15 3 failed attempts → DeadLettered ─────────────────────────
-    [Fact(Skip = "Full backoff timing exceeds integration test runtime; retry worker logic is unit-tested separately in PhoenixRetryWorkerTests.")]
-    public Task S2_15_ThreeFailures_DeadLettered() => Task.CompletedTask;
+    // Deterministic: submit once (attempt 1 fails), then call RetryPhoenixForSubmissionAsync
+    // twice (attempts 2 & 3 also fail) — submission transitions Failed → DeadLettered
+    // on the 3rd failure. No Task.Delay / timer races.
+    [Fact]
+    public async Task S2_15_ThreeFailures_DeadLettered()
+    {
+        _factory.FakePhoenix.Reset();
+        _factory.FakePhoenix.NextResponsesReturn500(99);
+
+        await _client.PostAsJsonAsync("/api/contact", ValidPayload());
+
+        using var scope = _factory.Services.CreateScope();
+        var formService = scope.ServiceProvider.GetRequiredService<IFormService>();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var submissionId = await db.Set<FormSubmission>()
+            .OrderByDescending(s => s.Id).Select(s => s.Id).FirstAsync();
+
+        await formService.RetryPhoenixForSubmissionAsync(submissionId);
+        await formService.RetryPhoenixForSubmissionAsync(submissionId);
+
+        using var scope2 = _factory.Services.CreateScope();
+        var db2 = scope2.ServiceProvider.GetRequiredService<AppDbContext>();
+        var updated = await db2.Set<FormSubmission>().FindAsync(submissionId);
+        Assert.NotNull(updated);
+        Assert.Equal(3, updated!.PhoenixSyncAttempts);
+        Assert.Equal(PhoenixSyncStatus.DeadLettered, updated.PhoenixSyncStatus);
+    }
 
     // ── S2-16 confirmation email to submitter ──────────────────────────
     [Fact]
