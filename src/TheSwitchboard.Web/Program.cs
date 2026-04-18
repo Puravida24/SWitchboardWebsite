@@ -71,6 +71,16 @@ try
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
     });
 
+    // H-06: explicit HSTS — 1y, subdomains, preload. UseHsts() still gated on
+    // non-dev to avoid breaking local HTTP dev loops; options are registered
+    // unconditionally so they're observable in tests.
+    builder.Services.AddHsts(options =>
+    {
+        options.MaxAge = TimeSpan.FromDays(365);
+        options.IncludeSubDomains = true;
+        options.Preload = true;
+    });
+
     // Razor Pages
     builder.Services.AddRazorPages()
         .AddRazorPagesOptions(options =>

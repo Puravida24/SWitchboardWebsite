@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TheSwitchboard.Web.Tests;
 
@@ -129,6 +130,18 @@ public class SecurityHardeningTests : IClassFixture<SwitchboardWebApplicationFac
         Assert.False(string.IsNullOrEmpty(n1));
         Assert.False(string.IsNullOrEmpty(n2));
         Assert.NotEqual(n1, n2);
+    }
+
+    // ── H-06 HSTS configured with 1y + subdomains + preload ────────────
+    [Fact]
+    public void H_06_Hsts_Configured_Strict()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var opts = scope.ServiceProvider.GetRequiredService<
+            Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.HttpsPolicy.HstsOptions>>().Value;
+        Assert.True(opts.MaxAge >= TimeSpan.FromDays(365), "HSTS max-age must be at least 1 year");
+        Assert.True(opts.IncludeSubDomains, "HSTS must include subdomains");
+        Assert.True(opts.Preload, "HSTS must set preload directive");
     }
 
     // ── H-05 rendered HTML carries the same nonce on inline <script> ──
