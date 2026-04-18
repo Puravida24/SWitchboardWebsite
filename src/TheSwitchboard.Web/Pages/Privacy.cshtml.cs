@@ -1,19 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using TheSwitchboard.Web.Data;
 
 namespace TheSwitchboard.Web.Pages;
 
-public class PrivacyModel : PageModel
+public class PrivacyModel : PublicPageModel
 {
-    private readonly ILogger<PrivacyModel> _logger;
-
-    public PrivacyModel(ILogger<PrivacyModel> logger)
-    {
-        _logger = logger;
-    }
-
-    public void OnGet()
-    {
-    }
+    public PrivacyModel(IWebHostEnvironment env, AppDbContext db) : base(env, db) { }
+    protected override string SourceFile => "wireframes/privacy.html";
 }
-

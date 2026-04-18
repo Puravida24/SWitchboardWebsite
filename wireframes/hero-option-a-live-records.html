@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hero Option A — Live Phoenix Records</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Inter', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --cream-1: #faf9f7;
+  --cream-2: #f5f0eb;
+  --charcoal: #1c1917;
+  --navy: #003399;
+  --navy-light: #93b4ff;
+  --warm-gray: #6b625a;
+  --green: #10b981;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--cream-1); color: var(--charcoal); padding-top: 44px; }
+
+.demo-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: var(--navy); color: var(--cream-1); padding: 12px 24px; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; text-align: center; }
+.demo-banner strong { color: var(--navy-light); }
+.demo-banner a { color: var(--cream-1); text-decoration: underline; }
+
+.hero { min-height: 100vh; padding: 80px 2rem 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.masthead { border-top: 2px solid var(--charcoal); border-bottom: 1px solid var(--charcoal); padding: 6px 0; width: min(1100px, 95%); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.26em; text-transform: uppercase; text-align: center; color: var(--navy); font-weight: 600; margin-bottom: 60px; }
+.masthead span { margin: 0 16px; }
+.headline { font-family: var(--serif); font-size: clamp(2.6rem, 6vw, 4.5rem); line-height: 1.05; letter-spacing: -0.015em; text-align: center; max-width: 22ch; margin: 0 auto 20px; }
+.deck { font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--warm-gray); text-align: center; max-width: 60ch; margin: 0 auto 80px; }
+
+.desks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; width: min(1200px, 96%); margin: 0 auto; align-items: start; }
+.desk { display: flex; flex-direction: column; align-items: center; }
+
+.rec-card { width: 100%; max-width: 340px; background: #0a0a0a; border: 1px solid rgba(147,180,255,0.28); border-radius: 4px; overflow: hidden; font-family: var(--mono); color: var(--cream-1); box-shadow: 0 10px 30px rgba(0,0,0,0.14); margin-bottom: 28px; }
+.rec-head { padding: 10px 14px; background: rgba(147,180,255,0.08); border-bottom: 1px solid rgba(147,180,255,0.2); display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 0.22em; font-weight: 600; }
+.rec-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px rgba(16,185,129,0.7); animation: recDot 1.6s ease-in-out infinite; }
+@keyframes recDot { 0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(16,185,129,0.55); } 50% { opacity:0.55; box-shadow: 0 0 0 6px rgba(16,185,129,0); } }
+.rec-title { color: #d4e0ff; }
+.rec-latency { margin-left: auto; color: rgba(250,249,247,0.55); font-size: 9.5px; letter-spacing: 0.1em; font-variant-numeric: tabular-nums; }
+
+.rec-body { padding: 14px; }
+.rec-id { font-size: 10.5px; color: rgba(147,180,255,0.75); letter-spacing: 0.1em; margin-bottom: 14px; font-variant-numeric: tabular-nums; }
+.rec-row { display: grid; grid-template-columns: 56px 1fr 44px; gap: 10px; align-items: center; margin-bottom: 9px; font-size: 10px; }
+.rec-row-label { color: rgba(147,180,255,0.65); letter-spacing: 0.2em; font-weight: 500; }
+.rec-bar { height: 4px; background: rgba(147,180,255,0.1); border-radius: 2px; overflow: hidden; position: relative; }
+.rec-bar-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: linear-gradient(90deg, var(--green), var(--navy-light)); border-radius: 2px; box-shadow: 0 0 6px rgba(147,180,255,0.4); }
+.rec-pct { text-align: right; color: var(--cream-1); font-variant-numeric: tabular-nums; font-size: 10.5px; }
+.rec-route { display: grid; grid-template-columns: 56px 1fr; gap: 10px; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(147,180,255,0.12); font-size: 10.5px; }
+.rec-route-value { color: #d4e0ff; font-weight: 600; letter-spacing: 0.04em; opacity: 0; transition: opacity 0.4s ease; }
+.rec-route-value.shown { opacity: 1; }
+
+.desk-label { text-align: center; }
+.desk-label h2 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1; letter-spacing: -0.015em; color: var(--charcoal); margin-bottom: 6px; }
+.desk-label .kicker { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--navy); font-weight: 600; }
+
+@media (max-width: 900px) { .desks { grid-template-columns: 1fr; gap: 48px; } }
+</style>
+</head>
+<body>
+<div class="demo-banner">HERO OPTION A · <strong>LIVE PHOENIX RECORDS</strong> · Each desk processes records on loop &nbsp;·&nbsp; <a href="hero-mockups-index.html">← compare options</a></div>
+
+<section class="hero">
+  <div class="masthead"><span>VOL. I</span><span>·</span><span>№ 1</span><span>·</span><span>THE SWITCHBOARD</span><span>·</span><span>OREM, UT</span></div>
+  <h1 class="headline">Insurance is not a data problem.</h1>
+  <p class="deck">It's a signal problem — and the intelligence layer does the reading, scoring, and routing.</p>
+
+  <div class="desks">
+    <div class="desk">
+      <div class="rec-card" data-line="auto" data-prefix="AUT" data-latency-min="3.1" data-latency-max="4.8" data-cycle="3500">
+        <div class="rec-head"><span class="rec-dot"></span><span class="rec-title">AUTO · LIVE</span><span class="rec-latency">—</span></div>
+        <div class="rec-body">
+          <div class="rec-id">—</div>
+          <div class="rec-row"><span class="rec-row-label">ENRICH</span><span class="rec-bar"><span class="rec-bar-fill" data-step="enrich"></span></span><span class="rec-pct">0%</span></div>
+          <div class="rec-row"><span class="rec-row-label">SCORE</span><span class="rec-bar"><span class="rec-bar-fill" data-step="score"></span></span><span class="rec-pct">0%</span></div>
+          <div class="rec-route"><span class="rec-row-label">ROUTE</span><span class="rec-route-value">—</span></div>
+        </div>
+      </div>
+      <div class="desk-label"><h2>Auto.</h2><div class="kicker">The Auto Desk</div></div>
+    </div>
+
+    <div class="desk">
+      <div class="rec-card" data-line="home" data-prefix="HOM" data-latency-min="3.8" data-latency-max="6.0" data-cycle="4500">
+        <div class="rec-head"><span class="rec-dot"></span><span class="rec-title">HOME · LIVE</span><span class="rec-latency">—</span></div>
+        <div class="rec-body">
+          <div class="rec-id">—</div>
+          <div class="rec-row"><span class="rec-row-label">ENRICH</span><span class="rec-bar"><span class="rec-bar-fill" data-step="enrich"></span></span><span class="rec-pct">0%</span></div>
+          <div class="rec-row"><span class="rec-row-label">SCORE</span><span class="rec-bar"><span class="rec-bar-fill" data-step="score"></span></span><span class="rec-pct">0%</span></div>
+          <div class="rec-route"><span class="rec-row-label">ROUTE</span><span class="rec-route-value">—</span></div>
+        </div>
+      </div>
+      <div class="desk-label"><h2>Home.</h2><div class="kicker">The Home Desk</div></div>
+    </div>
+
+    <div class="desk">
+      <div class="rec-card" data-line="commercial" data-prefix="COM" data-latency-min="4.9" data-latency-max="7.3" data-cycle="5500">
+        <div class="rec-head"><span class="rec-dot"></span><span class="rec-title">COMMERCIAL · LIVE</span><span class="rec-latency">—</span></div>
+        <div class="rec-body">
+          <div class="rec-id">—</div>
+          <div class="rec-row"><span class="rec-row-label">ENRICH</span><span class="rec-bar"><span class="rec-bar-fill" data-step="enrich"></span></span><span class="rec-pct">0%</span></div>
+          <div class="rec-row"><span class="rec-row-label">SCORE</span><span class="rec-bar"><span class="rec-bar-fill" data-step="score"></span></span><span class="rec-pct">0%</span></div>
+          <div class="rec-route"><span class="rec-row-label">ROUTE</span><span class="rec-route-value">—</span></div>
+        </div>
+      </div>
+      <div class="desk-label"><h2>Commercial.</h2><div class="kicker">The Commercial Desk</div></div>
+    </div>
+  </div>
+</section>
+
+<script>
+const routeMap = {
+  auto: ['Carrier Desk', 'Auto Specialist', 'Fleet Bureau', 'Personal Lines'],
+  home: ['Home Team', 'Homeowners Desk', 'Dwelling Unit', 'Umbrella Group'],
+  commercial: ['Specialty Team', 'Commercial Bureau', 'Package Desk', 'WC Underwriter']
+};
+function randomId(prefix) { return `${prefix}_${Math.floor(100000 + Math.random()*899999)}`; }
+
+function animatePct(el, target, duration, delayMs) {
+  const start = performance.now() + delayMs;
+  function frame(now) {
+    const t = Math.max(0, Math.min(1, (now - start) / duration));
+    el.textContent = Math.round(target * t) + '%';
+    if (t < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function cycleCard(card) {
+  const line = card.dataset.line;
+  const prefix = card.dataset.prefix;
+  const cycle = parseInt(card.dataset.cycle, 10);
+  const latMin = parseFloat(card.dataset.latencyMin);
+  const latMax = parseFloat(card.dataset.latencyMax);
+
+  const idEl = card.querySelector('.rec-id');
+  const enrichBar = card.querySelector('[data-step="enrich"]');
+  const scoreBar = card.querySelector('[data-step="score"]');
+  const pcts = card.querySelectorAll('.rec-pct');
+  const routeEl = card.querySelector('.rec-route-value');
+  const latEl = card.querySelector('.rec-latency');
+
+  // Reset
+  enrichBar.style.transition = 'none';
+  scoreBar.style.transition = 'none';
+  enrichBar.style.width = '0%';
+  scoreBar.style.width = '0%';
+  pcts[0].textContent = '0%';
+  pcts[1].textContent = '0%';
+  routeEl.classList.remove('shown');
+  routeEl.textContent = '—';
+  latEl.textContent = '—';
+  idEl.textContent = randomId(prefix);
+  void card.offsetWidth;
+
+  // Sequence
+  enrichBar.style.transition = 'width 1.2s cubic-bezier(0.22, 1, 0.36, 1)';
+  scoreBar.style.transition = 'width 0.8s cubic-bezier(0.22, 1, 0.36, 1)';
+  setTimeout(() => { enrichBar.style.width = '100%'; }, 100);
+  animatePct(pcts[0], 100, 1200, 100);
+  setTimeout(() => { scoreBar.style.width = '100%'; }, 1400);
+  animatePct(pcts[1], 100, 800, 1400);
+  setTimeout(() => {
+    const routes = routeMap[line];
+    routeEl.textContent = routes[Math.floor(Math.random() * routes.length)];
+    routeEl.classList.add('shown');
+    const lat = (latMin + Math.random() * (latMax - latMin)).toFixed(1);
+    latEl.textContent = `${lat} ms`;
+  }, 2300);
+
+  setTimeout(() => cycleCard(card), 2300 + cycle);
+}
+
+document.querySelectorAll('.rec-card').forEach((card, i) => {
+  setTimeout(() => cycleCard(card), i * 700);
+});
+</script>
+</body>
+</html>

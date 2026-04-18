@@ -13,12 +13,12 @@ namespace TheSwitchboard.Web.Tests;
 /// RED phase: every test in this file should fail until Slice 1 implementation lands.
 /// Uses WebApplicationFactory with the default InMemory DB fallback (no DATABASE_URL env var).
 /// </summary>
-public class Slice1IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class Slice1IntegrationTests : IClassFixture<SwitchboardWebApplicationFactory>
 {
-    private readonly WebApplicationFactory<Program> _factory;
+    private readonly SwitchboardWebApplicationFactory _factory;
     private readonly HttpClient _client;
 
-    public Slice1IntegrationTests(WebApplicationFactory<Program> factory)
+    public Slice1IntegrationTests(SwitchboardWebApplicationFactory factory)
     {
         _factory = factory;
         _client = factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -135,8 +135,8 @@ public class Slice1IntegrationTests : IClassFixture<WebApplicationFactory<Progra
         req.Headers.Add("Cookie", cookieHeader);
         req.Content = new FormUrlEncodedContent(new[]
         {
-            new KeyValuePair<string, string>("Input.Email", SeededAdmin.Email),
-            new KeyValuePair<string, string>("Input.Password", SeededAdmin.Password),
+            new KeyValuePair<string, string>("Email", SeededAdmin.Email),
+            new KeyValuePair<string, string>("Password", SeededAdmin.Password),
             new KeyValuePair<string, string>("__RequestVerificationToken", token)
         });
         var res = await client.SendAsync(req);
@@ -159,8 +159,10 @@ public class Slice1IntegrationTests : IClassFixture<WebApplicationFactory<Progra
         req.Headers.Add("Cookie", cookieHeader);
         req.Content = new FormUrlEncodedContent(new[]
         {
-            new KeyValuePair<string, string>("Input.Email", SeededAdmin.Email),
-            new KeyValuePair<string, string>("Input.Password", "wrong-password-" + Guid.NewGuid()),
+            // Use a non-existent email so failed attempts don't lock the real admin
+            // (the shared fixture's admin must stay usable for S1-11, S1-15, S1-16).
+            new KeyValuePair<string, string>("Email", "nobody-" + Guid.NewGuid() + "@example.test"),
+            new KeyValuePair<string, string>("Password", "wrong-password-" + Guid.NewGuid()),
             new KeyValuePair<string, string>("__RequestVerificationToken", token)
         });
         var res = await client.SendAsync(req);
@@ -294,8 +296,8 @@ public class Slice1IntegrationTests : IClassFixture<WebApplicationFactory<Progra
         req.Headers.Add("Cookie", cookieHeader);
         req.Content = new FormUrlEncodedContent(new[]
         {
-            new KeyValuePair<string, string>("Input.Email", SeededAdmin.Email),
-            new KeyValuePair<string, string>("Input.Password", SeededAdmin.Password),
+            new KeyValuePair<string, string>("Email", SeededAdmin.Email),
+            new KeyValuePair<string, string>("Password", SeededAdmin.Password),
             new KeyValuePair<string, string>("__RequestVerificationToken", token)
         });
         var res = await client.SendAsync(req);

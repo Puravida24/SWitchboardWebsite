@@ -1,0 +1,64 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.SettingsModel
+@{
+    ViewData["Title"] = "Site Settings";
+    Layout = "_AdminLayout";
+}
+
+<h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem;">Site Settings</h1>
+
+@if (!string.IsNullOrEmpty(Model.StatusMessage))
+{
+    <div style="background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.4); color: #10b981; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.9rem;">
+        @Model.StatusMessage
+    </div>
+}
+
+<form method="post" style="max-width: 640px; display: flex; flex-direction: column; gap: 1.25rem;">
+    @Html.AntiForgeryToken()
+
+    <div>
+        <label asp-for="Input.SiteName" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Site Name *</label>
+        <input asp-for="Input.SiteName" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.95rem;" />
+        <span asp-validation-for="Input.SiteName" style="color: #ef4444; font-size: 0.8rem;"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.SiteTagline" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Tagline</label>
+        <input asp-for="Input.SiteTagline" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.95rem;" />
+    </div>
+
+    <div>
+        <label asp-for="Input.ContactEmail" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Contact Email</label>
+        <input asp-for="Input.ContactEmail" type="email" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.95rem;" />
+    </div>
+
+    <div>
+        <label asp-for="Input.PhoneNumber" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Phone Number</label>
+        <input asp-for="Input.PhoneNumber" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.95rem;" />
+    </div>
+
+    <div>
+        <label asp-for="Input.Address" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Address</label>
+        <input asp-for="Input.Address" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.95rem;" />
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+        <div>
+            <label asp-for="Input.FacebookUrl" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Facebook</label>
+            <input asp-for="Input.FacebookUrl" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.9rem;" />
+        </div>
+        <div>
+            <label asp-for="Input.LinkedInUrl" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">LinkedIn</label>
+            <input asp-for="Input.LinkedInUrl" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.9rem;" />
+        </div>
+        <div>
+            <label asp-for="Input.TwitterUrl" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Twitter / X</label>
+            <input asp-for="Input.TwitterUrl" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.9rem;" />
+        </div>
+    </div>
+
+    <div style="margin-top: 0.5rem;">
+        <button type="submit" style="background: #3b82f6; color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.95rem;">Save changes</button>
+    </div>
+</form>

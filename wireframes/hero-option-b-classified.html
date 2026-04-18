@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hero Option B — Newspaper Classified Columns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Inter', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --cream-1: #faf9f7;
+  --cream-2: #f5f0eb;
+  --charcoal: #1c1917;
+  --navy: #003399;
+  --navy-light: #93b4ff;
+  --warm-gray: #6b625a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--cream-1); color: var(--charcoal); padding-top: 44px; background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%22.025%22/%3E%3C/svg%3E'); }
+
+.demo-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: var(--navy); color: var(--cream-1); padding: 12px 24px; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; text-align: center; }
+.demo-banner strong { color: var(--navy-light); }
+.demo-banner a { color: var(--cream-1); text-decoration: underline; }
+
+.hero { min-height: 100vh; padding: 80px 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.masthead { border-top: 2px solid var(--charcoal); border-bottom: 1px solid var(--charcoal); padding: 6px 0; width: min(1200px, 95%); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.26em; text-transform: uppercase; text-align: center; color: var(--navy); font-weight: 600; margin-bottom: 56px; }
+.masthead span { margin: 0 16px; }
+.headline { font-family: var(--serif); font-size: clamp(2.6rem, 6vw, 4.5rem); line-height: 1.05; letter-spacing: -0.015em; text-align: center; max-width: 22ch; margin: 0 auto 20px; }
+.deck { font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--warm-gray); text-align: center; max-width: 60ch; margin: 0 auto 80px; }
+
+.desks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; width: min(1200px, 96%); margin: 0 auto; }
+.desk {
+  padding: 0 32px;
+  position: relative;
+  text-align: left;
+}
+.desk:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 10%; bottom: 10%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(0,51,153,0.25), transparent);
+}
+
+.section-rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.section-rule::before, .section-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--charcoal);
+}
+.section-rule span {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  font-weight: 700;
+}
+
+.desk-kicker { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--navy); font-weight: 600; margin-bottom: 14px; }
+.desk h2 { font-family: var(--serif); font-size: clamp(3rem, 6vw, 4.8rem); line-height: 1; letter-spacing: -0.02em; color: var(--charcoal); margin-bottom: 26px; }
+.desk-body { font-family: var(--serif); font-size: 1rem; line-height: 1.6; color: var(--warm-gray); margin-bottom: 28px; column-count: 1; }
+.desk-body .lines { color: var(--charcoal); font-style: italic; }
+
+.desk-data {
+  border-top: 1px solid rgba(0,51,153,0.2);
+  border-bottom: 1px solid rgba(0,51,153,0.2);
+  padding: 12px 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 12px;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+.desk-data-label {
+  color: rgba(28,25,23,0.55);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+.desk-data-value {
+  color: var(--navy);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.88rem;
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .desks { grid-template-columns: 1fr; gap: 48px; }
+  .desk { padding: 0; }
+  .desk:not(:last-child)::after { display: none; }
+  .desk:not(:last-child) { border-bottom: 1px solid rgba(0,51,153,0.15); padding-bottom: 40px; }
+}
+</style>
+</head>
+<body>
+<div class="demo-banner">HERO OPTION B · <strong>NEWSPAPER CLASSIFIED COLUMNS</strong> · Dense typography, zero clip art &nbsp;·&nbsp; <a href="hero-mockups-index.html">← compare options</a></div>
+
+<section class="hero">
+  <div class="masthead"><span>VOL. I</span><span>·</span><span>№ 1</span><span>·</span><span>THE SWITCHBOARD</span><span>·</span><span>OREM, UT</span></div>
+  <h1 class="headline">Insurance is not a data problem.</h1>
+  <p class="deck">It's a signal problem — written by people who have written policies and bought the clicks.</p>
+
+  <div class="desks">
+    <!-- Section A -->
+    <div class="desk">
+      <div class="section-rule"><span>Section A</span></div>
+      <div class="desk-kicker">The Auto Desk</div>
+      <h2>Auto.</h2>
+      <p class="desk-body"><span class="lines">Personal auto, fleet, commercial auto, motorcycle, RV.</span> Every inbound record is enriched with VIN decode, MVR signal, CLUE history, and driver behavioral indicators — before a producer ever makes the call.</p>
+      <div class="desk-data">
+        <span class="desk-data-label">Records · 12m</span><span class="desk-data-value count-up" data-final="2481203">0</span>
+        <span class="desk-data-label">Match rate</span><span class="desk-data-value"><span class="count-up" data-final="97.1" data-decimals="1">0.0</span>%</span>
+        <span class="desk-data-label">P50 latency</span><span class="desk-data-value"><span class="count-up" data-final="3.8" data-decimals="1">0.0</span> ms</span>
+      </div>
+    </div>
+
+    <!-- Section B -->
+    <div class="desk">
+      <div class="section-rule"><span>Section B</span></div>
+      <div class="desk-kicker">The Home Desk</div>
+      <h2>Home.</h2>
+      <p class="desk-body"><span class="lines">Homeowners, HO3, HO5, condo, dwelling-fire, flood, umbrella.</span> Dwelling data, roof condition, ZIP-level catastrophe exposure, and homeowner firmographics — surfaced the moment the record lands.</p>
+      <div class="desk-data">
+        <span class="desk-data-label">Records · 12m</span><span class="desk-data-value count-up" data-final="891442">0</span>
+        <span class="desk-data-label">Match rate</span><span class="desk-data-value"><span class="count-up" data-final="94.2" data-decimals="1">0.0</span>%</span>
+        <span class="desk-data-label">P50 latency</span><span class="desk-data-value"><span class="count-up" data-final="4.2" data-decimals="1">0.0</span> ms</span>
+      </div>
+    </div>
+
+    <!-- Section C -->
+    <div class="desk">
+      <div class="section-rule"><span>Section C</span></div>
+      <div class="desk-kicker">The Commercial Desk</div>
+      <h2>Commercial.</h2>
+      <p class="desk-body"><span class="lines">Small business through mid-market.</span> NAICS class, payroll, revenue, loss history, WC, GL, property, and package policies — routed to the right specialty underwriter in under five milliseconds.</p>
+      <div class="desk-data">
+        <span class="desk-data-label">Records · 12m</span><span class="desk-data-value count-up" data-final="1847002">0</span>
+        <span class="desk-data-label">Match rate</span><span class="desk-data-value"><span class="count-up" data-final="91.8" data-decimals="1">0.0</span>%</span>
+        <span class="desk-data-label">P50 latency</span><span class="desk-data-value"><span class="count-up" data-final="4.9" data-decimals="1">0.0</span> ms</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Count-up
+(function(){
+  const els = document.querySelectorAll('.count-up');
+  const easeOutCubic = t => 1 - Math.pow(1-t, 3);
+  function animate(el) {
+    if (el.dataset.counted === '1') return;
+    el.dataset.counted = '1';
+    const final = parseFloat(el.dataset.final);
+    const decimals = parseInt(el.dataset.decimals || '0', 10);
+    const duration = 1600, delay = 0;
+    const start = performance.now() + delay;
+    function frame(now) {
+      const t = Math.max(0, Math.min(1, (now - start) / duration));
+      const v = final * easeOutCubic(t);
+      let txt = decimals > 0 ? v.toFixed(decimals) : Math.round(v).toLocaleString('en-US');
+      el.textContent = txt;
+      if (t < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  if (!('IntersectionObserver' in window)) { els.forEach(animate); return; }
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { animate(e.target); obs.unobserve(e.target); } });
+  }, { threshold: 0.3 });
+  els.forEach(el => obs.observe(el));
+  setTimeout(() => els.forEach(el => { if (el.dataset.counted !== '1') animate(el); }), 2500);
+})();
+</script>
+</body>
+</html>
