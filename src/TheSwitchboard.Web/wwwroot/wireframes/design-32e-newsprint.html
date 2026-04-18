@@ -1582,6 +1582,14 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   font-weight: 300;
   letter-spacing: 0.02em;
   text-transform: none;
+  animation: footerStampPulse 4.2s ease-in-out infinite;
+}
+@keyframes footerStampPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-footer-newsprint .footer-stamp { animation: none; }
 }
 
 @media (max-width: 720px) {
@@ -2540,27 +2548,27 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   </div>
   <div class="intel-rail">
     <article class="intel-step">
-      <span class="intel-step-num">01</span>
+      <span class="intel-step-num count-up" data-final="1" data-pad="2" data-duration="900">01</span>
       <h3 class="intel-step-title">Enrich.</h3>
       <p class="intel-step-body">Every inbound record is instantly augmented with firmographic, demographic, and behavioral signal. The full picture &mdash; before the first conversation.</p>
     </article>
     <article class="intel-step">
-      <span class="intel-step-num">02</span>
+      <span class="intel-step-num count-up" data-final="2" data-pad="2" data-duration="900" data-delay="120">02</span>
       <h3 class="intel-step-title">Score.</h3>
       <p class="intel-step-body">Proprietary models, grounded in real insurance outcomes &mdash; not marketing proxies &mdash; assign a precision score. High-value rises. Noise falls away.</p>
     </article>
     <article class="intel-step">
-      <span class="intel-step-num">03</span>
+      <span class="intel-step-num count-up" data-final="3" data-pad="2" data-duration="900" data-delay="240">03</span>
       <h3 class="intel-step-title">Segment.</h3>
       <p class="intel-step-body">Records auto-group by line of business, geography, policy type, and predicted lifetime value. Your team works the right book, not all of it.</p>
     </article>
     <article class="intel-step">
-      <span class="intel-step-num">04</span>
+      <span class="intel-step-num count-up" data-final="4" data-pad="2" data-duration="900" data-delay="360">04</span>
       <h3 class="intel-step-title">Route.</h3>
       <p class="intel-step-body">Each scored, segmented prospect lands with the right person at the right time. No manual sorting. No cherry-picking. No wasted motion.</p>
     </article>
     <article class="intel-step">
-      <span class="intel-step-num">05</span>
+      <span class="intel-step-num count-up" data-final="5" data-pad="2" data-duration="900" data-delay="480">05</span>
       <h3 class="intel-step-title">Analyze.</h3>
       <p class="intel-step-body">Real-time dashboards reveal which sources, segments, and producers convert &mdash; and which do not. The data loop closes. Strategy sharpens every cycle.</p>
     </article>
@@ -2605,23 +2613,23 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
         <div style="display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid rgba(147,180,255,0.2);">
           <div style="padding:18px 22px;border-right:1px solid rgba(147,180,255,0.15);">
             <div style="color:rgba(212,224,255,0.65);font-size:8.5px;letter-spacing:0.22em;margin-bottom:6px;font-weight:500;">PROCESSED · TODAY</div>
-            <div id="kpiProcessed" style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;">18,447</div>
+            <div id="kpiProcessed" class="count-up" data-final="18447" data-commas="1" data-duration="1500" style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;">0</div>
           </div>
           <div style="padding:18px 22px;border-right:1px solid rgba(147,180,255,0.15);">
             <div style="color:rgba(212,224,255,0.65);font-size:8.5px;letter-spacing:0.22em;margin-bottom:6px;font-weight:500;">MATCH RATE</div>
-            <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;">97.1<span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;">%</span></div>
+            <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;"><span class="count-up" data-final="97.1" data-decimals="1" data-duration="1400" data-delay="100">0.0</span><span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;">%</span></div>
           </div>
           <div style="padding:18px 22px;border-right:1px solid rgba(147,180,255,0.15);">
             <div style="color:rgba(212,224,255,0.65);font-size:8.5px;letter-spacing:0.22em;margin-bottom:6px;font-weight:500;">ROUTED</div>
-            <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;">17,921</div>
+            <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;"><span class="count-up" data-final="17921" data-commas="1" data-duration="1500" data-delay="200">0</span></div>
           </div>
           <div style="padding:18px 22px;border-right:1px solid rgba(147,180,255,0.15);">
             <div style="color:rgba(212,224,255,0.65);font-size:8.5px;letter-spacing:0.22em;margin-bottom:6px;font-weight:500;">P50 / P99 LATENCY</div>
-            <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;">3.8<span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;margin-right:8px;">ms</span><span style="color:rgba(250,249,247,0.4);">/</span> 9.2<span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;">ms</span></div>
+            <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;"><span class="count-up" data-final="3.8" data-decimals="1" data-duration="1300" data-delay="300">0.0</span><span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;margin-right:8px;">ms</span><span style="color:rgba(250,249,247,0.4);">/</span> <span class="count-up" data-final="9.2" data-decimals="1" data-duration="1300" data-delay="420">0.0</span><span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;">ms</span></div>
           </div>
           <div style="padding:18px 22px;">
             <div style="color:rgba(212,224,255,0.65);font-size:8.5px;letter-spacing:0.22em;margin-bottom:6px;font-weight:500;">UPTIME · 90D</div>
-            <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;">99.99<span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;">%</span></div>
+            <div style="color:#faf9f7;font-size:20px;font-weight:400;font-variant-numeric:tabular-nums;"><span class="count-up" data-final="99.99" data-decimals="2" data-duration="1500" data-delay="500">0.00</span><span style="color:rgba(250,249,247,0.45);font-size:13px;margin-left:2px;">%</span></div>
           </div>
         </div>
 
@@ -2781,7 +2789,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
     <!-- Strip 1: Carriers — visual LEFT -->
     <article class="audience-strip">
       <div class="audience-visual">
-        <span class="audience-serial">01</span>
+        <span class="audience-serial count-up" data-final="1" data-pad="2" data-duration="1000">01</span>
         <span class="audience-kicker">Carriers</span>
         <svg class="audience-icon" viewBox="0 0 72 72" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M36 8 L58 16 L58 36 C58 50 48 60 36 64 C24 60 14 50 14 36 L14 16 Z" fill="currentColor" fill-opacity="0.08"/>
@@ -2798,7 +2806,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
     <!-- Strip 2: Agencies — visual RIGHT -->
     <article class="audience-strip reversed">
       <div class="audience-visual">
-        <span class="audience-serial">02</span>
+        <span class="audience-serial count-up" data-final="2" data-pad="2" data-duration="1000">02</span>
         <span class="audience-kicker">Agencies</span>
         <svg class="audience-icon" viewBox="0 0 72 72" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="14" y="14" width="44" height="48" rx="2" fill="currentColor" fill-opacity="0.08"/>
@@ -2821,7 +2829,7 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
     <!-- Strip 3: MGAs & Wholesalers — visual LEFT -->
     <article class="audience-strip">
       <div class="audience-visual">
-        <span class="audience-serial">03</span>
+        <span class="audience-serial count-up" data-final="3" data-pad="2" data-duration="1000">03</span>
         <span class="audience-kicker">MGAs &amp; Wholesalers</span>
         <svg class="audience-icon" viewBox="0 0 72 72" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="14" cy="36" r="4" fill="currentColor" fill-opacity="0.18"/>
@@ -3067,23 +3075,71 @@ window.addEventListener('scroll', () => {
   el.textContent = `Orem, UT · ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 })();
 
-// Live Ops — minimal: clock tick + processed counter drift only (heavy motion disabled to prevent tab crash)
+// Count-up on scroll — animate any .count-up element from 0 to data-final with easeOutCubic.
+// Supports: data-final (required), data-decimals, data-pad (zero-pad width), data-commas, data-duration (ms), data-delay (ms).
+(function initCountUp(){
+  const els = document.querySelectorAll('.count-up');
+  if (!els.length) return;
+  const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+  function animate(el){
+    if (el.dataset.counted === '1') return;
+    el.dataset.counted = '1';
+    const final = parseFloat(el.dataset.final);
+    const decimals = parseInt(el.dataset.decimals || '0', 10);
+    const pad = parseInt(el.dataset.pad || '0', 10);
+    const useCommas = el.dataset.commas === '1';
+    const duration = parseInt(el.dataset.duration || '1200', 10);
+    const delay = parseInt(el.dataset.delay || '0', 10);
+    const startAt = performance.now() + delay;
+    function render(v){
+      let txt = decimals > 0 ? v.toFixed(decimals) : String(Math.round(v));
+      if (pad > 0) txt = txt.padStart(pad, '0');
+      if (useCommas) txt = parseFloat(txt).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+      el.textContent = txt;
+    }
+    function frame(now){
+      const raw = (now - startAt) / duration;
+      const t = Math.max(0, Math.min(1, raw));
+      render(final * easeOutCubic(t));
+      if (t < 1) requestAnimationFrame(frame);
+      else el.dispatchEvent(new CustomEvent('countupdone'));
+    }
+    requestAnimationFrame(frame);
+  }
+  if (!('IntersectionObserver' in window)) { els.forEach(animate); return; }
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { animate(e.target); obs.unobserve(e.target); } });
+  }, { threshold: 0.3, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(el => obs.observe(el));
+  // Safety net — animate any remaining after 3s
+  setTimeout(() => document.querySelectorAll('.count-up:not([data-counted])').forEach(animate), 3000);
+})();
+
+// Live Ops — clock tick + processed counter drift (drift waits for count-up to complete)
 (function(){
   const clock = document.getElementById('opsClock');
   const processed = document.getElementById('kpiProcessed');
   if (!clock) return;
   const pad = n => String(n).padStart(2,'0');
-  let count = 18528;
   function tick(){
     const d = new Date();
     clock.textContent = `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
   }
   tick(); setInterval(tick, 1000);
   if (processed) {
-    setInterval(() => {
-      count += Math.floor(Math.random() * 3) + 1;
-      processed.textContent = count.toLocaleString('en-US');
-    }, 2400);
+    let count = 18447;
+    let started = false;
+    function startDrift(){
+      if (started) return;
+      started = true;
+      setInterval(() => {
+        count += Math.floor(Math.random() * 3) + 1;
+        processed.textContent = count.toLocaleString('en-US');
+      }, 2400);
+    }
+    processed.addEventListener('countupdone', startDrift, { once: true });
+    // Safety net: start drift after 8s regardless, so the number still ticks if user never scrolls to KPI strip
+    setTimeout(startDrift, 8000);
   }
 })();
 
