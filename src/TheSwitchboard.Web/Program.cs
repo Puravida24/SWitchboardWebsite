@@ -131,6 +131,7 @@ try
 
     // API endpoints
     app.MapContactApi();
+    app.MapSeoEndpoints();
 
     // Auto-migrate and seed
     try
