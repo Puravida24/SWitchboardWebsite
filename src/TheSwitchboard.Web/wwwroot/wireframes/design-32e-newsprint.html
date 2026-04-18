@@ -1467,5 +1467,10 @@ if (document.readyState === 'loading') {
   </div>
 </div>
 
+<!-- T-1 tracker foundation (DNT/GPC early-exit, sw_vid + sw_sid identity, /api/tracking/ping heartbeat). -->
+<script nonce="{{NONCE}}" src="/js/tracker/identity.js?v={{BUILDID}}" defer></script>
+<script nonce="{{NONCE}}" src="/js/tracker/transport.js?v={{BUILDID}}" defer></script>
+<script nonce="{{NONCE}}" src="/js/tracker/tracker.js?v={{BUILDID}}" defer></script>
+
 </body>
 </html>

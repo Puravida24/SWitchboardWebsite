@@ -1,0 +1,76 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.HealthModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Tracker Health";
+}
+
+<div style="max-width: 960px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Tracker Health</h1>
+  <p style="color: var(--slate-500); margin-bottom: 2rem;">Is the tracker ingesting events? Use this page to verify the client loaded, DNT parity is holding, and pings are reaching the server.</p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Build</div>
+      <div style="font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 1rem; color: white;">@Model.BuildId</div>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Diagnostic Ping</div>
+      <button id="tb-diag-ping" type="button" style="margin-top: 0.25rem; padding: 0.5rem 0.875rem; border-radius: 0.375rem; font-size: 0.875rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: white; cursor: pointer;">Send test ping</button>
+      <div id="tb-diag-result" style="margin-top: 0.5rem; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 0.75rem; color: var(--slate-500);">idle</div>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Privacy State (this browser)</div>
+      <div id="tb-privacy-state" style="font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 0.875rem; color: white;">checking…</div>
+    </div>
+  </div>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.5rem;">
+    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.75rem;">What T-1 proves</div>
+    <ul style="color: var(--slate-400); font-size: 0.875rem; line-height: 1.7; padding-left: 1.25rem;">
+      <li>The tracker script loaded on the public site (<code>/js/tracker/tracker.js</code>) with the per-request CSP nonce.</li>
+      <li>DNT / Sec-GPC early-exits the client before any network call.</li>
+      <li>The <code>sw_vid</code> (1y) and <code>sw_sid</code> (30m sliding) cookies get set on first visit, triple-written to localStorage + sessionStorage for ITP resilience.</li>
+      <li>The ping endpoint <code>POST /api/tracking/ping</code> returns 204, origin-checked, foreign Origin rejected with 403.</li>
+      <li><code>Visitor</code> + <code>Session</code> tables exist in Postgres (empty until T-3 starts writing).</li>
+    </ul>
+  </div>
+</div>
+
+<script nonce="@TheSwitchboard.Web.Middleware.CspNonceMiddleware.GetNonce(HttpContext)">
+  (function () {
+    var btn = document.getElementById('tb-diag-ping');
+    var out = document.getElementById('tb-diag-result');
+    var priv = document.getElementById('tb-privacy-state');
+    function privacySignal() {
+      if (navigator && navigator.doNotTrack === '1') return 'dnt';
+      if (typeof window !== 'undefined' && window.doNotTrack === '1') return 'dnt';
+      if (navigator && navigator.globalPrivacyControl === true) return 'gpc';
+      return 'none';
+    }
+    priv.textContent = privacySignal();
+
+    btn.addEventListener('click', function () {
+      out.textContent = 'sending…';
+      fetch('/api/tracking/ping', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vid: (self.sw && self.sw.vid) || 'admin-diag',
+          sid: (self.sw && self.sw.sid) || 'admin-diag',
+          path: '/Admin/Reports/Health',
+          ts: new Date().toISOString(),
+          consentState: privacySignal()
+        })
+      }).then(function (r) {
+        out.textContent = r.status === 204 ? 'OK — 204 NoContent' : 'unexpected ' + r.status;
+      }).catch(function (e) {
+        out.textContent = 'network error: ' + (e && e.message || e);
+      });
+    });
+  })();
+</script>

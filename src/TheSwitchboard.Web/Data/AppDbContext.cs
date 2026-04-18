@@ -6,6 +6,7 @@ using TheSwitchboard.Web.Models.Email;
 using TheSwitchboard.Web.Models.Forms;
 using TheSwitchboard.Web.Models.Analytics;
 using TheSwitchboard.Web.Models.Site;
+using TheSwitchboard.Web.Models.Tracking;
 
 namespace TheSwitchboard.Web.Data;
 
@@ -51,6 +52,10 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     public DbSet<Models.Ab.AbConversion> AbConversions => Set<Models.Ab.AbConversion>();
     public DbSet<Redirect> Redirects => Set<Redirect>();
     public DbSet<FeatureFlag> FeatureFlags => Set<FeatureFlag>();
+
+    // T-1 Tracker foundation
+    public DbSet<Visitor> Visitors => Set<Visitor>();
+    public DbSet<Session> Sessions => Set<Session>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -112,6 +117,19 @@ public class AppDbContext : IdentityDbContext<AdminUser>
                 PhoneNumber = "",
                 Address = ""
             });
+        });
+
+        modelBuilder.Entity<Visitor>(e =>
+        {
+            e.HasIndex(v => v.LastSeen);
+            e.HasIndex(v => v.ConvertedAt);
+        });
+
+        modelBuilder.Entity<Session>(e =>
+        {
+            e.HasIndex(s => s.StartedAt);
+            e.HasIndex(s => s.VisitorId);
+            e.HasIndex(s => s.IsBot);
         });
     }
 }

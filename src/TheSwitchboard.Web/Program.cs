@@ -242,6 +242,7 @@ try
     // API endpoints
     app.MapContactApi();
     app.MapSeoEndpoints();
+    TheSwitchboard.Web.Api.Tracking.TrackingEndpoints.MapTrackingEndpoints(app);
 
     // Auto-migrate and seed
     try

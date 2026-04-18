@@ -83,6 +83,14 @@ public abstract class PublicPageModel : PageModel
         var nonce = TheSwitchboard.Web.Middleware.CspNonceMiddleware.GetNonce(HttpContext);
         html = html.Replace("{{NONCE}}", nonce);
 
+        // T-1: build-id cache-bust for /js/tracker/tracker.js — short Railway commit SHA in prod,
+        // epoch-based fallback in dev. Substitutes into the tracker script tag query string.
+        var buildId = Environment.GetEnvironmentVariable("RAILWAY_GIT_COMMIT_SHA");
+        buildId = !string.IsNullOrEmpty(buildId) && buildId.Length >= 8
+            ? buildId[..8]
+            : DateTime.UtcNow.ToString("yyyyMMdd");
+        html = html.Replace("{{BUILDID}}", buildId);
+
         html = html
             .Replace("{{PHONE}}",            E(settings.PhoneNumber))
             .Replace("{{EMAIL}}",            E(settings.ContactEmail))

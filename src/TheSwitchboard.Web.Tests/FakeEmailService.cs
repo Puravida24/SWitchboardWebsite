@@ -22,7 +22,7 @@ public class FakeEmailService : IEmailService
         return Task.CompletedTask;
     }
 
-    public Task SendInternalNotificationAsync(string formType, string submitterName, string submitterEmail)
+    public Task SendInternalNotificationAsync(string formType, string submitterName, string submitterEmail, IDictionary<string, string>? fields = null)
     {
         NotificationsSent.Add((formType, submitterName, submitterEmail));
         return Task.CompletedTask;
