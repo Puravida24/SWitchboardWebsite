@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Mockups — The Switchboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --cream-1: #faf9f7;
+  --cream-2: #f5f0eb;
+  --charcoal: #1c1917;
+  --navy: #003399;
+  --navy-light: #93b4ff;
+  --warm-gray: #6b625a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--cream-1); color: var(--charcoal); line-height: 1.6; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 80px 2rem 100px; }
+.masthead {
+  border-top: 2px solid var(--charcoal);
+  border-bottom: 1px solid var(--charcoal);
+  padding: 8px 0;
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.28em;
+  text-transform: uppercase; text-align: center;
+  color: var(--navy); font-weight: 600;
+  margin-bottom: 40px;
+}
+.masthead span { margin: 0 18px; }
+h1 {
+  font-family: var(--serif); font-size: clamp(2.6rem, 6vw, 4.4rem);
+  line-height: 1.05; letter-spacing: -0.015em; margin-bottom: 18px;
+  max-width: 20ch;
+}
+.deck {
+  font-family: var(--serif); font-size: 1.25rem; color: var(--warm-gray);
+  max-width: 58ch; margin-bottom: 60px;
+}
+.grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+.card {
+  background: var(--cream-2);
+  border: 1px solid rgba(0,51,153,0.14);
+  border-radius: 3px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  display: flex; flex-direction: column;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgba(28,25,23,0.12); }
+.card-img {
+  aspect-ratio: 16/10;
+  background: #0a0a0a;
+  color: var(--cream-1);
+  font-family: var(--mono);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(0,51,153,0.1);
+}
+.card-img::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 70% 30%, rgba(147,180,255,0.12), transparent 60%);
+}
+.card-num {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--navy-light);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.card-title {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  color: var(--cream-1);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  max-width: 12ch;
+  position: relative;
+}
+.card-body {
+  padding: 22px 24px 26px;
+  display: flex; flex-direction: column; flex: 1;
+}
+.card-kicker {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--navy); font-weight: 600; margin-bottom: 10px;
+}
+.card-desc {
+  font-family: var(--serif); font-size: 1rem; color: var(--charcoal); line-height: 1.55;
+  margin-bottom: 16px; flex: 1;
+}
+.card-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--mono); font-size: 0.7rem; color: var(--warm-gray);
+  letter-spacing: 0.06em; border-top: 1px solid rgba(0,51,153,0.12); padding-top: 12px;
+}
+.card-open {
+  color: var(--navy); font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; font-size: 0.7rem;
+}
+
+/* Mini preview animations on each card */
+.preview-visitor {
+  position: absolute; right: 16px; bottom: 16px;
+  width: 100px; background: rgba(10,10,10,0.85); border: 1px solid rgba(147,180,255,0.3);
+  font-size: 8px; padding: 6px 8px; text-align: left;
+  font-family: var(--mono); color: var(--cream-1);
+  animation: miniFloat 3s ease-in-out infinite;
+}
+@keyframes miniFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-3px);} }
+.preview-visitor-dot { width:4px; height:4px; border-radius:50%; background:#10b981; display:inline-block; margin-right:4px; }
+.preview-visitor-bar { height:2px; background:rgba(147,180,255,0.2); margin-top:4px; position:relative; overflow:hidden; }
+.preview-visitor-bar::before {
+  content:''; position:absolute; inset:0; background: var(--navy-light);
+  animation: miniBar 2.6s ease-in-out infinite;
+}
+@keyframes miniBar {
+  0%{width:10%;} 50%{width:76%;} 100%{width:10%;}
+}
+
+.preview-type {
+  display: flex; gap: 1px; align-items: flex-end; justify-content: center;
+  margin-top: 18px;
+}
+.preview-type span {
+  display: inline-block;
+  font-family: var(--serif); font-size: 2.2rem; color: var(--cream-1);
+  animation: typeBounce 2.4s cubic-bezier(0.22, 1.15, 0.4, 1) infinite;
+}
+.preview-type span:nth-child(1){animation-delay:0s;}
+.preview-type span:nth-child(2){animation-delay:0.08s;}
+.preview-type span:nth-child(3){animation-delay:0.16s;}
+.preview-type span:nth-child(4){animation-delay:0.24s;}
+.preview-type span:nth-child(5){animation-delay:0.32s;}
+.preview-type span:nth-child(6){animation-delay:0.40s;}
+@keyframes typeBounce {
+  0% { opacity: 0; transform: translateY(-40px) rotate(-12deg); }
+  30%, 80% { opacity: 1; transform: translateY(0) rotate(0); }
+  100% { opacity: 1; transform: translateY(0) rotate(0); }
+}
+
+.preview-ledger {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  width: 60px; background: rgba(0,0,0,0.35);
+  border-left: 1px solid rgba(147,180,255,0.2);
+  padding: 8px 4px; display: flex; flex-direction: column; gap: 4px;
+  overflow: hidden;
+}
+.preview-ledger-row {
+  font-family: var(--mono); font-size: 7px; color: var(--cream-1);
+  padding: 3px 2px 3px 8px; position: relative;
+  border-bottom: 1px solid rgba(147,180,255,0.08);
+  opacity: 0;
+  animation: ledgerAppear 4s ease-in-out infinite;
+}
+.preview-ledger-row::before {
+  content: ''; position: absolute; left: 2px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 3px; border-radius: 50%; background: #10b981;
+}
+.preview-ledger-row:nth-child(1){animation-delay:0s;}
+.preview-ledger-row:nth-child(2){animation-delay:0.5s;}
+.preview-ledger-row:nth-child(3){animation-delay:1.0s;}
+.preview-ledger-row:nth-child(4){animation-delay:1.5s;}
+.preview-ledger-row:nth-child(5){animation-delay:2.0s;}
+.preview-ledger-row:nth-child(6){animation-delay:2.5s;}
+@keyframes ledgerAppear {
+  0% { opacity: 0; transform: translateX(8px); }
+  15%, 85% { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(0); }
+}
+
+.intro-mini {
+  background: var(--cream-2);
+  border-left: 3px solid var(--navy);
+  padding: 16px 22px;
+  margin-bottom: 44px;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  color: var(--warm-gray);
+  max-width: 64ch;
+}
+.intro-mini strong { color: var(--charcoal); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <span>VOL. I</span><span>·</span><span>№ 1</span><span>·</span><span>THE SWITCHBOARD</span><span>·</span><span>INTERACTION STUDIES</span>
+  </div>
+
+  <h1>Three things that do not yet exist.</h1>
+  <p class="deck">Count-ups, fade-ins, and parallax are the lingua franca of every marketing site in 2026. These three studies aim at motion that <em>says something</em> — about the product, the brand, and the reader. Pick one, or stitch two together.</p>
+
+  <div class="intro-mini">
+    Each tile below links to a fully-interactive mockup. Scroll, click, and watch the motion play out — these are not static renders, they run live.
+  </div>
+
+  <div class="grid">
+    <!-- Mockup 1 -->
+    <a class="card" href="mockup-1-visitor-scorecard.html">
+      <div class="card-img">
+        <div class="card-num">MOCKUP 01</div>
+        <div class="card-title">The Visitor Scorecard</div>
+        <div class="preview-visitor">
+          <div><span class="preview-visitor-dot"></span>PHOENIX · VST_9F3</div>
+          <div class="preview-visitor-bar"></div>
+          <div style="margin-top:4px;opacity:0.6;">scroll 46%</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">Demo as marketing · Meta</div>
+        <p class="card-desc">A Phoenix terminal card docks in the corner and scores the reader in real time — visitor ID, scroll depth, sections read, implied role, confidence, final routing. The page demonstrates the product on the visitor.</p>
+        <div class="card-meta">
+          <span>~2–3 hrs · Bold</span>
+          <span class="card-open">Open demo →</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Mockup 2 -->
+    <a class="card" href="mockup-2-typesetting-masthead.html">
+      <div class="card-img">
+        <div class="card-num">MOCKUP 02</div>
+        <div class="card-title">Typesetting Masthead</div>
+        <div class="preview-type">
+          <span>S</span><span>W</span><span>I</span><span>T</span><span>C</span><span>H</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">Kinetic typography · Brand</div>
+        <p class="card-desc">Letters fall from random positions, rotate, and lock into type — each with a faint ink-smudge shadow on impact. Physical, typographic motion native to a serif/press identity.</p>
+        <div class="card-meta">
+          <span>~45 min · Tight</span>
+          <span class="card-open">Open demo →</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Mockup 3 -->
+    <a class="card" href="mockup-3-signal-deposition.html">
+      <div class="card-img">
+        <div class="card-num">MOCKUP 03</div>
+        <div class="card-title">Signal&nbsp;Deposition</div>
+        <div class="preview-ledger">
+          <div class="preview-ledger-row">firmo ✓</div>
+          <div class="preview-ledger-row">geo ✓</div>
+          <div class="preview-ledger-row">intent ✓</div>
+          <div class="preview-ledger-row">score ✓</div>
+          <div class="preview-ledger-row">route ✓</div>
+          <div class="preview-ledger-row">ready ✓</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-kicker">Session audit trail · Story</div>
+        <p class="card-desc">A vertical ledger runs down the right margin. As you scroll past each section, signals deposit into it with timestamps. Ends with a score and a route decision — an audit trail of your visit.</p>
+        <div class="card-meta">
+          <span>~1 hr · Narrative</span>
+          <span class="card-open">Open demo →</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <p style="margin-top: 60px; font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--warm-gray); text-align: center;">
+    After reviewing — tell me which one to integrate into <code style="font-family:var(--mono);font-style:normal;font-size:0.85rem;color:var(--navy);background:var(--cream-2);padding:2px 6px;border-radius:2px;">design-32e-newsprint.html</code>.
+  </p>
+</div>
+</body>
+</html>

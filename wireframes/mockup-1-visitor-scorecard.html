@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup 1 — The Visitor Scorecard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --cream-1: #faf9f7;
+  --cream-2: #f5f0eb;
+  --charcoal: #1c1917;
+  --navy: #003399;
+  --navy-light: #93b4ff;
+  --warm-gray: #6b625a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--cream-1); color: var(--charcoal); line-height: 1.6; }
+.demo-banner {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--navy); color: var(--cream-1); padding: 12px 24px;
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  text-align: center;
+}
+.demo-banner strong { color: var(--navy-light); }
+.demo-banner a { color: var(--cream-1); text-decoration: underline; }
+
+.section {
+  padding: 140px 2rem 160px;
+  max-width: 900px;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(0,51,153,0.1);
+}
+.section-kicker {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--navy); font-weight: 600; margin-bottom: 20px;
+}
+.section h2 { font-family: var(--serif); font-size: 3rem; margin-bottom: 20px; line-height: 1.1; letter-spacing: -0.015em; }
+.section p { font-family: var(--serif); font-size: 1.2rem; color: var(--warm-gray); max-width: 60ch; margin-bottom: 14px; }
+.section small { font-family: var(--mono); font-size: 0.72rem; color: var(--navy); letter-spacing: 0.12em; }
+
+/* ── Scorecard ── */
+.scorecard {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 320px;
+  background: #0a0a0a;
+  border: 1px solid rgba(147,180,255,0.28);
+  border-radius: 4px;
+  font-family: var(--mono);
+  color: var(--cream-1);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(147,180,255,0.1) inset;
+  overflow: hidden;
+  z-index: 100;
+  transform: translateY(calc(100% + 40px));
+  opacity: 0;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;
+}
+.scorecard.visible { transform: translateY(0); opacity: 1; }
+.sc-header {
+  padding: 11px 14px;
+  background: rgba(147,180,255,0.08);
+  border-bottom: 1px solid rgba(147,180,255,0.2);
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; letter-spacing: 0.22em; font-weight: 600;
+}
+.sc-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #10b981; box-shadow: 0 0 8px rgba(16,185,129,0.6);
+  animation: scDotPulse 1.6s ease-in-out infinite;
+}
+@keyframes scDotPulse {
+  0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(16,185,129,0.55); }
+  50%     { opacity:0.55; box-shadow: 0 0 0 7px rgba(16,185,129,0); }
+}
+.sc-header-title { color: #d4e0ff; }
+.sc-header-id { margin-left: auto; color: rgba(250,249,247,0.5); font-size: 9.5px; letter-spacing: 0.08em; font-weight: 500; }
+
+.sc-body { padding: 14px; font-size: 11px; }
+.sc-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+.sc-label { color: rgba(147,180,255,0.65); letter-spacing: 0.2em; font-weight: 500; font-size: 9.5px; }
+.sc-value { color: var(--cream-1); font-variant-numeric: tabular-nums; font-size: 11.5px; font-weight: 500; }
+.sc-value.flash { animation: scFlash 0.6s ease; }
+@keyframes scFlash {
+  0% { color: #d4e0ff; text-shadow: 0 0 8px rgba(147,180,255,0.8); }
+  100% { color: var(--cream-1); text-shadow: none; }
+}
+.sc-bar { height: 3px; background: rgba(147,180,255,0.14); border-radius: 2px; margin: 4px 0 14px; overflow: hidden; }
+.sc-bar-fill { height: 100%; background: linear-gradient(90deg, var(--navy-light), #d4e0ff); border-radius: 2px; transition: width 0.5s cubic-bezier(0.22,1,0.36,1); }
+
+.sc-sections { list-style: none; margin: 8px 0 12px; }
+.sc-sections li {
+  display: flex; align-items: center; gap: 8px; font-size: 10.5px; color: rgba(250,249,247,0.38);
+  padding: 3px 0; transition: color 0.4s ease;
+}
+.sc-sections li::before { content: '○'; color: rgba(147,180,255,0.3); font-size: 11px; line-height: 1; transition: color 0.3s ease; }
+.sc-sections li.seen { color: var(--cream-1); }
+.sc-sections li.seen::before { content: '●'; color: #10b981; }
+.sc-sections li.active { color: #d4e0ff; }
+.sc-sections li.active::before { animation: scDotPulse 1.6s ease-in-out infinite; color: #10b981; }
+
+.sc-footer {
+  padding: 11px 14px;
+  background: rgba(0,51,153,0.22);
+  border-top: 1px solid rgba(147,180,255,0.2);
+  font-size: 10px; letter-spacing: 0.14em;
+}
+.sc-route { display: flex; justify-content: space-between; align-items: center; }
+.sc-route-label { color: rgba(147,180,255,0.7); font-size: 9.5px; letter-spacing: 0.22em; font-weight: 600; }
+.sc-route-value { color: rgba(250,249,247,0.55); font-weight: 500; font-size: 11px; transition: color 0.3s ease; }
+.sc-route-value.resolved {
+  color: #d4e0ff;
+  animation: routeFlash 1.2s ease;
+}
+@keyframes routeFlash {
+  0%   { background: rgba(147,180,255,0.3); color: #fff; padding: 2px 6px; margin: -2px -6px; border-radius: 2px; }
+  100% { background: transparent; color: #d4e0ff; }
+}
+
+.sc-role-chip {
+  display: inline-block; padding: 2px 8px; border-radius: 2px;
+  background: rgba(147,180,255,0.15); color: var(--navy-light);
+  font-size: 9.5px; letter-spacing: 0.16em; font-weight: 600; text-transform: uppercase;
+}
+.sc-role-chip.unknown { color: rgba(250,249,247,0.35); background: rgba(250,249,247,0.05); }
+
+@media (max-width: 640px) {
+  .scorecard { right: 10px; left: 10px; bottom: 10px; width: auto; }
+}
+</style>
+</head>
+<body>
+<div class="demo-banner">
+  MOCKUP 1 · <strong>THE VISITOR SCORECARD</strong> · Phoenix reads the reader in real time — scroll to watch it work
+  &nbsp;·&nbsp; <a href="mockups-index.html">← all mockups</a>
+</div>
+
+<div class="section" id="intro" data-section-label="Opening">
+  <div class="section-kicker">The Switchboard</div>
+  <h2>Insurance is not a data problem.</h2>
+  <p>It's a signal problem. We've written policies for twenty-five years. We know what closes, what renews, what walks away at renewal. Phoenix does the reading, scoring, and routing — so your best people spend their time on your best accounts.</p>
+  <p><small>↓ Watch the corner. Phoenix is already reading you.</small></p>
+</div>
+
+<div class="section" id="carriers" data-section-label="For Carriers">
+  <div class="section-kicker">For Carriers</div>
+  <h2>Stop buying blind.</h2>
+  <p>Enrich every inbound prospect with firmographic, demographic, and behavioral signal before a single dollar is spent on acquisition. See risk, fit, and expected value in real time — not after the quarterly review.</p>
+  <p>The longer you linger on this section, the more Phoenix tilts your implied role toward <strong>carrier</strong>.</p>
+</div>
+
+<div class="section" id="agencies" data-section-label="For Agencies">
+  <div class="section-kicker">For Agencies</div>
+  <h2>Work the right book.</h2>
+  <p>Risk-scored prospects surface the high-value accounts and push noise to the bottom. Your producers spend their time where it compounds — on the accounts most likely to close, renew, and expand.</p>
+  <p>Linger here and Phoenix shifts your inferred role to <strong>agency</strong>.</p>
+</div>
+
+<div class="section" id="mga" data-section-label="For MGAs &amp; Wholesalers">
+  <div class="section-kicker">For MGAs &amp; Wholesalers</div>
+  <h2>Match in milliseconds.</h2>
+  <p>Route specialty risk to the right underwriter in under five milliseconds. No manual sorting. No cherry-picking. No dropped handoffs between intake and bind.</p>
+  <p>Linger here and Phoenix routes you to the <strong>Specialty Team</strong>.</p>
+</div>
+
+<div class="section" id="intelligence" data-section-label="Intelligence Rail">
+  <div class="section-kicker">The Intelligence</div>
+  <h2>Five moves, in order, every time.</h2>
+  <p>Enrich. Score. Segment. Route. Analyze. Under five milliseconds, without a human in the loop. What happens to every inbound record — and what is happening to your session right now.</p>
+</div>
+
+<div class="section" id="contact" data-section-label="Correspondence">
+  <div class="section-kicker">Correspondence</div>
+  <h2>Start a conversation.</h2>
+  <p>By this point Phoenix has resolved your route. Look at the bottom of the corner card — you've been assigned to a desk based on where you dwelled. Every visitor gets routed. That's the product.</p>
+</div>
+
+<!-- ── The Scorecard ── -->
+<div class="scorecard" id="scorecard" role="complementary" aria-label="Visitor scorecard">
+  <div class="sc-header">
+    <span class="sc-dot"></span>
+    <span class="sc-header-title">PHOENIX · READING YOU</span>
+    <span class="sc-header-id" id="scId">VST_—</span>
+  </div>
+  <div class="sc-body">
+    <div class="sc-row">
+      <span class="sc-label">TIME ON PAGE</span>
+      <span class="sc-value" id="scTime">0:00</span>
+    </div>
+    <div class="sc-row">
+      <span class="sc-label">SCROLL DEPTH</span>
+      <span class="sc-value" id="scDepth">0%</span>
+    </div>
+    <div class="sc-bar"><div class="sc-bar-fill" id="scDepthBar" style="width:0%"></div></div>
+    <div class="sc-row">
+      <span class="sc-label">SECTIONS READ</span>
+      <span class="sc-value" id="scSectionsCount">0 / 6</span>
+    </div>
+    <ul class="sc-sections" id="scSections"></ul>
+    <div class="sc-row">
+      <span class="sc-label">SIGNALS</span>
+      <span class="sc-value" id="scSignals">0</span>
+    </div>
+    <div class="sc-row">
+      <span class="sc-label">IMPLIED ROLE</span>
+      <span class="sc-value"><span class="sc-role-chip unknown" id="scRole">unknown</span></span>
+    </div>
+    <div class="sc-row">
+      <span class="sc-label">CONFIDENCE</span>
+      <span class="sc-value" id="scConf">0%</span>
+    </div>
+    <div class="sc-bar"><div class="sc-bar-fill" id="scConfBar" style="width:0%"></div></div>
+  </div>
+  <div class="sc-footer">
+    <div class="sc-route">
+      <span class="sc-route-label">ROUTE</span>
+      <span class="sc-route-value" id="scRoute">— pending —</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// Visitor ID
+const vid = 'VST_' + (Math.random().toString(36).substring(2,5) + Math.random().toString(36).substring(2,5)).toUpperCase();
+document.getElementById('scId').textContent = vid;
+setTimeout(() => document.getElementById('scorecard').classList.add('visible'), 700);
+
+// Time
+let seconds = 0;
+setInterval(() => {
+  seconds++;
+  const m = Math.floor(seconds/60), s = seconds%60;
+  document.getElementById('scTime').textContent = `${m}:${String(s).padStart(2,'0')}`;
+}, 1000);
+
+// Sections
+const sections = Array.from(document.querySelectorAll('.section'));
+const secListEl = document.getElementById('scSections');
+sections.forEach(s => {
+  const li = document.createElement('li');
+  li.textContent = s.dataset.sectionLabel;
+  li.dataset.sid = s.id;
+  secListEl.appendChild(li);
+});
+
+const dwell = {};
+let activeSection = null;
+let activeStart = 0;
+const seen = new Set();
+let signals = 0;
+
+function accrue() {
+  if (activeSection) {
+    dwell[activeSection] = (dwell[activeSection]||0) + (Date.now() - activeStart);
+    activeStart = Date.now();
+  }
+}
+
+function flash(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+}
+
+function computeRole(){
+  const c = dwell['carriers']||0, a = dwell['agencies']||0, m = dwell['mga']||0;
+  const total = c + a + m;
+  if (total < 2000) return { role: 'unknown', conf: 0 };
+  const max = Math.max(c, a, m);
+  const conf = Math.min(96, Math.round((max/total)*100));
+  if (max === c) return { role: 'carrier', conf };
+  if (max === a) return { role: 'agency', conf };
+  return { role: 'mga', conf };
+}
+
+const routeMap = { carrier: 'Carrier Desk', agency: 'Agency Partnerships', mga: 'Specialty Team' };
+let lastRoute = null;
+
+function updateRole(){
+  const r = computeRole();
+  const chip = document.getElementById('scRole');
+  if (chip.textContent !== r.role) {
+    chip.textContent = r.role;
+    flash('scRole');
+  }
+  if (r.role !== 'unknown') chip.classList.remove('unknown');
+  else chip.classList.add('unknown');
+
+  const confEl = document.getElementById('scConf');
+  const confTxt = r.conf + '%';
+  if (confEl.textContent !== confTxt) {
+    confEl.textContent = confTxt;
+  }
+  document.getElementById('scConfBar').style.width = r.conf + '%';
+
+  const routeEl = document.getElementById('scRoute');
+  if (r.conf >= 55 && seen.size >= 3) {
+    const nr = routeMap[r.role];
+    if (nr && nr !== lastRoute) {
+      routeEl.textContent = nr;
+      routeEl.classList.remove('resolved'); void routeEl.offsetWidth;
+      routeEl.classList.add('resolved');
+      lastRoute = nr;
+    }
+  }
+}
+
+const ioSec = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    const id = e.target.id;
+    const li = document.querySelector(`.sc-sections li[data-sid="${id}"]`);
+    if (e.isIntersecting) {
+      accrue();
+      activeSection = id;
+      activeStart = Date.now();
+      document.querySelectorAll('.sc-sections li.active').forEach(el => el.classList.remove('active'));
+      if (li) li.classList.add('active');
+      if (!seen.has(id)) {
+        seen.add(id);
+        if (li) li.classList.add('seen');
+        document.getElementById('scSectionsCount').textContent = `${seen.size} / ${sections.length}`;
+        flash('scSectionsCount');
+        signals += 2 + Math.floor(Math.random()*2);
+        document.getElementById('scSignals').textContent = signals;
+        flash('scSignals');
+      }
+    } else if (activeSection === id) {
+      accrue();
+      activeSection = null;
+      if (li) li.classList.remove('active');
+    }
+  });
+}, { threshold: 0.5 });
+sections.forEach(s => ioSec.observe(s));
+
+window.addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = Math.min(100, Math.round((window.scrollY/max)*100));
+  document.getElementById('scDepth').textContent = pct + '%';
+  document.getElementById('scDepthBar').style.width = pct + '%';
+}, { passive: true });
+
+setInterval(updateRole, 700);
+</script>
+</body>
+</html>

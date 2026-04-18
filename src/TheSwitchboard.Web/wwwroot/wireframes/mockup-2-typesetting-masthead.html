@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup 2 — Typesetting Masthead</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --cream-1: #faf9f7;
+  --cream-2: #f5f0eb;
+  --charcoal: #1c1917;
+  --navy: #003399;
+  --navy-light: #93b4ff;
+  --warm-gray: #6b625a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--sans); background: var(--cream-1); color: var(--charcoal);
+  line-height: 1.6; overflow-x: hidden;
+  background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%22.025%22/%3E%3C/svg%3E');
+}
+.demo-banner {
+  background: var(--navy); color: var(--cream-1); padding: 12px 24px;
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  text-align: center;
+}
+.demo-banner strong { color: var(--navy-light); }
+.demo-banner a { color: var(--cream-1); text-decoration: underline; }
+
+.stage {
+  min-height: calc(100vh - 44px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 2rem;
+  position: relative;
+}
+
+.masthead-rule {
+  width: min(900px, 90%);
+  border-top: 2px solid var(--charcoal);
+  border-bottom: 1px solid var(--charcoal);
+  padding: 6px 0;
+  margin-bottom: 40px;
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.28em;
+  text-transform: uppercase; text-align: center;
+  color: var(--navy); font-weight: 600;
+}
+.masthead-rule span { margin: 0 18px; }
+
+.typeset-stage {
+  width: min(1100px, 95%);
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.ts-kicker {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--navy); font-weight: 600;
+  margin-bottom: 28px; opacity: 0; animation: kickerIn 600ms ease-out 2400ms forwards;
+}
+@keyframes kickerIn { to { opacity: 1; } }
+
+.ts-headline {
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 7vw, 5.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--charcoal);
+  display: block;
+  max-width: 18ch;
+  margin: 0 auto 32px;
+  font-weight: 400;
+}
+.ts-headline-alt {
+  font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+  color: var(--warm-gray);
+  font-style: italic;
+  max-width: 36ch;
+  margin-top: 20px;
+}
+
+.ts-letter {
+  display: inline-block;
+  position: relative;
+  opacity: 0;
+  transform: translate(var(--sx, 0), var(--sy, -80px)) rotate(var(--sr, 0deg));
+  animation: tsDrop 680ms cubic-bezier(0.22, 1.15, 0.4, 1) forwards;
+}
+.ts-letter::after {
+  content: '';
+  position: absolute;
+  left: -6%; right: -6%; top: 10%; bottom: -5%;
+  background: radial-gradient(ellipse at 50% 85%, rgba(0,51,153,0.38), rgba(0,51,153,0) 65%);
+  opacity: 0; pointer-events: none; z-index: -1;
+  animation: tsInk 900ms ease-out forwards;
+  animation-delay: inherit;
+  filter: blur(2px);
+}
+@keyframes tsDrop {
+  0%   { opacity: 0; transform: translate(var(--sx, 0), var(--sy, -80px)) rotate(var(--sr, 0deg)); }
+  55%  { opacity: 1; }
+  70%  { opacity: 1; transform: translate(0, 5px) rotate(0deg); }
+  82%  { transform: translate(0, -2px) rotate(0deg); }
+  100% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes tsInk {
+  0%   { opacity: 0; transform: scale(0.4); }
+  62%  { opacity: 0; transform: scale(0.4); }
+  72%  { opacity: 0.85; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+.controls {
+  margin-top: 60px;
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: kickerIn 600ms ease-out 3200ms forwards;
+}
+.controls button {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--navy);
+  background: transparent;
+  border: 1px solid var(--navy);
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.controls button:hover { background: var(--navy); color: var(--cream-1); }
+.controls button.active { background: var(--navy); color: var(--cream-1); }
+
+.foot-note {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.92rem;
+  color: var(--warm-gray);
+  opacity: 0;
+  animation: kickerIn 600ms ease-out 3500ms forwards;
+  max-width: 560px;
+  text-align: center;
+  padding: 0 20px;
+}
+
+@media (max-width: 720px) {
+  .ts-headline { max-width: 14ch; }
+  .foot-note { font-size: 0.82rem; bottom: 14px; }
+}
+</style>
+</head>
+<body>
+<div class="demo-banner">
+  MOCKUP 2 · <strong>TYPESETTING MASTHEAD</strong> · Letters fall, rotate, lock into type — with ink-smudge on impact
+  &nbsp;·&nbsp; <a href="mockups-index.html">← all mockups</a>
+</div>
+
+<div class="stage">
+  <div class="masthead-rule">
+    <span>VOL. I</span><span>·</span><span>№ 1</span><span>·</span><span>THE SWITCHBOARD</span><span>·</span><span>OREM, UT</span>
+  </div>
+
+  <div class="typeset-stage">
+    <div class="ts-kicker">The Headline</div>
+    <h1 class="ts-headline" data-text="Written by people who have written policies." id="mainHead"></h1>
+    <p class="ts-headline ts-headline-alt" data-text="And who have bought the clicks." id="subHead"></p>
+  </div>
+
+  <div class="controls">
+    <button id="replayBtn">↻ Replay</button>
+    <button id="slowBtn">Slow-mo</button>
+    <button id="altBtn">Alternate headline</button>
+  </div>
+
+  <div class="foot-note">
+    Every letter starts out of place — rotated, offset, above the line — then drops and locks into type, leaving a faint ink smudge where it hit. The motion language for a house that sets its own type.
+  </div>
+</div>
+
+<script>
+const headlines = {
+  primary: {
+    main: "Written by people who have written policies.",
+    sub:  "And who have bought the clicks."
+  },
+  alt: {
+    main: "Insurance is not a data problem.",
+    sub:  "It is a signal problem."
+  }
+};
+
+let currentSpeed = 1; // multiplier
+let currentSet = 'primary';
+
+function typeset(el, text, speedMul, baseDelay) {
+  el.innerHTML = '';
+  const chars = Array.from(text);
+  let letterIdx = 0;
+  chars.forEach((ch, i) => {
+    if (ch === ' ') {
+      el.appendChild(document.createTextNode(' '));
+      return;
+    }
+    const span = document.createElement('span');
+    span.className = 'ts-letter';
+    span.textContent = ch;
+    const sy = -(60 + Math.random() * 60);
+    const sx = (Math.random() - 0.5) * 30;
+    const sr = (Math.random() - 0.5) * 28;
+    span.style.setProperty('--sy', sy + 'px');
+    span.style.setProperty('--sx', sx + 'px');
+    span.style.setProperty('--sr', sr + 'deg');
+    const delay = baseDelay + (letterIdx * 38 * speedMul);
+    span.style.animationDelay = delay + 'ms';
+    span.style.animationDuration = (680 * speedMul) + 'ms';
+    el.appendChild(span);
+    letterIdx++;
+  });
+  return letterIdx;
+}
+
+function replay(speedMul = 1) {
+  const set = headlines[currentSet];
+  const mainCount = typeset(document.getElementById('mainHead'), set.main, speedMul, 0);
+  // Sub headline starts after main finishes
+  const mainDone = (mainCount * 38 * speedMul) + (680 * speedMul);
+  typeset(document.getElementById('subHead'), set.sub, speedMul, mainDone + 100);
+}
+
+replay();
+
+document.getElementById('replayBtn').addEventListener('click', () => {
+  document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+  currentSpeed = 1;
+  replay(1);
+});
+document.getElementById('slowBtn').addEventListener('click', (e) => {
+  document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+  currentSpeed = 2.2;
+  replay(2.2);
+});
+document.getElementById('altBtn').addEventListener('click', (e) => {
+  currentSet = (currentSet === 'primary') ? 'alt' : 'primary';
+  replay(currentSpeed);
+});
+</script>
+</body>
+</html>
