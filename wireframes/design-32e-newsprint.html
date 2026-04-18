@@ -1094,6 +1094,41 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   transform: translateY(0);
 }
 
+/* Intel rail cascade — number drops, title slides up, body fades in */
+.intel-reveal .intel-step-num {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(-36px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1.35, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1.35, 0.36, 1);
+  transition-delay: var(--intel-stagger, 0ms);
+}
+.intel-reveal .intel-step-title {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  transition-delay: calc(var(--intel-stagger, 0ms) + 200ms);
+}
+.intel-reveal .intel-step-body {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  transition-delay: calc(var(--intel-stagger, 0ms) + 360ms);
+}
+.intel-reveal.visible .intel-step-num,
+.intel-reveal.visible .intel-step-title,
+.intel-reveal.visible .intel-step-body {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .intel-reveal .intel-step-num,
+  .intel-reveal .intel-step-title,
+  .intel-reveal .intel-step-body {
+    opacity: 1; transform: none; transition: none;
+  }
+}
+
 /* Staggered delays */
 .delay-1 { transition-delay: 0.1s; }
 .delay-2 { transition-delay: 0.2s; }
@@ -2700,27 +2735,27 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
     <p class="deck fade-up delay-2">What happens to every inbound record between the source and the underwriter &mdash; in under five milliseconds, without a human in the loop.</p>
   </div>
   <div class="intel-rail">
-    <article class="intel-step fade-up" style="transition-delay:0ms;">
+    <article class="intel-step intel-reveal" style="--intel-stagger:0ms;">
       <span class="intel-step-num count-up" data-final="1" data-pad="2" data-duration="900">01</span>
       <h3 class="intel-step-title">Enrich.</h3>
       <p class="intel-step-body">Every inbound record is instantly augmented with firmographic, demographic, and behavioral signal. The full picture &mdash; before the first conversation.</p>
     </article>
-    <article class="intel-step fade-up" style="transition-delay:120ms;">
+    <article class="intel-step intel-reveal" style="--intel-stagger:140ms;">
       <span class="intel-step-num count-up" data-final="2" data-pad="2" data-duration="900" data-delay="120">02</span>
       <h3 class="intel-step-title">Score.</h3>
       <p class="intel-step-body">Proprietary models, grounded in real insurance outcomes &mdash; not marketing proxies &mdash; assign a precision score. High-value rises. Noise falls away.</p>
     </article>
-    <article class="intel-step fade-up" style="transition-delay:240ms;">
+    <article class="intel-step intel-reveal" style="--intel-stagger:280ms;">
       <span class="intel-step-num count-up" data-final="3" data-pad="2" data-duration="900" data-delay="240">03</span>
       <h3 class="intel-step-title">Segment.</h3>
       <p class="intel-step-body">Records auto-group by line of business, geography, policy type, and predicted lifetime value. Your team works the right book, not all of it.</p>
     </article>
-    <article class="intel-step fade-up" style="transition-delay:360ms;">
+    <article class="intel-step intel-reveal" style="--intel-stagger:420ms;">
       <span class="intel-step-num count-up" data-final="4" data-pad="2" data-duration="900" data-delay="360">04</span>
       <h3 class="intel-step-title">Route.</h3>
       <p class="intel-step-body">Each scored, segmented prospect lands with the right person at the right time. No manual sorting. No cherry-picking. No wasted motion.</p>
     </article>
-    <article class="intel-step fade-up" style="transition-delay:480ms;">
+    <article class="intel-step intel-reveal" style="--intel-stagger:560ms;">
       <span class="intel-step-num count-up" data-final="5" data-pad="2" data-duration="900" data-delay="480">05</span>
       <h3 class="intel-step-title">Analyze.</h3>
       <p class="intel-step-body">Real-time dashboards reveal which sources, segments, and producers convert &mdash; and which do not. The data loop closes. Strategy sharpens every cycle.</p>
@@ -3226,6 +3261,20 @@ window.addEventListener('scroll', () => {
   const d = new Date();
   const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   el.textContent = `Orem, UT · ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+})();
+
+// Intel rail cascade — dedicated observer so each card reveals only when scrolled into view
+(function initIntelReveal(){
+  const els = document.querySelectorAll('.intel-reveal');
+  if (!els.length) return;
+  if (!('IntersectionObserver' in window)) { els.forEach(el => el.classList.add('visible')); return; }
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.35, rootMargin: '0px 0px -60px 0px' });
+  els.forEach(el => obs.observe(el));
+  setTimeout(() => document.querySelectorAll('.intel-reveal:not(.visible)').forEach(el => el.classList.add('visible')), 4500);
 })();
 
 // Count-up on scroll — animate any .count-up element from 0 to data-final with easeOutCubic.
