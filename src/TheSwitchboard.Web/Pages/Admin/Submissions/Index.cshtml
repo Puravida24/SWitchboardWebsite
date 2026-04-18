@@ -1,0 +1,70 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Submissions.IndexModel
+@{
+    ViewData["Title"] = "Submissions";
+    Layout = "_AdminLayout";
+}
+
+<h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem;">Submissions</h1>
+
+<form method="get" style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; align-items: end;">
+    <div>
+        <label style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.35rem;">Role</label>
+        <select name="role" style="padding: 0.5rem 0.7rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.9rem;">
+            <option value="">All</option>
+            <option value="carrier" selected="@(Model.Role == "carrier")">Carrier</option>
+            <option value="agency" selected="@(Model.Role == "agency")">Agency</option>
+            <option value="mga" selected="@(Model.Role == "mga")">MGA / Wholesaler</option>
+            <option value="other" selected="@(Model.Role == "other")">Other</option>
+        </select>
+    </div>
+    <button type="submit" style="background: #3b82f6; color: white; border: none; padding: 0.55rem 1.1rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem;">Filter</button>
+    <span style="color: var(--slate-400); font-size: 0.85rem;">@Model.TotalCount results</span>
+</form>
+
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+    <thead>
+        <tr style="text-align: left; color: var(--slate-400); border-bottom: 1px solid rgba(255,255,255,0.08);">
+            <th style="padding: 0.6rem 0.5rem; font-weight: 500;">#</th>
+            <th style="padding: 0.6rem 0.5rem; font-weight: 500;">When</th>
+            <th style="padding: 0.6rem 0.5rem; font-weight: 500;">Type</th>
+            <th style="padding: 0.6rem 0.5rem; font-weight: 500;">Role</th>
+            <th style="padding: 0.6rem 0.5rem; font-weight: 500;">Phoenix</th>
+            <th style="padding: 0.6rem 0.5rem; font-weight: 500;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model.Submissions)
+        {
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); color: white;">
+                <td style="padding: 0.6rem 0.5rem; color: var(--slate-400); font-variant-numeric: tabular-nums;">@s.Id</td>
+                <td style="padding: 0.6rem 0.5rem; font-variant-numeric: tabular-nums;">@s.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td style="padding: 0.6rem 0.5rem;">@s.FormType</td>
+                <td style="padding: 0.6rem 0.5rem;">@(s.Role ?? "—")</td>
+                <td style="padding: 0.6rem 0.5rem;">
+                    <span style="font-size: 0.75rem; padding: 2px 8px; border-radius: 2px; background: rgba(147,180,255,0.14); color: #93b4ff; letter-spacing: 0.14em; font-weight: 600; text-transform: uppercase;">
+                        @s.PhoenixSyncStatus
+                    </span>
+                </td>
+                <td style="padding: 0.6rem 0.5rem;">
+                    <a href="/Admin/Submissions/Detail?id=@s.Id" style="color: #93b4ff; text-decoration: none; font-size: 0.85rem;">Open →</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalCount > Model.PageSize)
+{
+    <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; align-items: center; color: var(--slate-400); font-size: 0.85rem;">
+        @if (Model.Page > 1)
+        {
+            <a href="?page=@(Model.Page - 1)&role=@Model.Role" style="color: #93b4ff; text-decoration: none;">← Prev</a>
+        }
+        <span>Page @Model.Page of @(((Model.TotalCount - 1) / Model.PageSize) + 1)</span>
+        @if (Model.Page * Model.PageSize < Model.TotalCount)
+        {
+            <a href="?page=@(Model.Page + 1)&role=@Model.Role" style="color: #93b4ff; text-decoration: none;">Next →</a>
+        }
+    </div>
+}

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TheSwitchboard.Web.Middleware;
 using TheSwitchboard.Web.Services;
 
 namespace TheSwitchboard.Web.Tests;
@@ -22,11 +23,24 @@ public class Slice2Factory : SwitchboardWebApplicationFactory
     {
         FakePhoenix.Reset();
         FakeEmail.Reset();
+        RateLimitMiddleware.ResetAll();
     }
+
+    // Unique per-fixture DB name so Slice 2 tests don't see Slice 1's seeded rows
+    // (and vice versa). InMemory shares DBs across hosts by name.
+    private readonly string _dbName = "Slice2-" + Guid.NewGuid();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         base.ConfigureWebHost(builder);
+
+        builder.ConfigureAppConfiguration((_, config) =>
+        {
+            config.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Database:InMemoryName"] = _dbName
+            });
+        });
 
         builder.ConfigureServices(services =>
         {

@@ -21,6 +21,7 @@ public class Slice1IntegrationTests : IClassFixture<SwitchboardWebApplicationFac
     public Slice1IntegrationTests(SwitchboardWebApplicationFactory factory)
     {
         _factory = factory;
+        TheSwitchboard.Web.Middleware.RateLimitMiddleware.ResetAll();
         _client = factory.CreateClient(new WebApplicationFactoryClientOptions
         {
             AllowAutoRedirect = false

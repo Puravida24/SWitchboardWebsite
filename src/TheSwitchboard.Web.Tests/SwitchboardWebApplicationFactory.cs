@@ -35,7 +35,8 @@ public class SwitchboardWebApplicationFactory : WebApplicationFactory<Program>
                 ["DATABASE_PRIVATE_URL"] = string.Empty,
                 // Known admin seed creds used by Slice1IntegrationTests.
                 ["Admin:Email"] = "admin@theswitchboard.local",
-                ["Admin:Password"] = "SwitchboardDev2026!"
+                ["Admin:Password"] = "SwitchboardDev2026!",
+                ["Database:InMemoryName"] = "Slice1-" + Guid.NewGuid()
             });
         });
     }

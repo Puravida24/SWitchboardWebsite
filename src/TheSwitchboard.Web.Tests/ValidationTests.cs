@@ -7,65 +7,75 @@ public class ContactFormValidationTests
 {
     private readonly ContactFormRequestValidator _validator = new();
 
+    private static ContactFormRequest Valid() => new()
+    {
+        Name = "Sarah Chen",
+        Email = "sarah@example.com",
+        Company = "Acme Insurance",
+        Role = "carrier",
+        Message = "Hello"
+    };
+
     [Fact]
     public void Valid_Request_Passes()
     {
-        var request = new ContactFormRequest
-        {
-            FirstName = "Sarah",
-            LastName = "Chen",
-            Email = "sarah@example.com",
-            TcpaConsent = true
-        };
-        var result = _validator.TestValidate(request);
-        result.ShouldNotHaveAnyValidationErrors();
+        _validator.TestValidate(Valid()).ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
-    public void Missing_FirstName_Fails()
+    public void Missing_Name_Fails()
     {
-        var request = new ContactFormRequest { LastName = "Chen", Email = "a@b.com", TcpaConsent = true };
-        var result = _validator.TestValidate(request);
-        result.ShouldHaveValidationErrorFor(x => x.FirstName);
+        var r = Valid(); r.Name = "";
+        _validator.TestValidate(r).ShouldHaveValidationErrorFor(x => x.Name);
     }
 
     [Fact]
     public void Missing_Email_Fails()
     {
-        var request = new ContactFormRequest { FirstName = "Sarah", LastName = "Chen", TcpaConsent = true };
-        var result = _validator.TestValidate(request);
-        result.ShouldHaveValidationErrorFor(x => x.Email);
+        var r = Valid(); r.Email = "";
+        _validator.TestValidate(r).ShouldHaveValidationErrorFor(x => x.Email);
     }
 
     [Fact]
     public void Invalid_Email_Fails()
     {
-        var request = new ContactFormRequest { FirstName = "Sarah", LastName = "Chen", Email = "not-an-email", TcpaConsent = true };
-        var result = _validator.TestValidate(request);
-        result.ShouldHaveValidationErrorFor(x => x.Email);
+        var r = Valid(); r.Email = "not-an-email";
+        _validator.TestValidate(r).ShouldHaveValidationErrorFor(x => x.Email);
     }
 
     [Fact]
-    public void Missing_TcpaConsent_Fails()
+    public void Missing_Company_Fails()
     {
-        var request = new ContactFormRequest { FirstName = "Sarah", LastName = "Chen", Email = "a@b.com", TcpaConsent = false };
-        var result = _validator.TestValidate(request);
-        result.ShouldHaveValidationErrorFor(x => x.TcpaConsent);
+        var r = Valid(); r.Company = "";
+        _validator.TestValidate(r).ShouldHaveValidationErrorFor(x => x.Company);
+    }
+
+    [Fact]
+    public void Invalid_Role_Fails()
+    {
+        var r = Valid(); r.Role = "ghost";
+        _validator.TestValidate(r).ShouldHaveValidationErrorFor(x => x.Role);
     }
 
     [Fact]
     public void Message_Over_5000_Chars_Fails()
     {
-        var request = new ContactFormRequest
-        {
-            FirstName = "Sarah",
-            LastName = "Chen",
-            Email = "a@b.com",
-            TcpaConsent = true,
-            Message = new string('x', 5001)
-        };
-        var result = _validator.TestValidate(request);
-        result.ShouldHaveValidationErrorFor(x => x.Message);
+        var r = Valid(); r.Message = new string('x', 5001);
+        _validator.TestValidate(r).ShouldHaveValidationErrorFor(x => x.Message);
+    }
+
+    [Fact]
+    public void Non_E164_Phone_Fails()
+    {
+        var r = Valid(); r.Phone = "(555) 123-4567";
+        _validator.TestValidate(r).ShouldHaveValidationErrorFor(x => x.Phone);
+    }
+
+    [Fact]
+    public void E164_Phone_Passes()
+    {
+        var r = Valid(); r.Phone = "+15551234567";
+        _validator.TestValidate(r).ShouldNotHaveValidationErrorFor(x => x.Phone);
     }
 }
 

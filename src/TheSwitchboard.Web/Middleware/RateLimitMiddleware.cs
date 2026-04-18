@@ -12,6 +12,9 @@ public class RateLimitMiddleware
     private const int MaxRequests = 10;
     private static readonly TimeSpan Window = TimeSpan.FromMinutes(1);
 
+    /// <summary>Test-only hook: clears the in-memory client bucket so each test starts fresh.</summary>
+    public static void ResetAll() => _clients.Clear();
+
     public RateLimitMiddleware(RequestDelegate next, ILogger<RateLimitMiddleware> logger)
     {
         _next = next;

@@ -12,6 +12,10 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateBootstrapLogger();
 
+// Ensure Log closes once at actual process exit — not on HostAbortedException
+// bubbling out of WebApplicationFactory<Program> during integration tests.
+AppDomain.CurrentDomain.ProcessExit += (_, _) => Log.CloseAndFlush();
+
 try
 {
     var builder = WebApplication.CreateBuilder(args);
@@ -40,7 +44,7 @@ try
         if (hasDatabase)
             options.UseNpgsql(connectionString);
         else
-            options.UseInMemoryDatabase("SwitchboardDesignReview");
+            options.UseInMemoryDatabase(builder.Configuration["Database:InMemoryName"] ?? "SwitchboardDesignReview");
     });
 
     // Identity (admin auth)
@@ -149,9 +153,6 @@ try
 catch (Exception ex) when (ex is not HostAbortedException)
 {
     Log.Fatal(ex, "Application terminated unexpectedly");
-}
-finally
-{
     Log.CloseAndFlush();
 }
 

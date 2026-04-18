@@ -3,15 +3,18 @@ using Ganss.Xss;
 using Microsoft.EntityFrameworkCore;
 using TheSwitchboard.Web.Data;
 using TheSwitchboard.Web.Models.Forms;
+using TheSwitchboard.Web.Services.Phoenix;
 
 namespace TheSwitchboard.Web.Services;
 
 public interface IFormService
 {
+    Task<FormSubmission> ProcessContactAsync(ContactFormRequest request, string? ipAddress, string? userAgent, string? sourcePage);
     Task<FormSubmission> ProcessSubmissionAsync(string formType, Dictionary<string, string> data, string? ipAddress, string? userAgent, string? sourcePage);
-    Task<List<FormSubmission>> GetSubmissionsAsync(int page = 1, int pageSize = 20, string? formType = null);
+    Task<List<FormSubmission>> GetSubmissionsAsync(int page = 1, int pageSize = 20, string? formType = null, string? role = null);
     Task<FormSubmission?> GetSubmissionByIdAsync(int id);
-    Task<int> GetSubmissionCountAsync(string? formType = null);
+    Task<int> GetSubmissionCountAsync(string? formType = null, string? role = null);
+    Task MarkEmailBouncedAsync(string email);
 }
 
 public class FormService : IFormService
@@ -32,6 +35,75 @@ public class FormService : IFormService
         _sanitizer.AllowedTags.Clear();
     }
 
+    public async Task<FormSubmission> ProcessContactAsync(ContactFormRequest request, string? ipAddress, string? userAgent, string? sourcePage)
+    {
+        var sanitized = new Dictionary<string, string>
+        {
+            ["name"] = _sanitizer.Sanitize(request.Name),
+            ["email"] = _sanitizer.Sanitize(request.Email),
+            ["company"] = _sanitizer.Sanitize(request.Company),
+            ["phone"] = _sanitizer.Sanitize(request.Phone ?? ""),
+            ["role"] = _sanitizer.Sanitize(request.Role),
+            ["message"] = _sanitizer.Sanitize(request.Message ?? ""),
+        };
+
+        var submission = new FormSubmission
+        {
+            FormType = "contact",
+            Data = JsonSerializer.Serialize(sanitized),
+            IpAddress = ipAddress,
+            UserAgent = userAgent,
+            SourcePage = sourcePage,
+            Role = request.Role,
+            PhoenixSyncStatus = PhoenixSyncStatus.Pending,
+        };
+        _db.FormSubmissions.Add(submission);
+        await _db.SaveChangesAsync();
+        _logger.LogInformation("Contact submission saved: #{Id}", submission.Id);
+
+        await DispatchPhoenixAsync(submission, sanitized);
+        await DispatchEmailsAsync("contact", sanitized);
+        return submission;
+    }
+
+    private async Task DispatchPhoenixAsync(FormSubmission submission, Dictionary<string, string> sanitized)
+    {
+        submission.PhoenixSyncAttempts++;
+        submission.LastPhoenixAttemptAt = DateTime.UtcNow;
+        try
+        {
+            var ok = await _crmService.SendFormSubmissionAsync(submission.FormType, sanitized);
+            submission.PhoenixSyncStatus = ok ? PhoenixSyncStatus.Sent : PhoenixSyncStatus.Failed;
+            submission.SentToPhoenix = ok;
+            submission.PhoenixResponse = ok ? "sent" : "non-2xx";
+        }
+        catch (Exception ex)
+        {
+            submission.PhoenixSyncStatus = PhoenixSyncStatus.Failed;
+            submission.PhoenixResponse = ex.Message;
+            _logger.LogWarning(ex, "Phoenix webhook failed for submission #{Id}", submission.Id);
+        }
+        await _db.SaveChangesAsync();
+    }
+
+    private async Task DispatchEmailsAsync(string formType, Dictionary<string, string> sanitized)
+    {
+        try
+        {
+            var email = sanitized.GetValueOrDefault("email", "");
+            var name = sanitized.GetValueOrDefault("name", "");
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                await _emailService.SendContactConfirmationAsync(email, name);
+                await _emailService.SendInternalNotificationAsync(formType, name, email);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Email dispatch failed for {FormType}", formType);
+        }
+    }
+
     public async Task<FormSubmission> ProcessSubmissionAsync(
         string formType,
         Dictionary<string, string> data,
@@ -39,12 +111,9 @@ public class FormService : IFormService
         string? userAgent,
         string? sourcePage)
     {
-        // Sanitize all input values
         var sanitizedData = new Dictionary<string, string>();
         foreach (var kvp in data)
-        {
             sanitizedData[kvp.Key] = _sanitizer.Sanitize(kvp.Value);
-        }
 
         var submission = new FormSubmission
         {
@@ -52,59 +121,25 @@ public class FormService : IFormService
             Data = JsonSerializer.Serialize(sanitizedData),
             IpAddress = ipAddress,
             UserAgent = userAgent,
-            SourcePage = sourcePage
+            SourcePage = sourcePage,
+            Role = sanitizedData.GetValueOrDefault("role"),
+            PhoenixSyncStatus = PhoenixSyncStatus.Pending
         };
 
         _db.FormSubmissions.Add(submission);
         await _db.SaveChangesAsync();
-
         _logger.LogInformation("Form submission saved: {FormType} #{Id}", formType, submission.Id);
 
-        // Send to Phoenix CRM (fire and forget, don't block response)
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                var sent = await _crmService.SendFormSubmissionAsync(formType, sanitizedData);
-                if (sent)
-                {
-                    submission.SentToPhoenix = true;
-                    submission.PhoenixResponse = "sent";
-                    await _db.SaveChangesAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Phoenix CRM webhook failed for submission #{Id}", submission.Id);
-            }
-        });
-
-        // Send emails (fire and forget)
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                if (sanitizedData.TryGetValue("email", out var email) && sanitizedData.TryGetValue("firstName", out var name))
-                {
-                    await _emailService.SendContactConfirmationAsync(email, name);
-                    await _emailService.SendInternalNotificationAsync(formType, name, email);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Email sending failed for submission #{Id}", submission.Id);
-            }
-        });
-
+        await DispatchPhoenixAsync(submission, sanitizedData);
+        await DispatchEmailsAsync(formType, sanitizedData);
         return submission;
     }
 
-    public async Task<List<FormSubmission>> GetSubmissionsAsync(int page = 1, int pageSize = 20, string? formType = null)
+    public async Task<List<FormSubmission>> GetSubmissionsAsync(int page = 1, int pageSize = 20, string? formType = null, string? role = null)
     {
         var query = _db.FormSubmissions.AsQueryable();
-        if (!string.IsNullOrEmpty(formType))
-            query = query.Where(s => s.FormType == formType);
-
+        if (!string.IsNullOrEmpty(formType)) query = query.Where(s => s.FormType == formType);
+        if (!string.IsNullOrEmpty(role)) query = query.Where(s => s.Role == role);
         return await query
             .OrderByDescending(s => s.CreatedAt)
             .Skip((page - 1) * pageSize)
@@ -117,11 +152,18 @@ public class FormService : IFormService
         return await _db.FormSubmissions.FindAsync(id);
     }
 
-    public async Task<int> GetSubmissionCountAsync(string? formType = null)
+    public async Task<int> GetSubmissionCountAsync(string? formType = null, string? role = null)
     {
         var query = _db.FormSubmissions.AsQueryable();
-        if (!string.IsNullOrEmpty(formType))
-            query = query.Where(s => s.FormType == formType);
+        if (!string.IsNullOrEmpty(formType)) query = query.Where(s => s.FormType == formType);
+        if (!string.IsNullOrEmpty(role)) query = query.Where(s => s.Role == role);
         return await query.CountAsync();
+    }
+
+    public async Task MarkEmailBouncedAsync(string email)
+    {
+        var rows = await _db.FormSubmissions.Where(s => s.Data.Contains(email)).ToListAsync();
+        foreach (var r in rows) r.BouncedEmail = true;
+        if (rows.Count > 0) await _db.SaveChangesAsync();
     }
 }
