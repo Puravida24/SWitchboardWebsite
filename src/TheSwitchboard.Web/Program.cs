@@ -203,6 +203,7 @@ try
             var path = ctx.Context.Request.Path.Value ?? string.Empty;
             if (path.StartsWith("/css/", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("/js/", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("/fonts/", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("/wireframes/assets/", StringComparison.OrdinalIgnoreCase))
             {
                 ctx.Context.Response.Headers["Cache-Control"] = "public, max-age=604800, immutable";
