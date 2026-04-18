@@ -1,0 +1,37 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Experiments.DetailModel
+@{
+    ViewData["Title"] = "Experiment";
+    Layout = "_AdminLayout";
+}
+
+@if (Model.Experiment is null)
+{
+    <h1>Not found</h1>
+    return;
+}
+
+<h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">@Model.Experiment.Name</h1>
+<p style="color: var(--slate-400); font-family: ui-monospace, monospace; font-size: 0.85rem; margin-bottom: 1.5rem;">slug: @Model.Experiment.Slug</p>
+
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+    <thead>
+        <tr style="text-align: left; color: var(--slate-400); border-bottom: 1px solid rgba(255,255,255,0.08);">
+            <th style="padding: 0.5rem; font-weight: 500;">Variant</th>
+            <th style="padding: 0.5rem; font-weight: 500; text-align:right;">Assignments</th>
+            <th style="padding: 0.5rem; font-weight: 500; text-align:right;">Conversions</th>
+            <th style="padding: 0.5rem; font-weight: 500; text-align:right;">Rate</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model.Rows)
+        {
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); color: white;">
+                <td style="padding: 0.5rem;">@row.VariantName @(row.IsControl ? "(control)" : "")</td>
+                <td style="padding: 0.5rem; font-variant-numeric: tabular-nums; text-align:right;">@row.Assignments</td>
+                <td style="padding: 0.5rem; font-variant-numeric: tabular-nums; text-align:right;">@row.Conversions</td>
+                <td style="padding: 0.5rem; font-variant-numeric: tabular-nums; text-align:right;">@row.Rate.ToString("P2")</td>
+            </tr>
+        }
+    </tbody>
+</table>

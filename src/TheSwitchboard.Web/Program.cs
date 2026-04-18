@@ -102,6 +102,7 @@ try
 
     // Security headers (all environments)
     app.UseMiddleware<SecurityHeadersMiddleware>();
+    app.UseMiddleware<RedirectMiddleware>();
 
     if (!app.Environment.IsDevelopment())
     {
@@ -120,6 +121,7 @@ try
     app.UseMiddleware<RateLimitMiddleware>();
 
     // First-party analytics
+    app.UseMiddleware<AbTestingMiddleware>();
     app.UseMiddleware<AnalyticsMiddleware>();
 
     app.UseSerilogRequestLogging();

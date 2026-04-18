@@ -44,6 +44,14 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     public DbSet<LegalPage> LegalPages => Set<LegalPage>();
     public DbSet<ContentVersion> ContentVersions => Set<ContentVersion>();
 
+    // Slice 5 A/B + launch
+    public DbSet<Models.Ab.Experiment> Experiments => Set<Models.Ab.Experiment>();
+    public DbSet<Models.Ab.Variant> Variants => Set<Models.Ab.Variant>();
+    public DbSet<Models.Ab.AbAssignment> AbAssignments => Set<Models.Ab.AbAssignment>();
+    public DbSet<Models.Ab.AbConversion> AbConversions => Set<Models.Ab.AbConversion>();
+    public DbSet<Redirect> Redirects => Set<Redirect>();
+    public DbSet<FeatureFlag> FeatureFlags => Set<FeatureFlag>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

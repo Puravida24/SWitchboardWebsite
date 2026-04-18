@@ -1,0 +1,32 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Experiments.IndexModel
+@{
+    ViewData["Title"] = "Experiments";
+    Layout = "_AdminLayout";
+}
+
+<h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem;">A/B Experiments</h1>
+
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+    <thead>
+        <tr style="text-align: left; color: var(--slate-400); border-bottom: 1px solid rgba(255,255,255,0.08);">
+            <th style="padding: 0.6rem 0.5rem; font-weight: 500;">Name</th>
+            <th style="padding: 0.6rem 0.5rem; font-weight: 500;">Slug</th>
+            <th style="padding: 0.6rem 0.5rem; font-weight: 500;">Active</th>
+            <th style="padding: 0.6rem 0.5rem; font-weight: 500;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var e in Model.Experiments)
+        {
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); color: white;">
+                <td style="padding: 0.6rem 0.5rem;">@e.Name</td>
+                <td style="padding: 0.6rem 0.5rem; font-family: ui-monospace, monospace;">@e.Slug</td>
+                <td style="padding: 0.6rem 0.5rem;">@(e.IsActive ? "●" : "○")</td>
+                <td style="padding: 0.6rem 0.5rem;">
+                    <a href="/Admin/Experiments/Detail?id=@e.Id" style="color: #93b4ff; text-decoration: none; font-size: 0.85rem;">Results →</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
