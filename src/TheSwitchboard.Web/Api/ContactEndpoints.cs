@@ -14,6 +14,26 @@ public static class ContactEndpoints
             IFormService formService,
             HttpContext context) =>
         {
+            // H-07.3: Origin-check CSRF defense for unauthenticated JSON APIs.
+            // If the request carries an Origin header (every browser POST does) it
+            // must match the request's own Host. Non-browser clients (curl, server-
+            // to-server) typically omit Origin — those are allowed through.
+            var origin = context.Request.Headers.Origin.FirstOrDefault();
+            if (!string.IsNullOrEmpty(origin))
+            {
+                var host = context.Request.Host.Value;
+                var scheme = context.Request.Scheme;
+                var allowed1 = $"{scheme}://{host}";
+                var allowed2 = $"https://{host}";
+                var allowed3 = $"http://{host}";
+                if (!string.Equals(origin, allowed1, StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(origin, allowed2, StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(origin, allowed3, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Results.StatusCode(StatusCodes.Status403Forbidden);
+                }
+            }
+
             // S2-07: honeypot — CSS-hidden field. A human can't fill it.
             if (!string.IsNullOrWhiteSpace(request.Website))
             {

@@ -16,7 +16,7 @@ public class RateLimitTests
             _ => { nextCalled = true; return Task.CompletedTask; },
             new Microsoft.Extensions.Logging.Abstractions.NullLogger<RateLimitMiddleware>());
 
-        await middleware.InvokeAsync(context);
+        await middleware.InvokeAsync(context, new InMemoryRateLimitStore());
         Assert.True(nextCalled);
     }
 
@@ -30,7 +30,7 @@ public class RateLimitTests
             _ => { nextCalled = true; return Task.CompletedTask; },
             new Microsoft.Extensions.Logging.Abstractions.NullLogger<RateLimitMiddleware>());
 
-        await middleware.InvokeAsync(context);
+        await middleware.InvokeAsync(context, new InMemoryRateLimitStore());
         Assert.True(nextCalled);
         Assert.NotEqual(429, context.Response.StatusCode);
     }

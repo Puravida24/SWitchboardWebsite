@@ -24,10 +24,10 @@ public class SecurityHeadersMiddleware
             // H-05: script-src uses a per-request nonce — no 'unsafe-inline'.
             // H-04: 'unsafe-eval' dropped (our code doesn't eval).
             $"script-src 'self' 'nonce-{nonce}' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; " +
-            // style-src keeps 'unsafe-inline' for now — the wireframe ships with
-            // one giant inline <style> block; splitting out to external CSS is a
-            // follow-up. Low XSS leverage compared to script injection.
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+            // H-07.1: style-src tightened — the giant inline <style> block moved
+            // to /css/design-32e.css. 'unsafe-inline' removed. Font services still
+            // allowed.
+            "style-src 'self' https://fonts.googleapis.com; " +
             "img-src 'self' data: https:; " +
             "font-src 'self' https://fonts.gstatic.com; " +
             "connect-src 'self'; " +

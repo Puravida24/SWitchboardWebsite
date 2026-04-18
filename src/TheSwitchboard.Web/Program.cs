@@ -26,6 +26,8 @@ try
             .ReadFrom.Configuration(context.Configuration)
             .ReadFrom.Services(services)
             .Enrich.FromLogContext()
+            // H-07.4: mask Email / Phone / IpAddress values in every log event.
+            .Enrich.With<TheSwitchboard.Web.Services.PiiRedactionEnricher>()
             .WriteTo.Console();
 
         var seqUrl = context.Configuration["Seq:ServerUrl"];
@@ -100,6 +102,12 @@ try
     builder.Services.AddScoped<IImageService, ImageService>();
     builder.Services.AddHttpClient<IPhoenixCrmService, PhoenixCrmService>();
 
+    // H-07.2: rate-limit store. Future: swap to RedisRateLimitStore when
+    // builder.Configuration["Redis:ConnectionString"] is populated. For now
+    // single-process in-memory bucket.
+    builder.Services.AddSingleton<TheSwitchboard.Web.Middleware.IRateLimitStore,
+                                   TheSwitchboard.Web.Middleware.InMemoryRateLimitStore>();
+
     // Validators
     builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
@@ -139,7 +147,12 @@ try
         app.UseHsts();
     }
 
-    app.UseStatusCodePagesWithReExecute("/Error/{0}");
+    // Status-code page re-execution applies ONLY to human-facing routes. For /api/*
+    // an unhandled non-2xx shouldn't rewrite the status code (which was masking our
+    // 403 origin-check response behind a 404 because /Error/403 doesn't exist).
+    app.UseWhen(
+        ctx => !ctx.Request.Path.StartsWithSegments("/api"),
+        branch => branch.UseStatusCodePagesWithReExecute("/Error/{0}"));
     if (app.Environment.IsDevelopment())
         app.UseHttpsRedirection();
     app.UseRouting();

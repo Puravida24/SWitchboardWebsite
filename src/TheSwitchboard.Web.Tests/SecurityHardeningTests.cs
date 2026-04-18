@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -130,6 +131,52 @@ public class SecurityHardeningTests : IClassFixture<SwitchboardWebApplicationFac
         Assert.False(string.IsNullOrEmpty(n1));
         Assert.False(string.IsNullOrEmpty(n2));
         Assert.NotEqual(n1, n2);
+    }
+
+    // ── H-07.1 CSP style-src has no 'unsafe-inline' (external CSS) ─────
+    [Fact]
+    public async Task H_07_1_Csp_StyleSrc_NoUnsafeInline()
+    {
+        var client = _factory.CreateClient();
+        var res = await client.GetAsync("/");
+        var csp = string.Join(" ", res.Headers.GetValues("Content-Security-Policy"));
+        var styleSrc = Regex.Match(csp, @"style-src\s+([^;]+)").Groups[1].Value;
+        Assert.DoesNotContain("'unsafe-inline'", styleSrc);
+    }
+
+    // ── H-07.2 IRateLimitStore registered in DI ────────────────────────
+    [Fact]
+    public void H_07_2_RateLimitStore_Registered()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var store = scope.ServiceProvider.GetService<TheSwitchboard.Web.Middleware.IRateLimitStore>();
+        Assert.NotNull(store);
+    }
+
+    // ── H-07.3 cross-origin POST /api/contact → 403 ────────────────────
+    // Uses a fresh dedicated factory so the shared-fixture tests can't pollute
+    // the rate-limit state and mask the 403 behind a 429→StatusCodePage 404 rewrite.
+    [Fact]
+    public async Task H_07_3_CrossOrigin_Post_Rejected()
+    {
+        TheSwitchboard.Web.Middleware.RateLimitMiddleware.ResetAll();
+        using var factory = new Slice2Factory();
+        var evil = factory.CreateClient();
+        evil.DefaultRequestHeaders.Add("Origin", "https://evil.example.com");
+        var res = await evil.PostAsJsonAsync("/api/contact", new {
+            name = "x", email = "a@b.com", company = "c", role = "carrier",
+            loadedAt = DateTime.UtcNow.AddSeconds(-30).ToString("o")
+        });
+        Assert.Equal(HttpStatusCode.Forbidden, res.StatusCode);
+    }
+
+    // ── H-07.4 PII redaction — log event mask applied ──────────────────
+    [Fact]
+    public void H_07_4_PiiRedactor_MasksEmail()
+    {
+        var masked = TheSwitchboard.Web.Services.PiiRedactor.MaskEmail("jane.doe@example.com");
+        Assert.DoesNotContain("jane.doe", masked);
+        Assert.Contains("@example.com", masked);
     }
 
     // ── H-06 HSTS configured with 1y + subdomains + preload ────────────
