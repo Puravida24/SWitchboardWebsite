@@ -57,4 +57,29 @@ public class AccessibilityContractTests
         Assert.Contains(".skip-link", css);
         Assert.Matches(@"\.skip-link\s*:\s*focus", css);
     }
+
+    // ── H-6.C — Logo is served as WebP with PNG fallback via <picture> ─────
+    [Fact]
+    public void H6_C_Logo_WebpFile_Exists_AndIsSmaller()
+    {
+        var pngPath  = Path.Combine(WebRoot(), "wireframes/assets/logo/switchboard-logo.png");
+        var webpPath = Path.Combine(WebRoot(), "wireframes/assets/logo/switchboard-logo.webp");
+        Assert.True(File.Exists(pngPath),  $"PNG logo missing at {pngPath}");
+        Assert.True(File.Exists(webpPath), $"WebP logo missing at {webpPath}");
+        var pngSize  = new FileInfo(pngPath).Length;
+        var webpSize = new FileInfo(webpPath).Length;
+        Assert.True(webpSize < pngSize,
+            $"WebP ({webpSize} bytes) should be smaller than PNG ({pngSize} bytes)");
+    }
+
+    [Fact]
+    public void H6_C_Homepage_UsesPictureElement_ForLogo()
+    {
+        var home = Read("wireframes/design-32e-newsprint.html");
+        // Both logo instances (masthead + footer) must be wrapped in <picture>
+        // with a <source srcset=...webp type="image/webp"> pointing at the WebP
+        // variant and a fallback <img src=...png> for browsers that don't support WebP.
+        Assert.Matches(@"<source[^>]+srcset=[""'][^""']*switchboard-logo\.webp[""'][^>]*type=[""']image/webp[""']",
+            home);
+    }
 }
