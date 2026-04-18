@@ -304,8 +304,19 @@ public class Slice2IntegrationTests : IClassFixture<Slice2Factory>
         var row = await db.Set<FormSubmission>().OrderByDescending(s => s.Id).FirstAsync();
         var email = "jane@example.com";
 
-        var bouncePayload = new { email };
-        var res = await _client.PostAsJsonAsync("/api/ses/bounce", bouncePayload);
+        // H-3.B: webhook now requires HMAC-SHA256 signature.
+        var body = System.Text.Json.JsonSerializer.Serialize(new { email });
+        using var h = new System.Security.Cryptography.HMACSHA256(
+            System.Text.Encoding.UTF8.GetBytes(Slice2Factory.TestSesSecret));
+        var sig = Convert.ToHexString(
+            h.ComputeHash(System.Text.Encoding.UTF8.GetBytes(body))).ToLowerInvariant();
+
+        using var req = new HttpRequestMessage(HttpMethod.Post, "/api/ses/bounce")
+        {
+            Content = new StringContent(body, System.Text.Encoding.UTF8, "application/json")
+        };
+        req.Headers.Add("X-SES-Signature", $"sha256={sig}");
+        var res = await _client.SendAsync(req);
         Assert.Equal(HttpStatusCode.OK, res.StatusCode);
 
         using var scope2 = _factory.Services.CreateScope();

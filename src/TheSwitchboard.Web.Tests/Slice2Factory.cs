@@ -16,6 +16,9 @@ namespace TheSwitchboard.Web.Tests;
 /// </summary>
 public class Slice2Factory : SwitchboardWebApplicationFactory
 {
+    // Shared test secret for signing SES bounce webhooks (H-3.B).
+    public const string TestSesSecret = "slice2-test-ses-secret";
+
     public FakePhoenixCrmService FakePhoenix { get; } = new();
     public FakeEmailService FakeEmail { get; } = new();
 
@@ -38,7 +41,8 @@ public class Slice2Factory : SwitchboardWebApplicationFactory
         {
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["Database:InMemoryName"] = _dbName
+                ["Database:InMemoryName"] = _dbName,
+                ["Ses:WebhookSecret"] = TestSesSecret
             });
         });
 

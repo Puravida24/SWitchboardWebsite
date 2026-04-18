@@ -74,7 +74,19 @@ public class ImageService : IImageService
 
     public void DeleteImage(string relativePath)
     {
-        var fullPath = Path.Combine(_env.WebRootPath, relativePath.TrimStart('/'));
+        // H-3.C: path-traversal hardening. Normalize the combined path and confirm
+        // it still lives under WebRootPath before deleting. Crafted inputs like
+        // "../../etc/passwd" would otherwise escape wwwroot via Path.Combine.
+        var combined = Path.Combine(_env.WebRootPath, relativePath.TrimStart('/'));
+        var fullPath = Path.GetFullPath(combined);
+        var webRoot  = Path.GetFullPath(_env.WebRootPath);
+        var sep = Path.DirectorySeparatorChar.ToString();
+        if (!webRoot.EndsWith(sep)) webRoot += sep;
+        if (!fullPath.StartsWith(webRoot, StringComparison.OrdinalIgnoreCase))
+        {
+            _logger.LogWarning("Refused to delete path outside wwwroot: {Path}", relativePath);
+            return;
+        }
         if (File.Exists(fullPath))
         {
             File.Delete(fullPath);

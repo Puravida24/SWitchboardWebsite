@@ -1,3 +1,6 @@
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using FluentValidation;
 using TheSwitchboard.Web.Models.Forms;
 using TheSwitchboard.Web.Services;
@@ -6,6 +9,21 @@ namespace TheSwitchboard.Web.Api;
 
 public static class ContactEndpoints
 {
+    // H-07.3 / H-3.A: Origin-check CSRF defense for unauthenticated JSON APIs.
+    // If the request carries an Origin header (every browser POST does) it
+    // must match the request's own Host. Non-browser clients (curl, server-
+    // to-server) typically omit Origin — those are allowed through.
+    private static bool IsOriginAllowed(HttpContext context)
+    {
+        var origin = context.Request.Headers.Origin.FirstOrDefault();
+        if (string.IsNullOrEmpty(origin)) return true;
+        var host = context.Request.Host.Value;
+        var scheme = context.Request.Scheme;
+        return string.Equals(origin, $"{scheme}://{host}", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(origin, $"https://{host}",  StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(origin, $"http://{host}",   StringComparison.OrdinalIgnoreCase);
+    }
+
     public static void MapContactApi(this WebApplication app)
     {
         app.MapPost("/api/contact", async (
@@ -14,25 +32,8 @@ public static class ContactEndpoints
             IFormService formService,
             HttpContext context) =>
         {
-            // H-07.3: Origin-check CSRF defense for unauthenticated JSON APIs.
-            // If the request carries an Origin header (every browser POST does) it
-            // must match the request's own Host. Non-browser clients (curl, server-
-            // to-server) typically omit Origin — those are allowed through.
-            var origin = context.Request.Headers.Origin.FirstOrDefault();
-            if (!string.IsNullOrEmpty(origin))
-            {
-                var host = context.Request.Host.Value;
-                var scheme = context.Request.Scheme;
-                var allowed1 = $"{scheme}://{host}";
-                var allowed2 = $"https://{host}";
-                var allowed3 = $"http://{host}";
-                if (!string.Equals(origin, allowed1, StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(origin, allowed2, StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(origin, allowed3, StringComparison.OrdinalIgnoreCase))
-                {
-                    return Results.StatusCode(StatusCodes.Status403Forbidden);
-                }
-            }
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
 
             // S2-07: honeypot — CSS-hidden field. A human can't fill it.
             if (!string.IsNullOrWhiteSpace(request.Website))
@@ -73,6 +74,10 @@ public static class ContactEndpoints
             IFormService formService,
             HttpContext context) =>
         {
+            // H-3.A: Origin-check CSRF defense (same as /api/contact).
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+
             var validation = await validator.ValidateAsync(request);
             if (!validation.IsValid)
             {
@@ -110,11 +115,44 @@ public static class ContactEndpoints
             return Results.Ok();
         });
 
-        // S2-22: SES bounce webhook — flags submissions whose email address bounced.
-        // Minimal shape for now; Slice 3 will add signature verification + richer payload handling.
-        app.MapPost("/api/ses/bounce", async (SesBouncePayload payload, IFormService formService) =>
+        // H-3.B: SES bounce webhook with HMAC-SHA256 signature verification.
+        // Sender must compute HMAC-SHA256(body, Ses:WebhookSecret) and pass it as
+        // "X-SES-Signature: sha256=<hexlower>". Without a configured secret we reject
+        // all inbound calls — fail-closed is safer than fail-open for a prod webhook.
+        app.MapPost("/api/ses/bounce", async (HttpContext ctx, IFormService formService, IConfiguration config) =>
         {
-            if (string.IsNullOrWhiteSpace(payload.Email)) return Results.BadRequest();
+            var secret = config["Ses:WebhookSecret"];
+            if (string.IsNullOrEmpty(secret))
+                return Results.Unauthorized();
+
+            ctx.Request.EnableBuffering();
+            string body;
+            using (var reader = new StreamReader(ctx.Request.Body, Encoding.UTF8, leaveOpen: true))
+                body = await reader.ReadToEndAsync();
+            ctx.Request.Body.Position = 0;
+
+            var provided = ctx.Request.Headers["X-SES-Signature"].FirstOrDefault();
+            if (string.IsNullOrEmpty(provided) || !provided.StartsWith("sha256=", StringComparison.OrdinalIgnoreCase))
+                return Results.Unauthorized();
+            var providedHex = provided["sha256=".Length..];
+
+            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
+            var computed = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(body))).ToLowerInvariant();
+
+            // Timing-safe equality — compare byte arrays, not strings.
+            var expectedBytes = Convert.FromHexString(computed);
+            byte[] providedBytes;
+            try { providedBytes = Convert.FromHexString(providedHex); }
+            catch { return Results.Unauthorized(); }
+            if (!CryptographicOperations.FixedTimeEquals(expectedBytes, providedBytes))
+                return Results.Unauthorized();
+
+            SesBouncePayload? payload;
+            try { payload = JsonSerializer.Deserialize<SesBouncePayload>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }); }
+            catch { return Results.BadRequest(); }
+            if (payload is null || string.IsNullOrWhiteSpace(payload.Email))
+                return Results.BadRequest();
+
             await formService.MarkEmailBouncedAsync(payload.Email);
             return Results.Ok(new { success = true });
         });
