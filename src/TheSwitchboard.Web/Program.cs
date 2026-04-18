@@ -100,6 +100,21 @@ try
 
     var app = builder.Build();
 
+    // H-02: honor X-Forwarded-For / X-Forwarded-Proto from the Railway proxy
+    // so downstream middleware (rate limit, analytics) see the real client IP
+    // rather than the proxy's loopback address.
+    var fhOpts = new Microsoft.AspNetCore.Builder.ForwardedHeadersOptions
+    {
+        ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor |
+                           Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+    };
+    // Railway sits behind a cloud proxy with rotating egress IPs — trust the
+    // forwarded headers unconditionally. Safe here because we only honor the
+    // two specific headers above, not arbitrary X-Forwarded-*.
+    fhOpts.KnownNetworks.Clear();
+    fhOpts.KnownProxies.Clear();
+    app.UseForwardedHeaders(fhOpts);
+
     // Security headers (all environments)
     app.UseMiddleware<SecurityHeadersMiddleware>();
     app.UseMiddleware<RedirectMiddleware>();

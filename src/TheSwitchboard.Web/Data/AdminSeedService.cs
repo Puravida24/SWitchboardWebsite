@@ -21,11 +21,21 @@ public static class AdminSeedService
 
         // Create default admin user from config
         var adminEmail = config["Admin:Email"] ?? "admin@theswitchboardmarketing.com";
-        var adminPassword = config["Admin:Password"] ?? "Switchboard2026!";
+        var adminPassword = config["Admin:Password"];
 
         var existingUser = await userManager.FindByEmailAsync(adminEmail);
         if (existingUser == null)
         {
+            // Hardening H-01: fail-fast when no admin user exists AND no password
+            // is configured. Better to refuse to boot than to silently seed a
+            // well-known default credential.
+            if (string.IsNullOrWhiteSpace(adminPassword))
+            {
+                throw new InvalidOperationException(
+                    "AdminSeedService: no Admin user exists yet and Admin:Password is not configured. " +
+                    "Set it as an environment variable or in appsettings before starting the app. " +
+                    "This guard was added to prevent shipping a known default password to production.");
+            }
             var adminUser = new AdminUser
             {
                 UserName = adminEmail,
