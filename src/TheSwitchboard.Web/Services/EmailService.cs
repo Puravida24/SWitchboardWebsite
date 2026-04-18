@@ -6,7 +6,7 @@ namespace TheSwitchboard.Web.Services;
 public interface IEmailService
 {
     Task SendContactConfirmationAsync(string toEmail, string toName);
-    Task SendInternalNotificationAsync(string formType, string submitterName, string submitterEmail);
+    Task SendInternalNotificationAsync(string formType, string submitterName, string submitterEmail, IDictionary<string, string>? fields = null);
     Task SendAsync(string to, string subject, string htmlBody);
 }
 
@@ -35,15 +35,36 @@ public class EmailService : IEmailService
         await SendAsync(toEmail, subject, body);
     }
 
-    public async Task SendInternalNotificationAsync(string formType, string submitterName, string submitterEmail)
+    public async Task SendInternalNotificationAsync(string formType, string submitterName, string submitterEmail, IDictionary<string, string>? fields = null)
     {
         var internalEmail = _config["Email:InternalNotificationAddress"] ?? "team@theswitchboardmarketing.com";
         var subject = $"New {formType} submission from {submitterName}";
+
+        // Render every submitted field (not just name/email). Skip honeypot + timing noise.
+        var skip = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "website", "honeypot", "_honeypot", "loadedat", "_formloadedat" };
+        var rows = new System.Text.StringBuilder();
+        if (fields is not null)
+        {
+            foreach (var (key, val) in fields)
+            {
+                if (string.IsNullOrWhiteSpace(val) || skip.Contains(key)) continue;
+                var label = char.ToUpperInvariant(key[0]) + key[1..];
+                var encoded = System.Net.WebUtility.HtmlEncode(val).Replace("\n", "<br>");
+                rows.AppendLine($"<p><strong>{System.Net.WebUtility.HtmlEncode(label)}:</strong><br>{encoded}</p>");
+            }
+        }
+        if (rows.Length == 0)
+        {
+            // Fallback (no fields passed) — render at least name + email so the email isn't useless.
+            rows.AppendLine($"<p><strong>Name:</strong> {System.Net.WebUtility.HtmlEncode(submitterName)}</p>");
+            rows.AppendLine($"<p><strong>Email:</strong> {System.Net.WebUtility.HtmlEncode(submitterEmail)}</p>");
+        }
+
         var body = $"""
             <h3>New {System.Net.WebUtility.HtmlEncode(formType)} submission</h3>
-            <p><strong>Name:</strong> {System.Net.WebUtility.HtmlEncode(submitterName)}</p>
-            <p><strong>Email:</strong> {System.Net.WebUtility.HtmlEncode(submitterEmail)}</p>
-            <p><a href="https://theswitchboardmarketing.com/admin/forms/submissions">View in admin</a></p>
+            {rows}
+            <p><a href="https://www.theswitchboardmarketing.com/Admin/Submissions">View in admin</a></p>
             """;
 
         await SendAsync(internalEmail, subject, body);

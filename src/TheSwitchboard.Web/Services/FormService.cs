@@ -121,7 +121,7 @@ public class FormService : IFormService
             if (!string.IsNullOrWhiteSpace(email))
             {
                 await _emailService.SendContactConfirmationAsync(email, name);
-                await _emailService.SendInternalNotificationAsync(formType, name, email);
+                await _emailService.SendInternalNotificationAsync(formType, name, email, sanitized);
             }
         }
         catch (Exception ex)
