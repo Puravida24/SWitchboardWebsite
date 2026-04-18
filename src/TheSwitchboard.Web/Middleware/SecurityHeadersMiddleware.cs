@@ -19,6 +19,16 @@ public class SecurityHeadersMiddleware
         headers["X-XSS-Protection"] = "1; mode=block";
         headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
         headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
+
+        // Belt-and-suspenders with robots.txt: mark admin + API routes noindex even if
+        // someone external links to them. robots.txt is advisory; this header is enforced.
+        var path = context.Request.Path.Value;
+        if (path is not null &&
+            (path.StartsWith("/Admin", StringComparison.OrdinalIgnoreCase) ||
+             path.StartsWith("/api", StringComparison.OrdinalIgnoreCase)))
+        {
+            headers["X-Robots-Tag"] = "noindex, nofollow";
+        }
         headers["Content-Security-Policy"] =
             "default-src 'self'; " +
             // H-05: script-src uses a per-request nonce — no 'unsafe-inline'.

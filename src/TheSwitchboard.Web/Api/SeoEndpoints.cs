@@ -3,26 +3,43 @@ using System.Text;
 namespace TheSwitchboard.Web.Api;
 
 /// <summary>
-/// Slice 4 SEO surfaces: /sitemap.xml, /robots.txt, /llms.txt.
-/// Route collection is hardcoded (small set of public pages, matches VERTICAL_SLICE_PLAN).
+/// SEO / crawler surfaces: /sitemap.xml, /robots.txt, /llms.txt, /.well-known/security.txt.
 /// </summary>
 public static class SeoEndpoints
 {
-    private static readonly string[] PublicRoutes = { "/", "/privacy", "/terms", "/accessibility" };
+    private record SitemapEntry(string Loc, string Priority, string ChangeFreq);
+
+    private static readonly SitemapEntry[] PublicRoutes =
+    {
+        new("/",              "1.0", "weekly"),
+        new("/privacy",       "0.4", "yearly"),
+        new("/terms",         "0.4", "yearly"),
+        new("/accessibility", "0.4", "yearly"),
+    };
 
     public static void MapSeoEndpoints(this WebApplication app)
     {
         app.MapGet("/sitemap.xml", (HttpContext ctx) =>
         {
             var baseUrl = $"{ctx.Request.Scheme}://{ctx.Request.Host}";
+            var today = DateTime.UtcNow.ToString("yyyy-MM-dd");
             var sb = new StringBuilder();
             sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            sb.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
-            foreach (var route in PublicRoutes)
+            sb.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:image=\"http://www.google.com/schemas/sitemap-image/1.1\">");
+            foreach (var r in PublicRoutes)
             {
                 sb.AppendLine("  <url>");
-                sb.AppendLine($"    <loc>{baseUrl}{route}</loc>");
-                sb.AppendLine($"    <changefreq>weekly</changefreq>");
+                sb.AppendLine($"    <loc>{baseUrl}{r.Loc}</loc>");
+                sb.AppendLine($"    <lastmod>{today}</lastmod>");
+                sb.AppendLine($"    <changefreq>{r.ChangeFreq}</changefreq>");
+                sb.AppendLine($"    <priority>{r.Priority}</priority>");
+                if (r.Loc == "/")
+                {
+                    sb.AppendLine("    <image:image>");
+                    sb.AppendLine($"      <image:loc>{baseUrl}/wireframes/assets/logo/switchboard-logo.png</image:loc>");
+                    sb.AppendLine("      <image:title>The Switchboard logo</image:title>");
+                    sb.AppendLine("    </image:image>");
+                }
                 sb.AppendLine("  </url>");
             }
             sb.AppendLine("</urlset>");
@@ -71,6 +88,21 @@ public static class SeoEndpoints
                 ## Contact
 
                 The Switchboard, LLC · Orem, Utah · theswitchboardmarketing.com
+                """;
+            return Results.Content(body, "text/plain");
+        });
+
+        // RFC 9116 security.txt — where researchers can report vulnerabilities.
+        app.MapGet("/.well-known/security.txt", (HttpContext ctx) =>
+        {
+            var baseUrl = $"{ctx.Request.Scheme}://{ctx.Request.Host}";
+            var expires = DateTime.UtcNow.AddYears(1).ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+            var body = $"""
+                Contact: mailto:security@theswitchboardmarketing.com
+                Expires: {expires}
+                Preferred-Languages: en
+                Canonical: {baseUrl}/.well-known/security.txt
+                Policy: {baseUrl}/security
                 """;
             return Results.Content(body, "text/plain");
         });
