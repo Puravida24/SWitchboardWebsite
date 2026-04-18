@@ -1,4 +1,35 @@
 <!DOCTYPE html>
+<!--
+
+    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    ▓                                                                ▓
+    ▓              ╭─────────────────────────────────╮               ▓
+    ▓              │     T H E   S W I T C H B O A R D               ▓
+    ▓              │                                 │               ▓
+    ▓              │     Insurance Intelligence      │               ▓
+    ▓              │     Written by people who have  │               ▓
+    ▓              │     written policies.           │               ▓
+    ▓              ╰─────────────────────────────────╯               ▓
+    ▓                                                                ▓
+    ▓                                                                ▓
+    ▓   Hello, code reader.                                          ▓
+    ▓                                                                ▓
+    ▓   We like your kind.                                           ▓
+    ▓                                                                ▓
+    ▓   Every line on this page — the enrichment pipeline,           ▓
+    ▓   the scoring models, the routing logic behind Phoenix —       ▓
+    ▓   was written in-house in Orem, Utah. No third-party SaaS      ▓
+    ▓   dependencies. No analytics trackers. No pixel soup.          ▓
+    ▓                                                                ▓
+    ▓   If you build things like this — or want to — reach out.      ▓
+    ▓                                                                ▓
+    ▓     →  theswitchboard.com/contact                              ▓
+    ▓                                                                ▓
+    ▓   (Open the console for the full welcome.)                     ▓
+    ▓                                                                ▓
+    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -50,23 +81,100 @@ body { font-family: var(--sans); background: var(--cream-1); color: var(--charco
   position: fixed;
   right: 22px;
   bottom: 22px;
-  width: 340px;
   background: #0a0a0a;
-  border: 1px solid rgba(147,180,255,0.28);
-  border-radius: 4px;
-  font-family: var(--mono);
   color: var(--cream-1);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(147,180,255,0.1) inset;
-  overflow: hidden;
+  font-family: var(--mono);
   z-index: 100;
-  transform: translateY(calc(100% + 40px));
+  overflow: hidden;
   opacity: 0;
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;
+  transform: translateY(24px);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.6s ease,
+              width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              border-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              max-height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.4s ease;
+}
+.scorecard.visible { transform: translateY(0); opacity: 1; }
+
+/* Collapsed pill state (default) */
+.scorecard[data-state="collapsed"] {
+  width: auto;
+  max-height: 48px;
+  border-radius: 999px;
+  border: 1px solid rgba(147,180,255,0.28);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+}
+.scorecard[data-state="collapsed"] .sc-full { display: none; }
+.scorecard[data-state="collapsed"] .sc-trigger {
+  padding: 11px 18px 11px 14px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  border-radius: 999px;
+}
+.scorecard[data-state="collapsed"] .sc-trigger:hover { background: rgba(147,180,255,0.08); }
+.scorecard[data-state="collapsed"] .sc-expanded-only { display: none; }
+
+/* Expanded card state */
+.scorecard[data-state="expanded"] {
+  width: 340px;
   max-height: calc(100vh - 70px);
+  border-radius: 4px;
+  border: 1px solid rgba(147,180,255,0.28);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(147,180,255,0.1) inset;
   display: flex;
   flex-direction: column;
 }
-.scorecard.visible { transform: translateY(0); opacity: 1; }
+.scorecard[data-state="expanded"] .sc-collapsed-only { display: none; }
+.scorecard[data-state="expanded"] .sc-trigger {
+  padding: 11px 14px;
+  background: rgba(147,180,255,0.08);
+  border-bottom: 1px solid rgba(147,180,255,0.22);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  border-radius: 4px 4px 0 0;
+  flex-shrink: 0;
+}
+.scorecard[data-state="expanded"] .sc-chevron { transform: rotate(180deg); }
+
+.sc-trigger {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: transparent;
+  border: none;
+  color: #d4e0ff;
+  font-family: var(--mono);
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background 0.3s ease, padding 0.4s ease, border-radius 0.45s ease;
+  white-space: nowrap;
+}
+.sc-trigger-id {
+  color: rgba(250,249,247,0.85);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+}
+.sc-trigger-sep { color: rgba(147,180,255,0.35); margin: 0 2px; }
+.sc-trigger-stat {
+  color: rgba(147,180,255,0.75);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  margin-left: auto;
+  padding-right: 4px;
+}
+.sc-chevron {
+  font-size: 9px;
+  opacity: 0.6;
+  margin-left: 6px;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  display: inline-block;
+}
+.sc-full { display: flex; flex-direction: column; overflow: hidden; flex: 1; }
 
 .sc-header {
   padding: 11px 14px;
@@ -75,6 +183,7 @@ body { font-family: var(--sans); background: var(--cream-1); color: var(--charco
   display: flex; align-items: center; gap: 8px;
   font-size: 10px; letter-spacing: 0.22em; font-weight: 600;
   flex-shrink: 0;
+  display: none; /* Replaced by .sc-trigger — kept for legacy */
 }
 .sc-dot {
   width: 7px; height: 7px; border-radius: 50%;
@@ -274,12 +383,19 @@ body { font-family: var(--sans); background: var(--cream-1); color: var(--charco
 </div>
 
 <!-- ── The Scorecard ── -->
-<div class="scorecard" id="scorecard" role="complementary" aria-label="Visitor scorecard">
-  <div class="sc-header">
+<div class="scorecard" id="scorecard" data-state="collapsed" role="complementary" aria-label="Visitor scorecard">
+  <!-- Trigger (pill when collapsed, header when expanded) -->
+  <button class="sc-trigger" id="scTrigger" aria-expanded="false" aria-controls="scFull">
     <span class="sc-dot"></span>
-    <span class="sc-header-title">PHOENIX · READING YOU</span>
-    <span class="sc-header-id" id="scId">VST_—</span>
-  </div>
+    <span class="sc-collapsed-only">PHOENIX</span>
+    <span class="sc-expanded-only">PHOENIX · READING YOU</span>
+    <span class="sc-trigger-sep sc-collapsed-only">·</span>
+    <span class="sc-trigger-id" id="scId">VST_—</span>
+    <span class="sc-trigger-stat sc-collapsed-only" id="scPillStat">reading…</span>
+    <span class="sc-chevron">▲</span>
+  </button>
+
+  <div class="sc-full" id="scFull">
   <div class="sc-body">
 
     <!-- Device & display -->
@@ -338,9 +454,31 @@ body { font-family: var(--sans); background: var(--cream-1); color: var(--charco
   <div class="sc-transparency">
     <strong>Everything above is from your browser</strong> — read on this device, shown to you the instant it's read, sent nowhere. This is what every website sees. We're the only ones showing it back.
   </div>
+  </div><!-- /.sc-full -->
 </div>
 
 <script>
+// ─── CONSOLE EASTER EGG ──────────────────────────────────────────
+// For the kind of people who open DevTools on a marketing site.
+(function(){
+  try {
+    const serif = 'font: 700 28px Georgia, "Instrument Serif", serif; color: #003399; padding: 10px 0 4px; text-shadow: 0 1px 0 rgba(0,51,153,0.08);';
+    const muted = 'font: 400 12px ui-monospace, monospace; color: #6b625a; letter-spacing: 0.14em;';
+    const body  = 'font: 400 13px -apple-system, BlinkMacSystemFont, sans-serif; color: #1c1917; line-height: 1.65;';
+    const accent= 'font: 600 13px -apple-system, BlinkMacSystemFont, sans-serif; color: #003399;';
+    const quiet = 'font: italic 12px Georgia, serif; color: #6b625a;';
+
+    console.log('%cTHE SWITCHBOARD', serif);
+    console.log('%cINSURANCE INTELLIGENCE · OREM, UT · VOL. I № 1', muted);
+    console.log('%c\nHello, code reader. We like your kind.\n', body);
+    console.log('%cEvery line on this page — the enrichment pipeline, the scoring models, the routing logic behind Phoenix — was written in-house. No third-party SaaS. No analytics trackers. No pixel soup.\n', body);
+    console.log('%cIf you build things like this — or want to — reach out.', body);
+    console.log('%c→ theswitchboard.com/contact\n', accent);
+    console.log('%cP.S. The scorecard in the corner is reading your browser with zero permissions, zero cookies, zero network calls. It dies when you close the tab. Inspect the <script> block — it\'s all client-side.', quiet);
+    console.log('%c\n— Built by people who have written policies, and who have bought the clicks.\n', quiet);
+  } catch(e) { /* no-op */ }
+})();
+
 // ─── BROWSER DETECTION ───────────────────────────────────────────
 function detectDevice() {
   const ua = navigator.userAgent;
@@ -507,14 +645,41 @@ function revealField(key, value) {
   el.classList.add('flash');
 }
 
+// Pill stat — shows during enrichment then transitions to live scroll/role info
+const pillStatEl = document.getElementById('scPillStat');
+let enrichmentComplete = false;
+
+function updatePillStat() {
+  if (!enrichmentComplete) return;
+  const depthEl = document.getElementById('scDepth');
+  const roleChip = document.getElementById('scRole');
+  const depth = depthEl ? depthEl.textContent : '0%';
+  const role = roleChip && !roleChip.classList.contains('unknown') ? roleChip.textContent : null;
+  pillStatEl.textContent = role ? `${depth} · ${role}` : `${depth} read`;
+}
+
 function runEnrichment() {
   enrichOrder.forEach((key, i) => {
     setTimeout(() => {
       try { revealField(key, enrichMap[key]()); }
       catch(e) { revealField(key, '—'); }
+      pillStatEl.textContent = `reading ${i+1}/${enrichOrder.length}`;
+      if (i === enrichOrder.length - 1) {
+        setTimeout(() => { enrichmentComplete = true; updatePillStat(); }, 300);
+      }
     }, 600 + i * 210);
   });
 }
+
+// ─── PILL ↔ CARD TOGGLE ──────────────────────────────────────────
+const scorecardEl = document.getElementById('scorecard');
+const triggerEl = document.getElementById('scTrigger');
+triggerEl.addEventListener('click', () => {
+  const current = scorecardEl.dataset.state;
+  const next = current === 'collapsed' ? 'expanded' : 'collapsed';
+  scorecardEl.dataset.state = next;
+  triggerEl.setAttribute('aria-expanded', next === 'expanded' ? 'true' : 'false');
+});
 
 // ─── VISITOR ID ──────────────────────────────────────────────────
 const vid = 'VST_' + (Math.random().toString(36).substring(2,5) + Math.random().toString(36).substring(2,5)).toUpperCase();
@@ -595,6 +760,7 @@ function updateRole(){
       lastRoute = nr;
     }
   }
+  updatePillStat();
 }
 
 const ioSec = new IntersectionObserver(entries => {
@@ -643,6 +809,7 @@ window.addEventListener('scroll', () => {
   const pct = Math.min(100, Math.round((window.scrollY/max)*100));
   document.getElementById('scDepth').textContent = pct + '%';
   document.getElementById('scDepthBar').style.width = pct + '%';
+  updatePillStat();
 }, { passive: true });
 
 function updateAttention() {
