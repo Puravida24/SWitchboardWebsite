@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mockup 1 — The Visitor Scorecard</title>
+<title>Mockup 1 — The Visitor Scorecard · Browser-enriched</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,6 +18,7 @@
   --navy: #003399;
   --navy-light: #93b4ff;
   --warm-gray: #6b625a;
+  --green: #10b981;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: var(--sans); background: var(--cream-1); color: var(--charcoal); line-height: 1.6; }
@@ -49,7 +50,7 @@ body { font-family: var(--sans); background: var(--cream-1); color: var(--charco
   position: fixed;
   right: 22px;
   bottom: 22px;
-  width: 320px;
+  width: 340px;
   background: #0a0a0a;
   border: 1px solid rgba(147,180,255,0.28);
   border-radius: 4px;
@@ -61,18 +62,23 @@ body { font-family: var(--sans); background: var(--cream-1); color: var(--charco
   transform: translateY(calc(100% + 40px));
   opacity: 0;
   transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;
+  max-height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
 }
 .scorecard.visible { transform: translateY(0); opacity: 1; }
+
 .sc-header {
   padding: 11px 14px;
   background: rgba(147,180,255,0.08);
-  border-bottom: 1px solid rgba(147,180,255,0.2);
+  border-bottom: 1px solid rgba(147,180,255,0.22);
   display: flex; align-items: center; gap: 8px;
   font-size: 10px; letter-spacing: 0.22em; font-weight: 600;
+  flex-shrink: 0;
 }
 .sc-dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: #10b981; box-shadow: 0 0 8px rgba(16,185,129,0.6);
+  background: var(--green); box-shadow: 0 0 8px rgba(16,185,129,0.6);
   animation: scDotPulse 1.6s ease-in-out infinite;
 }
 @keyframes scDotPulse {
@@ -82,62 +88,148 @@ body { font-family: var(--sans); background: var(--cream-1); color: var(--charco
 .sc-header-title { color: #d4e0ff; }
 .sc-header-id { margin-left: auto; color: rgba(250,249,247,0.5); font-size: 9.5px; letter-spacing: 0.08em; font-weight: 500; }
 
-.sc-body { padding: 14px; font-size: 11px; }
-.sc-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
-.sc-label { color: rgba(147,180,255,0.65); letter-spacing: 0.2em; font-weight: 500; font-size: 9.5px; }
-.sc-value { color: var(--cream-1); font-variant-numeric: tabular-nums; font-size: 11.5px; font-weight: 500; }
-.sc-value.flash { animation: scFlash 0.6s ease; }
+.sc-body {
+  padding: 10px 0 0;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(147,180,255,0.3) transparent;
+}
+.sc-body::-webkit-scrollbar { width: 4px; }
+.sc-body::-webkit-scrollbar-thumb { background: rgba(147,180,255,0.25); border-radius: 2px; }
+
+.sc-group {
+  border-bottom: 1px solid rgba(147,180,255,0.08);
+  padding: 8px 14px 10px;
+}
+.sc-group:last-child { border-bottom: none; }
+.sc-group-title {
+  color: rgba(147,180,255,0.55);
+  font-size: 8.5px;
+  letter-spacing: 0.26em;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.sc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 3px 0;
+  font-size: 10.5px;
+  gap: 8px;
+}
+.sc-label {
+  color: rgba(147,180,255,0.65);
+  letter-spacing: 0.16em;
+  font-weight: 500;
+  font-size: 9px;
+  flex-shrink: 0;
+}
+.sc-value {
+  color: var(--cream-1);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: right;
+  transition: opacity 0.4s ease, color 0.4s ease;
+}
+.sc-value.reading {
+  color: rgba(250,249,247,0.3);
+  font-style: italic;
+  font-family: var(--serif);
+  font-size: 10.5px;
+  letter-spacing: 0;
+}
+.sc-value.reading::after {
+  content: '…';
+  display: inline-block;
+  animation: dotAnim 1.2s steps(3) infinite;
+}
+@keyframes dotAnim {
+  0% { content: '.'; }
+  33% { content: '..'; }
+  66% { content: '...'; }
+}
+.sc-value.flash {
+  animation: scFlash 0.7s ease;
+}
 @keyframes scFlash {
-  0% { color: #d4e0ff; text-shadow: 0 0 8px rgba(147,180,255,0.8); }
+  0% { color: #d4e0ff; text-shadow: 0 0 10px rgba(147,180,255,0.9); }
   100% { color: var(--cream-1); text-shadow: none; }
 }
-.sc-bar { height: 3px; background: rgba(147,180,255,0.14); border-radius: 2px; margin: 4px 0 14px; overflow: hidden; }
-.sc-bar-fill { height: 100%; background: linear-gradient(90deg, var(--navy-light), #d4e0ff); border-radius: 2px; transition: width 0.5s cubic-bezier(0.22,1,0.36,1); }
 
-.sc-sections { list-style: none; margin: 8px 0 12px; }
+.sc-bar {
+  height: 3px;
+  background: rgba(147,180,255,0.14);
+  border-radius: 2px;
+  margin: 4px 0 2px;
+  overflow: hidden;
+}
+.sc-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--navy-light), #d4e0ff);
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.22,1,0.36,1);
+  width: 0%;
+}
+
+.sc-sections { list-style: none; margin: 6px 0 2px; }
 .sc-sections li {
-  display: flex; align-items: center; gap: 8px; font-size: 10.5px; color: rgba(250,249,247,0.38);
-  padding: 3px 0; transition: color 0.4s ease;
+  display: flex; align-items: center; gap: 8px; font-size: 10px; color: rgba(250,249,247,0.38);
+  padding: 2px 0; transition: color 0.4s ease;
 }
 .sc-sections li::before { content: '○'; color: rgba(147,180,255,0.3); font-size: 11px; line-height: 1; transition: color 0.3s ease; }
 .sc-sections li.seen { color: var(--cream-1); }
-.sc-sections li.seen::before { content: '●'; color: #10b981; }
+.sc-sections li.seen::before { content: '●'; color: var(--green); }
 .sc-sections li.active { color: #d4e0ff; }
-.sc-sections li.active::before { animation: scDotPulse 1.6s ease-in-out infinite; color: #10b981; }
+.sc-sections li.active::before { animation: scDotPulse 1.6s ease-in-out infinite; color: var(--green); }
+
+.sc-role-chip {
+  display: inline-block; padding: 2px 7px; border-radius: 2px;
+  background: rgba(147,180,255,0.18); color: var(--navy-light);
+  font-size: 9.5px; letter-spacing: 0.18em; font-weight: 600; text-transform: uppercase;
+}
+.sc-role-chip.unknown { color: rgba(250,249,247,0.35); background: rgba(250,249,247,0.05); }
 
 .sc-footer {
   padding: 11px 14px;
   background: rgba(0,51,153,0.22);
   border-top: 1px solid rgba(147,180,255,0.2);
   font-size: 10px; letter-spacing: 0.14em;
+  flex-shrink: 0;
 }
 .sc-route { display: flex; justify-content: space-between; align-items: center; }
 .sc-route-label { color: rgba(147,180,255,0.7); font-size: 9.5px; letter-spacing: 0.22em; font-weight: 600; }
 .sc-route-value { color: rgba(250,249,247,0.55); font-weight: 500; font-size: 11px; transition: color 0.3s ease; }
-.sc-route-value.resolved {
-  color: #d4e0ff;
-  animation: routeFlash 1.2s ease;
-}
+.sc-route-value.resolved { color: #d4e0ff; animation: routeFlash 1.2s ease; }
 @keyframes routeFlash {
   0%   { background: rgba(147,180,255,0.3); color: #fff; padding: 2px 6px; margin: -2px -6px; border-radius: 2px; }
   100% { background: transparent; color: #d4e0ff; }
 }
 
-.sc-role-chip {
-  display: inline-block; padding: 2px 8px; border-radius: 2px;
-  background: rgba(147,180,255,0.15); color: var(--navy-light);
-  font-size: 9.5px; letter-spacing: 0.16em; font-weight: 600; text-transform: uppercase;
+.sc-transparency {
+  padding: 10px 14px;
+  background: rgba(147,180,255,0.04);
+  border-top: 1px solid rgba(147,180,255,0.12);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: rgba(250,249,247,0.55);
+  flex-shrink: 0;
 }
-.sc-role-chip.unknown { color: rgba(250,249,247,0.35); background: rgba(250,249,247,0.05); }
+.sc-transparency strong { color: rgba(250,249,247,0.85); font-style: normal; font-weight: 500; }
 
-@media (max-width: 640px) {
-  .scorecard { right: 10px; left: 10px; bottom: 10px; width: auto; }
+@media (max-width: 720px) {
+  .scorecard { right: 10px; left: 10px; bottom: 10px; width: auto; max-height: 70vh; }
 }
 </style>
 </head>
 <body>
 <div class="demo-banner">
-  MOCKUP 1 · <strong>THE VISITOR SCORECARD</strong> · Phoenix reads the reader in real time — scroll to watch it work
+  MOCKUP 1 · <strong>VISITOR SCORECARD · BROWSER-ENRICHED</strong> · Phoenix reads your browser, live
   &nbsp;·&nbsp; <a href="mockups-index.html">← all mockups</a>
 </div>
 
@@ -145,14 +237,14 @@ body { font-family: var(--sans); background: var(--cream-1); color: var(--charco
   <div class="section-kicker">The Switchboard</div>
   <h2>Insurance is not a data problem.</h2>
   <p>It's a signal problem. We've written policies for twenty-five years. We know what closes, what renews, what walks away at renewal. Phoenix does the reading, scoring, and routing — so your best people spend their time on your best accounts.</p>
-  <p><small>↓ Watch the corner. Phoenix is already reading you.</small></p>
+  <p><small>↓ Watch the corner. Phoenix is reading your browser right now.</small></p>
 </div>
 
 <div class="section" id="carriers" data-section-label="For Carriers">
   <div class="section-kicker">For Carriers</div>
   <h2>Stop buying blind.</h2>
   <p>Enrich every inbound prospect with firmographic, demographic, and behavioral signal before a single dollar is spent on acquisition. See risk, fit, and expected value in real time — not after the quarterly review.</p>
-  <p>The longer you linger on this section, the more Phoenix tilts your implied role toward <strong>carrier</strong>.</p>
+  <p>The longer you linger here, the more Phoenix tilts your implied role toward <strong>carrier</strong>.</p>
 </div>
 
 <div class="section" id="agencies" data-section-label="For Agencies">
@@ -189,49 +281,252 @@ body { font-family: var(--sans); background: var(--cream-1); color: var(--charco
     <span class="sc-header-id" id="scId">VST_—</span>
   </div>
   <div class="sc-body">
-    <div class="sc-row">
-      <span class="sc-label">TIME ON PAGE</span>
-      <span class="sc-value" id="scTime">0:00</span>
+
+    <!-- Device & display -->
+    <div class="sc-group">
+      <div class="sc-group-title">Device</div>
+      <div class="sc-row"><span class="sc-label">DEVICE</span><span class="sc-value reading" data-key="device"></span></div>
+      <div class="sc-row"><span class="sc-label">BROWSER</span><span class="sc-value reading" data-key="browser"></span></div>
+      <div class="sc-row"><span class="sc-label">DISPLAY</span><span class="sc-value reading" data-key="display"></span></div>
+      <div class="sc-row"><span class="sc-label">INPUT</span><span class="sc-value reading" data-key="input"></span></div>
     </div>
-    <div class="sc-row">
-      <span class="sc-label">SCROLL DEPTH</span>
-      <span class="sc-value" id="scDepth">0%</span>
+
+    <!-- Network & location -->
+    <div class="sc-group">
+      <div class="sc-group-title">Network &amp; Locale</div>
+      <div class="sc-row"><span class="sc-label">CONNECTION</span><span class="sc-value reading" data-key="net"></span></div>
+      <div class="sc-row"><span class="sc-label">REGION</span><span class="sc-value reading" data-key="region"></span></div>
+      <div class="sc-row"><span class="sc-label">LOCALE</span><span class="sc-value reading" data-key="locale"></span></div>
+      <div class="sc-row"><span class="sc-label">REFERRER</span><span class="sc-value reading" data-key="ref"></span></div>
     </div>
-    <div class="sc-bar"><div class="sc-bar-fill" id="scDepthBar" style="width:0%"></div></div>
-    <div class="sc-row">
-      <span class="sc-label">SECTIONS READ</span>
-      <span class="sc-value" id="scSectionsCount">0 / 6</span>
+
+    <!-- Time & fingerprint -->
+    <div class="sc-group">
+      <div class="sc-group-title">Session</div>
+      <div class="sc-row"><span class="sc-label">TIME CONTEXT</span><span class="sc-value reading" data-key="time"></span></div>
+      <div class="sc-row"><span class="sc-label">FINGERPRINT</span><span class="sc-value reading" data-key="fp"></span></div>
+      <div class="sc-row"><span class="sc-label">TIME ON PAGE</span><span class="sc-value" id="scTime">0:00</span></div>
+      <div class="sc-row"><span class="sc-label">SCROLL DEPTH</span><span class="sc-value" id="scDepth">0%</span></div>
+      <div class="sc-bar"><div class="sc-bar-fill" id="scDepthBar"></div></div>
     </div>
-    <ul class="sc-sections" id="scSections"></ul>
-    <div class="sc-row">
-      <span class="sc-label">SIGNALS</span>
-      <span class="sc-value" id="scSignals">0</span>
+
+    <!-- Behavior -->
+    <div class="sc-group">
+      <div class="sc-group-title">Behavior</div>
+      <div class="sc-row"><span class="sc-label">ATTENTION</span><span class="sc-value reading" data-key="attn" id="scAttn"></span></div>
+      <div class="sc-row"><span class="sc-label">SIGNALS</span><span class="sc-value" id="scSignals">0</span></div>
+      <div class="sc-row"><span class="sc-label">SECTIONS</span><span class="sc-value" id="scSectionsCount">0 / 6</span></div>
+      <ul class="sc-sections" id="scSections"></ul>
     </div>
-    <div class="sc-row">
-      <span class="sc-label">IMPLIED ROLE</span>
-      <span class="sc-value"><span class="sc-role-chip unknown" id="scRole">unknown</span></span>
+
+    <!-- Inference -->
+    <div class="sc-group">
+      <div class="sc-group-title">Inference</div>
+      <div class="sc-row"><span class="sc-label">IMPLIED ROLE</span><span class="sc-value"><span class="sc-role-chip unknown" id="scRole">unknown</span></span></div>
+      <div class="sc-row"><span class="sc-label">CONFIDENCE</span><span class="sc-value" id="scConf">0%</span></div>
+      <div class="sc-bar"><div class="sc-bar-fill" id="scConfBar"></div></div>
     </div>
-    <div class="sc-row">
-      <span class="sc-label">CONFIDENCE</span>
-      <span class="sc-value" id="scConf">0%</span>
-    </div>
-    <div class="sc-bar"><div class="sc-bar-fill" id="scConfBar" style="width:0%"></div></div>
   </div>
+
   <div class="sc-footer">
     <div class="sc-route">
       <span class="sc-route-label">ROUTE</span>
       <span class="sc-route-value" id="scRoute">— pending —</span>
     </div>
   </div>
+
+  <div class="sc-transparency">
+    <strong>Everything above is from your browser</strong> — read on this device, shown to you the instant it's read, sent nowhere. This is what every website sees. We're the only ones showing it back.
+  </div>
 </div>
 
 <script>
-// Visitor ID
+// ─── BROWSER DETECTION ───────────────────────────────────────────
+function detectDevice() {
+  const ua = navigator.userAgent;
+  const platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+  if (/iPhone/i.test(ua)) return 'iPhone';
+  if (/iPad/i.test(ua)) return 'iPad';
+  if (/Android/i.test(ua)) return 'Android device';
+  if (/Mac/i.test(platform) || /Mac/i.test(ua)) return 'MacBook';
+  if (/Win/i.test(platform) || /Windows/i.test(ua)) return 'PC · Windows';
+  if (/Linux/i.test(platform)) return 'Linux workstation';
+  if (/CrOS/i.test(ua)) return 'Chromebook';
+  return 'Unknown device';
+}
+function detectBrowser() {
+  const ua = navigator.userAgent;
+  if (/Edg\//.test(ua)) return 'Edge';
+  if (/Chrome\//.test(ua) && !/Chromium/.test(ua)) return 'Chrome';
+  if (/Firefox\//.test(ua)) return 'Firefox';
+  if (/Safari\//.test(ua) && /Version\//.test(ua)) return 'Safari';
+  if (/Opera|OPR\//.test(ua)) return 'Opera';
+  return 'Browser';
+}
+function detectDisplay() {
+  const w = screen.width, h = screen.height, dpr = window.devicePixelRatio || 1;
+  const retina = dpr >= 2 ? ' · Retina' : '';
+  return `${w}·${h}${retina}`;
+}
+function detectInput() {
+  const touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const fine = window.matchMedia && window.matchMedia('(pointer:fine)').matches;
+  if (fine && !touch) return 'Mouse + Keyboard';
+  if (touch && !fine) return 'Touch';
+  if (touch && fine) return 'Touch + Pointer';
+  return 'Pointer';
+}
+function detectNet() {
+  const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (!c) return 'Wi-Fi / Fast';
+  const type = c.effectiveType;
+  const dl = c.downlink;
+  const typeMap = { '4g': 'Fast', '3g': '3G', '2g': '2G', 'slow-2g': 'Slow' };
+  const t = typeMap[type] || 'Wi-Fi';
+  return dl ? `${t} · ${Math.round(dl)} Mbps` : t;
+}
+function detectRegion() {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const map = {
+    'America/New_York':    'ET · Eastern US',
+    'America/Detroit':     'ET · Eastern US',
+    'America/Indianapolis':'ET · Indiana',
+    'America/Chicago':     'CT · Central US',
+    'America/Denver':      'MT · Mountain US',
+    'America/Phoenix':     'MST · Arizona',
+    'America/Los_Angeles': 'PT · Pacific US',
+    'America/Anchorage':   'AKT · Alaska',
+    'Pacific/Honolulu':    'HST · Hawaii',
+    'America/Toronto':     'ET · Canada',
+    'America/Vancouver':   'PT · Canada',
+    'Europe/London':       'GMT · United Kingdom',
+    'Europe/Paris':        'CET · Europe',
+    'Europe/Berlin':       'CET · Europe',
+    'Asia/Tokyo':          'JST · Japan',
+    'Asia/Shanghai':       'CST · China',
+    'Australia/Sydney':    'AEST · Australia',
+  };
+  return map[tz] || tz.replace(/_/g, ' ');
+}
+function detectLocale() {
+  const lang = navigator.language || 'en-US';
+  const names = {
+    'en-US': 'English (US)', 'en-GB': 'English (UK)', 'en-CA': 'English (CA)', 'en': 'English',
+    'es': 'Spanish', 'es-MX': 'Spanish (MX)', 'es-ES': 'Spanish (ES)',
+    'fr': 'French', 'fr-CA': 'French (CA)', 'fr-FR': 'French (FR)',
+    'de': 'German', 'de-DE': 'German',
+    'ja': 'Japanese', 'ja-JP': 'Japanese',
+    'zh': 'Chinese', 'zh-CN': 'Chinese (CN)', 'zh-TW': 'Chinese (TW)',
+    'pt': 'Portuguese', 'pt-BR': 'Portuguese (BR)',
+    'ko': 'Korean', 'ru': 'Russian', 'it': 'Italian', 'nl': 'Dutch',
+  };
+  return names[lang] || lang;
+}
+function detectRef() {
+  const r = document.referrer;
+  if (!r) return 'Direct visit';
+  try {
+    const host = new URL(r).hostname.replace(/^www\./, '');
+    if (/google\./.test(host)) return 'Google Search';
+    if (/linkedin/.test(host)) return 'LinkedIn';
+    if (/twitter|x\.com$/.test(host)) return 'X / Twitter';
+    if (/facebook|fb\./.test(host)) return 'Facebook';
+    if (/reddit/.test(host)) return 'Reddit';
+    if (/bing/.test(host)) return 'Bing Search';
+    if (/duckduckgo/.test(host)) return 'DuckDuckGo';
+    if (/github/.test(host)) return 'GitHub';
+    return host;
+  } catch { return 'Direct visit'; }
+}
+function detectTimeCtx() {
+  const d = new Date();
+  const h = d.getHours();
+  const dow = d.getDay();
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const pad = n => String(n).padStart(2,'0');
+  let ctx;
+  if (dow === 0 || dow === 6) ctx = 'Weekend';
+  else if (h >= 9 && h < 12) ctx = 'Business AM';
+  else if (h >= 12 && h < 13) ctx = 'Midday';
+  else if (h >= 13 && h < 17) ctx = 'Business PM';
+  else if (h >= 17 && h < 22) ctx = 'After-hours';
+  else ctx = 'Late night';
+  return `${dayNames[dow]} ${pad(h)}:${pad(d.getMinutes())} · ${ctx}`;
+}
+function canvasFingerprint() {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 240; canvas.height = 60;
+    const ctx = canvas.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = "14px 'Arial'";
+    ctx.fillStyle = '#f60';
+    ctx.fillRect(0, 0, 100, 50);
+    ctx.fillStyle = '#069';
+    ctx.fillText('Phoenix · Switchboard', 2, 15);
+    ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+    ctx.fillText('Phoenix · Switchboard', 4, 17);
+    ctx.beginPath();
+    ctx.arc(50, 40, 15, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 100, 0, 0.4)';
+    ctx.fill();
+    const data = canvas.toDataURL();
+    let hash = 0;
+    for (let i = 0; i < data.length; i++) {
+      hash = ((hash << 5) - hash) + data.charCodeAt(i);
+      hash |= 0;
+    }
+    const hex = Math.abs(hash).toString(16).padStart(8,'0').slice(0,8);
+    return `${hex.slice(0,2)}:${hex.slice(2,4)}:${hex.slice(4,6)}:${hex.slice(6,8)}`;
+  } catch {
+    return 'unavailable';
+  }
+}
+
+// ─── ENRICHMENT PIPELINE ─────────────────────────────────────────
+const enrichMap = {
+  device:  detectDevice,
+  browser: detectBrowser,
+  display: detectDisplay,
+  input:   detectInput,
+  net:     detectNet,
+  region:  detectRegion,
+  locale:  detectLocale,
+  ref:     detectRef,
+  time:    detectTimeCtx,
+  fp:      canvasFingerprint,
+};
+const enrichOrder = ['device','browser','display','input','net','region','locale','ref','time','fp'];
+
+function revealField(key, value) {
+  const el = document.querySelector(`.sc-value[data-key="${key}"]`);
+  if (!el) return;
+  el.classList.remove('reading');
+  el.textContent = value;
+  void el.offsetWidth;
+  el.classList.add('flash');
+}
+
+function runEnrichment() {
+  enrichOrder.forEach((key, i) => {
+    setTimeout(() => {
+      try { revealField(key, enrichMap[key]()); }
+      catch(e) { revealField(key, '—'); }
+    }, 600 + i * 210);
+  });
+}
+
+// ─── VISITOR ID ──────────────────────────────────────────────────
 const vid = 'VST_' + (Math.random().toString(36).substring(2,5) + Math.random().toString(36).substring(2,5)).toUpperCase();
 document.getElementById('scId').textContent = vid;
-setTimeout(() => document.getElementById('scorecard').classList.add('visible'), 700);
 
-// Time
+// Reveal card, then run enrichment pipeline
+setTimeout(() => {
+  document.getElementById('scorecard').classList.add('visible');
+  runEnrichment();
+}, 800);
+
+// ─── TIME ON PAGE ────────────────────────────────────────────────
 let seconds = 0;
 setInterval(() => {
   seconds++;
@@ -239,7 +534,7 @@ setInterval(() => {
   document.getElementById('scTime').textContent = `${m}:${String(s).padStart(2,'0')}`;
 }, 1000);
 
-// Sections
+// ─── SECTIONS ────────────────────────────────────────────────────
 const sections = Array.from(document.querySelectorAll('.section'));
 const secListEl = document.getElementById('scSections');
 sections.forEach(s => {
@@ -249,6 +544,7 @@ sections.forEach(s => {
   secListEl.appendChild(li);
 });
 
+// ─── DWELL / ROLE ────────────────────────────────────────────────
 const dwell = {};
 let activeSection = null;
 let activeStart = 0;
@@ -261,12 +557,10 @@ function accrue() {
     activeStart = Date.now();
   }
 }
-
 function flash(id) {
   const el = document.getElementById(id);
   el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
 }
-
 function computeRole(){
   const c = dwell['carriers']||0, a = dwell['agencies']||0, m = dwell['mga']||0;
   const total = c + a + m;
@@ -277,10 +571,8 @@ function computeRole(){
   if (max === a) return { role: 'agency', conf };
   return { role: 'mga', conf };
 }
-
 const routeMap = { carrier: 'Carrier Desk', agency: 'Agency Partnerships', mga: 'Specialty Team' };
 let lastRoute = null;
-
 function updateRole(){
   const r = computeRole();
   const chip = document.getElementById('scRole');
@@ -288,16 +580,11 @@ function updateRole(){
     chip.textContent = r.role;
     flash('scRole');
   }
-  if (r.role !== 'unknown') chip.classList.remove('unknown');
-  else chip.classList.add('unknown');
-
+  if (r.role !== 'unknown') chip.classList.remove('unknown'); else chip.classList.add('unknown');
   const confEl = document.getElementById('scConf');
   const confTxt = r.conf + '%';
-  if (confEl.textContent !== confTxt) {
-    confEl.textContent = confTxt;
-  }
+  if (confEl.textContent !== confTxt) confEl.textContent = confTxt;
   document.getElementById('scConfBar').style.width = r.conf + '%';
-
   const routeEl = document.getElementById('scRoute');
   if (r.conf >= 55 && seen.size >= 3) {
     const nr = routeMap[r.role];
@@ -338,12 +625,47 @@ const ioSec = new IntersectionObserver(entries => {
 }, { threshold: 0.5 });
 sections.forEach(s => ioSec.observe(s));
 
+// ─── SCROLL / ATTENTION ──────────────────────────────────────────
+const velocities = [];
+let lastScrollY = window.scrollY, lastScrollT = Date.now();
 window.addEventListener('scroll', () => {
+  const now = Date.now();
+  const dt = now - lastScrollT;
+  if (dt > 50) {
+    const dy = Math.abs(window.scrollY - lastScrollY);
+    const v = dy / dt;
+    velocities.push(v);
+    if (velocities.length > 30) velocities.shift();
+    lastScrollY = window.scrollY;
+    lastScrollT = now;
+  }
   const max = document.documentElement.scrollHeight - window.innerHeight;
   const pct = Math.min(100, Math.round((window.scrollY/max)*100));
   document.getElementById('scDepth').textContent = pct + '%';
   document.getElementById('scDepthBar').style.width = pct + '%';
 }, { passive: true });
+
+function updateAttention() {
+  const el = document.getElementById('scAttn');
+  if (el.classList.contains('reading')) return;
+  if (velocities.length < 4) return;
+  const avg = velocities.reduce((a,b)=>a+b,0) / velocities.length;
+  const newVal = avg < 0.35 ? 'Focused reader'
+               : avg < 1.0  ? 'Casual reader'
+               : 'Skimmer';
+  if (el.textContent !== newVal) {
+    el.textContent = newVal;
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+}
+
+// Start attention detection after initial enrichment completes (~3s)
+setTimeout(() => {
+  const el = document.getElementById('scAttn');
+  el.classList.remove('reading');
+  el.textContent = 'Observing…';
+  setInterval(updateAttention, 1200);
+}, 3100);
 
 setInterval(updateRole, 700);
 </script>
