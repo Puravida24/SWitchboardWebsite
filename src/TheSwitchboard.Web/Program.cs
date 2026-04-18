@@ -169,7 +169,21 @@ try
     app.UseSerilogRequestLogging();
 
     app.UseDefaultFiles();
-    app.UseStaticFiles();
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        OnPrepareResponse = ctx =>
+        {
+            // Long cache for /css/*, /js/*, /wireframes/assets/* — file names should be
+            // cache-busted via query string when they change. 7 days is safe default.
+            var path = ctx.Context.Request.Path.Value ?? string.Empty;
+            if (path.StartsWith("/css/", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("/js/", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("/wireframes/assets/", StringComparison.OrdinalIgnoreCase))
+            {
+                ctx.Context.Response.Headers["Cache-Control"] = "public, max-age=604800, immutable";
+            }
+        }
+    });
     app.MapRazorPages();
     app.MapHealthChecks("/health");
 
