@@ -3471,7 +3471,7 @@ function runPhoenixVignette({ name, company, role }) {
 // VISITOR SCORECARD — Phoenix reading the reader's browser, live.
 // Zero permissions. Zero third-party. Nothing sent anywhere.
 // ═════════════════════════════════════════════════════════════════
-(function initVisitorScorecard(){
+function initVisitorScorecard(){
   // Console easter egg
   try {
     const serif = 'font: 700 28px Georgia, "Instrument Serif", serif; color: #003399; padding: 10px 0 4px;';
@@ -3784,7 +3784,12 @@ function runPhoenixVignette({ name, company, role }) {
   }, 3100);
 
   setInterval(updateRole, 700);
-})();
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initVisitorScorecard);
+} else {
+  initVisitorScorecard();
+}
 </script>
 
 <!-- ═════════════════════════════════════════════════════════════════
