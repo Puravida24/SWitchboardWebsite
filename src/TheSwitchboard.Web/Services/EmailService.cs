@@ -49,6 +49,21 @@ public class EmailService : IEmailService
         await SendAsync(internalEmail, subject, body);
     }
 
+    /// <summary>
+    /// H-1.G: split a To-header value (possibly comma- or semicolon-separated)
+    /// into individual addresses. Trims whitespace and drops empties.
+    /// </summary>
+    public static IEnumerable<string> ParseRecipients(string? csv)
+    {
+        if (string.IsNullOrWhiteSpace(csv)) yield break;
+        foreach (var raw in csv.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            var trimmed = raw.Trim();
+            if (!string.IsNullOrEmpty(trimmed))
+                yield return trimmed;
+        }
+    }
+
     public async Task SendAsync(string to, string subject, string htmlBody)
     {
         var smtpHost = _config["Email:SmtpHost"];
@@ -58,11 +73,19 @@ public class EmailService : IEmailService
             return;
         }
 
+        var recipients = ParseRecipients(to).ToList();
+        if (recipients.Count == 0)
+        {
+            _logger.LogWarning("Email send aborted — no recipients in '{To}' for subject '{Subject}'.", to, subject);
+            return;
+        }
+
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(
             _config["Email:FromName"] ?? "The Switchboard",
             _config["Email:FromAddress"] ?? "noreply@theswitchboardmarketing.com"));
-        message.To.Add(MailboxAddress.Parse(to));
+        foreach (var addr in recipients)
+            message.To.Add(MailboxAddress.Parse(addr));
         message.Subject = subject;
 
         var bodyBuilder = new BodyBuilder { HtmlBody = htmlBody };

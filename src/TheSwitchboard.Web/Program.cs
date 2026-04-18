@@ -158,6 +158,10 @@ try
     fhOpts.KnownProxies.Clear();
     app.UseForwardedHeaders(fhOpts);
 
+    // H-7: attach X-Correlation-ID to every request / log line / response.
+    // Runs first so every downstream middleware log entry carries the ID.
+    app.UseMiddleware<CorrelationIdMiddleware>();
+
     // Per-request CSP nonce — must run before SecurityHeadersMiddleware so the
     // CSP header can reference the nonce value.
     app.UseMiddleware<CspNonceMiddleware>();
