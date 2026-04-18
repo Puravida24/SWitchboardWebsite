@@ -1,0 +1,37 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.HistoryModel
+@{
+    ViewData["Title"] = "Content History";
+    Layout = "_AdminLayout";
+}
+
+<h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Content History</h1>
+<p style="color: var(--slate-400); font-size: 0.85rem; margin-bottom: 1.5rem;">
+    Type <strong style="color:#d4e0ff;">@Model.Type</strong>
+    @if (!string.IsNullOrEmpty(Model.Field)) { <text>· Field <strong style="color:#d4e0ff;">@Model.Field</strong></text> }
+    · Last @Model.Versions.Count edit(s)
+</p>
+
+<table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+    <thead>
+        <tr style="text-align: left; color: var(--slate-400); border-bottom: 1px solid rgba(255,255,255,0.08);">
+            <th style="padding: 0.5rem; font-weight: 500;">When</th>
+            <th style="padding: 0.5rem; font-weight: 500;">Field</th>
+            <th style="padding: 0.5rem; font-weight: 500;">Old</th>
+            <th style="padding: 0.5rem; font-weight: 500;">New</th>
+            <th style="padding: 0.5rem; font-weight: 500;">By</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var v in Model.Versions)
+        {
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); color: white;">
+                <td style="padding: 0.5rem; font-variant-numeric: tabular-nums;">@v.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td style="padding: 0.5rem;">@v.FieldName</td>
+                <td style="padding: 0.5rem; color: var(--slate-400);">@(v.OldValue ?? "—")</td>
+                <td style="padding: 0.5rem;">@(v.NewValue ?? "—")</td>
+                <td style="padding: 0.5rem; color: var(--slate-400);">@(v.UpdatedBy ?? "—")</td>
+            </tr>
+        }
+    </tbody>
+</table>

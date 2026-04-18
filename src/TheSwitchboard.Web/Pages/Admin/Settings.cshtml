@@ -58,6 +58,30 @@
         </div>
     </div>
 
+    <h2 style="font-size: 1.05rem; font-weight: 600; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06);">Hero</h2>
+    <div>
+        <label asp-for="Input.HeroHeadline" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Hero Headline</label>
+        <input asp-for="Input.HeroHeadline" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.95rem;" />
+    </div>
+    <div>
+        <label asp-for="Input.HeroDeck" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Hero Deck</label>
+        <textarea asp-for="Input.HeroDeck" rows="2" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.95rem;"></textarea>
+    </div>
+
+    <h2 style="font-size: 1.05rem; font-weight: 600; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06);">Editorial</h2>
+    <div>
+        <label asp-for="Input.EditorialHeadline" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Editorial Headline</label>
+        <input asp-for="Input.EditorialHeadline" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.95rem;" />
+    </div>
+    <div>
+        <label asp-for="Input.EditorialDeck" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Editorial Deck</label>
+        <textarea asp-for="Input.EditorialDeck" rows="2" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.95rem;"></textarea>
+    </div>
+    <div>
+        <label asp-for="Input.PullQuote" style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.4rem;">Pull Quote</label>
+        <textarea asp-for="Input.PullQuote" rows="2" style="width: 100%; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.95rem;"></textarea>
+    </div>
+
     <div style="margin-top: 0.5rem;">
         <button type="submit" style="background: #3b82f6; color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.95rem;">Save changes</button>
     </div>
