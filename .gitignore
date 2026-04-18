@@ -36,3 +36,6 @@ out/
 docker-compose.override.yml
 Old\ Website\ repo/
 Old Website repo/
+
+## Claude Code runtime state (never commit)
+.claude/

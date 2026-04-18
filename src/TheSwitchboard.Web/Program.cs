@@ -20,6 +20,12 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    // Railway injects $PORT at runtime. Honor it so we don't need a shell wrapper
+    // in the Dockerfile ENTRYPOINT. Falls through to ASPNETCORE_URLS default (8080).
+    var port = Environment.GetEnvironmentVariable("PORT");
+    if (!string.IsNullOrWhiteSpace(port))
+        builder.WebHost.UseUrls($"http://+:{port}");
+
     builder.Host.UseSerilog((context, services, configuration) =>
     {
         configuration

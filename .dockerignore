@@ -1,0 +1,48 @@
+# Build output
+**/bin/
+**/obj/
+**/publish/
+**/out/
+
+# Test projects — never in runtime image
+src/TheSwitchboard.Web.Tests/
+
+# VCS
+.git/
+.gitignore
+.gitattributes
+
+# IDE / editor metadata
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.DotSettings*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Node build tooling
+node_modules/
+npm-debug.log*
+
+# Docker local overrides
+docker-compose.override.yml
+
+# Claude Code runtime state
+.claude/
+
+# Local env files
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+
+# Old repo archive
+Old Website repo/
+
+# Docs / meta not needed in image
+*.md
+!src/TheSwitchboard.Web/**/*.md
