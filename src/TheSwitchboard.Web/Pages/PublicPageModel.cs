@@ -89,7 +89,7 @@ public abstract class PublicPageModel : PageModel
             .Replace("{{ADDRESS}}",          E(settings.Address))
             .Replace("{{SITE_NAME}}",        E(settings.SiteName))
             .Replace("{{HERO_HEADLINE}}",    E(settings.HeroHeadline, "The precision layer for profitable insurance growth."))
-            .Replace("{{HERO_DECK}}",        E(settings.HeroDeck, "Built by people who have written auto, home, and commercial policies. And paid for the demand that feeds them. Engineered for real-time decisions."))
+            .Replace("{{HERO_DECK}}",        E(settings.HeroDeck, "Engineered for real-time decisions. Built by people who have written auto, home, and commercial policies. And paid for the demand that feeds them."))
             .Replace("{{EDITORIAL_KICKER}}", E(settings.EditorialKicker, "Editorial · Vol. I"))
             .Replace("{{EDITORIAL_HEADLINE}}", E(settings.EditorialHeadline, "Insurance is not a data problem."))
             .Replace("{{EDITORIAL_DECK}}",   E(settings.EditorialDeck, "It is a judgment business — and the gap between marketing and underwriting has always been the most expensive seat in the house."))
