@@ -151,3 +151,6 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+// Expose Program class for WebApplicationFactory<T> in integration tests.
+public partial class Program { }
