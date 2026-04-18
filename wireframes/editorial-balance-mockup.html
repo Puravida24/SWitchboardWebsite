@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editorial Balance — A + B Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Inter', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --cream-1: #faf9f7;
+  --cream-2: #f5f0eb;
+  --charcoal: #1c1917;
+  --navy: #003399;
+  --navy-light: #93b4ff;
+  --warm-gray: #6b625a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--sans); background: var(--cream-1); color: var(--charcoal);
+  padding-top: 44px;
+  background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%22.025%22/%3E%3C/svg%3E');
+}
+.demo-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: var(--navy); color: var(--cream-1); padding: 12px 24px; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; text-align: center; }
+.demo-banner strong { color: var(--navy-light); }
+
+.variant-label {
+  max-width: 1100px;
+  margin: 48px auto 0;
+  padding: 0 2rem 16px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--navy);
+  font-weight: 600;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+.variant-label .variant-desc {
+  font-family: var(--serif); font-style: italic; font-size: 0.95rem; text-transform: none; letter-spacing: 0; color: var(--warm-gray); font-weight: 400;
+}
+
+.editorial {
+  padding: 72px 2rem 96px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.newsprint-section-head { text-align: center; max-width: 820px; margin: 0 auto 48px; }
+.newsprint-section-kicker-wrap { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 14px; }
+.newsprint-section-kicker-wrap::before, .newsprint-section-kicker-wrap::after { content: ''; flex: 0 0 40px; height: 1px; background: var(--navy); opacity: 0.5; }
+.newsprint-section-kicker { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--navy); white-space: nowrap; font-weight: 500; opacity: 0.85; }
+.newsprint-section-head h2 { font-family: var(--serif); font-size: clamp(2.2rem, 4vw, 3.4rem); line-height: 1.05; color: var(--charcoal); font-weight: 400; letter-spacing: -0.01em; margin: 0 0 14px; }
+.newsprint-section-head .deck { font-family: var(--serif); font-style: italic; font-size: 1.15rem; color: var(--warm-gray); max-width: 60ch; margin: 0 auto; line-height: 1.5; }
+
+/* ── Current (CSS column-count) ── */
+.body-current {
+  max-width: 900px;
+  margin: 0 auto;
+  column-count: 2;
+  column-gap: 48px;
+  column-rule: 1px solid rgba(0,51,153,0.25);
+  font-family: var(--serif);
+  font-size: 1.08rem;
+  line-height: 1.62;
+  text-align: justify;
+  hyphens: auto;
+}
+.body-current p { margin: 0 0 1.1rem; break-inside: avoid-column; }
+.body-current p + p { text-indent: 1.6em; }
+.body-current strong { font-weight: 500; }
+.body-current .drop-cap::first-letter { font-family: var(--serif); font-size: 4.8rem; line-height: 0.88; float: left; padding: 6px 12px 0 0; color: var(--navy); font-weight: 400; text-shadow: 0 0 18px rgba(0,51,153,0.15); }
+
+/* ── Proposed (A + B): explicit 2-col grid to support per-column additions ── */
+.body-proposed {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0 48px;
+  font-family: var(--serif);
+  font-size: 1.08rem;
+  line-height: 1.62;
+  color: var(--charcoal);
+  align-items: start;
+}
+.body-proposed .col { text-align: justify; hyphens: auto; }
+.body-proposed .col > p { margin: 0 0 1.1rem; }
+.body-proposed .col > p + p { text-indent: 1.6em; }
+.body-proposed strong { font-weight: 500; }
+.body-proposed .rule { background: linear-gradient(to bottom, transparent, rgba(0,51,153,0.32) 15%, rgba(0,51,153,0.32) 85%, transparent); height: 100%; min-height: 300px; }
+.body-proposed .drop-cap::first-letter {
+  font-family: var(--serif);
+  font-size: 5.2rem;
+  line-height: 0.86;
+  float: left;
+  padding: 6px 14px 0 0;
+  color: var(--navy);
+  font-weight: 400;
+  text-shadow: 0 0 18px rgba(0,51,153,0.15);
+}
+
+/* Pull quote — the new addition (Option B) */
+.pull-quote {
+  margin: 28px -4px 8px;
+  padding: 22px 14px 18px;
+  border-top: 1px solid rgba(0,51,153,0.28);
+  border-bottom: 1px solid rgba(0,51,153,0.28);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.45rem;
+  line-height: 1.32;
+  color: var(--navy);
+  text-align: left;
+  position: relative;
+  letter-spacing: -0.005em;
+}
+.pull-quote::before {
+  content: '"';
+  position: absolute;
+  left: -6px;
+  top: 4px;
+  font-family: var(--serif);
+  font-size: 3.4rem;
+  line-height: 1;
+  color: rgba(0,51,153,0.28);
+}
+.pull-quote-attrib {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--warm-gray);
+  font-weight: 600;
+}
+
+.fleuron { color: var(--navy); text-align: center; font-size: 1.2rem; letter-spacing: 2rem; margin: 56px 0 0; opacity: 0.55; }
+
+.divider-bar { max-width: 1200px; margin: 72px auto 0; padding: 0 2rem; }
+.divider-bar-inner { height: 1px; background: linear-gradient(90deg, transparent, var(--navy), transparent); opacity: 0.25; }
+
+@media (max-width: 720px) {
+  .body-proposed { grid-template-columns: 1fr; }
+  .body-proposed .rule { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="demo-banner">
+  EDITORIAL BALANCE MOCKUP · <strong>BEFORE ↓ AFTER</strong> · A = matching drop cap W · B = pull quote in left column
+</div>
+
+<!-- ─────────── BEFORE (current) ─────────── -->
+<div class="variant-label">
+  BEFORE — current
+  <span class="variant-desc">left column ~4 lines shorter than right</span>
+</div>
+<section class="editorial">
+  <div class="newsprint-section-head">
+    <div class="newsprint-section-kicker-wrap"><span class="newsprint-section-kicker">Editorial · Vol. I</span></div>
+    <h2>Insurance is not a data problem.</h2>
+    <p class="deck">It is a judgment business &mdash; and the gap between marketing and underwriting has always been the most expensive seat in the house.</p>
+  </div>
+  <div class="body-current">
+    <p class="drop-cap">
+      <strong>Every carrier, every agency, every MGA</strong> operates in a world where the difference between a profitable book and a failing one comes down to knowing which accounts deserve attention &mdash; and which do not. The cost of that judgment, compounded across a year of inbound, is the difference between loss ratios that make the quarterly review and ones that do not.
+    </p>
+    <p>
+      We created The Switchboard because we have sat on both sides of the table &mdash; writing insurance AND funding the demand that feeds it. From that seat, the gap between marketing and underwriting was never theoretical. It was the line item that decided whether a campaign paid for itself or quietly bled the book.
+    </p>
+    <p>
+      So we closed it. What you see here is the intelligence layer we wished we had, built by the people who knew exactly what was missing &mdash; and exactly what it cost to not have it.
+    </p>
+  </div>
+  <div class="fleuron">✦ &nbsp; ✦ &nbsp; ✦</div>
+</section>
+
+<div class="divider-bar"><div class="divider-bar-inner"></div></div>
+
+<!-- ─────────── AFTER (A + B) ─────────── -->
+<div class="variant-label">
+  AFTER — A + B
+  <span class="variant-desc">matching drop-cap W on right · italic pull quote fills left</span>
+</div>
+<section class="editorial">
+  <div class="newsprint-section-head">
+    <div class="newsprint-section-kicker-wrap"><span class="newsprint-section-kicker">Editorial · Vol. I</span></div>
+    <h2>Insurance is not a data problem.</h2>
+    <p class="deck">It is a judgment business &mdash; and the gap between marketing and underwriting has always been the most expensive seat in the house.</p>
+  </div>
+  <div class="body-proposed">
+    <!-- LEFT column -->
+    <div class="col">
+      <p class="drop-cap">
+        <strong>Every carrier, every agency, every MGA</strong> operates in a world where the difference between a profitable book and a failing one comes down to knowing which accounts deserve attention &mdash; and which do not. The cost of that judgment, compounded across a year of inbound, is the difference between loss ratios that make the quarterly review and ones that do not.
+      </p>
+      <blockquote class="pull-quote">
+        A line item that decided whether a campaign paid for itself — or quietly bled the book.
+        <span class="pull-quote-attrib">— The most expensive seat in the house</span>
+      </blockquote>
+    </div>
+
+    <!-- Column rule -->
+    <div class="rule"></div>
+
+    <!-- RIGHT column -->
+    <div class="col">
+      <p class="drop-cap">
+        <strong>We created The Switchboard</strong> because we have sat on both sides of the table &mdash; writing insurance AND funding the demand that feeds it. From that seat, the gap between marketing and underwriting was never theoretical. It was the line item that decided whether a campaign paid for itself or quietly bled the book.
+      </p>
+      <p>
+        So we closed it. What you see here is the intelligence layer we wished we had, built by the people who knew exactly what was missing &mdash; and exactly what it cost to not have it.
+      </p>
+    </div>
+  </div>
+  <div class="fleuron">✦ &nbsp; ✦ &nbsp; ✦</div>
+</section>
+
+</body>
+</html>
