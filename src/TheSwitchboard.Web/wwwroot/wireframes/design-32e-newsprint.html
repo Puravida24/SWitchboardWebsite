@@ -934,7 +934,15 @@ if (contactForm) {
     const email = document.getElementById('cf-email').value.trim();
     const company = document.getElementById('cf-company').value.trim();
     const role = document.getElementById('cf-role').value;
-    const phone = (document.getElementById('cf-phone')?.value || '').trim();
+    let phone = (document.getElementById('cf-phone')?.value || '').trim();
+    // Normalize to E.164 — strip formatting, assume US (+1) when 10 digits.
+    if (phone) {
+      const digits = phone.replace(/[^\d]/g, '');
+      if (phone.startsWith('+')) phone = '+' + digits;
+      else if (digits.length === 10) phone = '+1' + digits;
+      else if (digits.length === 11 && digits.startsWith('1')) phone = '+' + digits;
+      else phone = '+' + digits;
+    }
     const message = (document.getElementById('cf-message')?.value || '').trim();
     const website = (document.getElementById('cf-website')?.value || '').trim();
     if (!name || !email || !company || !role) {
