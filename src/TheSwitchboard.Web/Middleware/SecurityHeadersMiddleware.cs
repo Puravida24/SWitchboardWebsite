@@ -24,10 +24,13 @@ public class SecurityHeadersMiddleware
             // H-05: script-src uses a per-request nonce — no 'unsafe-inline'.
             // H-04: 'unsafe-eval' dropped (our code doesn't eval).
             $"script-src 'self' 'nonce-{nonce}' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; " +
-            // H-07.1: style-src tightened — the giant inline <style> block moved
-            // to /css/design-32e.css. 'unsafe-inline' removed. Font services still
-            // allowed.
-            "style-src 'self' https://fonts.googleapis.com; " +
+            // H-07.1: moved the giant <style> block to /css/design-32e.css, but
+            // the design relies on ~126 inline style="..." attributes for grid
+            // layouts (Phoenix live-ops terminal, KPI strip, data rows). Removing
+            // 'unsafe-inline' here strips those and the page renders unstyled, so
+            // we keep it for style-src only. script-src remains nonce-based — the
+            // bigger XSS surface.
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
             "img-src 'self' data: https:; " +
             "font-src 'self' https://fonts.gstatic.com; " +
             "connect-src 'self'; " +
