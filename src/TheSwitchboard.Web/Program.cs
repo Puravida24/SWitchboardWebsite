@@ -55,6 +55,9 @@ try
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+    // Replace default PBKDF2 hasher with Argon2id (OWASP 2023 recommended).
+    builder.Services.AddSingleton<IPasswordHasher<AdminUser>, Argon2IdPasswordHasher<AdminUser>>();
+
     builder.Services.ConfigureApplicationCookie(options =>
     {
         options.LoginPath = "/Admin/Login";
@@ -130,7 +133,7 @@ try
     {
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        if (hasDatabase && app.Environment.IsDevelopment())
+        if (hasDatabase)
             await db.Database.MigrateAsync();
         else
             await db.Database.EnsureCreatedAsync();
