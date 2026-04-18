@@ -27,7 +27,6 @@ public class EmailService : IEmailService
         var body = $"""
             <h2>Thanks for contacting us, {System.Net.WebUtility.HtmlEncode(toName)}!</h2>
             <p>We received your message and will get back to you within 1 business day.</p>
-            <p>In the meantime, you can <a href="https://theswitchboardmarketing.com/demo">book a demo</a> to see our platform in action.</p>
             <br>
             <p>— The Switchboard Team</p>
             """;
