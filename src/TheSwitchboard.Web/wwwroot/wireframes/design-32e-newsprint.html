@@ -924,8 +924,9 @@ window.addEventListener('scroll', () => {
   marquee.addEventListener('touchcancel', scheduleResume, { passive: true });
 })();
 
-// Contact form submission (placeholder — wire to backend later)
+// Contact form submission — posts to /api/contact, then plays Phoenix vignette.
 const contactForm = document.getElementById('contactForm');
+const formLoadedAt = new Date().toISOString();
 if (contactForm) {
   contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -933,11 +934,44 @@ if (contactForm) {
     const email = document.getElementById('cf-email').value.trim();
     const company = document.getElementById('cf-company').value.trim();
     const role = document.getElementById('cf-role').value;
-    if (!name || !email || !company) {
-      alert('Please fill in your name, email, and company.');
+    const phone = (document.getElementById('cf-phone')?.value || '').trim();
+    const message = (document.getElementById('cf-message')?.value || '').trim();
+    const website = (document.getElementById('cf-website')?.value || '').trim();
+    if (!name || !email || !company || !role) {
+      alert('Please fill in your name, email, company, and role.');
       return;
     }
-    // TODO: POST to /api/contact once backend is wired up
+    const submitBtn = contactForm.querySelector('button[type=submit]');
+    if (submitBtn) submitBtn.disabled = true;
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name, email, company, phone, role, message,
+          website,
+          loadedAt: formLoadedAt
+        })
+      });
+      if (!res.ok) {
+        let err = 'Submission failed — please try again or email us directly.';
+        try {
+          const body = await res.json();
+          if (body?.errors) {
+            err = Object.values(body.errors).flat().join('\n');
+          } else if (body?.title) {
+            err = body.title;
+          }
+        } catch {}
+        alert(err);
+        if (submitBtn) submitBtn.disabled = false;
+        return;
+      }
+    } catch (err) {
+      alert('Network error — please try again.');
+      if (submitBtn) submitBtn.disabled = false;
+      return;
+    }
     contactForm.style.display = 'none';
     runPhoenixVignette({ name, company, role });
   });
