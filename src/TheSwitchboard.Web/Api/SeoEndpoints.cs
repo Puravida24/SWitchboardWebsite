@@ -93,18 +93,20 @@ public static class SeoEndpoints
         });
 
         // RFC 9116 security.txt — where researchers can report vulnerabilities.
-        app.MapGet("/.well-known/security.txt", (HttpContext ctx) =>
+        // Registered on both /.well-known/... (canonical) and /security.txt (legacy).
+        string SecurityTxt(HttpContext ctx)
         {
             var baseUrl = $"{ctx.Request.Scheme}://{ctx.Request.Host}";
             var expires = DateTime.UtcNow.AddYears(1).ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
-            var body = $"""
+            return $"""
                 Contact: mailto:security@theswitchboardmarketing.com
                 Expires: {expires}
                 Preferred-Languages: en
                 Canonical: {baseUrl}/.well-known/security.txt
                 Policy: {baseUrl}/security
                 """;
-            return Results.Content(body, "text/plain");
-        });
+        }
+        app.MapGet("/.well-known/security.txt", (HttpContext ctx) => Results.Content(SecurityTxt(ctx), "text/plain"));
+        app.MapGet("/security.txt", (HttpContext ctx) => Results.Content(SecurityTxt(ctx), "text/plain"));
     }
 }
