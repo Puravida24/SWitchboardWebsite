@@ -40,9 +40,11 @@ public class SecurityHeadersMiddleware
             // 'unsafe-inline' here strips those and the page renders unstyled, so
             // we keep it for style-src only. script-src remains nonce-based — the
             // bigger XSS surface.
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+            // H-6.B: fonts are now self-hosted under /fonts/ — dropped fonts.googleapis.com
+            // and fonts.gstatic.com from the policy. Tighter CSP surface.
+            "style-src 'self' 'unsafe-inline'; " +
             "img-src 'self' data: https:; " +
-            "font-src 'self' https://fonts.gstatic.com; " +
+            "font-src 'self'; " +
             "connect-src 'self'; " +
             "frame-ancestors 'none';";
 

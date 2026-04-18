@@ -114,6 +114,22 @@ public class SecurityResidualsTests
         return Convert.ToHexString(hash).ToLowerInvariant();
     }
 
+    // ── H-6.A — SEO endpoints respond to HEAD (not just GET) ────────────
+    [Theory]
+    [InlineData("/sitemap.xml")]
+    [InlineData("/robots.txt")]
+    [InlineData("/llms.txt")]
+    [InlineData("/security.txt")]
+    [InlineData("/.well-known/security.txt")]
+    public async Task H6_A_SeoEndpoints_RespondTo_HEAD(string path)
+    {
+        using var factory = new H3Factory();
+        var client = factory.CreateClient();
+        using var req = new HttpRequestMessage(HttpMethod.Head, path);
+        var res = await client.SendAsync(req);
+        Assert.Equal(HttpStatusCode.OK, res.StatusCode);
+    }
+
     // ── H-3.C — ImageService.DeleteImage rejects path traversal ──────────
     [Fact]
     public void H3_C_ImageService_DeleteRejectsPathTraversal()

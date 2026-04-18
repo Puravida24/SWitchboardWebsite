@@ -1,0 +1,11 @@
+/* Self-hosted Google Fonts (H-6.B). Eliminates the ~450ms render-blocking
+   third-party chain to fonts.googleapis.com + fonts.gstatic.com.
+   Source: Google Fonts CSS API v2 at css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400 */
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/instrument-serif-regular.woff2') format('woff2')}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url('/fonts/instrument-serif-italic.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:300;font-display:swap;src:url('/fonts/inter.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/inter.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/inter.woff2') format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url('/fonts/inter.woff2') format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300;font-display:swap;src:url('/fonts/jetbrains-mono.woff2') format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400;font-display:swap;src:url('/fonts/jetbrains-mono.woff2') format('woff2')}

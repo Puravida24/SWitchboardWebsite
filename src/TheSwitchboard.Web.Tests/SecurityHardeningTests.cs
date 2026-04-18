@@ -134,20 +134,22 @@ public class SecurityHardeningTests : IClassFixture<SwitchboardWebApplicationFac
     }
 
     // ── H-07.1 CSP style-src — external <style> block extracted to /css ──
-    // Partial hardening: the giant <style> block moved to /css/design-32e.css.
-    // 'unsafe-inline' stays because the design-32e wireframe uses ~126 inline
-    // style="..." attributes (the Phoenix live-ops terminal grid, KPI strip,
-    // data rows) — removing it strips layout and the page renders unstyled.
-    // Full removal is deferred until those inline styles are migrated to classes.
+    // H-6.B: fonts self-hosted under /fonts/ so we dropped fonts.googleapis.com
+    // and fonts.gstatic.com from the CSP — tighter surface. 'unsafe-inline' still
+    // needed for ~126 inline style="..." attributes (Phoenix live-ops grid, etc.)
+    // until they migrate to classes.
     [Fact]
-    public async Task H_07_1_Csp_StyleSrc_AllowsGoogleFonts()
+    public async Task H_07_1_Csp_StyleSrc_SelfOnly()
     {
         var client = _factory.CreateClient();
         var res = await client.GetAsync("/");
         var csp = string.Join(" ", res.Headers.GetValues("Content-Security-Policy"));
         var styleSrc = Regex.Match(csp, @"style-src\s+([^;]+)").Groups[1].Value;
+        var fontSrc = Regex.Match(csp, @"font-src\s+([^;]+)").Groups[1].Value;
         Assert.Contains("'self'", styleSrc);
-        Assert.Contains("fonts.googleapis.com", styleSrc);
+        Assert.Contains("'self'", fontSrc);
+        Assert.DoesNotContain("fonts.googleapis.com", styleSrc);
+        Assert.DoesNotContain("fonts.gstatic.com", fontSrc);
     }
 
     // ── H-07.2 IRateLimitStore registered in DI ────────────────────────

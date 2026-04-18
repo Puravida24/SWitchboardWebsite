@@ -19,7 +19,7 @@ public static class SeoEndpoints
 
     public static void MapSeoEndpoints(this WebApplication app)
     {
-        app.MapGet("/sitemap.xml", (HttpContext ctx) =>
+        app.MapMethods("/sitemap.xml", new[] { "GET", "HEAD" }, (HttpContext ctx) =>
         {
             var baseUrl = $"{ctx.Request.Scheme}://{ctx.Request.Host}";
             var today = DateTime.UtcNow.ToString("yyyy-MM-dd");
@@ -46,7 +46,7 @@ public static class SeoEndpoints
             return Results.Content(sb.ToString(), "application/xml");
         });
 
-        app.MapGet("/robots.txt", (HttpContext ctx) =>
+        app.MapMethods("/robots.txt", new[] { "GET", "HEAD" }, (HttpContext ctx) =>
         {
             var baseUrl = $"{ctx.Request.Scheme}://{ctx.Request.Host}";
             var body = $"""
@@ -61,7 +61,7 @@ public static class SeoEndpoints
             return Results.Content(body, "text/plain");
         });
 
-        app.MapGet("/llms.txt", () =>
+        app.MapMethods("/llms.txt", new[] { "GET", "HEAD" }, () =>
         {
             var body = """
                 # The Switchboard
@@ -106,7 +106,7 @@ public static class SeoEndpoints
                 Policy: {baseUrl}/security
                 """;
         }
-        app.MapGet("/.well-known/security.txt", (HttpContext ctx) => Results.Content(SecurityTxt(ctx), "text/plain"));
-        app.MapGet("/security.txt", (HttpContext ctx) => Results.Content(SecurityTxt(ctx), "text/plain"));
+        app.MapMethods("/.well-known/security.txt", new[] { "GET", "HEAD" }, (HttpContext ctx) => Results.Content(SecurityTxt(ctx), "text/plain"));
+        app.MapMethods("/security.txt", new[] { "GET", "HEAD" }, (HttpContext ctx) => Results.Content(SecurityTxt(ctx), "text/plain"));
     }
 }
