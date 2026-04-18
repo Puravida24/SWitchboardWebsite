@@ -96,6 +96,56 @@ public class SecurityHardeningTests : IClassFixture<SwitchboardWebApplicationFac
         Assert.DoesNotContain("unsafe-eval", csp);
     }
 
+    // ── H-05 script-src uses a nonce, not 'unsafe-inline' ──────────────
+    [Fact]
+    public async Task H_05_Csp_ScriptSrc_UsesNonce_NoUnsafeInline()
+    {
+        var client = _factory.CreateClient();
+        var res = await client.GetAsync("/");
+        var csp = string.Join(" ", res.Headers.GetValues("Content-Security-Policy"));
+        // Extract script-src segment
+        var scriptSrcMatch = Regex.Match(csp, @"script-src\s+([^;]+)");
+        Assert.True(scriptSrcMatch.Success, "CSP must define script-src");
+        var scriptSrc = scriptSrcMatch.Groups[1].Value;
+        Assert.Matches(@"'nonce-[A-Za-z0-9+/=_-]{10,}'", scriptSrc);
+        Assert.DoesNotContain("'unsafe-inline'", scriptSrc);
+    }
+
+    // ── H-05 nonce is per-request (two GETs → different nonces) ────────
+    [Fact]
+    public async Task H_05_Nonce_IsPerRequest()
+    {
+        var client = _factory.CreateClient();
+        string? NonceFrom(HttpResponseMessage r)
+        {
+            var csp = string.Join(" ", r.Headers.GetValues("Content-Security-Policy"));
+            var m = Regex.Match(csp, @"'nonce-([^']+)'");
+            return m.Success ? m.Groups[1].Value : null;
+        }
+        var res1 = await client.GetAsync("/");
+        var res2 = await client.GetAsync("/");
+        var n1 = NonceFrom(res1);
+        var n2 = NonceFrom(res2);
+        Assert.False(string.IsNullOrEmpty(n1));
+        Assert.False(string.IsNullOrEmpty(n2));
+        Assert.NotEqual(n1, n2);
+    }
+
+    // ── H-05 rendered HTML carries the same nonce on inline <script> ──
+    [Fact]
+    public async Task H_05_InlineScripts_CarryTheNonce()
+    {
+        var client = _factory.CreateClient();
+        var res = await client.GetAsync("/");
+        var csp = string.Join(" ", res.Headers.GetValues("Content-Security-Policy"));
+        var nonce = Regex.Match(csp, @"'nonce-([^']+)'").Groups[1].Value;
+        Assert.False(string.IsNullOrEmpty(nonce));
+        var body = await res.Content.ReadAsStringAsync();
+        // Every <script> tag without src= must carry the matching nonce.
+        // Rough check: the nonce string appears in the body at least once.
+        Assert.Contains($"nonce=\"{nonce}\"", body);
+    }
+
     // H-01 is implicitly covered: if AdminSeedService threw on boot, no other
     // integration test would pass. That means H-01 is a self-enforcing guard —
     // the fact that the factory can build at all with Admin:Password set is

@@ -78,6 +78,11 @@ public abstract class PublicPageModel : PageModel
                        ?? new SiteSettings { SiteName = "The Switchboard" };
 
         string E(string? v, string fallback = "") => WebUtility.HtmlEncode(string.IsNullOrWhiteSpace(v) ? fallback : v!);
+
+        // Per-request CSP nonce for inline <script nonce="{{NONCE}}"> blocks.
+        var nonce = TheSwitchboard.Web.Middleware.CspNonceMiddleware.GetNonce(HttpContext);
+        html = html.Replace("{{NONCE}}", nonce);
+
         html = html
             .Replace("{{PHONE}}",            E(settings.PhoneNumber))
             .Replace("{{EMAIL}}",            E(settings.ContactEmail))

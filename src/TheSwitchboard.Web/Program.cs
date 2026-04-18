@@ -115,6 +115,10 @@ try
     fhOpts.KnownProxies.Clear();
     app.UseForwardedHeaders(fhOpts);
 
+    // Per-request CSP nonce — must run before SecurityHeadersMiddleware so the
+    // CSP header can reference the nonce value.
+    app.UseMiddleware<CspNonceMiddleware>();
+
     // Security headers (all environments)
     app.UseMiddleware<SecurityHeadersMiddleware>();
     app.UseMiddleware<RedirectMiddleware>();
