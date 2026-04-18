@@ -69,6 +69,12 @@ try
             options.UseNpgsql(connectionString);
         else
             options.UseInMemoryDatabase(builder.Configuration["Database:InMemoryName"] ?? "SwitchboardDesignReview");
+
+        // HasData seeds reference DateTime.UtcNow via entity defaults → EF sees a
+        // "changing model" each boot and would throw PendingModelChangesWarning as
+        // an error, failing MigrateAsync(). Ignore it in prod boots.
+        options.ConfigureWarnings(w =>
+            w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
     });
 
     // Identity (admin auth)
