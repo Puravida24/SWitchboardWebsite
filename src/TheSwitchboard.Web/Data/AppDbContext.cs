@@ -40,6 +40,10 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     // Site
     public DbSet<SiteSettings> SiteSettings => Set<SiteSettings>();
 
+    // Slice 3 CMS
+    public DbSet<LegalPage> LegalPages => Set<LegalPage>();
+    public DbSet<ContentVersion> ContentVersions => Set<ContentVersion>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
