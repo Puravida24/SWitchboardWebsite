@@ -2307,10 +2307,26 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   padding: 36px 24px;
   border-right: 1px solid rgba(0,51,153,0.12);
   position: relative;
+  cursor: default;
+  transition: background 0.4s ease;
 }
 .intel-step:last-child { border-right: none; }
+.intel-step::before {
+  content: '';
+  position: absolute;
+  left: 24px; right: 24px; top: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0;
+}
+.intel-step:hover { background: rgba(0,51,153,0.04); }
+.intel-step:hover::before { transform: scaleX(1); opacity: 1; }
+
 .intel-step-num {
-  display: block;
+  display: inline-block;
   font-family: var(--serif);
   font-size: 3rem;
   line-height: 1;
@@ -2320,6 +2336,12 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   margin-bottom: 18px;
   opacity: 0.85;
   text-shadow: 0 0 18px rgba(0,51,153,0.1);
+  transform-origin: left bottom;
+}
+.intel-step:hover .intel-step-num {
+  opacity: 1;
+  transform: translateY(-3px) scale(1.06);
+  text-shadow: 0 0 24px rgba(0,51,153,0.3);
 }
 .intel-step-title {
   font-family: var(--serif);
@@ -2329,7 +2351,23 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   letter-spacing: -0.005em;
   margin: 0 0 10px;
   line-height: 1.1;
+  position: relative;
+  display: inline-block;
 }
+.intel-step-title::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -3px;
+  width: 100%;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.intel-step:hover .intel-step-title { color: var(--gold); }
+.intel-step:hover .intel-step-title::after { transform: scaleX(1); }
+
 .intel-step-body {
   font-family: var(--serif);
   font-size: 0.98rem;
@@ -2337,6 +2375,22 @@ h1, h2, h3, h4, h5 { font-family: var(--serif); font-weight: 400; line-height: 1
   color: var(--charcoal-1);
   opacity: 0.85;
   margin: 0;
+  transition: opacity 0.3s ease;
+}
+.intel-step:hover .intel-step-body { opacity: 1; }
+
+/* Hover transitions — only active once the intel-reveal entrance has completed.
+   The intel-reveal rules set transition + delay for the entrance; once .visible
+   has been on the element long enough for the reveal to finish, override with
+   fast hover-scoped transitions via a secondary selector. */
+.intel-reveal.visible:hover .intel-step-num,
+.intel-reveal.visible:hover .intel-step-title,
+.intel-reveal.visible:hover .intel-step-body {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.3s ease,
+              color 0.3s ease,
+              text-shadow 0.3s ease;
+  transition-delay: 0s;
 }
 @media (max-width: 960px) {
   .intel-rail { grid-template-columns: repeat(2, 1fr); }
