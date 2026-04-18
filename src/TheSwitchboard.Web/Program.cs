@@ -45,6 +45,22 @@ try
     var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
         ?? Environment.GetEnvironmentVariable("DATABASE_PRIVATE_URL")
         ?? (builder.Environment.IsDevelopment() ? builder.Configuration.GetConnectionString("DefaultConnection") : null);
+
+    // Railway (and Heroku/Render) ship DATABASE_URL as a URI: postgresql://user:pass@host:port/db
+    // Npgsql's keyword parser rejects that — translate to Host=...;Port=...;Database=... form.
+    if (!string.IsNullOrEmpty(connectionString) &&
+        (connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase) ||
+         connectionString.StartsWith("postgres://",   StringComparison.OrdinalIgnoreCase)))
+    {
+        var uri = new Uri(connectionString);
+        var userInfo = uri.UserInfo.Split(':', 2);
+        var username = Uri.UnescapeDataString(userInfo[0]);
+        var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : string.Empty;
+        var db = uri.AbsolutePath.TrimStart('/');
+        connectionString =
+            $"Host={uri.Host};Port={(uri.Port <= 0 ? 5432 : uri.Port)};Database={db};Username={username};Password={password};SSL Mode=Prefer;Trust Server Certificate=true";
+    }
+
     var hasDatabase = !string.IsNullOrEmpty(connectionString);
 
     builder.Services.AddDbContext<AppDbContext>(options =>
