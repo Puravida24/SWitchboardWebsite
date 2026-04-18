@@ -99,7 +99,7 @@ public static class SeoEndpoints
             var baseUrl = $"{ctx.Request.Scheme}://{ctx.Request.Host}";
             var expires = DateTime.UtcNow.AddYears(1).ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
             return $"""
-                Contact: mailto:security@theswitchboardmarketing.com
+                Contact: mailto:legal@theswitchboardmarketing.com
                 Expires: {expires}
                 Preferred-Languages: en
                 Canonical: {baseUrl}/.well-known/security.txt
