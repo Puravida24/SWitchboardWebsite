@@ -22,6 +22,9 @@ Thumbs.db
 ## Node (Tailwind build)
 node_modules/
 
+## Stryker.NET mutation-test reports (run on demand)
+StrykerOutput/
+
 ## Environment
 .env
 .env.*

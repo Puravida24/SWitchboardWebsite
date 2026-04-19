@@ -1,0 +1,33 @@
+{
+  "stryker-config": {
+    "project": "TheSwitchboard.Web.csproj",
+    "test-projects": ["src/TheSwitchboard.Web.Tests/TheSwitchboard.Web.Tests.csproj"],
+    "solution": "TheSwitchboardWeb.sln",
+
+    "reporters": ["progress", "html", "cleartext"],
+    "verbosity": "info",
+
+    "thresholds": { "high": 80, "low": 60, "break": 0 },
+
+    "coverage-analysis": "perTest",
+
+    "mutate": [
+      "!**/wwwroot/**",
+      "!**/Migrations/**",
+      "!**/*.Tests/**",
+      "!**/Pages/**/*.cshtml.cs",
+      "!**/Program.cs",
+      "!**/bin/**",
+      "!**/obj/**"
+    ],
+
+    "ignore-mutations": [
+      "string",
+      "regex"
+    ],
+
+    "mutation-level": "Standard",
+
+    "since": { "target": "main", "enabled": false }
+  }
+}
