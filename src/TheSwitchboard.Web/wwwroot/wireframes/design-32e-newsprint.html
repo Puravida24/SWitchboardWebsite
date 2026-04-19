@@ -557,30 +557,30 @@
   </div>
 
   <div class="contact-form-wrap fade-up delay-2">
-    <form class="contact-form" id="contactForm" novalidate>
+    <form class="contact-form" id="contactForm" data-tb-form-id="contact" novalidate>
       <div class="form-row">
         <div class="form-field">
           <label for="cf-name">Name</label>
-          <input type="text" id="cf-name" name="name" required autocomplete="name">
+          <input type="text" id="cf-name" name="name" data-tb-field="name" required autocomplete="name">
         </div>
         <div class="form-field">
           <label for="cf-email">Work Email</label>
-          <input type="email" id="cf-email" name="email" required autocomplete="email">
+          <input type="email" id="cf-email" name="email" data-tb-field="email" required autocomplete="email">
         </div>
       </div>
       <div class="form-row">
         <div class="form-field">
           <label for="cf-company">Company</label>
-          <input type="text" id="cf-company" name="company" required autocomplete="organization">
+          <input type="text" id="cf-company" name="company" data-tb-field="company" required autocomplete="organization">
         </div>
         <div class="form-field">
           <label for="cf-phone">Phone <span class="label-optional">(optional)</span></label>
-          <input type="tel" id="cf-phone" name="phone" autocomplete="tel" placeholder="(555) 555-5555">
+          <input type="tel" id="cf-phone" name="phone" data-tb-field="phone" autocomplete="tel" placeholder="(555) 555-5555">
         </div>
       </div>
       <div class="form-field">
         <label for="cf-role">Role</label>
-        <select id="cf-role" name="role">
+        <select id="cf-role" name="role" data-tb-field="role">
           <option value="">Select&hellip;</option>
           <option value="carrier">Carrier</option>
           <option value="agency">Agency</option>
@@ -590,7 +590,7 @@
       </div>
       <div class="form-field">
         <label for="cf-message">What brings you here?</label>
-        <textarea id="cf-message" name="message" placeholder="A sentence or two is plenty."></textarea>
+        <textarea id="cf-message" name="message" data-tb-field="message" placeholder="A sentence or two is plenty."></textarea>
       </div>
       <p class="form-consent">By submitting, you agree to our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>. We&rsquo;ll use your information to respond to your inquiry and may follow up about our platform. If you provide a phone number, you also consent to receive calls from The Switchboard about your inquiry.</p>
       <button type="submit" class="form-submit">Start the Conversation</button>
@@ -1475,6 +1475,9 @@ if (document.readyState === 'loading') {
 <script nonce="{{NONCE}}" src="/js/tracker/pageview.js?v={{BUILDID}}" defer></script>
 <script nonce="{{NONCE}}" src="/js/tracker/signals.js?v={{BUILDID}}" defer></script>
 <script nonce="{{NONCE}}" src="/js/tracker/clickstream.js?v={{BUILDID}}" defer></script>
+<script nonce="{{NONCE}}" src="/js/tracker/scroll.js?v={{BUILDID}}" defer></script>
+<script nonce="{{NONCE}}" src="/js/tracker/mousetrail.js?v={{BUILDID}}" defer></script>
+<script nonce="{{NONCE}}" src="/js/tracker/forms.js?v={{BUILDID}}" defer></script>
 <script nonce="{{NONCE}}" src="/js/tracker/tracker.js?v={{BUILDID}}" defer></script>
 
 </body>

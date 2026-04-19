@@ -40,7 +40,10 @@ public class Slice1IntegrationTests : IClassFixture<SwitchboardWebApplicationFac
         Assert.Contains("Referrer-Policy", res.Headers.Select(h => h.Key));
         Assert.Contains("Content-Security-Policy", res.Headers.Select(h => h.Key));
         Assert.Equal("nosniff", res.Headers.GetValues("X-Content-Type-Options").First());
-        Assert.Equal("DENY", res.Headers.GetValues("X-Frame-Options").First());
+        // T-5: relaxed from DENY to SAMEORIGIN so admin heatmap pages can iframe
+        // the public site for click/scroll overlay previews. External embedding is
+        // still blocked.
+        Assert.Equal("SAMEORIGIN", res.Headers.GetValues("X-Frame-Options").First());
     }
 
     // ── S1-02 /health ──────────────────────────────────────────────────

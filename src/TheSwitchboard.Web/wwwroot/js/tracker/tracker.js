@@ -80,6 +80,19 @@
     if (self.sw.clickstream && typeof self.sw.clickstream.boot === 'function') {
       self.sw.clickstream.boot();
     }
+
+    // T-5 scroll milestones + max-depth at unload.
+    if (self.sw.scroll && typeof self.sw.scroll.boot === 'function') {
+      self.sw.scroll.boot();
+    }
+    // T-5 mouse trail — sampled movement, 300-point cap.
+    if (self.sw.mousetrail && typeof self.sw.mousetrail.boot === 'function') {
+      self.sw.mousetrail.boot();
+    }
+    // T-5 form funnel — per-field focus/blur/paste/error/submit/abandon.
+    if (self.sw.forms && typeof self.sw.forms.boot === 'function') {
+      self.sw.forms.boot();
+    }
   }
 
   // Defer so identity.js + transport.js — loaded with matching `defer` attributes

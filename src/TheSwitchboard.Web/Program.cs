@@ -134,6 +134,8 @@ try
                                TheSwitchboard.Web.Services.Tracking.SessionService>();
     builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IFrustrationAnalyticsService,
                                TheSwitchboard.Web.Services.Tracking.FrustrationAnalyticsService>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IEngagementAnalyticsService,
+                               TheSwitchboard.Web.Services.Tracking.EngagementAnalyticsService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IImageService, ImageService>();
     builder.Services.AddHttpClient<IPhoenixCrmService, PhoenixCrmService>();

@@ -1,0 +1,95 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.Heatmaps.ScrollModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Scroll heatmap";
+}
+
+<div style="max-width: 1400px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Scroll heatmap — @Model.Path</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    How far sessions scrolled. Hotter band = more sessions reached that depth. Overlaid on a live iframe of the page so you can see what&apos;s above the fold vs below.
+  </p>
+
+  <form method="get" style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem; font-size: 0.75rem; align-items: center;">
+    <label style="color: var(--slate-500);">
+      Page
+      <select name="path" style="margin-left: 0.375rem; padding: 0.375rem 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;">
+        @if (!Model.AvailablePaths.Contains(Model.Path))
+        {
+          <option value="@Model.Path" selected>@Model.Path</option>
+        }
+        @foreach (var p in Model.AvailablePaths)
+        {
+          <option value="@p" selected="@(p == Model.Path)">@p</option>
+        }
+      </select>
+    </label>
+    <label style="color: var(--slate-500);">
+      Window
+      <select name="days" style="margin-left: 0.375rem; padding: 0.375rem 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;">
+        @foreach (var d in new[] { 1, 7, 30, 90 })
+        {
+          <option value="@d" selected="@(d == Model.WindowDays)">@(d == 1 ? "24h" : $"{d}d")</option>
+        }
+      </select>
+    </label>
+    <button type="submit" style="padding: 0.375rem 1rem; border-radius: 0.25rem; background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.4); color: white; cursor: pointer;">Apply</button>
+    <span style="color: var(--slate-500); margin-left: auto;">@Model.Report.UniqueSessions sessions</span>
+  </form>
+
+  <div style="display: grid; grid-template-columns: 1fr 260px; gap: 1.5rem;">
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+      <div style="padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--slate-500); font-size: 0.75rem;">
+        Bands shade the iframe horizontally by share-of-sessions that reached each depth.
+      </div>
+      <div style="position: relative; width: 100%; background: #0a0a0a;">
+        <iframe src="@Model.Path" style="width: 100%; height: 900px; border: 0; display: block;" sandbox="allow-same-origin" title="Live preview"></iframe>
+        <div style="position: absolute; inset: 0; pointer-events: none;">
+          @{
+            int prevStart = 0;
+          }
+          @foreach (var b in Model.Report.Bands)
+          {
+            var topPct = prevStart;
+            var bottomPct = b.Depth;
+            var height = bottomPct - topPct;
+            var alpha = Math.Clamp(b.Share, 0.0, 1.0) * 0.45;
+            prevStart = bottomPct;
+            <div style="position: absolute; left: 0; right: 0; top: @(topPct)%; height: @(height)%; background: rgba(239,68,68,@(alpha.ToString("0.###"))); border-bottom: 1px dashed rgba(255,255,255,0.1);">
+              <div style="position: absolute; top: 0.375rem; right: 0.75rem; font-size: 0.625rem; color: rgba(255,255,255,0.65); font-family: ui-monospace, monospace;">
+                @b.Depth% · @Math.Round(b.Share * 100)% of sessions
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden; align-self: start;">
+      <div style="padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <h2 style="font-size: 0.875rem; font-weight: 600; color: white;">Depth ladder</h2>
+      </div>
+      <div style="padding: 1rem 1.25rem;">
+        @if (Model.Report.Bands.Count == 0)
+        {
+          <div style="color: var(--slate-500); font-size: 0.875rem;">No scroll data yet for this page.</div>
+        }
+        else
+        {
+          foreach (var b in Model.Report.Bands)
+          {
+            <div style="margin-bottom: 0.875rem; font-size: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; color: var(--slate-400); margin-bottom: 0.25rem;">
+                <span>Reached @b.Depth%</span><span style="color: white; font-weight: 600;">@b.Reached</span>
+              </div>
+              <div style="background: rgba(255,255,255,0.04); height: 6px; border-radius: 999px; overflow: hidden;">
+                <div style="background: #ef4444; opacity: 0.75; height: 100%; width: @(Math.Round(b.Share * 100))%;"></div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

@@ -128,6 +128,64 @@ public static class TrackingEndpoints
     }
 
     public const int MaxClicksPerSession = 500;
+    public const int MaxMouseTrailPerSession = 300;
+
+    public sealed class ScrollItem
+    {
+        public string? Sid { get; set; }
+        public string? Vid { get; set; }
+        public string? Path { get; set; }
+        public DateTime? Ts { get; set; }
+        public int? Depth { get; set; }
+        public int? MaxDepth { get; set; }
+        public int? ViewportH { get; set; }
+        public int? DocumentH { get; set; }
+        public int? TimeSinceLoadMs { get; set; }
+    }
+
+    public sealed class ScrollBatch
+    {
+        public List<ScrollItem>? Samples { get; set; }
+    }
+
+    public sealed class MousePoint
+    {
+        public string? Sid { get; set; }
+        public string? Vid { get; set; }
+        public string? Path { get; set; }
+        public DateTime? Ts { get; set; }
+        public int? X { get; set; }
+        public int? Y { get; set; }
+        public int? ViewportW { get; set; }
+        public int? ViewportH { get; set; }
+    }
+
+    public sealed class MouseBatch
+    {
+        public List<MousePoint>? Points { get; set; }
+    }
+
+    public sealed class FormEventItem
+    {
+        public string? Sid { get; set; }
+        public string? Vid { get; set; }
+        public string? Path { get; set; }
+        public string? FormId { get; set; }
+        public string? FieldName { get; set; }
+        public string? Event { get; set; }
+        public DateTime? OccurredAt { get; set; }
+        public int? DwellMs { get; set; }
+        public int? CharCount { get; set; }
+        public int? CorrectionCount { get; set; }
+        public bool? PastedFlag { get; set; }
+        public string? ErrorCode { get; set; }
+        public string? ErrorMessage { get; set; }
+    }
+
+    public sealed class FormEventsBatch
+    {
+        public List<FormEventItem>? Events { get; set; }
+    }
 
     public static void MapTrackingEndpoints(this WebApplication app)
     {
@@ -440,6 +498,163 @@ public static class TrackingEndpoints
 
             return Results.StatusCode(StatusCodes.Status204NoContent);
         });
+
+        // T-5 scroll milestones + max-depth samples. Dedupes per (sid, path, depth)
+        // via the unique index on ScrollSamples — duplicate POSTs are catch-and-ignore.
+        app.MapPost("/api/tracking/scroll", async (
+            ScrollBatch? request,
+            HttpContext context,
+            AppDbContext db,
+            ILogger<TrackingScrollMarker> logger) =>
+        {
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            if (HonorsPrivacySignal(context))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+            if (request?.Samples is null || request.Samples.Count == 0)
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+
+            foreach (var s in request.Samples)
+            {
+                if (string.IsNullOrWhiteSpace(s.Sid) || s.Depth is null) continue;
+                var path = string.IsNullOrWhiteSpace(s.Path) ? "/" : s.Path!;
+                var depth = s.Depth.Value;
+
+                try
+                {
+                    var exists = await db.ScrollSamples.AnyAsync(x =>
+                        x.SessionId == s.Sid && x.Path == path && x.Depth == depth);
+                    if (exists) continue;
+
+                    db.ScrollSamples.Add(new ScrollSample
+                    {
+                        SessionId = s.Sid!,
+                        Path = path,
+                        Ts = s.Ts ?? DateTime.UtcNow,
+                        Depth = depth,
+                        MaxDepth = s.MaxDepth ?? depth,
+                        ViewportH = s.ViewportH ?? 0,
+                        DocumentH = s.DocumentH ?? 0,
+                        TimeSinceLoadMs = s.TimeSinceLoadMs ?? 0
+                    });
+                    await db.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {
+                    // Unique-index race — another request inserted the same milestone
+                    // between our AnyAsync check and SaveChanges. Safe to ignore.
+                    db.ChangeTracker.Clear();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "Scroll persist failed for sid={Sid}", s.Sid);
+                }
+            }
+            return Results.StatusCode(StatusCodes.Status204NoContent);
+        });
+
+        // T-5 mouse trail — sampled XY coords, capped 300/session.
+        app.MapPost("/api/tracking/mouse-trail", async (
+            MouseBatch? request,
+            HttpContext context,
+            AppDbContext db,
+            ILogger<TrackingMouseMarker> logger) =>
+        {
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            if (HonorsPrivacySignal(context))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+            if (request?.Points is null || request.Points.Count == 0)
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+
+            try
+            {
+                foreach (var byGroup in request.Points
+                             .Where(p => !string.IsNullOrWhiteSpace(p.Sid))
+                             .GroupBy(p => p.Sid!))
+                {
+                    var sid = byGroup.Key;
+                    var existing = await db.MouseTrails.CountAsync(m => m.SessionId == sid);
+                    var remaining = MaxMouseTrailPerSession - existing;
+                    if (remaining <= 0)
+                    {
+                        logger.LogInformation("Mouse-trail cap reached for sid={Sid}", sid);
+                        continue;
+                    }
+
+                    foreach (var p in byGroup.OrderBy(p => p.Ts ?? DateTime.UtcNow).Take(remaining))
+                    {
+                        db.MouseTrails.Add(new MouseTrail
+                        {
+                            SessionId = sid,
+                            Path = string.IsNullOrWhiteSpace(p.Path) ? "/" : p.Path!,
+                            Ts = p.Ts ?? DateTime.UtcNow,
+                            X = p.X ?? 0,
+                            Y = p.Y ?? 0,
+                            ViewportW = p.ViewportW ?? 0,
+                            ViewportH = p.ViewportH ?? 0
+                        });
+                    }
+                }
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Mouse-trail persist failed");
+            }
+            return Results.StatusCode(StatusCodes.Status204NoContent);
+        });
+
+        // T-5 form events — focus/blur/input/paste/error/submit/abandon. One row
+        // per event; dwell/charCount/pastedFlag already aggregated client-side.
+        app.MapPost("/api/tracking/form-events", async (
+            FormEventsBatch? request,
+            HttpContext context,
+            AppDbContext db,
+            ILogger<TrackingFormEventsMarker> logger) =>
+        {
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            if (HonorsPrivacySignal(context))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+            if (request?.Events is null || request.Events.Count == 0)
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+
+            try
+            {
+                foreach (var e in request.Events)
+                {
+                    if (string.IsNullOrWhiteSpace(e.Sid) ||
+                        string.IsNullOrWhiteSpace(e.FormId) ||
+                        string.IsNullOrWhiteSpace(e.FieldName) ||
+                        string.IsNullOrWhiteSpace(e.Event) ||
+                        !ValidFormEvents.Contains(e.Event!)) continue;
+
+                    db.FormInteractions.Add(new FormInteraction
+                    {
+                        SessionId = e.Sid!,
+                        VisitorId = e.Vid,
+                        Path = string.IsNullOrWhiteSpace(e.Path) ? "/" : e.Path!,
+                        FormId = Truncate(e.FormId, 64) ?? "unknown",
+                        FieldName = Truncate(e.FieldName, 64) ?? "unknown",
+                        Event = e.Event!.ToLowerInvariant(),
+                        OccurredAt = e.OccurredAt ?? DateTime.UtcNow,
+                        DwellMs = e.DwellMs,
+                        CharCount = e.CharCount,
+                        CorrectionCount = e.CorrectionCount,
+                        PastedFlag = e.PastedFlag,
+                        ErrorCode = Truncate(e.ErrorCode, 50),
+                        ErrorMessage = Truncate(e.ErrorMessage, 200)
+                    });
+                }
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Form events persist failed");
+            }
+            return Results.StatusCode(StatusCodes.Status204NoContent);
+        });
     }
 
     private static string? Truncate(string? s, int max)
@@ -447,6 +662,11 @@ public static class TrackingEndpoints
         if (s is null) return null;
         return s.Length <= max ? s : s[..max];
     }
+
+    private static readonly HashSet<string> ValidFormEvents = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "focus", "blur", "input", "paste", "error", "submit", "abandon"
+    };
 
     /// <summary>ILogger category marker for ping.</summary>
     public sealed class TrackingPingMarker { }
@@ -456,4 +676,10 @@ public static class TrackingEndpoints
     public sealed class TrackingSignalsMarker { }
     /// <summary>ILogger category marker for clicks.</summary>
     public sealed class TrackingClicksMarker { }
+    /// <summary>ILogger category marker for scroll.</summary>
+    public sealed class TrackingScrollMarker { }
+    /// <summary>ILogger category marker for mouse-trail.</summary>
+    public sealed class TrackingMouseMarker { }
+    /// <summary>ILogger category marker for form events.</summary>
+    public sealed class TrackingFormEventsMarker { }
 }

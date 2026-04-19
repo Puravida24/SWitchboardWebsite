@@ -64,6 +64,11 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     // T-4 Clickstream
     public DbSet<ClickEvent> ClickEvents => Set<ClickEvent>();
 
+    // T-5 Engagement: scroll / mouse / form funnel
+    public DbSet<ScrollSample> ScrollSamples => Set<ScrollSample>();
+    public DbSet<MouseTrail> MouseTrails => Set<MouseTrail>();
+    public DbSet<FormInteraction> FormInteractions => Set<FormInteraction>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -158,6 +163,27 @@ public class AppDbContext : IdentityDbContext<AdminUser>
             // Filtered indexes — rage and dead clicks are small slices we query often.
             e.HasIndex(c => c.IsRage).HasFilter("\"IsRage\" = true");
             e.HasIndex(c => c.IsDead).HasFilter("\"IsDead\" = true");
+        });
+
+        modelBuilder.Entity<ScrollSample>(e =>
+        {
+            e.HasIndex(s => new { s.Path, s.Depth });
+            // Unique per (sid, path, depth) so the 25/50/75/100 milestones dedup
+            // on double-send (client retries, beacon+interval overlap, etc.).
+            e.HasIndex(s => new { s.SessionId, s.Path, s.Depth }).IsUnique();
+        });
+
+        modelBuilder.Entity<MouseTrail>(e =>
+        {
+            e.HasIndex(m => new { m.Path, m.Ts });
+            e.HasIndex(m => m.SessionId);
+        });
+
+        modelBuilder.Entity<FormInteraction>(e =>
+        {
+            e.HasIndex(f => new { f.SessionId, f.FormId });
+            e.HasIndex(f => new { f.FormId, f.FieldName });
+            e.HasIndex(f => f.Event);
         });
 
         modelBuilder.Entity<KnownProxyAsn>(e =>
