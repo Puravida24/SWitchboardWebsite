@@ -48,21 +48,33 @@
 
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
     <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
-      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Overall capture rate</div>
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">
+        Overall capture rate
+        <span class="tb-help" tabindex="0" data-tip="% of all form submissions in this window that have a linked consent certificate. 100 % means every submission is provably TCPA-compliant at dial time. Dips usually mean the client-side /api/tracking/consent POST failed — check Compliance + Seq.">?</span>
+      </div>
       <div style="font-size: 1.75rem; font-weight: 700; color: @captureColor;">@Model.Report.CaptureRatePct%</div>
       <div style="font-size: 0.75rem; color: var(--slate-600); margin-top: 0.25rem;">@Model.Report.CertifiedSubmissions / @Model.Report.TotalSubmissions submissions</div>
     </div>
     <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(239,68,68,0.3); border-radius: 0.5rem; padding: 1.25rem;">
-      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: #ef4444; margin-bottom: 0.5rem;">Phone-consent capture · TCPA critical</div>
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: #ef4444; margin-bottom: 0.5rem;">
+        Phone-consent capture · TCPA critical
+        <span class="tb-help" tabindex="0" data-tip="% of phone-providing submissions that also have a consent certificate. This is the metric that matters for TCPA: dialing a prospect without a cert is class-action exposure. Must stay ≥ 95 %. Red alert fires below that.">?</span>
+      </div>
       <div style="font-size: 1.75rem; font-weight: 700; color: @phoneColor;">@Model.Report.PhoneCaptureRatePct%</div>
       <div style="font-size: 0.75rem; color: var(--slate-600); margin-top: 0.25rem;">@Model.Report.PhoneCertifiedSubmissions / @Model.Report.PhoneProvidingSubmissions phone-providing</div>
     </div>
     <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
-      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Total certs issued</div>
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">
+        Total certs issued
+        <span class="tb-help" tabindex="0" data-tip="Raw count of ConsentCertificate rows minted in this window. A cert is minted the moment a visitor submits the contact form with consent. Can exceed submission count if the form was submitted multiple times by the same session.">?</span>
+      </div>
       <div style="font-size: 1.75rem; font-weight: 700; color: white;">@Model.Report.TotalCerts</div>
     </div>
     <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
-      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Suspicious bot rate</div>
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">
+        Suspicious bot rate
+        <span class="tb-help" tabindex="0" data-tip="% of certs flagged IsSuspiciousBot = true — heuristics across user-agent, behavioral signals, known proxy ASN. High rate doesn't invalidate certs but signals someone's stuffing the form. Investigate at /Admin/Reports/Visitors filter IsBot.">?</span>
+      </div>
       <div style="font-size: 1.75rem; font-weight: 700; color: @(Model.Report.BotRatePct > 5 ? "#f59e0b" : "#10b981");">@Model.Report.BotRatePct%</div>
       <div style="font-size: 0.75rem; color: var(--slate-600); margin-top: 0.25rem;">@Model.Report.SuspiciousBotCerts of @Model.Report.TotalCerts</div>
     </div>
