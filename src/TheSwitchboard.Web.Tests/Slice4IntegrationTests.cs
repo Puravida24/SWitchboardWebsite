@@ -101,7 +101,6 @@ public class Slice4IntegrationTests : IClassFixture<Slice4Factory>
         }
         var res = await _client.GetAsync("/");
         res.EnsureSuccessStatusCode();
-        await Task.Delay(500);
 
         using var scope = _factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -122,7 +121,6 @@ public class Slice4IntegrationTests : IClassFixture<Slice4Factory>
         req.Headers.Add("DNT", "1");
         var res = await _client.SendAsync(req);
         res.EnsureSuccessStatusCode();
-        await Task.Delay(500);
 
         using var scope = _factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -205,7 +203,6 @@ public class Slice4IntegrationTests : IClassFixture<Slice4Factory>
             await preDb.SaveChangesAsync();
         }
         await _client.GetAsync("/");
-        await Task.Delay(400);
         using var scope = _factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var pv = await db.Set<PageView>().FirstOrDefaultAsync();

@@ -190,8 +190,8 @@ public class Slice2IntegrationTests : IClassFixture<Slice2Factory>
     {
         _factory.FakePhoenix.Reset();
         await _client.PostAsJsonAsync("/api/contact", ValidPayload());
-        // Allow fire-and-forget/back-service dispatch to run
-        await Task.Delay(800);
+        // ProcessContactAsync awaits the Phoenix dispatch synchronously —
+        // no timing wait needed.
         Assert.True(_factory.FakePhoenix.CallCount >= 1);
         var last = _factory.FakePhoenix.LastPayload!;
         Assert.Equal("contact", last.FormType);
@@ -210,7 +210,6 @@ public class Slice2IntegrationTests : IClassFixture<Slice2Factory>
         _factory.FakePhoenix.NextResponsesReturn500(99); // fail forever until we change it
 
         await _client.PostAsJsonAsync("/api/contact", ValidPayload());
-        await Task.Delay(800);
 
         using var scope = _factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -254,7 +253,6 @@ public class Slice2IntegrationTests : IClassFixture<Slice2Factory>
     {
         _factory.FakeEmail.Reset();
         await _client.PostAsJsonAsync("/api/contact", ValidPayload());
-        await Task.Delay(500);
         Assert.Contains(_factory.FakeEmail.ConfirmationsSent, c => c.to == "jane@example.com");
     }
 
@@ -264,7 +262,6 @@ public class Slice2IntegrationTests : IClassFixture<Slice2Factory>
     {
         _factory.FakeEmail.Reset();
         await _client.PostAsJsonAsync("/api/contact", ValidPayload());
-        await Task.Delay(500);
         Assert.NotEmpty(_factory.FakeEmail.NotificationsSent);
     }
 
