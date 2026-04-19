@@ -93,6 +93,15 @@
     if (self.sw.forms && typeof self.sw.forms.boot === 'function') {
       self.sw.forms.boot();
     }
+
+    // T-6 core web vitals — LCP/FCP/CLS/TTFB/INP via PerformanceObserver.
+    if (self.sw.webvitals && typeof self.sw.webvitals.boot === 'function') {
+      self.sw.webvitals.boot();
+    }
+    // T-6 JS errors — window.onerror + unhandledrejection.
+    if (self.sw.errors && typeof self.sw.errors.boot === 'function') {
+      self.sw.errors.boot();
+    }
   }
 
   // Defer so identity.js + transport.js — loaded with matching `defer` attributes

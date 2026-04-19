@@ -50,6 +50,28 @@ public static class PiiRedactor
         return firstOctet + ".***";
     }
 
+    // T-6: Stack trace redaction. JS stacks can contain querystrings that carry
+    // email / phone / user-provided values. Redact the common patterns before
+    // persisting to JsError.StackRedacted.
+    private static readonly System.Text.RegularExpressions.Regex EmailInStack =
+        new(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", System.Text.RegularExpressions.RegexOptions.Compiled);
+    private static readonly System.Text.RegularExpressions.Regex PhoneInStack =
+        new(@"\+?\d[\d\s().-]{9,}\d", System.Text.RegularExpressions.RegexOptions.Compiled);
+    private static readonly System.Text.RegularExpressions.Regex SsnInStack =
+        new(@"\b\d{3}-\d{2}-\d{4}\b", System.Text.RegularExpressions.RegexOptions.Compiled);
+    private static readonly System.Text.RegularExpressions.Regex CcInStack =
+        new(@"\b(?:\d[ -]*?){13,16}\b", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    public static string RedactStack(string? stack)
+    {
+        if (string.IsNullOrEmpty(stack)) return string.Empty;
+        stack = EmailInStack.Replace(stack, "<email>");
+        stack = SsnInStack.Replace(stack, "<ssn>");
+        stack = CcInStack.Replace(stack, "<cc>");
+        stack = PhoneInStack.Replace(stack, "<phone>");
+        return stack;
+    }
+
     /// <summary>Applies masking rules to a Serilog LogEvent in-place.</summary>
     public static void Redact(LogEvent evt)
     {

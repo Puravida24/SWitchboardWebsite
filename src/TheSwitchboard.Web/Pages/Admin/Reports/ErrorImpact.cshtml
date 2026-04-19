@@ -1,0 +1,68 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.ErrorImpactModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Error impact";
+}
+
+<div style="max-width: 1200px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Error impact</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    Ranks errors by CVR delta. Negative delta = sessions that saw this error converted less often than sessions that didn&apos;t.
+    Fix these first.
+  </p>
+
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+    @foreach (var d in new[] { 1, 7, 30, 90 })
+    {
+      var active = Model.WindowDays == d;
+      <a href="?days=@d" style="padding: 0.375rem 0.75rem; border-radius: 0.375rem; font-size: 0.75rem; text-decoration: none;
+         background: @(active ? "rgba(59,130,246,0.2)" : "rgba(255,255,255,0.03)");
+         color: @(active ? "white" : "var(--slate-400)");
+         border: 1px solid @(active ? "rgba(59,130,246,0.4)" : "rgba(255,255,255,0.05)");">
+        @(d == 1 ? "24h" : $"{d}d")
+      </a>
+    }
+  </div>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+    @if (Model.Rows.Count == 0)
+    {
+      <div style="padding: 2rem; color: var(--slate-500); font-size: 0.875rem;">
+        No errors mapped to conversions yet. Once form submits start firing on sessions with and without errors, this page ranks them.
+      </div>
+    }
+    else
+    {
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
+        <thead>
+          <tr style="color: var(--slate-500); text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.1em;">
+            <th style="text-align: left; padding: 0.75rem 1.25rem;">Error</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">Sessions affected</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">CVR (affected)</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">CVR (others)</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">Δ</th>
+            <th style="text-align: left; padding: 0.75rem 1.25rem;">Last seen</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var r in Model.Rows)
+          {
+            var deltaColor = r.CvrDeltaPct < -5 ? "#ef4444" : r.CvrDeltaPct < 0 ? "#f59e0b" : "#10b981";
+            <tr style="border-top: 1px solid rgba(255,255,255,0.04); color: var(--slate-300);">
+              <td style="padding: 0.75rem 1.25rem; color: white;">
+                @r.Message
+                <div style="font-family: ui-monospace, monospace; color: var(--slate-500); font-size: 0.625rem; margin-top: 0.25rem;">@r.Fingerprint</div>
+              </td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right; font-weight: 600;">@r.SessionsAffected</td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right;">@r.CvrAffectedPct%</td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right; color: var(--slate-500);">@r.CvrUnaffectedPct%</td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right; font-weight: 700; color: @deltaColor;">@(r.CvrDeltaPct > 0 ? "+" : "")@r.CvrDeltaPct%</td>
+              <td style="padding: 0.75rem 1.25rem; color: var(--slate-500); font-size: 0.75rem;">@(r.LastSeenAt?.ToString("MMM d HH:mm") ?? "—")</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

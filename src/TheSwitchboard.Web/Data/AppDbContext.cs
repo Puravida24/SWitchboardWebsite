@@ -69,6 +69,10 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     public DbSet<MouseTrail> MouseTrails => Set<MouseTrail>();
     public DbSet<FormInteraction> FormInteractions => Set<FormInteraction>();
 
+    // T-6 Performance + errors
+    public DbSet<WebVitalSample> WebVitalSamples => Set<WebVitalSample>();
+    public DbSet<JsError> JsErrors => Set<JsError>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -184,6 +188,20 @@ public class AppDbContext : IdentityDbContext<AdminUser>
             e.HasIndex(f => new { f.SessionId, f.FormId });
             e.HasIndex(f => new { f.FormId, f.FieldName });
             e.HasIndex(f => f.Event);
+        });
+
+        modelBuilder.Entity<WebVitalSample>(e =>
+        {
+            e.HasIndex(v => new { v.Path, v.Metric });
+            e.HasIndex(v => v.Ts);
+        });
+
+        modelBuilder.Entity<JsError>(e =>
+        {
+            e.HasIndex(j => j.Ts);
+            e.HasIndex(j => j.Fingerprint);
+            // One row per (sid, fingerprint) — repeated errors in the same session bump Count.
+            e.HasIndex(j => new { j.SessionId, j.Fingerprint }).IsUnique();
         });
 
         modelBuilder.Entity<KnownProxyAsn>(e =>

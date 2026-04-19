@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TheSwitchboard.Web.Data;
 using TheSwitchboard.Web.Models.Analytics;
 using TheSwitchboard.Web.Models.Tracking;
+using TheSwitchboard.Web.Services;
 using TheSwitchboard.Web.Services.Tracking;
 
 namespace TheSwitchboard.Web.Api.Tracking;
@@ -185,6 +186,43 @@ public static class TrackingEndpoints
     public sealed class FormEventsBatch
     {
         public List<FormEventItem>? Events { get; set; }
+    }
+
+    public sealed class VitalItem
+    {
+        public string? Sid { get; set; }
+        public string? Vid { get; set; }
+        public string? Path { get; set; }
+        public DateTime? Ts { get; set; }
+        public string? Metric { get; set; }
+        public double? Value { get; set; }
+        public string? NavigationType { get; set; }
+        public string? NavId { get; set; }
+    }
+
+    public sealed class VitalsBatch
+    {
+        public List<VitalItem>? Vitals { get; set; }
+    }
+
+    public sealed class JsErrorItem
+    {
+        public string? Sid { get; set; }
+        public string? Vid { get; set; }
+        public string? Path { get; set; }
+        public DateTime? Ts { get; set; }
+        public string? Message { get; set; }
+        public string? Stack { get; set; }
+        public string? Source { get; set; }
+        public int? Line { get; set; }
+        public int? Col { get; set; }
+        public string? UserAgent { get; set; }
+        public string? BuildId { get; set; }
+    }
+
+    public sealed class ErrorsBatch
+    {
+        public List<JsErrorItem>? Errors { get; set; }
     }
 
     public static void MapTrackingEndpoints(this WebApplication app)
@@ -655,6 +693,137 @@ public static class TrackingEndpoints
             }
             return Results.StatusCode(StatusCodes.Status204NoContent);
         });
+
+        // T-6 web vitals — server rates the value against Google thresholds and
+        // stores the bucket alongside the raw number. Thresholds are the public
+        // web.dev rating table (LCP 2500/4000, CLS 0.1/0.25, INP 200/500, etc.).
+        app.MapPost("/api/tracking/vitals", async (
+            VitalsBatch? request,
+            HttpContext context,
+            AppDbContext db,
+            ILogger<TrackingVitalsMarker> logger) =>
+        {
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            if (HonorsPrivacySignal(context))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+            if (request?.Vitals is null || request.Vitals.Count == 0)
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+
+            try
+            {
+                foreach (var v in request.Vitals)
+                {
+                    if (string.IsNullOrWhiteSpace(v.Sid) ||
+                        string.IsNullOrWhiteSpace(v.Metric) ||
+                        v.Value is null) continue;
+
+                    db.WebVitalSamples.Add(new WebVitalSample
+                    {
+                        SessionId = v.Sid!,
+                        Path = string.IsNullOrWhiteSpace(v.Path) ? "/" : v.Path!,
+                        Ts = v.Ts ?? DateTime.UtcNow,
+                        Metric = v.Metric!.ToUpperInvariant(),
+                        Value = v.Value.Value,
+                        Rating = RateVital(v.Metric!, v.Value.Value),
+                        NavigationType = Truncate(v.NavigationType, 20),
+                        NavId = Truncate(v.NavId, 64)
+                    });
+                }
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Vitals persist failed");
+            }
+            return Results.StatusCode(StatusCodes.Status204NoContent);
+        });
+
+        // T-6 JS errors — dedupe by fingerprint = sha256(message + source + line)[..16].
+        // Same-fingerprint + same-session bumps Count; new session gets its own row
+        // so conversion-impact correlation stays per-session.
+        app.MapPost("/api/tracking/errors", async (
+            ErrorsBatch? request,
+            HttpContext context,
+            AppDbContext db,
+            ILogger<TrackingErrorsMarker> logger) =>
+        {
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            if (HonorsPrivacySignal(context))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+            if (request?.Errors is null || request.Errors.Count == 0)
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+
+            foreach (var e in request.Errors)
+            {
+                if (string.IsNullOrWhiteSpace(e.Sid) || string.IsNullOrWhiteSpace(e.Message)) continue;
+
+                var fingerprint = Fingerprint($"{e.Message}|{e.Source ?? ""}|{e.Line ?? 0}");
+                var now = e.Ts ?? DateTime.UtcNow;
+
+                try
+                {
+                    var existing = await db.JsErrors.FirstOrDefaultAsync(j =>
+                        j.SessionId == e.Sid && j.Fingerprint == fingerprint);
+
+                    if (existing is not null)
+                    {
+                        existing.Count += 1;
+                        existing.LastSeenAt = now;
+                    }
+                    else
+                    {
+                        db.JsErrors.Add(new JsError
+                        {
+                            SessionId = e.Sid!,
+                            Path = string.IsNullOrWhiteSpace(e.Path) ? "/" : e.Path!,
+                            Ts = now,
+                            LastSeenAt = now,
+                            Message = Truncate(e.Message, 500) ?? string.Empty,
+                            StackRedacted = Truncate(PiiRedactor.RedactStack(e.Stack), 4000),
+                            Source = Truncate(e.Source, 500),
+                            Line = e.Line,
+                            Col = e.Col,
+                            UserAgent = Truncate(e.UserAgent, 500),
+                            BuildId = Truncate(e.BuildId, 20),
+                            Fingerprint = fingerprint,
+                            Count = 1
+                        });
+                    }
+                    await db.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {
+                    db.ChangeTracker.Clear();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "Error persist failed for sid={Sid}", e.Sid);
+                }
+            }
+            return Results.StatusCode(StatusCodes.Status204NoContent);
+        });
+    }
+
+    private static string RateVital(string metric, double value)
+    {
+        // Public web.dev thresholds — good | ni (needs-improvement) | poor.
+        return metric.ToUpperInvariant() switch
+        {
+            "LCP"  => value <= 2500  ? "good" : value <= 4000  ? "ni" : "poor",
+            "FCP"  => value <= 1800  ? "good" : value <= 3000  ? "ni" : "poor",
+            "CLS"  => value <= 0.1   ? "good" : value <= 0.25  ? "ni" : "poor",
+            "INP"  => value <= 200   ? "good" : value <= 500   ? "ni" : "poor",
+            "TTFB" => value <= 800   ? "good" : value <= 1800  ? "ni" : "poor",
+            _      => "good"
+        };
+    }
+
+    private static string Fingerprint(string input)
+    {
+        var bytes = System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(input));
+        return Convert.ToHexString(bytes)[..16].ToLowerInvariant();
     }
 
     private static string? Truncate(string? s, int max)
@@ -682,4 +851,8 @@ public static class TrackingEndpoints
     public sealed class TrackingMouseMarker { }
     /// <summary>ILogger category marker for form events.</summary>
     public sealed class TrackingFormEventsMarker { }
+    /// <summary>ILogger category marker for vitals.</summary>
+    public sealed class TrackingVitalsMarker { }
+    /// <summary>ILogger category marker for errors.</summary>
+    public sealed class TrackingErrorsMarker { }
 }

@@ -1,0 +1,78 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.PerformanceModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Performance";
+}
+
+<div style="max-width: 1200px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Performance</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    Core Web Vitals — p75 per page per metric against Google&apos;s public thresholds.
+    Good / NI / Poor bucket comes from the distribution, not just the p75 value.
+  </p>
+
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+    @foreach (var d in new[] { 1, 7, 30, 90 })
+    {
+      var active = Model.WindowDays == d;
+      <a href="?days=@d" style="padding: 0.375rem 0.75rem; border-radius: 0.375rem; font-size: 0.75rem; text-decoration: none;
+         background: @(active ? "rgba(59,130,246,0.2)" : "rgba(255,255,255,0.03)");
+         color: @(active ? "white" : "var(--slate-400)");
+         border: 1px solid @(active ? "rgba(59,130,246,0.4)" : "rgba(255,255,255,0.05)");">
+        @(d == 1 ? "24h" : $"{d}d")
+      </a>
+    }
+  </div>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+    <div style="padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+      <h2 style="font-size: 0.875rem; font-weight: 600; color: white;">Web Vitals by page × metric</h2>
+    </div>
+    @if (Model.Report.Rows.Count == 0)
+    {
+      <div style="padding: 2rem; color: var(--slate-500); font-size: 0.875rem;">
+        No Web Vitals samples yet. Load <code style="color: var(--slate-300);">/</code> in a browser —
+        LCP/FCP/CLS fire on first paint, TTFB on navigation.
+      </div>
+    }
+    else
+    {
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
+        <thead>
+          <tr style="color: var(--slate-500); text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.1em;">
+            <th style="text-align: left; padding: 0.75rem 1.25rem;">Path</th>
+            <th style="text-align: left; padding: 0.75rem 1.25rem;">Metric</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">p75</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">Good</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">NI</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">Poor</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">Overall</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var r in Model.Report.Rows)
+          {
+            var color = r.Rating switch { "good" => "#10b981", "ni" => "#f59e0b", _ => "#ef4444" };
+            var display = r.Metric == "CLS" ? r.P75.ToString("0.###") : $"{Math.Round(r.P75)} ms";
+            <tr style="border-top: 1px solid rgba(255,255,255,0.04); color: var(--slate-300);">
+              <td style="padding: 0.75rem 1.25rem; font-family: ui-monospace, monospace;">@r.Path</td>
+              <td style="padding: 0.75rem 1.25rem; color: white; font-weight: 600;">@r.Metric</td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right; font-family: ui-monospace, monospace;">@display</td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right; color: #10b981;">@r.Good</td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right; color: #f59e0b;">@r.NeedsImprovement</td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right; color: #ef4444;">@r.Poor</td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right;">
+                <span style="display: inline-block; padding: 0.125rem 0.625rem; border-radius: 999px; background: rgba(255,255,255,0.05); color: @color; font-size: 0.625rem; text-transform: uppercase; font-weight: 600;">@r.Rating</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+  <p style="color: var(--slate-600); font-size: 0.75rem; margin-top: 1rem;">
+    Thresholds: LCP good≤2.5s / poor&gt;4s · FCP good≤1.8s / poor&gt;3s · CLS good≤0.1 / poor&gt;0.25 · INP good≤200ms / poor&gt;500ms · TTFB good≤800ms / poor&gt;1.8s.
+  </p>
+</div>
