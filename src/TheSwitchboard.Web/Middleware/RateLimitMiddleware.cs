@@ -11,6 +11,12 @@ public class RateLimitMiddleware
     // click / signal volume is large but legit. Above this the client is probably
     // looping or a hostile tab is spamming.
     private const int MaxTrackerPerSid = 300;
+    // A11 — Phoenix dials ≥10 prospects/minute in peak hours; the default 10/min
+    // cap was throttling legitimate traffic. Raise /api/consent/match to 60/min.
+    private const int MaxConsentMatch = 60;
+    // A11 — deploys are rare; a tighter bucket makes token-guessing expensive
+    // (5 bad tries exhausts the minute). Real CI callers stay well under.
+    private const int MaxDeployChange = 5;
 
     public RateLimitMiddleware(RequestDelegate next, ILogger<RateLimitMiddleware> logger)
     {
@@ -44,7 +50,12 @@ public class RateLimitMiddleware
         {
             var clientIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             key = $"{clientIp}:{path}";
-            cap = MaxGeneralApi;
+            cap = path switch
+            {
+                var p when p.StartsWith("/api/consent/match",     StringComparison.OrdinalIgnoreCase) => MaxConsentMatch,
+                var p when p.StartsWith("/api/ops/deploy-change", StringComparison.OrdinalIgnoreCase) => MaxDeployChange,
+                _ => MaxGeneralApi
+            };
         }
 
         var count = await store.IncrementAsync(key);
