@@ -101,11 +101,19 @@ public class PlaywrightSecurityTests
     }
 
     // ------------------------------------------------------------------
-    // A2-03  End-to-end admin login via the real login page: fill form,
-    //        submit, land on /Admin/Dashboard (not bounced back to login).
+    // A2-03  End-to-end admin login via the real login page AND the Identity
+    //        auth cookie flags it sets. Two assertions in one login to avoid
+    //        hammering the SignInManager with back-to-back logins (Identity's
+    //        internal state can race on the follow-up request within ms of
+    //        the first POST completing — observed as a 10s redirect timeout).
+    //
+    //        Verifies:
+    //          - POST /Admin/Login → 302 /Admin/Dashboard (happy path)
+    //          - the Identity cookie is HttpOnly (no JS theft)
+    //          - the Identity cookie is SameSite=Strict or Lax (no CSRF leak)
     // ------------------------------------------------------------------
     [Fact]
-    public async Task A2_03_AdminLogin_HappyPath_RedirectsToDashboard()
+    public async Task A2_03_AdminLogin_Succeeds_AndIssuesLockedDownCookie()
     {
         var page = await _fx.NewPageAsync();
         try
@@ -117,30 +125,7 @@ public class PlaywrightSecurityTests
             await page.WaitForURLAsync("**/Admin/Dashboard**", new() { Timeout = 10_000 });
 
             Assert.EndsWith("/Admin/Dashboard", new Uri(page.Url).AbsolutePath, StringComparison.OrdinalIgnoreCase);
-        }
-        finally { await page.CloseAsync(); }
-    }
 
-    // ------------------------------------------------------------------
-    // A2-04  The Identity auth cookie set during login must be HttpOnly
-    //        (no JS theft) and SameSite=Strict/Lax (no CSRF cookie leak
-    //        on cross-site POSTs). If either flag is missing, Chromium
-    //        will still send the cookie, but our threat model is broken.
-    // ------------------------------------------------------------------
-    [Fact]
-    public async Task A2_04_AuthCookie_IsHttpOnly_AndSameSiteStrictOrLax()
-    {
-        var page = await _fx.NewPageAsync();
-        try
-        {
-            await page.GotoAsync(_fx.BaseUrl + "/Admin/Login", new() { WaitUntil = WaitUntilState.DOMContentLoaded });
-            await page.FillAsync("input[name='Email']",    PlaywrightFixture.AdminEmail);
-            await page.FillAsync("input[name='Password']", PlaywrightFixture.AdminPassword);
-            await page.ClickAsync("button[type='submit']");
-            await page.WaitForURLAsync("**/Admin/Dashboard**", new() { Timeout = 10_000 });
-
-            // Don't filter by URL — Playwright's URL filter is stricter than expected
-            // on loopback addresses. Enumerate all cookies and pick the Identity one.
             var cookies = await page.Context.CookiesAsync();
             var auth = cookies.FirstOrDefault(c => c.Name.StartsWith(".AspNetCore.Identity", StringComparison.Ordinal));
             Assert.NotNull(auth);

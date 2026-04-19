@@ -159,11 +159,8 @@ public class Slice2IntegrationTests : IClassFixture<Slice2Factory>
         Assert.Equal(before, after);
     }
 
-    // ── S2-09/S2-10 client-side UI only ────────────────────────────────
-    [Fact(Skip = "UI-only — vignette behavior is client-side (fetch()+on-ok gate). Manual/E2E coverage.")]
-    public Task S2_09_Vignette_GatedOnServer200() => Task.CompletedTask;
-    [Fact(Skip = "UI-only — 500 inline error state. Manual/E2E coverage.")]
-    public Task S2_10_Server500_FormStaysEditable() => Task.CompletedTask;
+    // S2-09/S2-10 are end-to-end in-browser behaviors and live on the
+    // Playwright harness — see PlaywrightContactFormTests.
 
     // ── S2-11 TCPA consent copy present on form ────────────────────────
     [Fact]

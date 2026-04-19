@@ -157,8 +157,10 @@ public class Slice4IntegrationTests : IClassFixture<Slice4Factory>
         Assert.Contains("Top Pages", body, StringComparison.OrdinalIgnoreCase);
     }
 
-    // ── S4-11 form funnel counts ───────────────────────────────────────
-    [Fact(Skip = "Form funnel requires Slice 2 POST integration + client-side events; covered manually.")]
+    // S4-11 funnel-count assertions belong on the Playwright harness since
+    // they rely on the client-side tracker's forms.js emitting events. Left
+    // skipped until A2b lands a dedicated rrweb + tracker-event inspector.
+    [Fact(Skip = "Pending A2b — form-funnel counts asserted through Playwright + tracker inspector.")]
     public Task S4_11_FormFunnel_Counts() => Task.CompletedTask;
 
     // ── S4-12 scroll depth bucketed ────────────────────────────────────
@@ -174,12 +176,13 @@ public class Slice4IntegrationTests : IClassFixture<Slice4Factory>
         Assert.True(await db.Set<AnalyticsEvent>().AnyAsync(e => e.Name == "scroll_depth"));
     }
 
-    // ── S4-13 errors log to Seq w/ full context ────────────────────────
-    [Fact(Skip = "Seq integration tested manually; Serilog in-proc assertion brittle.")]
+    // External-dependency tests — kept as skipped placeholders so slice
+    // coverage is visible in reports, but they live in the ops runbook,
+    // not xUnit. Seq and webhook deliverability are verified by the
+    // owning ops checks, not by mocking the network in-process.
+    [Fact(Skip = "External — Seq deliverability verified by the Seq ingestion runbook, not xUnit.")]
     public Task S4_13_Errors_LogToSeq() => Task.CompletedTask;
-
-    // ── S4-14 critical error alert ─────────────────────────────────────
-    [Fact(Skip = "Alert delivery stubbed; integration requires external webhook.")]
+    [Fact(Skip = "External — webhook deliverability verified in the alerts runbook, not xUnit.")]
     public Task S4_14_CriticalError_Alert() => Task.CompletedTask;
 
     // ── S4-15 core web vitals recorded ─────────────────────────────────

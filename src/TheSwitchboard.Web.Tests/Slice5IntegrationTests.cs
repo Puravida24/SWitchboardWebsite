@@ -79,14 +79,17 @@ public class Slice5IntegrationTests : IClassFixture<Slice5Factory>
         Assert.Contains("control", body, StringComparison.OrdinalIgnoreCase);
     }
 
-    // ── S5-05 through S5-10 are Lighthouse / axe / CWV — external ──────
-    [Fact(Skip = "Lighthouse / axe-core / CWV / cross-browser are verified manually per LAUNCH_CHECKLIST.md.")]
+    // S5-05..S5-10 live in the Lighthouse CI surface built by A6 —
+    // budget thresholds, axe-core a11y, and CWV are asserted there against
+    // a real Chromium run, not inside xUnit. Kept here as placeholders so
+    // anyone auditing slice coverage can see what moved to CI.
+    [Fact(Skip = "Moved to A6 Lighthouse CI — budgets enforced in the CI job, not xUnit.")]
     public Task S5_05_Lighthouse_Performance_Ge_90() => Task.CompletedTask;
-    [Fact(Skip = "Manual — LAUNCH_CHECKLIST.md.")] public Task S5_06_Lighthouse_Accessibility_Ge_95() => Task.CompletedTask;
-    [Fact(Skip = "Manual — LAUNCH_CHECKLIST.md.")] public Task S5_07_Axe_NoCriticalViolations() => Task.CompletedTask;
-    [Fact(Skip = "Manual — LAUNCH_CHECKLIST.md.")] public Task S5_08_Lcp_Under_2_5s() => Task.CompletedTask;
-    [Fact(Skip = "Manual — LAUNCH_CHECKLIST.md.")] public Task S5_09_Inp_Under_200ms() => Task.CompletedTask;
-    [Fact(Skip = "Manual — LAUNCH_CHECKLIST.md.")] public Task S5_10_Cls_Under_0_1() => Task.CompletedTask;
+    [Fact(Skip = "Moved to A6 Lighthouse CI.")] public Task S5_06_Lighthouse_Accessibility_Ge_95() => Task.CompletedTask;
+    [Fact(Skip = "Moved to A6 Lighthouse CI (axe-core assertions).")] public Task S5_07_Axe_NoCriticalViolations() => Task.CompletedTask;
+    [Fact(Skip = "Moved to A6 Lighthouse CI (LCP budget).")] public Task S5_08_Lcp_Under_2_5s() => Task.CompletedTask;
+    [Fact(Skip = "Moved to A6 Lighthouse CI (INP budget).")] public Task S5_09_Inp_Under_200ms() => Task.CompletedTask;
+    [Fact(Skip = "Moved to A6 Lighthouse CI (CLS budget).")] public Task S5_10_Cls_Under_0_1() => Task.CompletedTask;
 
     // ── S5-11 old URLs → 301 ────────────────────────────────────────────
     [Fact]
@@ -98,8 +101,10 @@ public class Slice5IntegrationTests : IClassFixture<Slice5Factory>
         Assert.Equal("/", res.Headers.Location?.ToString());
     }
 
-    // ── S5-12 production deploy — manual ────────────────────────────────
-    [Fact(Skip = "Manual — Railway deploy verified by health check in prod.")]
+    // S5-12 would require pinging the live Railway URL from CI. Left
+    // skipped — auto-deploy on `git push origin main` + Railway's own
+    // health-check gate already covers it. No xUnit value.
+    [Fact(Skip = "Railway auto-deploy + health-check gate is authoritative; no xUnit proxy adds value.")]
     public Task S5_12_ProductionDeploy_Succeeds() => Task.CompletedTask;
 
     // ── S5-13 production /health 200 ────────────────────────────────────

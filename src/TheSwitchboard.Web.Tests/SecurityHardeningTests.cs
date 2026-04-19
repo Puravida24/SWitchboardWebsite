@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TheSwitchboard.Web.Tests;
@@ -214,13 +215,43 @@ public class SecurityHardeningTests : IClassFixture<SwitchboardWebApplicationFac
         Assert.Contains($"nonce=\"{nonce}\"", body);
     }
 
-    // H-01 is implicitly covered: if AdminSeedService threw on boot, no other
-    // integration test would pass. That means H-01 is a self-enforcing guard —
-    // the fact that the factory can build at all with Admin:Password set is
-    // the pass signal. An explicit test for the throw-when-missing path would
-    // need a separate factory that clears Admin:Password before build; left
-    // as a manual "comment out seed password and verify fail-fast on boot"
-    // check for now.
-    [Fact(Skip = "H-01 verified manually — clear Admin:Password in appsettings and confirm boot fails. Every other passing test already proves the happy path works.")]
-    public void H_01_AdminSeed_FailsFast_WhenPasswordMissing() { }
+    // ── H-01 AdminSeedService must fail-fast when Admin:Password is missing ──
+    //
+    // The happy path (Admin:Password set → app boots) is exercised by every
+    // other passing integration test. This test nails down the refusal path:
+    // when no Admin user exists AND no Admin:Password is configured,
+    // AdminSeedService.SeedAdminUserAsync throws InvalidOperationException.
+    //
+    // Program.cs catches the exception with a generic try/catch around the
+    // seed call (so an Npgsql outage doesn't brick the pod), so we call the
+    // service directly through DI rather than observing factory boot.
+    [Fact]
+    public async Task H_01_AdminSeed_FailsFast_WhenPasswordMissing()
+    {
+        await using var factory = new AdminPasswordMissingFactory();
+        using var scope = factory.Services.CreateScope();
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => TheSwitchboard.Web.Data.AdminSeedService.SeedAdminUserAsync(scope.ServiceProvider));
+        Assert.Contains("Admin:Password", ex.Message);
+        Assert.Contains("not configured", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    // Factory variant that intentionally leaves Admin:Password blank.
+    // Uses a fresh InMemory DB name so no seeded admin user leaks in from
+    // earlier tests — the whole point is "no admin exists and no password."
+    private sealed class AdminPasswordMissingFactory : SwitchboardWebApplicationFactory
+    {
+        protected override void ConfigureWebHost(Microsoft.AspNetCore.Hosting.IWebHostBuilder builder)
+        {
+            base.ConfigureWebHost(builder);
+            builder.ConfigureAppConfiguration((_, cfg) =>
+            {
+                cfg.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    ["Admin:Password"]          = null,
+                    ["Database:InMemoryName"]   = "AdminSeedFailFast-" + Guid.NewGuid(),
+                });
+            });
+        }
+    }
 }

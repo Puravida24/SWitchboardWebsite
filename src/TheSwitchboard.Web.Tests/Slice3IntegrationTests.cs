@@ -83,18 +83,6 @@ public class Slice3IntegrationTests : IClassFixture<Slice3Factory>
         Assert.DoesNotContain("HiddenPartner", body);
     }
 
-    // ── S3-06 image upload auto-generates WebP + variants ──────────────
-    [Fact(Skip = "Covered by ImageService unit tests; requires actual image bytes in integration.")]
-    public Task S3_06_ImageUpload_GeneratesWebpVariants() => Task.CompletedTask;
-
-    // ── S3-07 image upload rejects non-image / >5MB ────────────────────
-    [Fact(Skip = "Covered by ImageService unit tests.")]
-    public Task S3_07_ImageUpload_RejectsInvalid() => Task.CompletedTask;
-
-    // ── S3-08 Phoenix KPI config reflected in terminal ─────────────────
-    [Fact(Skip = "Deferred — KPIs static in Slice 3; editable in a later pass.")]
-    public Task S3_08_PhoenixKpiEdit_UpdatesTerminal() => Task.CompletedTask;
-
     // ── S3-09/10/11 legal pages from DB ────────────────────────────────
     [Theory]
     [InlineData("privacy", "/privacy")]
@@ -122,18 +110,6 @@ public class Slice3IntegrationTests : IClassFixture<Slice3Factory>
         Assert.Contains("v2", body);
     }
 
-    // ── S3-13 revert restores prior value ──────────────────────────────
-    [Fact(Skip = "Revert UX is ancillary — prove via unit test on ContentVersionService.")]
-    public Task S3_13_Revert_RestoresPriorValue() => Task.CompletedTask;
-
-    // ── S3-14 public pages cached, bust on admin save ──────────────────
-    [Fact(Skip = "Output-cache invalidation tested separately — hard to assert reliably in-process.")]
-    public Task S3_14_OutputCache_BustsOnAdminSave() => Task.CompletedTask;
-
-    // ── S3-15 SignalR preview — optional ───────────────────────────────
-    [Fact(Skip = "Optional SignalR preview feature — not in Slice 3 MVP.")]
-    public Task S3_15_AdminEdit_EmitsSignalrPreview() => Task.CompletedTask;
-
     // ── S3-16 empty required field → validation error ──────────────────
     [Fact]
     public async Task S3_16_EmptyRequiredField_ShowsValidationError()
@@ -154,9 +130,6 @@ public class Slice3IntegrationTests : IClassFixture<Slice3Factory>
         Assert.DoesNotContain("onerror=", body);
     }
 
-    // ── S3-18 concurrent edit → last-write-wins + warning ──────────────
-    [Fact(Skip = "Concurrency control planned for Slice 4 — out of Slice 3 scope.")]
-    public Task S3_18_ConcurrentEdit_ShowsConflictWarning() => Task.CompletedTask;
 
     // ── S3-19 unauthenticated /admin/content → redirect to login ───────
     [Fact]
