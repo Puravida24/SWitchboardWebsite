@@ -138,6 +138,8 @@ try
                                TheSwitchboard.Web.Services.Tracking.EngagementAnalyticsService>();
     builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IErrorImpactService,
                                TheSwitchboard.Web.Services.Tracking.ErrorImpactService>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IComplianceAnalyticsService,
+                               TheSwitchboard.Web.Services.Tracking.ComplianceAnalyticsService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IImageService, ImageService>();
     builder.Services.AddHttpClient<IPhoenixCrmService, PhoenixCrmService>();
@@ -256,6 +258,7 @@ try
     app.MapContactApi();
     app.MapSeoEndpoints();
     TheSwitchboard.Web.Api.Tracking.TrackingEndpoints.MapTrackingEndpoints(app);
+    TheSwitchboard.Web.Api.ConsentMatchEndpoints.MapConsentMatchEndpoints(app);
 
     // Auto-migrate and seed
     try
