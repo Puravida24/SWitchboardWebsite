@@ -1,0 +1,106 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.AlertsModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Alerts";
+}
+
+<div style="max-width: 1100px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Alerts</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">Threshold rules evaluated every 5 minutes. Supported metrics: <code>js-errors-1h</code>, <code>js-errors-5m</code>, <code>bot-rate-1h</code>, <code>capture-rate-1h</code>.</p>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem; margin-bottom: 1.5rem;">
+    <h2 style="font-size: 0.875rem; font-weight: 600; color: white; margin-bottom: 0.75rem;">New alert rule</h2>
+    <form method="post" asp-page-handler="Create" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.5rem; font-size: 0.75rem;">
+      @Html.AntiForgeryToken()
+      <input asp-for="NewName" placeholder="Name" required style="padding: 0.375rem 0.625rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;" />
+      <select asp-for="NewMetric" style="padding: 0.375rem 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;">
+        <option value="js-errors-1h">js-errors-1h</option>
+        <option value="js-errors-5m">js-errors-5m</option>
+        <option value="bot-rate-1h">bot-rate-1h</option>
+        <option value="capture-rate-1h">capture-rate-1h</option>
+      </select>
+      <select asp-for="NewComparison" style="padding: 0.375rem 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;">
+        <option value="gt">greater than</option>
+        <option value="lt">less than</option>
+      </select>
+      <input asp-for="NewThreshold" type="number" step="0.01" placeholder="Threshold" required style="padding: 0.375rem 0.625rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;" />
+      <select asp-for="NewWindow" style="padding: 0.375rem 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;">
+        <option value="5m">5m</option>
+        <option value="1h" selected>1h</option>
+        <option value="24h">24h</option>
+      </select>
+      <button type="submit" style="padding: 0.375rem 1rem; border-radius: 0.25rem; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #6ee7b7; cursor: pointer;">Create</button>
+    </form>
+  </div>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden; margin-bottom: 1.5rem;">
+    <div style="padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05);"><h2 style="font-size: 0.875rem; font-weight: 600; color: white;">Active rules</h2></div>
+    @if (Model.Rules.Count == 0)
+    {
+      <div style="padding: 1.5rem; color: var(--slate-500); font-size: 0.875rem;">No rules yet.</div>
+    }
+    else
+    {
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.8125rem;">
+        <thead>
+          <tr style="color: var(--slate-500); text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.1em;">
+            <th style="text-align: left; padding: 0.625rem 1rem;">Name</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Rule</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Status</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var r in Model.Rules)
+          {
+            <tr style="border-top: 1px solid rgba(255,255,255,0.04); color: var(--slate-300);">
+              <td style="padding: 0.625rem 1rem; color: white;">@r.Name</td>
+              <td style="padding: 0.625rem 1rem; font-family: ui-monospace, monospace; color: var(--slate-400);">@r.MetricExpression @r.Comparison @r.Threshold (@r.Window)</td>
+              <td style="padding: 0.625rem 1rem;">
+                <span style="display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; background: @(r.Enabled ? "rgba(16,185,129,0.15)" : "rgba(100,116,139,0.15)"); color: @(r.Enabled ? "#10b981" : "var(--slate-400)"); font-size: 0.625rem;">@(r.Enabled ? "on" : "off")</span>
+              </td>
+              <td style="padding: 0.625rem 1rem;">
+                <form method="post" asp-page-handler="Toggle" asp-route-id="@r.Id" style="margin: 0;">
+                  @Html.AntiForgeryToken()
+                  <button type="submit" style="padding: 0.25rem 0.625rem; border-radius: 0.25rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--slate-300); font-size: 0.625rem; cursor: pointer;">Toggle</button>
+                </form>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+    <div style="padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05);"><h2 style="font-size: 0.875rem; font-weight: 600; color: white;">Recent alert firings</h2></div>
+    @if (Model.RecentLogs.Count == 0)
+    {
+      <div style="padding: 1.5rem; color: var(--slate-500); font-size: 0.875rem;">No alerts fired yet.</div>
+    }
+    else
+    {
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem;">
+        <thead>
+          <tr style="color: var(--slate-500); text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.1em;">
+            <th style="text-align: left; padding: 0.625rem 1rem;">Fired</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Severity</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Context</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var l in Model.RecentLogs)
+          {
+            var color = l.Severity == "critical" ? "#ef4444" : "#f59e0b";
+            <tr style="border-top: 1px solid rgba(255,255,255,0.04); color: var(--slate-300);">
+              <td style="padding: 0.5rem 1rem; color: var(--slate-500);">@l.FiredAt.ToString("MMM d HH:mm")</td>
+              <td style="padding: 0.5rem 1rem;"><span style="color: @color;">@l.Severity</span></td>
+              <td style="padding: 0.5rem 1rem; font-family: ui-monospace, monospace; color: var(--slate-400);">@l.Context</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

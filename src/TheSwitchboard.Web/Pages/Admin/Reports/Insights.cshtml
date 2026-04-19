@@ -1,0 +1,43 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.InsightsModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Insights";
+}
+
+<div style="max-width: 1100px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.25rem;">
+    <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin: 0;">Insights</h1>
+    <form method="post" asp-page-handler="RunNow">
+      @Html.AntiForgeryToken()
+      <button type="submit" style="padding: 0.375rem 1rem; border-radius: 0.25rem; background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.4); color: white; font-size: 0.75rem; cursor: pointer;">Run detection now</button>
+    </form>
+  </div>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    Auto-detected anomalies via 7-day z-score on sessions / pageviews / submissions / errors. Runs every 15 minutes in the background.
+  </p>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+    @if (Model.Rows.Count == 0)
+    {
+      <div style="padding: 2rem; color: var(--slate-500); font-size: 0.875rem;">Nothing anomalous yet — or not enough baseline history.</div>
+    }
+    else
+    {
+      @foreach (var i in Model.Rows)
+      {
+        var color = i.Severity switch { "critical" => "#ef4444", "warn" => "#f59e0b", _ => "#3b82f6" };
+        <div style="padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.04); display: flex; gap: 1rem; align-items: center;">
+          <span style="width: 6px; height: 6px; border-radius: 999px; background: @color;"></span>
+          <div style="flex: 1;">
+            <div style="color: white; font-size: 0.875rem;">@i.Title</div>
+            <div style="color: var(--slate-500); font-size: 0.75rem; margin-top: 0.25rem; font-family: ui-monospace, monospace;">
+              @i.Metric · z=@Math.Round(i.Score, 2) · current @Math.Round(i.Current, 1) · baseline @Math.Round(i.Baseline, 1)
+            </div>
+          </div>
+          <span style="color: var(--slate-500); font-size: 0.75rem;">@i.CreatedAt.ToString("MMM d HH:mm")</span>
+        </div>
+      }
+    }
+  </div>
+</div>

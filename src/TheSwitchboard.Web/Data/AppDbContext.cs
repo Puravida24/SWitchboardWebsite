@@ -90,6 +90,12 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     public DbSet<DeployChange> DeployChanges => Set<DeployChange>();
     public DbSet<DataSubjectRequest> DataSubjectRequests => Set<DataSubjectRequest>();
 
+    // T-12 Insights + Alerts + Segments
+    public DbSet<Insight> Insights => Set<Insight>();
+    public DbSet<AlertRule> AlertRules => Set<AlertRule>();
+    public DbSet<AlertLog> AlertLogs => Set<AlertLog>();
+    public DbSet<Segment> Segments => Set<Segment>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -267,6 +273,11 @@ public class AppDbContext : IdentityDbContext<AdminUser>
             e.HasIndex(r => r.RequestedAt);
             e.HasIndex(r => r.Status);
         });
+
+        modelBuilder.Entity<AlertRule>(e => e.HasIndex(r => r.Name).IsUnique());
+        modelBuilder.Entity<AlertLog>(e => e.HasIndex(l => l.FiredAt));
+        modelBuilder.Entity<Insight>(e => e.HasIndex(i => i.CreatedAt));
+        modelBuilder.Entity<Segment>(e => e.HasIndex(s => s.Name).IsUnique());
 
         modelBuilder.Entity<KnownProxyAsn>(e =>
         {

@@ -146,6 +146,16 @@ try
     builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IDsrService,
                                TheSwitchboard.Web.Services.Tracking.DsrService>();
 
+    // T-12 Insights / Alerts / Segments.
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IInsightsService,
+                               TheSwitchboard.Web.Services.Tracking.InsightsService>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IAlertEvaluatorService,
+                               TheSwitchboard.Web.Services.Tracking.AlertEvaluatorService>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.ISegmentService,
+                               TheSwitchboard.Web.Services.Tracking.SegmentService>();
+    builder.Services.AddHostedService<TheSwitchboard.Web.Services.Tracking.InsightsBackgroundService>();
+    builder.Services.AddHostedService<TheSwitchboard.Web.Services.Tracking.AlertEvaluatorBackgroundService>();
+
     // T-8 Real-time dashboard.
     builder.Services.AddSignalR();
     builder.Services.AddSingleton<TheSwitchboard.Web.Services.Tracking.IRealtimeMetrics,
