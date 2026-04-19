@@ -49,8 +49,9 @@
     self.sw.sid = sid;
     self.sw.consentState = 'none';
 
-    // T-1 heartbeat. No real data yet — just proves the pipe is alive so the
-    // admin Health page can show "pings in last 60s."
+    // T-1 heartbeat. Small (vid/sid/path only) — kept alongside the enriched
+    // pageview so the admin Health page's "pings last 60s" stays meaningful
+    // even if the pageview endpoint regresses.
     self.sw.transport.send('/api/tracking/ping', {
       vid: vid,
       sid: sid,
@@ -58,6 +59,12 @@
       ts: new Date().toISOString(),
       consentState: 'none'
     });
+
+    // T-2 enriched pageview — UTM, click-ids, UA, viewport. The server writes
+    // one PageView row, flips LandingFlag, parses UA.
+    if (self.sw.pageview && typeof self.sw.pageview.record === 'function') {
+      self.sw.pageview.record();
+    }
   }
 
   // Defer so identity.js + transport.js — loaded with matching `defer` attributes

@@ -87,6 +87,10 @@ public class AppDbContext : IdentityDbContext<AdminUser>
         {
             e.HasIndex(p => p.Timestamp);
             e.HasIndex(p => p.Path);
+            // T-2 attribution access patterns:
+            e.HasIndex(p => new { p.SessionId, p.Timestamp });
+            e.HasIndex(p => p.UtmCampaign);
+            e.HasIndex(p => p.LandingFlag);
         });
 
         modelBuilder.Entity<AnalyticsEvent>(e =>

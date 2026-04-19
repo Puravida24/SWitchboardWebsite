@@ -126,6 +126,8 @@ try
     builder.Services.AddScoped<IContentService, ContentService>();
     builder.Services.AddScoped<IFormService, FormService>();
     builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IAttributionAnalyticsService,
+                               TheSwitchboard.Web.Services.Tracking.AttributionAnalyticsService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IImageService, ImageService>();
     builder.Services.AddHttpClient<IPhoenixCrmService, PhoenixCrmService>();
