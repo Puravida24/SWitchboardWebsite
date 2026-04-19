@@ -75,6 +75,11 @@
         setTimeout(fire, 250);
       }
     }
+
+    // T-4 clickstream — capture every click, batch flush, rage + dead detection.
+    if (self.sw.clickstream && typeof self.sw.clickstream.boot === 'function') {
+      self.sw.clickstream.boot();
+    }
   }
 
   // Defer so identity.js + transport.js — loaded with matching `defer` attributes

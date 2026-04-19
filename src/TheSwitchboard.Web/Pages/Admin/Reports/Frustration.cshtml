@@ -1,0 +1,147 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.FrustrationModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Frustration";
+}
+
+<div style="max-width: 1200px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Frustration</h1>
+  <p style="color: var(--slate-500); margin-bottom: 2rem;">
+    Rage clicks (3+ clicks on same element in 500 ms) and dead clicks (click with no DOM change + no navigation in 1 s). Both are signals that visitors are stuck.
+  </p>
+
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+    @foreach (var d in new[] { 1, 7, 30, 90 })
+    {
+      var active = Model.WindowDays == d;
+      <a href="?days=@d" style="padding: 0.375rem 0.75rem; border-radius: 0.375rem; font-size: 0.75rem; text-decoration: none;
+         background: @(active ? "rgba(59,130,246,0.2)" : "rgba(255,255,255,0.03)");
+         color: @(active ? "white" : "var(--slate-400)");
+         border: 1px solid @(active ? "rgba(59,130,246,0.4)" : "rgba(255,255,255,0.05)");">
+        @(d == 1 ? "24h" : $"{d}d")
+      </a>
+    }
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Clicks in window</div>
+      <div style="font-size: 1.75rem; font-weight: 700; color: white;">@Model.Summary.TotalClicks</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Rage clicks</div>
+      <div style="font-size: 1.75rem; font-weight: 700; color: #ef4444;">@Model.Summary.RageClicks</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Dead clicks</div>
+      <div style="font-size: 1.75rem; font-weight: 700; color: #f59e0b;">@Model.Summary.DeadClicks</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Pages with clicks</div>
+      <div style="font-size: 1.75rem; font-weight: 700; color: white;">@Model.Summary.UniquePaths</div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+      <div style="padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <h2 style="font-size: 0.875rem; font-weight: 600; color: #ef4444;">Rage clicks</h2>
+      </div>
+      @if (Model.Rage.Count == 0)
+      {
+        <div style="padding: 1.5rem; color: var(--slate-500); font-size: 0.875rem;">None in this window.</div>
+      }
+      else
+      {
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem;">
+          <thead>
+            <tr style="color: var(--slate-500); text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.1em;">
+              <th style="text-align: left; padding: 0.625rem 1rem;">Selector</th>
+              <th style="text-align: left; padding: 0.625rem 1rem;">Page</th>
+              <th style="text-align: right; padding: 0.625rem 1rem;">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (var r in Model.Rage)
+            {
+              <tr style="border-top: 1px solid rgba(255,255,255,0.04);">
+                <td style="padding: 0.625rem 1rem; font-family: ui-monospace, monospace; color: var(--slate-300);" title="@r.SampleText">@r.Selector</td>
+                <td style="padding: 0.625rem 1rem; color: var(--slate-500);"><a href="/Admin/Reports/Heatmaps/Click?path=@r.Path" style="color: var(--slate-400);">@r.Path</a></td>
+                <td style="padding: 0.625rem 1rem; text-align: right; color: white; font-weight: 600;">@r.Count</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+      <div style="padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <h2 style="font-size: 0.875rem; font-weight: 600; color: #f59e0b;">Dead clicks</h2>
+      </div>
+      @if (Model.Dead.Count == 0)
+      {
+        <div style="padding: 1.5rem; color: var(--slate-500); font-size: 0.875rem;">None in this window.</div>
+      }
+      else
+      {
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem;">
+          <thead>
+            <tr style="color: var(--slate-500); text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.1em;">
+              <th style="text-align: left; padding: 0.625rem 1rem;">Selector</th>
+              <th style="text-align: left; padding: 0.625rem 1rem;">Page</th>
+              <th style="text-align: right; padding: 0.625rem 1rem;">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (var r in Model.Dead)
+            {
+              <tr style="border-top: 1px solid rgba(255,255,255,0.04);">
+                <td style="padding: 0.625rem 1rem; font-family: ui-monospace, monospace; color: var(--slate-300);" title="@r.SampleText">@r.Selector</td>
+                <td style="padding: 0.625rem 1rem; color: var(--slate-500);"><a href="/Admin/Reports/Heatmaps/Click?path=@r.Path" style="color: var(--slate-400);">@r.Path</a></td>
+                <td style="padding: 0.625rem 1rem; text-align: right; color: white; font-weight: 600;">@r.Count</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+    <div style="padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+      <h2 style="font-size: 0.875rem; font-weight: 600; color: white;">Top frustrated pages</h2>
+    </div>
+    @if (Model.TopPages.Count == 0)
+    {
+      <div style="padding: 1.5rem; color: var(--slate-500); font-size: 0.875rem;">No pages with rage/dead clicks in this window.</div>
+    }
+    else
+    {
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
+        <thead>
+          <tr style="color: var(--slate-500); text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.1em;">
+            <th style="text-align: left; padding: 0.75rem 1.25rem;">Page</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">Rage</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">Dead</th>
+            <th style="text-align: right; padding: 0.75rem 1.25rem;">Clicks</th>
+            <th style="text-align: left; padding: 0.75rem 1.25rem;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var p in Model.TopPages)
+          {
+            <tr style="border-top: 1px solid rgba(255,255,255,0.04); color: var(--slate-300);">
+              <td style="padding: 0.75rem 1.25rem; font-family: ui-monospace, monospace;">@p.Path</td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right; color: #ef4444; font-weight: 600;">@p.Rage</td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right; color: #f59e0b; font-weight: 600;">@p.Dead</td>
+              <td style="padding: 0.75rem 1.25rem; text-align: right; color: var(--slate-500);">@p.Total</td>
+              <td style="padding: 0.75rem 1.25rem;"><a href="/Admin/Reports/Heatmaps/Click?path=@p.Path" style="color: #3b82f6; font-size: 0.75rem;">Heatmap →</a></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

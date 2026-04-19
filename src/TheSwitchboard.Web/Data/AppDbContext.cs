@@ -61,6 +61,9 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     public DbSet<BrowserSignal> BrowserSignals => Set<BrowserSignal>();
     public DbSet<KnownProxyAsn> KnownProxyAsns => Set<KnownProxyAsn>();
 
+    // T-4 Clickstream
+    public DbSet<ClickEvent> ClickEvents => Set<ClickEvent>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -145,6 +148,16 @@ public class AppDbContext : IdentityDbContext<AdminUser>
             // One signal row per sid — endpoint is idempotent.
             e.HasIndex(b => b.SessionId).IsUnique();
             e.HasIndex(b => b.CanvasFingerprint);
+        });
+
+        modelBuilder.Entity<ClickEvent>(e =>
+        {
+            e.HasIndex(c => new { c.Path, c.Ts });
+            e.HasIndex(c => c.SessionId);
+            e.HasIndex(c => new { c.SessionId, c.Selector, c.Ts });
+            // Filtered indexes — rage and dead clicks are small slices we query often.
+            e.HasIndex(c => c.IsRage).HasFilter("\"IsRage\" = true");
+            e.HasIndex(c => c.IsDead).HasFilter("\"IsDead\" = true");
         });
 
         modelBuilder.Entity<KnownProxyAsn>(e =>

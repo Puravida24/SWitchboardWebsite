@@ -102,6 +102,33 @@ public static class TrackingEndpoints
         public string? Connection { get; set; }
     }
 
+    public sealed class ClickItem
+    {
+        public string? Sid { get; set; }
+        public string? Vid { get; set; }
+        public string? Path { get; set; }
+        public DateTime? Ts { get; set; }
+        public int? X { get; set; }
+        public int? Y { get; set; }
+        public int? ViewportW { get; set; }
+        public int? ViewportH { get; set; }
+        public int? PageW { get; set; }
+        public int? PageH { get; set; }
+        public string? Selector { get; set; }
+        public string? TagName { get; set; }
+        public string? ElementText { get; set; }
+        public string? ElementHref { get; set; }
+        public int? MouseButton { get; set; }
+        public bool? IsDead { get; set; }
+    }
+
+    public sealed class ClicksRequest
+    {
+        public List<ClickItem>? Clicks { get; set; }
+    }
+
+    public const int MaxClicksPerSession = 500;
+
     public static void MapTrackingEndpoints(this WebApplication app)
     {
         // T-1 heartbeat — returns 204 and logs, AND bumps Session.EventCount.
@@ -325,6 +352,100 @@ public static class TrackingEndpoints
 
             return Results.StatusCode(StatusCodes.Status204NoContent);
         });
+
+        // T-4 clickstream batch — accepts an array of clicks. Server-side rage
+        // detection: a click whose prior 2 on the same (sid, selector) are within
+        // 500 ms of it triggers IsRage=true on the trailing 2 + this click.
+        app.MapPost("/api/tracking/clicks", async (
+            ClicksRequest? request,
+            HttpContext context,
+            AppDbContext db,
+            ILogger<TrackingClicksMarker> logger) =>
+        {
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            if (HonorsPrivacySignal(context))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+            if (request?.Clicks is null || request.Clicks.Count == 0)
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+
+            try
+            {
+                // Group by session so we can enforce the per-session 500 cap cheaply.
+                foreach (var byGroup in request.Clicks
+                             .Where(c => !string.IsNullOrWhiteSpace(c.Sid) && !string.IsNullOrWhiteSpace(c.Selector))
+                             .GroupBy(c => c.Sid!))
+                {
+                    var sid = byGroup.Key;
+                    var existingCount = await db.ClickEvents.CountAsync(ce => ce.SessionId == sid);
+                    var remaining = MaxClicksPerSession - existingCount;
+                    if (remaining <= 0)
+                    {
+                        logger.LogInformation("Click cap reached for sid={Sid} — {Dropped} dropped", sid, byGroup.Count());
+                        continue;
+                    }
+
+                    foreach (var item in byGroup.OrderBy(c => c.Ts ?? DateTime.UtcNow).Take(remaining))
+                    {
+                        var ts = item.Ts ?? DateTime.UtcNow;
+                        var row = new ClickEvent
+                        {
+                            SessionId = sid,
+                            VisitorId = item.Vid,
+                            Path = string.IsNullOrWhiteSpace(item.Path) ? "/" : item.Path!,
+                            Ts = ts,
+                            X = item.X ?? 0,
+                            Y = item.Y ?? 0,
+                            ViewportW = item.ViewportW ?? 0,
+                            ViewportH = item.ViewportH ?? 0,
+                            PageW = item.PageW ?? 0,
+                            PageH = item.PageH ?? 0,
+                            Selector = Truncate(item.Selector!, 500) ?? string.Empty,
+                            TagName = Truncate(item.TagName, 50),
+                            ElementText = Truncate(item.ElementText, 64),
+                            ElementHref = Truncate(item.ElementHref, 2000),
+                            MouseButton = item.MouseButton ?? 0,
+                            IsDead = item.IsDead ?? false,
+                            IsRage = false
+                        };
+
+                        // Rage detection: the prior 2 clicks on the same (sid, selector)
+                        // within 500ms must BOTH be present. Save per-row so in-batch rage
+                        // bursts are visible to this query on the next iteration.
+                        var windowStart = ts.AddMilliseconds(-500);
+                        var priors = await db.ClickEvents
+                            .Where(c => c.SessionId == sid
+                                     && c.Selector == row.Selector
+                                     && c.Ts >= windowStart
+                                     && c.Ts <= ts)
+                            .OrderByDescending(c => c.Ts)
+                            .Take(2)
+                            .ToListAsync();
+
+                        if (priors.Count >= 2)
+                        {
+                            foreach (var p in priors) p.IsRage = true;
+                            row.IsRage = true;
+                        }
+
+                        db.ClickEvents.Add(row);
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Clicks persist failed");
+            }
+
+            return Results.StatusCode(StatusCodes.Status204NoContent);
+        });
+    }
+
+    private static string? Truncate(string? s, int max)
+    {
+        if (s is null) return null;
+        return s.Length <= max ? s : s[..max];
     }
 
     /// <summary>ILogger category marker for ping.</summary>
@@ -333,4 +454,6 @@ public static class TrackingEndpoints
     public sealed class TrackingPageviewMarker { }
     /// <summary>ILogger category marker for signals.</summary>
     public sealed class TrackingSignalsMarker { }
+    /// <summary>ILogger category marker for clicks.</summary>
+    public sealed class TrackingClicksMarker { }
 }

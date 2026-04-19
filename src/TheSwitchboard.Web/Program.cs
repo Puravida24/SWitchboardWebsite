@@ -132,6 +132,8 @@ try
                                   TheSwitchboard.Web.Services.Tracking.IpClassificationService>();
     builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.ISessionService,
                                TheSwitchboard.Web.Services.Tracking.SessionService>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IFrustrationAnalyticsService,
+                               TheSwitchboard.Web.Services.Tracking.FrustrationAnalyticsService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IImageService, ImageService>();
     builder.Services.AddHttpClient<IPhoenixCrmService, PhoenixCrmService>();
