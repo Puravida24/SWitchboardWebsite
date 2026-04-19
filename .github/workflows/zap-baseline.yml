@@ -1,0 +1,49 @@
+# A12: OWASP ZAP baseline scan on every push to main.
+#
+# ZAP (Zed Attack Proxy) is OWASP's flagship DAST scanner. The "baseline"
+# variant runs a passive scan + limited active probes (~5 min) against the
+# live site — complementary to the xUnit contract tests in A10, which assert
+# headers statically. ZAP actually exercises the request/response cycle
+# looking for XSS, SQLi hints, clickjacking openings, insecure cookies,
+# permissive CORS, missing HSTS, timestamp disclosure, etc.
+#
+# Known-benign findings are suppressed via .zap/rules.tsv — every IGNORE
+# row documents why the finding is not a real risk for us.
+#
+# Report is uploaded as a workflow artifact (zap-report.html) so a reviewer
+# can open the HTML report straight from the run summary.
+#
+# Hardening later: turn this into a block-on-high gate. Initial pass is
+# informational so we see the noise floor first.
+name: OWASP ZAP baseline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write       # zaproxy/action-baseline optionally files an issue on High findings.
+
+jobs:
+  zap-baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for Railway deploy
+        if: ${{ github.event_name == 'push' }}
+        run: sleep 150
+
+      - name: OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: "https://www.theswitchboardmarketing.com/"
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-a -j"   # -a also spider AJAX forms; -j JSON report in addition to HTML
+          fail_action: false     # don't fail the workflow on findings yet — informational baseline first
+          allow_issue_writing: false
+          artifact_name: "zap-baseline-report"
