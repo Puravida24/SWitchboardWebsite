@@ -225,6 +225,18 @@ public static class TrackingEndpoints
         public List<JsErrorItem>? Errors { get; set; }
     }
 
+    public sealed class ReplayChunkRequest
+    {
+        public string? Sid { get; set; }
+        public int? Sequence { get; set; }
+        public DateTime? Ts { get; set; }
+        public bool? Compressed { get; set; }
+        /// <summary>Base64-encoded gzip bytes — pre-compressed client-side via CompressionStream.</summary>
+        public string? PayloadBase64 { get; set; }
+    }
+
+    public const int MaxReplayChunkBytes = 512 * 1024;
+
     public static void MapTrackingEndpoints(this WebApplication app)
     {
         // T-1 heartbeat — returns 204 and logs, AND bumps Session.EventCount.
@@ -804,6 +816,82 @@ public static class TrackingEndpoints
             }
             return Results.StatusCode(StatusCodes.Status204NoContent);
         });
+
+        // T-7 replay chunk — gzipped rrweb event bytes, base64 in JSON. First
+        // chunk for a sid creates the Replay envelope; subsequent chunks append.
+        // Enforces 512 KB payload cap — oversized requests return 413.
+        app.MapPost("/api/tracking/replay/chunk", async (
+            ReplayChunkRequest? request,
+            HttpContext context,
+            AppDbContext db,
+            ILogger<TrackingReplayMarker> logger) =>
+        {
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            if (HonorsPrivacySignal(context))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+            if (request is null ||
+                string.IsNullOrWhiteSpace(request.Sid) ||
+                string.IsNullOrEmpty(request.PayloadBase64))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+
+            byte[] bytes;
+            try { bytes = Convert.FromBase64String(request.PayloadBase64!); }
+            catch { return Results.StatusCode(StatusCodes.Status400BadRequest); }
+
+            if (bytes.Length > MaxReplayChunkBytes)
+            {
+                logger.LogInformation("Replay chunk too large sid={Sid} size={Size}", request.Sid, bytes.Length);
+                return Results.StatusCode(StatusCodes.Status413PayloadTooLarge);
+            }
+
+            var sid = request.Sid!;
+            var now = DateTime.UtcNow;
+            var ts = request.Ts ?? now;
+
+            try
+            {
+                var replay = await db.Replays.FirstOrDefaultAsync(r => r.SessionId == sid);
+                if (replay is null)
+                {
+                    replay = new Replay
+                    {
+                        SessionId = sid,
+                        StartedAt = ts,
+                        EndedAt = ts,
+                        ChunkCount = 0,
+                        ByteSize = 0,
+                        Compressed = request.Compressed ?? true
+                    };
+                    db.Replays.Add(replay);
+                    await db.SaveChangesAsync();
+                }
+
+                replay.ChunkCount += 1;
+                replay.ByteSize += bytes.Length;
+                replay.EndedAt = ts;
+                replay.DurationSeconds = (int)(replay.EndedAt - replay.StartedAt).TotalSeconds;
+
+                db.ReplayChunks.Add(new ReplayChunk
+                {
+                    ReplayId = replay.Id,
+                    Sequence = request.Sequence ?? replay.ChunkCount - 1,
+                    Ts = ts,
+                    Payload = bytes
+                });
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                db.ChangeTracker.Clear();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Replay chunk persist failed for sid={Sid}", sid);
+            }
+
+            return Results.StatusCode(StatusCodes.Status204NoContent);
+        });
     }
 
     private static string RateVital(string metric, double value)
@@ -855,4 +943,6 @@ public static class TrackingEndpoints
     public sealed class TrackingVitalsMarker { }
     /// <summary>ILogger category marker for errors.</summary>
     public sealed class TrackingErrorsMarker { }
+    /// <summary>ILogger category marker for replay.</summary>
+    public sealed class TrackingReplayMarker { }
 }

@@ -100,7 +100,9 @@
           {
             <tr style="border-top: 1px solid rgba(255,255,255,0.04); color: var(--slate-300);">
               <td style="padding: 0.625rem 1rem; font-family: ui-monospace, monospace; color: var(--slate-400);" title="@s.StartedAt.ToString("u")">@s.StartedAt.ToString("MMM d HH:mm:ss")</td>
-              <td style="padding: 0.625rem 1rem; font-family: ui-monospace, monospace; color: var(--slate-500);">@(s.Id.Length > 16 ? s.Id[..16] + "…" : s.Id)</td>
+              <td style="padding: 0.625rem 1rem; font-family: ui-monospace, monospace; color: var(--slate-500);">
+                <a href="/Admin/Reports/Sessions/Detail?id=@s.Id" style="color: #3b82f6; text-decoration: none;">@(s.Id.Length > 16 ? s.Id[..16] + "…" : s.Id)</a>
+              </td>
               <td style="padding: 0.625rem 1rem;">@(s.DeviceType ?? "∅")</td>
               <td style="padding: 0.625rem 1rem; color: var(--slate-400);">@(s.Browser ?? "∅") · @(s.Os ?? "∅")</td>
               <td style="padding: 0.625rem 1rem; text-align: right; color: white; font-weight: 600;">@s.PageCount</td>

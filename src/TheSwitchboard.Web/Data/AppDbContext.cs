@@ -73,6 +73,10 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     public DbSet<WebVitalSample> WebVitalSamples => Set<WebVitalSample>();
     public DbSet<JsError> JsErrors => Set<JsError>();
 
+    // T-7 Session replay
+    public DbSet<Replay> Replays => Set<Replay>();
+    public DbSet<ReplayChunk> ReplayChunks => Set<ReplayChunk>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -202,6 +206,18 @@ public class AppDbContext : IdentityDbContext<AdminUser>
             e.HasIndex(j => j.Fingerprint);
             // One row per (sid, fingerprint) — repeated errors in the same session bump Count.
             e.HasIndex(j => new { j.SessionId, j.Fingerprint }).IsUnique();
+        });
+
+        modelBuilder.Entity<Replay>(e =>
+        {
+            e.HasIndex(r => r.SessionId).IsUnique();
+            e.HasIndex(r => r.StartedAt);
+        });
+
+        modelBuilder.Entity<ReplayChunk>(e =>
+        {
+            e.HasIndex(c => new { c.ReplayId, c.Sequence });
+            e.HasOne(c => c.Replay).WithMany().HasForeignKey(c => c.ReplayId);
         });
 
         modelBuilder.Entity<KnownProxyAsn>(e =>

@@ -102,6 +102,11 @@
     if (self.sw.errors && typeof self.sw.errors.boot === 'function') {
       self.sw.errors.boot();
     }
+
+    // T-7 rrweb session replay — lazy-loaded for sampled sessions only.
+    if (self.sw.replay && typeof self.sw.replay.boot === 'function') {
+      self.sw.replay.boot();
+    }
   }
 
   // Defer so identity.js + transport.js — loaded with matching `defer` attributes

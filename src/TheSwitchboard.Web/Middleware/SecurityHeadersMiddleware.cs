@@ -48,7 +48,12 @@ public class SecurityHeadersMiddleware
             "img-src 'self' data: https:; " +
             "font-src 'self'; " +
             "connect-src 'self'; " +
-            "frame-ancestors 'none';";
+            // T-7: worker-src for CompressionStream + rrweb in some browsers.
+            "worker-src 'self' blob:; " +
+            // T-7: frame-ancestors 'self' (relaxed from 'none') so admin heatmap
+            // + Sessions/Detail pages can iframe the public site for previews.
+            // External embedding still blocked by X-Frame-Options: SAMEORIGIN.
+            "frame-ancestors 'self';";
 
         await _next(context);
     }
