@@ -1,0 +1,46 @@
+# A6: Lighthouse CI on every push to main.
+#
+# Runs Google Lighthouse against the live production URL (after Railway's
+# auto-deploy has landed) and enforces budgets defined in .lighthouserc.json:
+#   - accessibility ≥ 95   (hard fail)
+#   - best-practices ≥ 90  (hard fail)
+#   - seo ≥ 95             (hard fail)
+#   - performance ≥ 85     (warn)
+#   - LCP / CLS / INP / TBT budgets (warn until we have a stable baseline)
+#
+# The report + diff is uploaded to temporary-public-storage so the workflow log
+# links to it directly. Hardening later: swap to a self-hosted LHCI server for
+# permanent history.
+name: Lighthouse CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # On push to main, give Railway time to redeploy before we audit the
+      # live URL. On PR/dispatch we skip the wait — we're auditing whatever
+      # is already live.
+      - name: Wait for Railway deploy
+        if: ${{ github.event_name == 'push' }}
+        run: sleep 150
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: Run Lighthouse CI
+        run: lhci autorun --config=.lighthouserc.json
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
