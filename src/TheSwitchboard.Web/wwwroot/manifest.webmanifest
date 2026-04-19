@@ -1,0 +1,17 @@
+{
+  "name": "The Switchboard — Insurance Intelligence Platform",
+  "short_name": "Switchboard",
+  "description": "Insurance intelligence platform. Enrich, score, and route every inbound record in real time.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1c1917",
+  "theme_color": "#1c1917",
+  "lang": "en-US",
+  "icons": [
+    { "src": "/wireframes/assets/logo/switchboard-logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/wireframes/assets/logo/switchboard-logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/wireframes/assets/logo/switchboard-logo.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" }
+  ]
+}
