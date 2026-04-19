@@ -1,5 +1,25 @@
 @{
     Layout = null;
+    var path = Context.Request.Path.Value ?? string.Empty;
+    bool GroupOpen(string groupId) => groupId switch
+    {
+        "content"  => path.StartsWith("/Admin/Partners", StringComparison.OrdinalIgnoreCase)
+                   || path.StartsWith("/Admin/ComingSoon", StringComparison.OrdinalIgnoreCase),
+        "forms"    => path.StartsWith("/Admin/Submissions", StringComparison.OrdinalIgnoreCase)
+                   || path.StartsWith("/Admin/Reports/Forms", StringComparison.OrdinalIgnoreCase)
+                   || path.StartsWith("/Admin/Reports/Abandonment", StringComparison.OrdinalIgnoreCase),
+        "reports"  => path.StartsWith("/Admin/Reports", StringComparison.OrdinalIgnoreCase)
+                   && !path.StartsWith("/Admin/Reports/Forms", StringComparison.OrdinalIgnoreCase)
+                   && !path.StartsWith("/Admin/Reports/Abandonment", StringComparison.OrdinalIgnoreCase)
+                   && !path.StartsWith("/Admin/Reports/Compliance", StringComparison.OrdinalIgnoreCase)
+                   && !path.StartsWith("/Admin/Reports/Certificates", StringComparison.OrdinalIgnoreCase)
+                   && !path.StartsWith("/Admin/Reports/Disclosures", StringComparison.OrdinalIgnoreCase),
+        "consent"  => path.StartsWith("/Admin/Reports/Compliance", StringComparison.OrdinalIgnoreCase)
+                   || path.StartsWith("/Admin/Reports/Certificates", StringComparison.OrdinalIgnoreCase)
+                   || path.StartsWith("/Admin/Reports/Disclosures", StringComparison.OrdinalIgnoreCase),
+        "settings" => path.StartsWith("/Admin/Settings", StringComparison.OrdinalIgnoreCase),
+        _          => false
+    };
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -10,6 +30,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <meta name="robots" content="noindex, nofollow" />
     <script src="~/js/admin/cmdk.js" asp-append-version="true" defer></script>
+    <script src="~/js/admin/sidebar.js" asp-append-version="true" defer></script>
     <style>
       /* A15 — inline help tooltip, admin-only. CSS-only (no JS).
          Usage:  <span class="tb-help" data-tip="Plain-English explanation">?</span>  */
@@ -62,6 +83,35 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
       }
       .tb-help:hover::after, .tb-help:focus-visible::after { opacity: 1; }
+
+      /* H-7b — collapsible sidebar groups. <details>+<summary> for accessibility;
+         JS persists state per group id to localStorage. */
+      .sb-group { margin-top: 1rem; }
+      .sb-group > summary {
+        list-style: none;
+        cursor: pointer;
+        user-select: none;
+        padding: 0.375rem 0.75rem;
+        margin-bottom: 0.375rem;
+        font-size: 0.625rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--slate-600);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 0.25rem;
+      }
+      .sb-group > summary::-webkit-details-marker { display: none; }
+      .sb-group > summary:hover { color: var(--slate-400); background: rgba(255,255,255,0.02); }
+      .sb-group > summary::after {
+        content: "▸";
+        font-size: 0.6875rem;
+        color: var(--slate-600);
+        transition: transform 0.12s ease;
+      }
+      .sb-group[open] > summary::after { transform: rotate(90deg); }
+      .sb-group > *:not(summary) { margin-left: 0; }
     </style>
 </head>
 <body style="display: flex; min-height: 100vh;">
@@ -75,50 +125,65 @@
         </div>
         <nav style="display: flex; flex-direction: column; gap: 0.25rem;">
             <a href="/Admin/Dashboard" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); transition: all 0.15s;">Dashboard</a>
-            <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-600); margin-top: 1rem; margin-bottom: 0.5rem; padding-left: 0.75rem;">Content</div>
-            <a href="/Admin/ComingSoon?feature=Blog+Posts&eta=T-9" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Blog Posts</a>
-            <a href="/Admin/ComingSoon?feature=Case+Studies&eta=T-9" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Case Studies</a>
-            <a href="/Admin/ComingSoon?feature=Testimonials&eta=T-9" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Testimonials</a>
-            <a href="/Admin/ComingSoon?feature=Team&eta=T-9" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Team</a>
-            <a href="/Admin/Partners" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Partners &amp; Logos</a>
-            <a href="/Admin/ComingSoon?feature=FAQs&eta=T-9" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">FAQs</a>
-            <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-600); margin-top: 1rem; margin-bottom: 0.5rem; padding-left: 0.75rem;">Forms</div>
-            <a href="/Admin/Submissions" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Submissions</a>
-            <a href="/Admin/Reports/Forms/Funnel" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Form Funnel</a>
-            <a href="/Admin/Reports/Abandonment" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Abandonment</a>
-            <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-600); margin-top: 1rem; margin-bottom: 0.5rem; padding-left: 0.75rem;">Reports</div>
-            <a href="/Admin/Reports/RealTime" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: white; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); display: flex; align-items: center; gap: 0.375rem;">
+            <a href="/Admin/Reports/RealTime" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: white; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); display: flex; align-items: center; gap: 0.375rem; margin-top: 0.25rem;">
               <span style="display: inline-block; width: 6px; height: 6px; border-radius: 999px; background: #10b981;"></span>Real-time
             </a>
-            <a href="/Admin/Reports/Overview" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Overview</a>
-            <a href="/Admin/Reports/Trends" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Trends</a>
-            <a href="/Admin/Reports/Visitors" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Visitors</a>
-            <a href="/Admin/Reports/Cohorts" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Cohorts</a>
-            <a href="/Admin/Reports/Engagement" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Engagement</a>
-            <a href="/Admin/Reports/UtmBuilder" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">UTM builder</a>
-            <a href="/Admin/Reports/Goals" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Goals</a>
-            <a href="/Admin/Reports/ChangesLog" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Changes log</a>
-            <a href="/Admin/Reports/Deploys" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Deploys</a>
-            <a href="/Admin/Reports/Exports" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Exports</a>
-            <a href="/Admin/Reports/DSR" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">DSR</a>
-            <a href="/Admin/Reports/Insights" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Insights</a>
-            <a href="/Admin/Reports/Alerts" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Alerts</a>
-            <a href="/Admin/Reports/Segments" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Segments</a>
-            <a href="/Admin/Reports/Health" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Health</a>
-            <a href="/Admin/Reports/Attribution" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Attribution</a>
-            <a href="/Admin/Reports/Sessions" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Sessions</a>
-            <a href="/Admin/Reports/Frustration" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Frustration</a>
-            <a href="/Admin/Reports/Heatmaps/Click" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Click heatmap</a>
-            <a href="/Admin/Reports/Heatmaps/Scroll" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Scroll heatmap</a>
-            <a href="/Admin/Reports/Performance" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Performance</a>
-            <a href="/Admin/Reports/Errors" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">JS errors</a>
-            <a href="/Admin/Reports/ErrorImpact" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Error impact</a>
-            <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-600); margin-top: 1rem; margin-bottom: 0.5rem; padding-left: 0.75rem;">Consent · TCPA</div>
-            <a href="/Admin/Reports/Compliance" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Compliance</a>
-            <a href="/Admin/Reports/Certificates" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Certificates</a>
-            <a href="/Admin/Reports/Disclosures" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Disclosures</a>
-            <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-600); margin-top: 1rem; margin-bottom: 0.5rem; padding-left: 0.75rem;">Settings</div>
-            <a href="/Admin/Settings" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Site Settings</a>
+
+            <details class="sb-group" data-group-id="content" @(GroupOpen("content") ? "open" : "")>
+              <summary>Content</summary>
+              <a href="/Admin/ComingSoon?feature=Blog+Posts&eta=T-9"   style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Blog Posts</a>
+              <a href="/Admin/ComingSoon?feature=Case+Studies&eta=T-9" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Case Studies</a>
+              <a href="/Admin/ComingSoon?feature=Testimonials&eta=T-9" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Testimonials</a>
+              <a href="/Admin/ComingSoon?feature=Team&eta=T-9"         style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Team</a>
+              <a href="/Admin/Partners"                                 style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Partners &amp; Logos</a>
+              <a href="/Admin/ComingSoon?feature=FAQs&eta=T-9"          style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">FAQs</a>
+            </details>
+
+            <details class="sb-group" data-group-id="forms" @(GroupOpen("forms") ? "open" : "")>
+              <summary>Forms</summary>
+              <a href="/Admin/Submissions"                   style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Submissions</a>
+              <a href="/Admin/Reports/Forms/Funnel"          style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Form Funnel</a>
+              <a href="/Admin/Reports/Abandonment"           style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Abandonment</a>
+            </details>
+
+            <details class="sb-group" data-group-id="reports" @(GroupOpen("reports") ? "open" : "")>
+              <summary>Reports</summary>
+              <a href="/Admin/Reports/Overview"       style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Overview</a>
+              <a href="/Admin/Reports/Trends"         style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Trends</a>
+              <a href="/Admin/Reports/Visitors"       style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Visitors</a>
+              <a href="/Admin/Reports/Cohorts"        style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Cohorts</a>
+              <a href="/Admin/Reports/Engagement"     style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Engagement</a>
+              <a href="/Admin/Reports/Attribution"    style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Attribution</a>
+              <a href="/Admin/Reports/Sessions"       style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Sessions</a>
+              <a href="/Admin/Reports/Frustration"    style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Frustration</a>
+              <a href="/Admin/Reports/Heatmaps/Click" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Click heatmap</a>
+              <a href="/Admin/Reports/Heatmaps/Scroll" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Scroll heatmap</a>
+              <a href="/Admin/Reports/Performance"    style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Performance</a>
+              <a href="/Admin/Reports/Errors"         style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">JS errors</a>
+              <a href="/Admin/Reports/ErrorImpact"    style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Error impact</a>
+              <a href="/Admin/Reports/UtmBuilder"     style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">UTM builder</a>
+              <a href="/Admin/Reports/Goals"          style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Goals</a>
+              <a href="/Admin/Reports/Insights"       style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Insights</a>
+              <a href="/Admin/Reports/Alerts"         style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Alerts</a>
+              <a href="/Admin/Reports/Segments"       style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Segments</a>
+              <a href="/Admin/Reports/Health"         style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Health</a>
+              <a href="/Admin/Reports/Deploys"        style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Deploys</a>
+              <a href="/Admin/Reports/ChangesLog"     style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Changes log</a>
+              <a href="/Admin/Reports/Exports"        style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Exports</a>
+              <a href="/Admin/Reports/DSR"            style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">DSR</a>
+            </details>
+
+            <details class="sb-group" data-group-id="consent" @(GroupOpen("consent") ? "open" : "")>
+              <summary>Consent · TCPA</summary>
+              <a href="/Admin/Reports/Compliance"   style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Compliance</a>
+              <a href="/Admin/Reports/Certificates" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Certificates</a>
+              <a href="/Admin/Reports/Disclosures"  style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Disclosures</a>
+            </details>
+
+            <details class="sb-group" data-group-id="settings" @(GroupOpen("settings") ? "open" : "")>
+              <summary>Settings</summary>
+              <a href="/Admin/Settings" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); display: block;">Site Settings</a>
+            </details>
         </nav>
         <div style="margin-top: auto; padding-top: 2rem;">
             <form method="post" asp-page="/Admin/Logout">
