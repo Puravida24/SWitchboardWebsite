@@ -15,7 +15,9 @@ public class SecurityHeadersMiddleware
         var nonce = CspNonceMiddleware.GetNonce(context);
 
         headers["X-Content-Type-Options"] = "nosniff";
-        headers["X-Frame-Options"] = "DENY";
+        // SAMEORIGIN (not DENY) so admin heatmap pages can iframe the public site
+        // for click/scroll overlay previews. External embedding is still blocked.
+        headers["X-Frame-Options"] = "SAMEORIGIN";
         headers["X-XSS-Protection"] = "1; mode=block";
         headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
         headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
