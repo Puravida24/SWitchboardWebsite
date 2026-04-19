@@ -4,6 +4,12 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- A16: lock down warning surface so null-reference + API-misuse classes
+         cannot drift back into production. Default AnalysisLevel (latest-minimum)
+         keeps the correctness / security rule set; we skip the style/perf
+         opt-ins (CA1848 LoggerMessage, CA1852 seal-internal, etc.) which are
+         nitpicks not bugs. Tighten case-by-case when a rule proves its worth. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

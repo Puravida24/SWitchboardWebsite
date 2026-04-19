@@ -119,7 +119,9 @@ public class EmailService : IEmailService
 
             var username = _config["Email:SmtpUsername"];
             var password = _config["Email:SmtpPassword"];
-            if (!string.IsNullOrEmpty(username))
+            // Both are required together; authenticating with a null password would
+            // throw at MailKit anyway. Treat either-missing as "no auth needed."
+            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
                 await client.AuthenticateAsync(username, password);
 
             await client.SendAsync(message);
