@@ -24,10 +24,13 @@ public class SecurityHeadersMiddleware
 
         // Belt-and-suspenders with robots.txt: mark admin + API routes noindex even if
         // someone external links to them. robots.txt is advisory; this header is enforced.
+        // H-9h: /verify/{id} consent-proof URLs are per-cert unique and would dilute
+        // brand search results if Google indexed them — block crawlers explicitly.
         var path = context.Request.Path.Value;
         if (path is not null &&
             (path.StartsWith("/Admin", StringComparison.OrdinalIgnoreCase) ||
-             path.StartsWith("/api", StringComparison.OrdinalIgnoreCase)))
+             path.StartsWith("/api", StringComparison.OrdinalIgnoreCase) ||
+             path.StartsWith("/verify", StringComparison.OrdinalIgnoreCase)))
         {
             headers["X-Robots-Tag"] = "noindex, nofollow";
         }

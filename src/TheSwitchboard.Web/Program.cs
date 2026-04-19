@@ -189,6 +189,7 @@ try
                                TheSwitchboard.Web.Services.Tracking.CohortService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IImageService, ImageService>();
+    builder.Services.AddScoped<IIndexNowService, IndexNowService>();
     builder.Services.AddHttpClient<IPhoenixCrmService, PhoenixCrmService>();
 
     // H-07.2: rate-limit store. Future: swap to RedisRateLimitStore when
@@ -311,6 +312,7 @@ try
     TheSwitchboard.Web.Api.ConsentMatchEndpoints.MapConsentMatchEndpoints(app);
     app.MapHub<TheSwitchboard.Web.Hubs.RealtimeHub>("/hubs/realtime");
     TheSwitchboard.Web.Api.OpsEndpoints.MapOpsEndpoints(app);
+    TheSwitchboard.Web.Api.IndexNowEndpoints.MapIndexNowEndpoints(app);
 
     // Auto-migrate and seed
     try

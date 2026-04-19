@@ -119,6 +119,35 @@ public class HardeningTests : IClassFixture<SwitchboardWebApplicationFactory>
         Assert.True(res.StatusCode is HttpStatusCode.Redirect or HttpStatusCode.Found or HttpStatusCode.SeeOther);
     }
 
+    // ── H-9d_01 ─────────────────────────────────────────────────────────
+    [Fact]
+    public async Task H9d_01_IndexNowKey_NotConfigured_Returns404()
+    {
+        var client = _factory.CreateClient();
+        var res = await client.GetAsync("/abcdef0123456789.txt");
+        Assert.Equal(HttpStatusCode.NotFound, res.StatusCode);
+    }
+
+    // ── H-9d_02 ─────────────────────────────────────────────────────────
+    [Fact]
+    public void H9d_02_IndexNowService_EnabledFollowsConfig()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var svc = scope.ServiceProvider.GetRequiredService<TheSwitchboard.Web.Services.IIndexNowService>();
+        Assert.False(svc.Enabled);
+        Assert.Null(svc.GetKeyIfMatches("anything"));
+    }
+
+    // ── H-9h_01 ─────────────────────────────────────────────────────────
+    [Fact]
+    public async Task H9h_01_Verify_HasNoindex_XRobotsTag()
+    {
+        var client = _factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        var res = await client.GetAsync("/verify/nosuchcert");
+        Assert.True(res.Headers.TryGetValues("X-Robots-Tag", out var vals));
+        Assert.Contains(vals!, v => v.Contains("noindex", StringComparison.OrdinalIgnoreCase));
+    }
+
     // ── H-9f_01 ─────────────────────────────────────────────────────────
     [Fact]
     public async Task H9f_01_Html_Has_NoCache_Headers()
