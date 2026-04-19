@@ -84,6 +84,12 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     // T-10 Rollups
     public DbSet<EventRollupDaily> EventRollupDailies => Set<EventRollupDaily>();
 
+    // T-11 Goals + Deploys + DSR
+    public DbSet<Goal> Goals => Set<Goal>();
+    public DbSet<GoalConversion> GoalConversions => Set<GoalConversion>();
+    public DbSet<DeployChange> DeployChanges => Set<DeployChange>();
+    public DbSet<DataSubjectRequest> DataSubjectRequests => Set<DataSubjectRequest>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -248,6 +254,18 @@ public class AppDbContext : IdentityDbContext<AdminUser>
         {
             e.HasKey(r => new { r.Date, r.Path, r.Metric, r.Dimension });
             e.HasIndex(r => r.Date);
+        });
+
+        modelBuilder.Entity<Goal>(e => e.HasIndex(g => g.Name).IsUnique());
+        modelBuilder.Entity<GoalConversion>(e =>
+        {
+            e.HasIndex(c => new { c.GoalId, c.Ts });
+        });
+        modelBuilder.Entity<DeployChange>(e => e.HasIndex(d => d.DeployedAt));
+        modelBuilder.Entity<DataSubjectRequest>(e =>
+        {
+            e.HasIndex(r => r.RequestedAt);
+            e.HasIndex(r => r.Status);
         });
 
         modelBuilder.Entity<KnownProxyAsn>(e =>

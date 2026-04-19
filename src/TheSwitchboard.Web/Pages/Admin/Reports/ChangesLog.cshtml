@@ -1,0 +1,59 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.ChangesLogModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Changes log";
+}
+
+<div style="max-width: 1100px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Changes log</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    Every deploy that hit production. Posted by CI via <code>POST /api/ops/deploy-change</code>. Overlaid on trend charts as vertical markers.
+  </p>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+    @if (Model.Rows.Count == 0)
+    {
+      <div style="padding: 2rem; color: var(--slate-500); font-size: 0.875rem;">No deploys recorded yet. CI will start posting here after the next Railway deploy.</div>
+    }
+    else
+    {
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.8125rem;">
+        <thead>
+          <tr style="color: var(--slate-500); text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.1em;">
+            <th style="text-align: left; padding: 0.625rem 1rem;">When</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">SHA</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Category</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Summary</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Author</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var d in Model.Rows)
+          {
+            var color = d.Category switch
+            {
+              "bugfix" => "#ef4444",
+              "feature" => "#3b82f6",
+              "tracking" => "#10b981",
+              "infra" => "#f59e0b",
+              _ => "var(--slate-500)"
+            };
+            <tr style="border-top: 1px solid rgba(255,255,255,0.04); color: var(--slate-300);">
+              <td style="padding: 0.625rem 1rem; color: var(--slate-500);">@d.DeployedAt.ToString("MMM d HH:mm")</td>
+              <td style="padding: 0.625rem 1rem; font-family: ui-monospace, monospace; color: var(--slate-400);">@(d.Sha.Length > 8 ? d.Sha[..8] : d.Sha)</td>
+              <td style="padding: 0.625rem 1rem;">
+                @if (!string.IsNullOrEmpty(d.Category))
+                {
+                  <span style="display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; background: rgba(255,255,255,0.04); color: @color; font-size: 0.625rem;">@d.Category</span>
+                }
+              </td>
+              <td style="padding: 0.625rem 1rem; color: white;">@d.Summary</td>
+              <td style="padding: 0.625rem 1rem; color: var(--slate-500);">@(d.Author ?? "—")</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

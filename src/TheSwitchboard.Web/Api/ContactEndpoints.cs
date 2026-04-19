@@ -32,6 +32,7 @@ public static class ContactEndpoints
             IValidator<ContactFormRequest> validator,
             IFormService formService,
             TheSwitchboard.Web.Data.AppDbContext db,
+            TheSwitchboard.Web.Services.Tracking.IGoalService goals,
             HttpContext context) =>
         {
             if (!IsOriginAllowed(context))
@@ -85,6 +86,10 @@ public static class ContactEndpoints
                     await db.SaveChangesAsync();
                 }
             }
+
+            // T-11 goal evaluation.
+            try { await goals.EvaluateFormSubmissionAsync(submission, sid, context.Request.Cookies["sw_vid"]); }
+            catch { /* never break the contact path */ }
 
             return Results.Ok(new { success = true, id = submission.Id });
         });

@@ -1,0 +1,44 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.DeploysModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Deploys";
+}
+
+<div style="max-width: 1000px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Deploys timeline</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    Railway release history. Add Categories in CI (<code>bugfix | feature | tracking | infra</code>) — they color-code here and on Trends.
+  </p>
+
+  @if (Model.Rows.Count == 0)
+  {
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 2rem; color: var(--slate-500); font-size: 0.875rem;">
+      No deploys recorded yet. Next CI push will start the timeline.
+    </div>
+  }
+  else
+  {
+    <ol style="list-style: none; padding: 0; margin: 0; border-left: 2px solid rgba(255,255,255,0.08); margin-left: 1rem;">
+      @foreach (var d in Model.Rows)
+      {
+        var color = d.Category switch
+        {
+          "bugfix" => "#ef4444",
+          "feature" => "#3b82f6",
+          "tracking" => "#10b981",
+          "infra" => "#f59e0b",
+          _ => "#64748b"
+        };
+        <li style="position: relative; padding: 0.75rem 0 0.75rem 1.5rem;">
+          <span style="position: absolute; left: -8px; top: 1rem; width: 14px; height: 14px; border-radius: 999px; background: @color; border: 2px solid #0a0a0a;"></span>
+          <div style="color: var(--slate-500); font-size: 0.75rem;">@d.DeployedAt.ToString("MMM d, HH:mm UTC")</div>
+          <div style="color: white; font-size: 0.875rem; margin-top: 0.125rem;">@d.Summary</div>
+          <div style="color: var(--slate-500); font-size: 0.75rem; font-family: ui-monospace, monospace; margin-top: 0.125rem;">
+            @(d.Sha.Length > 8 ? d.Sha[..8] : d.Sha) @(string.IsNullOrEmpty(d.Author) ? "" : $"· {d.Author}") @(string.IsNullOrEmpty(d.Category) ? "" : $"· {d.Category}")
+          </div>
+        </li>
+      }
+    </ol>
+  }
+</div>

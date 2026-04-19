@@ -1,0 +1,74 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.DSRModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Data subject requests";
+}
+
+<div style="max-width: 1000px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Data Subject Requests</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    CCPA / GDPR <strong>delete-my-data</strong> workflow. Purges FormSubmissions, ConsentCertificates,
+    Sessions, Visitors, every event table, + rrweb replay chunks. Per-table row counts are audited.
+  </p>
+
+  <div style="background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.35); border-radius: 0.5rem; padding: 1.25rem; margin-bottom: 1.5rem;">
+    <h2 style="font-size: 0.875rem; font-weight: 600; color: #fecaca; margin-bottom: 0.75rem;">Erase all data for an email</h2>
+    <form method="post" asp-page-handler="Delete" style="display: flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.75rem;">
+      @Html.AntiForgeryToken()
+      <input asp-for="Email" type="email" required placeholder="person@example.com" style="flex: 1; min-width: 260px; padding: 0.5rem 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;" />
+      <button type="submit" style="padding: 0.5rem 1rem; border-radius: 0.25rem; background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.4); color: white; cursor: pointer; font-weight: 600;">Purge</button>
+    </form>
+    <div style="color: var(--slate-500); font-size: 0.625rem; margin-top: 0.5rem;">Irreversible. An audit row is written to <code>DataSubjectRequests</code>.</div>
+  </div>
+
+  @if (Model.LastResult is not null)
+  {
+    <div style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.3); border-radius: 0.5rem; padding: 1.25rem; margin-bottom: 1.5rem;">
+      <h3 style="color: #10b981; font-size: 0.875rem; margin-bottom: 0.5rem;">✓ Erased — request #@Model.LastResult.RequestId</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; font-size: 0.75rem;">
+        @foreach (var kvp in Model.LastResult.DeletedRowCounts)
+        {
+          <div style="padding: 0.375rem 0.625rem; background: rgba(0,0,0,0.3); border-radius: 0.25rem;">
+            <span style="color: var(--slate-500);">@kvp.Key:</span>
+            <strong style="color: white;">@kvp.Value</strong>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+    <div style="padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--slate-500); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;">History</div>
+    @if (Model.History.Count == 0)
+    {
+      <div style="padding: 1.5rem; color: var(--slate-500); font-size: 0.875rem;">No DSRs on record.</div>
+    }
+    else
+    {
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem;">
+        <thead>
+          <tr style="color: var(--slate-500); text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.1em;">
+            <th style="text-align: left; padding: 0.625rem 1rem;">Requested</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Email</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Status</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Counts</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var r in Model.History)
+          {
+            <tr style="border-top: 1px solid rgba(255,255,255,0.04); color: var(--slate-300);">
+              <td style="padding: 0.5rem 1rem; color: var(--slate-500);">@r.RequestedAt.ToString("yyyy-MM-dd HH:mm")</td>
+              <td style="padding: 0.5rem 1rem; font-family: ui-monospace, monospace; color: white;">@r.Email</td>
+              <td style="padding: 0.5rem 1rem;">
+                <span style="display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; background: rgba(16,185,129,0.1); color: #10b981; font-size: 0.625rem;">@r.Status</span>
+              </td>
+              <td style="padding: 0.5rem 1rem; font-family: ui-monospace, monospace; color: var(--slate-500); font-size: 0.625rem;">@r.DeletedRowCounts</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

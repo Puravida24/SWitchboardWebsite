@@ -140,6 +140,11 @@ try
                                TheSwitchboard.Web.Services.Tracking.ErrorImpactService>();
     builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IComplianceAnalyticsService,
                                TheSwitchboard.Web.Services.Tracking.ComplianceAnalyticsService>();
+    // T-11 Goals / Deploys / DSR.
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IGoalService,
+                               TheSwitchboard.Web.Services.Tracking.GoalService>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IDsrService,
+                               TheSwitchboard.Web.Services.Tracking.DsrService>();
 
     // T-8 Real-time dashboard.
     builder.Services.AddSignalR();
@@ -287,6 +292,7 @@ try
     TheSwitchboard.Web.Api.Tracking.TrackingEndpoints.MapTrackingEndpoints(app);
     TheSwitchboard.Web.Api.ConsentMatchEndpoints.MapConsentMatchEndpoints(app);
     app.MapHub<TheSwitchboard.Web.Hubs.RealtimeHub>("/hubs/realtime");
+    TheSwitchboard.Web.Api.OpsEndpoints.MapOpsEndpoints(app);
 
     // Auto-migrate and seed
     try

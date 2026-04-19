@@ -1,0 +1,78 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.GoalsModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Goals";
+}
+
+<div style="max-width: 1100px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Goals</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    Define conversion goals. Form-kind matches against <code>FormSubmission.FormType</code>.
+    Pageview-kind matches exact path. Each hit writes a <code>GoalConversion</code> row.
+  </p>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem; margin-bottom: 1.5rem;">
+    <h2 style="font-size: 0.875rem; font-weight: 600; color: white; margin-bottom: 0.75rem;">New goal</h2>
+    <form method="post" asp-page-handler="Create" style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; font-size: 0.75rem;">
+      @Html.AntiForgeryToken()
+      <input asp-for="NewName" placeholder="Name (e.g. contact-submit)" required style="flex: 1; min-width: 200px; padding: 0.375rem 0.625rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;" />
+      <select asp-for="NewKind" style="padding: 0.375rem 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;">
+        <option value="form">form</option>
+        <option value="pageview">pageview</option>
+      </select>
+      <input asp-for="NewMatch" placeholder="Match (e.g. contact or /thank-you)" style="flex: 1; min-width: 200px; padding: 0.375rem 0.625rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;" />
+      <button type="submit" style="padding: 0.375rem 1rem; border-radius: 0.25rem; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #6ee7b7; cursor: pointer;">Create</button>
+    </form>
+  </div>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+    @if (Model.Goals.Count == 0)
+    {
+      <div style="padding: 1.5rem; color: var(--slate-500); font-size: 0.875rem;">No goals yet.</div>
+    }
+    else
+    {
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.8125rem;">
+        <thead>
+          <tr style="color: var(--slate-500); text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.1em;">
+            <th style="text-align: left; padding: 0.625rem 1rem;">Name</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Kind</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Match</th>
+            <th style="text-align: right; padding: 0.625rem 1rem;">Conversions</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;">Status</th>
+            <th style="text-align: left; padding: 0.625rem 1rem;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var g in Model.Goals)
+          {
+            var count = Model.ConversionCounts.TryGetValue(g.Id, out var c) ? c : 0;
+            <tr style="border-top: 1px solid rgba(255,255,255,0.04); color: var(--slate-300);">
+              <td style="padding: 0.625rem 1rem; color: white;">@g.Name</td>
+              <td style="padding: 0.625rem 1rem; font-family: ui-monospace, monospace; color: var(--slate-400);">@g.Kind</td>
+              <td style="padding: 0.625rem 1rem; font-family: ui-monospace, monospace; color: var(--slate-400);">@(g.MatchExpression ?? "(any)")</td>
+              <td style="padding: 0.625rem 1rem; text-align: right; font-weight: 600; color: @(count > 0 ? "#10b981" : "var(--slate-500)");">@count</td>
+              <td style="padding: 0.625rem 1rem;">
+                @if (g.Enabled)
+                {
+                  <span style="display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; background: rgba(16,185,129,0.15); color: #10b981; font-size: 0.625rem;">enabled</span>
+                }
+                else
+                {
+                  <span style="display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; background: rgba(100,116,139,0.15); color: var(--slate-400); font-size: 0.625rem;">disabled</span>
+                }
+              </td>
+              <td style="padding: 0.625rem 1rem;">
+                <form method="post" asp-page-handler="Toggle" asp-route-id="@g.Id" style="margin: 0;">
+                  @Html.AntiForgeryToken()
+                  <button type="submit" style="padding: 0.25rem 0.625rem; border-radius: 0.25rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--slate-300); font-size: 0.625rem; cursor: pointer;">Toggle</button>
+                </form>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
