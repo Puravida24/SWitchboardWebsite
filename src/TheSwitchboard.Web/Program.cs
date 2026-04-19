@@ -147,6 +147,16 @@ try
                                   TheSwitchboard.Web.Services.Tracking.RealtimeMetrics>();
     builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IRealtimeBroadcaster,
                                TheSwitchboard.Web.Services.Tracking.RealtimeBroadcaster>();
+
+    // T-9 Overview / Trends / Visitors / Cohorts.
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IOverviewService,
+                               TheSwitchboard.Web.Services.Tracking.OverviewService>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.ITrendsService,
+                               TheSwitchboard.Web.Services.Tracking.TrendsService>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IVisitorAnalyticsService,
+                               TheSwitchboard.Web.Services.Tracking.VisitorAnalyticsService>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.ICohortService,
+                               TheSwitchboard.Web.Services.Tracking.CohortService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IImageService, ImageService>();
     builder.Services.AddHttpClient<IPhoenixCrmService, PhoenixCrmService>();

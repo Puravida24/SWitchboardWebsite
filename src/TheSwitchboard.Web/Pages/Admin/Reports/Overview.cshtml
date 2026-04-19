@@ -1,0 +1,123 @@
+@page
+@using TheSwitchboard.Web.Services.Tracking
+@model TheSwitchboard.Web.Pages.Admin.Reports.OverviewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Overview";
+    var r = Model.Report;
+    var ringColor = r.HealthScore >= 85 ? "#10b981" : r.HealthScore >= 70 ? "#f59e0b" : "#ef4444";
+    var ringDashOffset = (int)(377 * (1 - r.HealthScore / 100.0));
+    var nonce = TheSwitchboard.Web.Middleware.CspNonceMiddleware.GetNonce(HttpContext);
+}
+
+<div style="max-width: 1400px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Overview</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    One-pane health snapshot. Health score blends Web Vitals goodness (60%), inverse bounce (20%), inverse error rate (20%).
+  </p>
+
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+    @foreach (var d in new[] { 1, 7, 30, 90 })
+    {
+      var active = Model.WindowDays == d;
+      <a href="?days=@d" style="padding: 0.375rem 0.75rem; border-radius: 0.375rem; font-size: 0.75rem; text-decoration: none;
+         background: @(active ? "rgba(59,130,246,0.2)" : "rgba(255,255,255,0.03)");
+         color: @(active ? "white" : "var(--slate-400)");
+         border: 1px solid @(active ? "rgba(59,130,246,0.4)" : "rgba(255,255,255,0.05)");">
+        @(d == 1 ? "24h" : $"{d}d")
+      </a>
+    }
+  </div>
+
+  <div style="display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+    <!-- Health ring -->
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.5rem; text-align: center;">
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--slate-500);">Health score</div>
+      <svg width="200" height="200" style="margin-top: 0.5rem;">
+        <circle cx="100" cy="100" r="60" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12" />
+        <circle cx="100" cy="100" r="60" fill="none" stroke="@ringColor" stroke-width="12"
+                stroke-dasharray="377" stroke-dashoffset="@ringDashOffset"
+                transform="rotate(-90 100 100)" stroke-linecap="round" />
+        <text x="100" y="105" text-anchor="middle" font-size="40" font-weight="700" fill="white">@r.HealthScore</text>
+        <text x="100" y="128" text-anchor="middle" font-size="10" fill="var(--slate-500)" letter-spacing="2">/ 100</text>
+      </svg>
+      <div style="display: flex; justify-content: space-around; margin-top: 0.75rem; font-size: 0.625rem; color: var(--slate-500);">
+        <div><div style="color: #10b981;">@r.VitalsGoodPct%</div>vitals good</div>
+        <div><div style="color: #f59e0b;">@r.BouncePct%</div>bounce</div>
+      </div>
+    </div>
+
+    <!-- Sparklines -->
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.5rem;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
+        <div>
+          <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.375rem;">Sessions</div>
+          <div style="font-size: 1.75rem; font-weight: 700; color: white;">@r.TotalSessions</div>
+          <canvas id="spark-sessions" height="40"></canvas>
+        </div>
+        <div>
+          <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.375rem;">Form submissions</div>
+          <div style="font-size: 1.75rem; font-weight: 700; color: #10b981;">@r.TotalSubmissions</div>
+          <canvas id="spark-submissions" height="40"></canvas>
+        </div>
+        <div>
+          <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.375rem;">JS errors</div>
+          <div style="font-size: 1.75rem; font-weight: 700; color: @(r.TotalErrors > 0 ? "#ef4444" : "white");">@r.TotalErrors</div>
+          <canvas id="spark-errors" height="40"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem;">
+    @foreach (var (title, rows) in new (string, IReadOnlyList<TopRow>)[] { ("Top pages", r.TopPages), ("Top campaigns", r.TopCampaigns), ("Top errors", r.TopErrors) })
+    {
+      <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+        <div style="padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; color: var(--slate-400); text-transform: uppercase; letter-spacing: 0.08em;">@title</div>
+        @if (rows.Count == 0)
+        {
+          <div style="padding: 1rem; color: var(--slate-500); font-size: 0.8125rem;">No data in window.</div>
+        }
+        else
+        {
+          foreach (var row in rows)
+          {
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem 1rem; border-top: 1px solid rgba(255,255,255,0.03); font-size: 0.8125rem;">
+              <span style="color: var(--slate-300); font-family: ui-monospace, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 0.5rem;">@row.Label</span>
+              <span style="color: white; font-weight: 600;">@row.Count</span>
+            </div>
+          }
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<script nonce="@nonce" src="/js/vendor/chart.min.js"></script>
+<script nonce="@nonce">
+  (function () {
+    if (typeof Chart === 'undefined') return;
+    var data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new
+    {
+        labels = r.DailySeries.Select(d => d.Date.ToString("MMM d")).ToArray(),
+        sessions = r.DailySeries.Select(d => d.Sessions).ToArray(),
+        submissions = r.DailySeries.Select(d => d.Submissions).ToArray(),
+        errors = r.DailySeries.Select(d => d.Errors).ToArray()
+    }));
+    function spark(id, series, color) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      new Chart(el, {
+        type: 'line',
+        data: { labels: data.labels, datasets: [{ data: series, borderColor: color, backgroundColor: color + '33', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 }] },
+        options: { responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { enabled: true } },
+          scales: { x: { display: false }, y: { display: false, beginAtZero: true } }
+        }
+      });
+    }
+    spark('spark-sessions', data.sessions, '#3b82f6');
+    spark('spark-submissions', data.submissions, '#10b981');
+    spark('spark-errors', data.errors, '#ef4444');
+  })();
+</script>

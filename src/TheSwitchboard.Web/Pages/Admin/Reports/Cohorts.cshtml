@@ -1,0 +1,57 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.CohortsModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Cohorts";
+}
+
+<div style="max-width: 1400px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Weekly cohort retention</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    Rows = the week a visitor first showed up. Columns = weeks after. Darker cell = higher retention.
+  </p>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+    @if (Model.Rows.Count == 0 || Model.Rows.All(r => r.Size == 0))
+    {
+      <div style="padding: 2rem; color: var(--slate-500); font-size: 0.875rem;">No cohort data yet — needs at least a week of visitors.</div>
+    }
+    else
+    {
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem;">
+        <thead>
+          <tr style="color: var(--slate-500); text-transform: uppercase; font-size: 0.625rem; letter-spacing: 0.08em;">
+            <th style="text-align: left; padding: 0.625rem 1rem;">Cohort week</th>
+            <th style="text-align: right; padding: 0.625rem 1rem;">Size</th>
+            @for (var i = 0; i < Model.WeeksCount; i++)
+            {
+              <th style="text-align: right; padding: 0.625rem 0.75rem;">W@(i)</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var r in Model.Rows)
+          {
+            <tr style="border-top: 1px solid rgba(255,255,255,0.04); color: var(--slate-300);">
+              <td style="padding: 0.625rem 1rem;">@r.CohortStart.ToString("MMM d")</td>
+              <td style="padding: 0.625rem 1rem; text-align: right; font-weight: 600; color: white;">@r.Size</td>
+              @for (var i = 0; i < Model.WeeksCount; i++)
+              {
+                if (i < r.WeekRetentionPct.Count && r.Size > 0)
+                {
+                  var pct = r.WeekRetentionPct[i];
+                  var alpha = (pct / 100.0 * 0.65 + 0.08).ToString("0.##");
+                  <td style="padding: 0.625rem 0.75rem; text-align: right; background: rgba(59,130,246,@alpha); color: white; font-family: ui-monospace, monospace;">@pct%</td>
+                }
+                else
+                {
+                  <td style="padding: 0.625rem 0.75rem; text-align: right; color: var(--slate-600);">—</td>
+                }
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
