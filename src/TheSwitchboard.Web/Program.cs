@@ -153,6 +153,11 @@ try
                                TheSwitchboard.Web.Services.Tracking.AlertEvaluatorService>();
     builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.ISegmentService,
                                TheSwitchboard.Web.Services.Tracking.SegmentService>();
+    // H-2 alert delivery + default rules seeder.
+    builder.Services.AddHttpClient();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IAlertDispatcher,
+                               TheSwitchboard.Web.Services.Tracking.AlertDispatcher>();
+    builder.Services.AddHostedService<TheSwitchboard.Web.Services.Tracking.DefaultAlertRulesSeeder>();
     builder.Services.AddHostedService<TheSwitchboard.Web.Services.Tracking.InsightsBackgroundService>();
     builder.Services.AddHostedService<TheSwitchboard.Web.Services.Tracking.AlertEvaluatorBackgroundService>();
 

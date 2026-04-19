@@ -17,10 +17,11 @@ public interface IAlertEvaluatorService
 public class AlertEvaluatorService : IAlertEvaluatorService
 {
     private readonly AppDbContext _db;
+    private readonly IAlertDispatcher _dispatcher;
     private readonly ILogger<AlertEvaluatorService> _logger;
-    public AlertEvaluatorService(AppDbContext db, ILogger<AlertEvaluatorService> logger)
+    public AlertEvaluatorService(AppDbContext db, IAlertDispatcher dispatcher, ILogger<AlertEvaluatorService> logger)
     {
-        _db = db; _logger = logger;
+        _db = db; _dispatcher = dispatcher; _logger = logger;
     }
 
     public async Task EvaluateAsync(DateTime? nowUtc = null)
@@ -60,7 +61,7 @@ public class AlertEvaluatorService : IAlertEvaluatorService
                 .AnyAsync(l => l.RuleId == r.Id && l.FiredAt >= windowFrom);
             if (alreadyFired) continue;
 
-            _db.AlertLogs.Add(new AlertLog
+            var log = new AlertLog
             {
                 RuleId = r.Id,
                 FiredAt = now,
@@ -68,8 +69,12 @@ public class AlertEvaluatorService : IAlertEvaluatorService
                 Threshold = r.Threshold,
                 Severity = value > r.Threshold * 2 ? "critical" : "warn",
                 Context = $"{r.MetricExpression} = {value} {r.Comparison} {r.Threshold}"
-            });
+            };
+            _db.AlertLogs.Add(log);
             _logger.LogWarning("Alert {Rule} fired: {Value} {Op} {Threshold}", r.Name, value, r.Comparison, r.Threshold);
+            // Save before dispatch so the row exists even if dispatch fails.
+            await _db.SaveChangesAsync();
+            await _dispatcher.DispatchAsync(r, log);
         }
         await _db.SaveChangesAsync();
     }

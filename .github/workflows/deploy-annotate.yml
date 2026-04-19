@@ -1,0 +1,54 @@
+# H-5: Annotate every push-to-main with a DeployChange row on the production site
+# so /Admin/Reports/ChangesLog + /Deploys timelines auto-populate.
+#
+# Requires secret OPS_DEPLOY_TOKEN matching the Railway env var
+# Ops:DeployChangeToken. Waits 2 minutes for Railway to finish the deploy
+# before posting (best-effort — GitHub doesn't know when Railway is live).
+name: Annotate deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  annotate:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - name: Wait for Railway deploy
+        run: sleep 120
+
+      - name: Resolve commit summary
+        id: commit
+        run: |
+          SUMMARY=$(git log -1 --pretty=%s ${{ github.sha }} || echo "deploy")
+          # Truncate to 500 chars max (server also caps)
+          SUMMARY="${SUMMARY:0:500}"
+          echo "summary=$SUMMARY" >> "$GITHUB_OUTPUT"
+
+      - name: Post deploy-change
+        env:
+          TOKEN: ${{ secrets.OPS_DEPLOY_TOKEN }}
+          SHA: ${{ github.sha }}
+          ACTOR: ${{ github.actor }}
+          SUMMARY: ${{ steps.commit.outputs.summary }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "OPS_DEPLOY_TOKEN secret not set — skipping annotate"
+            exit 0
+          fi
+          # Category heuristic from commit message prefix
+          CATEGORY="feature"
+          case "$SUMMARY" in
+            fix:*|Fix:*|bug:*)     CATEGORY="bugfix" ;;
+            *tracking*|*T-*)        CATEGORY="tracking" ;;
+            *infra*|*ci*|*deploy*)  CATEGORY="infra" ;;
+          esac
+
+          curl -sS -X POST "https://www.theswitchboardmarketing.com/api/ops/deploy-change" \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"sha\":\"$SHA\",\"summary\":$(echo "$SUMMARY" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().strip()))'),\"author\":\"$ACTOR\",\"category\":\"$CATEGORY\"}" \
+            | tee /tmp/deploy-annotate.out
+          echo ""
+          echo "Posted deploy annotation."

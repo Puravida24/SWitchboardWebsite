@@ -237,6 +237,14 @@ public static class TrackingEndpoints
 
     public const int MaxReplayChunkBytes = 512 * 1024;
 
+    public sealed class IdentifyRequest
+    {
+        public string? Sid { get; set; }
+        public string? Vid { get; set; }
+        public string? EmailHashHex { get; set; }
+        public string? Role { get; set; }
+    }
+
     public sealed class ConsentRequest
     {
         public string? Sid { get; set; }
@@ -922,6 +930,37 @@ public static class TrackingEndpoints
             {
                 logger.LogWarning(ex, "Replay chunk persist failed for sid={Sid}", sid);
             }
+
+            return Results.StatusCode(StatusCodes.Status204NoContent);
+        });
+
+        // H-8 identify — attach user identity (hashed email + role) to a Session.
+        app.MapPost("/api/tracking/identify", async (
+            IdentifyRequest? request,
+            HttpContext context,
+            AppDbContext db) =>
+        {
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            if (HonorsPrivacySignal(context))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+            if (request is null || string.IsNullOrWhiteSpace(request.Sid))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+
+            var sid = request.Sid!;
+            try
+            {
+                var session = await db.Sessions.FirstOrDefaultAsync(s => s.Id == sid);
+                if (session is not null)
+                {
+                    if (!string.IsNullOrWhiteSpace(request.EmailHashHex))
+                        session.IdentifiedEmailHash = Truncate(request.EmailHashHex, 64);
+                    if (!string.IsNullOrWhiteSpace(request.Role))
+                        session.IdentifiedRole = Truncate(request.Role, 64);
+                    await db.SaveChangesAsync();
+                }
+            }
+            catch { /* swallow */ }
 
             return Results.StatusCode(StatusCodes.Status204NoContent);
         });

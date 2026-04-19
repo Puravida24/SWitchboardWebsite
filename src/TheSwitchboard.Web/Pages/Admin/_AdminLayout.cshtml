@@ -9,12 +9,16 @@
     <title>@ViewData["Title"] — Switchboard Admin</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <meta name="robots" content="noindex, nofollow" />
+    <script src="~/js/admin/cmdk.js" asp-append-version="true" defer></script>
 </head>
 <body style="display: flex; min-height: 100vh;">
     <!-- Sidebar -->
     <aside style="width: 240px; background: rgba(255,255,255,0.02); border-right: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; flex-shrink: 0;">
-        <div style="font-size: 1rem; font-weight: 700; color: white; margin-bottom: 2rem;">
+        <div style="font-size: 1rem; font-weight: 700; color: white; margin-bottom: 1rem;">
             <span class="text-accent-blue">⚡</span> Admin
+        </div>
+        <div style="font-size: 0.625rem; color: var(--slate-600); margin-bottom: 1.25rem; padding: 0.375rem 0.625rem; border: 1px dashed rgba(255,255,255,0.08); border-radius: 0.25rem; text-align: center;">
+            Press <kbd style="font-family: ui-monospace, monospace; color: white;">⌘K</kbd> / <kbd style="font-family: ui-monospace, monospace; color: white;">Ctrl K</kbd> to jump anywhere
         </div>
         <nav style="display: flex; flex-direction: column; gap: 0.25rem;">
             <a href="/Admin/Dashboard" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400); transition: all 0.15s;">Dashboard</a>
@@ -38,6 +42,7 @@
             <a href="/Admin/Reports/Visitors" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Visitors</a>
             <a href="/Admin/Reports/Cohorts" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Cohorts</a>
             <a href="/Admin/Reports/Engagement" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Engagement</a>
+            <a href="/Admin/Reports/UtmBuilder" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">UTM builder</a>
             <a href="/Admin/Reports/Goals" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Goals</a>
             <a href="/Admin/Reports/ChangesLog" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Changes log</a>
             <a href="/Admin/Reports/Deploys" style="padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: var(--slate-400);">Deploys</a>

@@ -1,0 +1,78 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.UtmBuilderModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "UTM builder";
+    var nonce = TheSwitchboard.Web.Middleware.CspNonceMiddleware.GetNonce(HttpContext);
+}
+
+<div style="max-width: 900px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">UTM builder</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    Build tagged links for your campaigns. Source/medium/campaign are required;
+    term/content + click IDs are optional. Copies to clipboard with one click.
+  </p>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.5rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.875rem; font-size: 0.75rem;">
+      <label style="color: var(--slate-500);">Base URL <span style="color:#ef4444;">*</span>
+        <input id="u-base" type="url" value="https://www.theswitchboardmarketing.com/" style="margin-top: 0.25rem; width: 100%; padding: 0.5rem 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white; font-family: ui-monospace, monospace; box-sizing: border-box;" />
+      </label>
+      <label style="color: var(--slate-500);">utm_source <span style="color:#ef4444;">*</span>
+        <input id="u-source" placeholder="linkedin" style="margin-top: 0.25rem; width: 100%; padding: 0.5rem 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white; box-sizing: border-box;" />
+      </label>
+      <label style="color: var(--slate-500);">utm_medium <span style="color:#ef4444;">*</span>
+        <input id="u-medium" placeholder="social" style="margin-top: 0.25rem; width: 100%; padding: 0.5rem 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white; box-sizing: border-box;" />
+      </label>
+      <label style="color: var(--slate-500);">utm_campaign <span style="color:#ef4444;">*</span>
+        <input id="u-campaign" placeholder="spring-launch" style="margin-top: 0.25rem; width: 100%; padding: 0.5rem 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white; box-sizing: border-box;" />
+      </label>
+      <label style="color: var(--slate-500);">utm_term
+        <input id="u-term" placeholder="(optional — paid keyword)" style="margin-top: 0.25rem; width: 100%; padding: 0.5rem 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white; box-sizing: border-box;" />
+      </label>
+      <label style="color: var(--slate-500);">utm_content
+        <input id="u-content" placeholder="(optional — ad variant)" style="margin-top: 0.25rem; width: 100%; padding: 0.5rem 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white; box-sizing: border-box;" />
+      </label>
+    </div>
+
+    <div style="margin-top: 1.5rem;">
+      <label style="display: block; font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.375rem;">Generated URL</label>
+      <div style="display: flex; gap: 0.5rem;">
+        <input id="u-out" readonly style="flex: 1; padding: 0.625rem 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: #6ee7b7; font-family: ui-monospace, monospace; font-size: 0.75rem;" />
+        <button id="u-copy" style="padding: 0.625rem 1.25rem; border-radius: 0.25rem; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.4); color: white; font-size: 0.75rem; cursor: pointer; white-space: nowrap;">Copy</button>
+      </div>
+      <div id="u-msg" style="color: #10b981; font-size: 0.75rem; margin-top: 0.5rem; height: 1rem;"></div>
+    </div>
+  </div>
+</div>
+
+<script nonce="@nonce">
+(function(){
+  var ids = ['base','source','medium','campaign','term','content'];
+  function el(id){ return document.getElementById('u-'+id); }
+  function build(){
+    var base = el('base').value.trim();
+    if (!base) { el('out').value = ''; return; }
+    var params = new URLSearchParams();
+    ['source','medium','campaign','term','content'].forEach(function(k){
+      var v = el(k).value.trim();
+      if (v) params.set('utm_'+k, v);
+    });
+    var sep = base.indexOf('?') === -1 ? '?' : '&';
+    var qs = params.toString();
+    el('out').value = qs ? base + sep + qs : base;
+  }
+  ids.forEach(function(k){ el(k).addEventListener('input', build); });
+  build();
+
+  document.getElementById('u-copy').addEventListener('click', async function(){
+    try {
+      await navigator.clipboard.writeText(el('out').value);
+      document.getElementById('u-msg').textContent = '✓ Copied';
+      setTimeout(function(){ document.getElementById('u-msg').textContent = ''; }, 2000);
+    } catch(e) {
+      el('out').select();
+    }
+  });
+})();
+</script>

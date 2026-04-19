@@ -85,11 +85,47 @@
     return sid;
   }
 
+  // H-8: sw.setUser({email, role}) — hashes email client-side (never leaves
+  // the browser in plaintext) and posts to /api/tracking/identify so the
+  // current Session row gets IdentifiedEmailHash + IdentifiedRole.
+  async function sha256Hex(text) {
+    try {
+      if (!text) return null;
+      var enc = new TextEncoder().encode(String(text).trim().toLowerCase());
+      var buf = await crypto.subtle.digest('SHA-256', enc);
+      var bytes = new Uint8Array(buf);
+      var hex = '';
+      for (var i = 0; i < bytes.length; i++) hex += bytes[i].toString(16).padStart(2, '0');
+      return hex;
+    } catch (e) { return null; }
+  }
+
+  async function setUser(opts) {
+    try {
+      var email = opts && opts.email ? String(opts.email) : null;
+      var role  = opts && opts.role  ? String(opts.role).slice(0, 64) : null;
+      var hash  = email ? await sha256Hex(email) : null;
+      var body  = {
+        sid: ensureSessionId(),
+        vid: ensureVisitorId(),
+        emailHashHex: hash,
+        role: role
+      };
+      if (self.sw && self.sw.transport && self.sw.transport.send) {
+        await self.sw.transport.send('/api/tracking/identify', body);
+      }
+    } catch (e) { /* swallow */ }
+  }
+
   var api = {
     getVisitorId: ensureVisitorId,
     getSessionId: ensureSessionId,
-    refreshSession: refreshSession
+    refreshSession: refreshSession,
+    setUser: setUser
   };
 
   (self.sw = self.sw || {}).identity = api;
+  // Public convenience — lets page code call sw.setUser(...) without going
+  // through sw.identity.
+  (self.sw).setUser = setUser;
 })();

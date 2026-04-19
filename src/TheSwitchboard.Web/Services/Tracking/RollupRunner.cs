@@ -12,6 +12,7 @@ namespace TheSwitchboard.Web.Services.Tracking;
 public interface IRollupRunner
 {
     Task RollupDayAsync(DateTime day);
+    Task RollupRangeAsync(DateTime fromDay, DateTime toDay);
     DateTime? LastRunAt { get; }
 }
 
@@ -26,6 +27,13 @@ public class RollupRunner : IRollupRunner
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
+    }
+
+    public async Task RollupRangeAsync(DateTime fromDay, DateTime toDay)
+    {
+        var start = fromDay.Date;
+        var end = toDay.Date;
+        for (var d = start; d <= end; d = d.AddDays(1)) await RollupDayAsync(d);
     }
 
     public async Task RollupDayAsync(DateTime day)

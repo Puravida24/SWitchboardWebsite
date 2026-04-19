@@ -5,9 +5,10 @@ using TheSwitchboard.Web.Models.Tracking;
 namespace TheSwitchboard.Web.Services.Tracking;
 
 /// <summary>
-/// Lightweight anomaly detection. Walks key metrics (pageviews, submissions,
-/// errors) for the current day against a 7-day trailing mean + stdev; any
-/// absolute z-score &gt; 2 becomes an Insight row.
+/// Lightweight anomaly detection. Reads from EventRollupDaily (written nightly
+/// by RollupRunner) rather than raw event tables so detection survives T-10's
+/// 90-day raw-event purge. Any |z-score| &gt; 2 against the 7-day trailing
+/// mean becomes an Insight row.
 /// </summary>
 public interface IInsightsService
 {
@@ -18,9 +19,13 @@ public interface IInsightsService
 public class InsightsService : IInsightsService
 {
     private readonly AppDbContext _db;
+    private readonly IRollupRunner _rollup;
     private readonly ILogger<InsightsService> _logger;
 
-    public InsightsService(AppDbContext db, ILogger<InsightsService> logger) { _db = db; _logger = logger; }
+    public InsightsService(AppDbContext db, IRollupRunner rollup, ILogger<InsightsService> logger)
+    {
+        _db = db; _rollup = rollup; _logger = logger;
+    }
 
     public async Task<IReadOnlyList<Insight>> DetectAsync()
     {
@@ -28,27 +33,43 @@ public class InsightsService : IInsightsService
         var today = now.Date;
         var weekAgo = today.AddDays(-7);
 
+        // Make sure today's rollup exists — raw events are still fresh within 90d,
+        // so rolling it up now gives us a today-row to compare against the baseline.
+        try { await _rollup.RollupDayAsync(today); }
+        catch (Exception ex) { _logger.LogDebug(ex, "InsightsService opportunistic rollup failed"); }
+
         var results = new List<Insight>();
+        string[] metrics = { "pageviews", "sessions", "submissions", "errors" };
 
-        async Task<int[]> BucketDays(DateTime from, DateTime to, int days, Func<DateTime, Task<int>> count)
+        foreach (var metric in metrics)
         {
-            var buckets = new int[days];
-            for (var i = 0; i < days; i++)
+            // Sum per day across all paths — we want the total-metric anomaly,
+            // not per-path (per-path detection is a richer follow-up).
+            var rows = await _db.EventRollupDailies
+                .Where(r => r.Metric == metric
+                         && r.Dimension == ""
+                         && r.Date >= weekAgo
+                         && r.Date <= today)
+                .Select(r => new { r.Date, r.Value })
+                .ToListAsync();
+
+            var byDay = rows
+                .GroupBy(r => r.Date.Date)
+                .ToDictionary(g => g.Key, g => g.Sum(x => x.Value));
+
+            var baseline = new List<long>();
+            for (var d = weekAgo; d < today; d = d.AddDays(1))
             {
-                buckets[i] = await count(from.AddDays(i));
+                baseline.Add(byDay.GetValueOrDefault(d.Date, 0));
             }
-            return buckets;
-        }
+            var current = byDay.GetValueOrDefault(today, 0);
+            if (baseline.Count < 3) continue; // not enough history yet
 
-        async Task Detect(string metric, Func<DateTime, Task<int>> countDay)
-        {
-            var baseline = await BucketDays(weekAgo, today, 7, countDay);
-            var current = await countDay(today);
             var mean = baseline.Average();
-            var stdev = baseline.Length > 1
-                ? Math.Sqrt(baseline.Sum(x => Math.Pow(x - mean, 2)) / (baseline.Length - 1))
+            var stdev = baseline.Count > 1
+                ? Math.Sqrt(baseline.Sum(x => Math.Pow(x - mean, 2)) / (baseline.Count - 1))
                 : 0;
-            if (stdev < 0.5) stdev = Math.Max(1, mean * 0.1); // floor for near-flat baselines
+            if (stdev < 0.5) stdev = Math.Max(1, mean * 0.1);
             var z = stdev == 0 ? 0 : (current - mean) / stdev;
             if (Math.Abs(z) >= 2)
             {
@@ -66,11 +87,6 @@ public class InsightsService : IInsightsService
                 });
             }
         }
-
-        await Detect("pageviews", async d => await _db.PageViews.CountAsync(p => p.Timestamp >= d && p.Timestamp < d.AddDays(1)));
-        await Detect("sessions",  async d => await _db.Sessions.CountAsync(s => s.StartedAt >= d && s.StartedAt < d.AddDays(1) && !s.IsBot));
-        await Detect("submissions", async d => await _db.FormSubmissions.CountAsync(s => s.CreatedAt >= d && s.CreatedAt < d.AddDays(1)));
-        await Detect("errors", async d => await _db.JsErrors.CountAsync(e => e.Ts >= d && e.Ts < d.AddDays(1)));
 
         if (results.Count > 0)
         {

@@ -69,4 +69,9 @@ public class Session
     public string ConsentState { get; set; } = "none";
 
     public bool Converted { get; set; }
+
+    // ── H-8: sw.setUser() identity signals ──────────────────────────
+    /// <summary>SHA-256 hex of the identified email. Set via sw.setUser() client API.</summary>
+    [MaxLength(64)] public string? IdentifiedEmailHash { get; set; }
+    [MaxLength(64)] public string? IdentifiedRole { get; set; }
 }

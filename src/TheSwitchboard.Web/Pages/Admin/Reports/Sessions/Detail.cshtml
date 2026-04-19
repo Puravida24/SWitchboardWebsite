@@ -85,7 +85,7 @@
               } catch (e) { /* skip malformed chunk */ }
             }
             if (events.length === 0) return;
-            new rrwebPlayer({
+            const player = new rrwebPlayer({
               target: document.getElementById('sw-replay-player'),
               props: {
                 events: events,
@@ -96,6 +96,30 @@
                 height: 600
               }
             });
+
+            // H-6: Jump-to-consent — seek the replayer to the ms-offset where
+            // the form submit fired. Renders a gold diamond over the timeline
+            // so the admin can see + click it.
+            const submitIso = @Html.Raw(Model.SubmitMomentUtc is null ? "null" : $"\"{Model.SubmitMomentUtc.Value.ToString("O")}\"");
+            if (submitIso && events.length > 0) {
+              const startTs = events[0].timestamp;
+              const endTs   = events[events.length - 1].timestamp;
+              const submitMs = new Date(submitIso).getTime();
+              const offsetMs = Math.max(0, submitMs - startTs);
+              const totalMs  = Math.max(1, endTs - startTs);
+              const pct = Math.min(100, Math.max(0, (offsetMs / totalMs) * 100));
+
+              const host = document.getElementById('sw-replay-player');
+              const marker = document.createElement('button');
+              marker.type = 'button';
+              marker.title = 'Jump to form submit (' + Math.round(offsetMs / 1000) + 's in)';
+              marker.style.cssText = 'position:absolute;bottom:36px;left:calc(' + pct.toFixed(2) + '% - 7px);width:14px;height:14px;background:#fbbf24;border:2px solid #0a0a0a;transform:rotate(45deg);z-index:10;cursor:pointer;box-shadow:0 0 8px rgba(251,191,36,0.6);';
+              host.style.position = 'relative';
+              host.appendChild(marker);
+              marker.addEventListener('click', function () {
+                try { player.goto(offsetMs); } catch (e) { console.error('goto failed', e); }
+              });
+            }
           } catch (e) { console.error('replay load failed', e); }
         })();
       </script>
