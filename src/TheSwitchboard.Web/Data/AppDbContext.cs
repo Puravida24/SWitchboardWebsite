@@ -81,6 +81,9 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     public DbSet<ConsentCertificate> ConsentCertificates => Set<ConsentCertificate>();
     public DbSet<DisclosureVersion> DisclosureVersions => Set<DisclosureVersion>();
 
+    // T-10 Rollups
+    public DbSet<EventRollupDaily> EventRollupDailies => Set<EventRollupDaily>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -239,6 +242,12 @@ public class AppDbContext : IdentityDbContext<AdminUser>
             e.HasIndex(v => v.Version).IsUnique();
             e.HasIndex(v => v.TextHash).IsUnique();
             e.HasIndex(v => v.Status);
+        });
+
+        modelBuilder.Entity<EventRollupDaily>(e =>
+        {
+            e.HasKey(r => new { r.Date, r.Path, r.Metric, r.Dimension });
+            e.HasIndex(r => r.Date);
         });
 
         modelBuilder.Entity<KnownProxyAsn>(e =>

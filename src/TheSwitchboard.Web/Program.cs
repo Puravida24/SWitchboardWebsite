@@ -148,6 +148,16 @@ try
     builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IRealtimeBroadcaster,
                                TheSwitchboard.Web.Services.Tracking.RealtimeBroadcaster>();
 
+    // T-10 Rollups / retention / exports.
+    builder.Services.AddSingleton<TheSwitchboard.Web.Services.Tracking.IRollupRunner,
+                                  TheSwitchboard.Web.Services.Tracking.RollupRunner>();
+    builder.Services.AddSingleton<TheSwitchboard.Web.Services.Tracking.IRetentionRunner,
+                                  TheSwitchboard.Web.Services.Tracking.RetentionRunner>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IExportService,
+                               TheSwitchboard.Web.Services.Tracking.ExportService>();
+    builder.Services.AddHostedService<TheSwitchboard.Web.Services.Tracking.RollupBackgroundService>();
+    builder.Services.AddHostedService<TheSwitchboard.Web.Services.Tracking.DataRetentionBackgroundService>();
+
     // T-9 Overview / Trends / Visitors / Cohorts.
     builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IOverviewService,
                                TheSwitchboard.Web.Services.Tracking.OverviewService>();

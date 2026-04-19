@@ -1,0 +1,63 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.ExportsModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Exports";
+}
+
+<div style="max-width: 1100px;">
+  <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 0.25rem;">Exports</h1>
+  <p style="color: var(--slate-500); margin-bottom: 1.5rem;">
+    CSV downloads for every tracking table. Nightly rollups run at 02:00 UTC;
+    retention sweeps at 03:00 UTC (90d raw / 1y errors / 1y soft-delete replay).
+  </p>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Last rollup</div>
+      <div style="font-size: 0.875rem; color: white;">@(Model.LastRollupAt?.ToString("yyyy-MM-dd HH:mm UTC") ?? "never (runs 02:00 UTC)")</div>
+      <form method="post" asp-page-handler="RollupNow" style="margin-top: 0.75rem;">
+        @Html.AntiForgeryToken()
+        <button type="submit" style="padding: 0.375rem 0.875rem; border-radius: 0.25rem; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); color: white; font-size: 0.75rem; cursor: pointer;">Run rollup now (yesterday)</button>
+      </form>
+    </div>
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Last retention sweep</div>
+      <div style="font-size: 0.875rem; color: white;">@(Model.LastRetentionAt?.ToString("yyyy-MM-dd HH:mm UTC") ?? "never (runs 03:00 UTC)")</div>
+      <form method="post" asp-page-handler="RetentionNow" style="margin-top: 0.75rem;">
+        @Html.AntiForgeryToken()
+        <button type="submit" style="padding: 0.375rem 0.875rem; border-radius: 0.25rem; background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.4); color: #fecaca; font-size: 0.75rem; cursor: pointer;">Run retention now</button>
+      </form>
+    </div>
+  </div>
+
+  <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
+    <h2 style="font-size: 0.875rem; font-weight: 600; color: white; margin-bottom: 1rem;">Download CSV</h2>
+    <form method="get" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; font-size: 0.75rem; margin-bottom: 1rem;">
+      <input type="hidden" name="handler" value="Download" />
+      <label style="color: var(--slate-500);">
+        From
+        <input type="date" name="from" value="@Model.FromUtc.ToString("yyyy-MM-dd")" style="margin-left: 0.375rem; padding: 0.375rem 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;" />
+      </label>
+      <label style="color: var(--slate-500);">
+        To
+        <input type="date" name="to" value="@Model.ToUtc.ToString("yyyy-MM-dd")" style="margin-left: 0.375rem; padding: 0.375rem 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.25rem; color: white;" />
+      </label>
+      <div style="display: flex; gap: 0.375rem; flex-wrap: wrap;">
+        @foreach (var (kind, label) in new[] {
+          ("sessions", "Sessions"),
+          ("submissions", "Form submissions"),
+          ("clicks", "Clicks"),
+          ("errors", "JS errors"),
+          ("vitals", "Web Vitals") })
+        {
+          <button type="submit" name="kind" value="@kind" style="padding: 0.375rem 0.875rem; border-radius: 0.25rem; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); color: #6ee7b7; font-size: 0.75rem; cursor: pointer;">↓ @label</button>
+        }
+      </div>
+    </form>
+    <p style="color: var(--slate-600); font-size: 0.75rem;">
+      Files are streamed directly (no buffering) — large exports won't spike memory.
+      UTF-8 encoded, RFC 4180 quoting.
+    </p>
+  </div>
+</div>
