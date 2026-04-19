@@ -119,6 +119,21 @@ public class HardeningTests : IClassFixture<SwitchboardWebApplicationFactory>
         Assert.True(res.StatusCode is HttpStatusCode.Redirect or HttpStatusCode.Found or HttpStatusCode.SeeOther);
     }
 
+    // ── H-9f_01 ─────────────────────────────────────────────────────────
+    [Fact]
+    public async Task H9f_01_Html_Has_NoCache_Headers()
+    {
+        var client = _factory.CreateClient();
+        var res = await client.GetAsync("/");
+        res.EnsureSuccessStatusCode();
+        var headers = new List<string>();
+        if (res.Headers.TryGetValues("Cache-Control", out var a)) headers.AddRange(a);
+        if (res.Content.Headers.TryGetValues("Cache-Control", out var b)) headers.AddRange(b);
+        var cc = string.Join(",", headers);
+        Assert.Contains("no-cache", cc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no-store", cc, StringComparison.OrdinalIgnoreCase);
+    }
+
     // ── H-7_01 ─────────────────────────────────────────────────────────
     [Fact]
     public async Task H7_01_CmdK_Served()

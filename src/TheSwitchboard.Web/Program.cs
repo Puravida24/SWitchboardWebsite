@@ -251,6 +251,9 @@ try
 
     // Security headers (all environments)
     app.UseMiddleware<SecurityHeadersMiddleware>();
+    // H-9f: explicit no-cache on HTML responses so per-request CSP nonces
+    // never leak into intermediate caches.
+    app.UseMiddleware<HtmlNoCacheMiddleware>();
     app.UseMiddleware<RedirectMiddleware>();
 
     if (!app.Environment.IsDevelopment())
