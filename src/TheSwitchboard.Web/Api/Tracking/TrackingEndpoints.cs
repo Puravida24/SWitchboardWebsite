@@ -237,6 +237,39 @@ public static class TrackingEndpoints
 
     public const int MaxReplayChunkBytes = 512 * 1024;
 
+    public sealed class ConsentRequest
+    {
+        public string? Sid { get; set; }
+        public string? Vid { get; set; }
+        public int? FormSubmissionId { get; set; }
+        public DateTime? ConsentTimestamp { get; set; }
+        public string? ConsentMethod { get; set; }
+        public string? ConsentElementSelector { get; set; }
+        public int? ClickX { get; set; }
+        public int? ClickY { get; set; }
+        public DateTime? PageLoadedAt { get; set; }
+        public int? TimeOnPageSeconds { get; set; }
+        public string? DisclosureText { get; set; }
+        public string? DisclosureFontSize { get; set; }
+        public string? DisclosureColor { get; set; }
+        public string? DisclosureBackgroundColor { get; set; }
+        public double? DisclosureContrastRatio { get; set; }
+        public bool? DisclosureIsVisible { get; set; }
+        public string? UserAgent { get; set; }
+        public string? BrowserName { get; set; }
+        public string? OsName { get; set; }
+        public string? ScreenResolution { get; set; }
+        public int? ViewportW { get; set; }
+        public int? ViewportH { get; set; }
+        public string? PageUrl { get; set; }
+        public int? KeystrokesPerMinute { get; set; }
+        public int? FormFieldsInteracted { get; set; }
+        public int? MouseDistancePx { get; set; }
+        public int? ScrollDepthPercent { get; set; }
+        public string? EmailHashHex { get; set; }
+        public string? PhoneHashHex { get; set; }
+    }
+
     public static void MapTrackingEndpoints(this WebApplication app)
     {
         // T-1 heartbeat — returns 204 and logs, AND bumps Session.EventCount.
@@ -892,6 +925,128 @@ public static class TrackingEndpoints
 
             return Results.StatusCode(StatusCodes.Status204NoContent);
         });
+
+        // T-7B TCPA consent — captures the disclosure + behavioral signals at submit
+        // time and returns a "sw_cert_…" id the client then stamps onto the form
+        // submission. Unique text-hash auto-creates a DisclosureVersion row.
+        app.MapPost("/api/tracking/consent", async (
+            ConsentRequest? request,
+            HttpContext context,
+            AppDbContext db,
+            ILogger<TrackingConsentMarker> logger) =>
+        {
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            if (request is null || string.IsNullOrWhiteSpace(request.DisclosureText))
+                return Results.BadRequest(new { error = "disclosureText required" });
+
+            var now = DateTime.UtcNow;
+            var rawIp = context.Connection.RemoteIpAddress?.ToString();
+
+            // Server-side SHA-256 of the disclosure text — canonical hash, don't
+            // trust the client to compute this.
+            var disclosureHash = Convert.ToHexString(
+                System.Security.Cryptography.SHA256.HashData(
+                    System.Text.Encoding.UTF8.GetBytes(request.DisclosureText!))).ToLowerInvariant();
+
+            // Upsert DisclosureVersion — new hash → auto-detected row.
+            var version = await db.DisclosureVersions.FirstOrDefaultAsync(v => v.TextHash == disclosureHash);
+            if (version is null)
+            {
+                var nextVersion = (await db.DisclosureVersions.CountAsync()) + 1;
+                version = new DisclosureVersion
+                {
+                    Version = $"v{nextVersion}",
+                    TextHash = disclosureHash,
+                    FullText = Truncate(request.DisclosureText, 2000) ?? string.Empty,
+                    EffectiveFrom = now,
+                    Status = "auto-detected",
+                    CreatedAt = now
+                };
+                try
+                {
+                    db.DisclosureVersions.Add(version);
+                    await db.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {
+                    db.ChangeTracker.Clear();
+                    version = await db.DisclosureVersions.FirstAsync(v => v.TextHash == disclosureHash);
+                }
+            }
+
+            // Bot heuristic — zero keystrokes + zero mouse distance + zero scroll
+            // is the "scripted POST" signature.
+            var isBot = (request.KeystrokesPerMinute ?? 0) == 0
+                        && (request.MouseDistancePx ?? 0) == 0
+                        && (request.ScrollDepthPercent ?? 0) == 0;
+
+            var certId = "sw_cert_" + RandomBase36(24);
+
+            var cert = new ConsentCertificate
+            {
+                CertificateId = certId,
+                FormSubmissionId = request.FormSubmissionId,
+                SessionId = request.Sid,
+                ConsentTimestamp = request.ConsentTimestamp ?? now,
+                ConsentMethod = Truncate(request.ConsentMethod, 40),
+                ConsentElementSelector = Truncate(request.ConsentElementSelector, 500),
+                ClickX = request.ClickX,
+                ClickY = request.ClickY,
+                PageLoadedAt = request.PageLoadedAt,
+                TimeOnPageSeconds = request.TimeOnPageSeconds,
+                DisclosureText = Truncate(request.DisclosureText, 2000) ?? string.Empty,
+                DisclosureTextHash = disclosureHash,
+                DisclosureVersionId = version.Id,
+                DisclosureFontSize = Truncate(request.DisclosureFontSize, 20),
+                DisclosureColor = Truncate(request.DisclosureColor, 30),
+                DisclosureBackgroundColor = Truncate(request.DisclosureBackgroundColor, 30),
+                DisclosureContrastRatio = request.DisclosureContrastRatio,
+                DisclosureIsVisible = request.DisclosureIsVisible ?? false,
+                IpAddress = Truncate(rawIp, 64),
+                UserAgent = Truncate(request.UserAgent ?? context.Request.Headers.UserAgent.FirstOrDefault(), 500),
+                BrowserName = Truncate(request.BrowserName, 50),
+                OsName = Truncate(request.OsName, 50),
+                ScreenResolution = Truncate(request.ScreenResolution, 30),
+                ViewportW = request.ViewportW,
+                ViewportH = request.ViewportH,
+                PageUrl = Truncate(request.PageUrl, 2000),
+                KeystrokesPerMinute = request.KeystrokesPerMinute,
+                FormFieldsInteracted = request.FormFieldsInteracted,
+                MouseDistancePx = request.MouseDistancePx,
+                ScrollDepthPercent = request.ScrollDepthPercent,
+                IsSuspiciousBot = isBot,
+                EmailHash = Truncate(request.EmailHashHex, 64),
+                PhoneHash = Truncate(request.PhoneHashHex, 64),
+                CreatedAt = now,
+                ExpiresAt = now.AddYears(5)
+            };
+
+            try
+            {
+                db.ConsentCertificates.Add(cert);
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Consent certificate persist failed");
+                return Results.StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return Results.Json(new { certificateId = certId });
+        });
+    }
+
+    private static readonly char[] Base36Alphabet =
+        "abcdefghijklmnopqrstuvwxyz0123456789".ToCharArray();
+
+    private static string RandomBase36(int len)
+    {
+        var bytes = new byte[len];
+        System.Security.Cryptography.RandomNumberGenerator.Fill(bytes);
+        var chars = new char[len];
+        for (var i = 0; i < len; i++) chars[i] = Base36Alphabet[bytes[i] % Base36Alphabet.Length];
+        return new string(chars);
     }
 
     private static string RateVital(string metric, double value)
@@ -945,4 +1100,6 @@ public static class TrackingEndpoints
     public sealed class TrackingErrorsMarker { }
     /// <summary>ILogger category marker for replay.</summary>
     public sealed class TrackingReplayMarker { }
+    /// <summary>ILogger category marker for consent.</summary>
+    public sealed class TrackingConsentMarker { }
 }

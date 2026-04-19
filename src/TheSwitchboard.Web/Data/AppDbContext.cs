@@ -77,6 +77,10 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     public DbSet<Replay> Replays => Set<Replay>();
     public DbSet<ReplayChunk> ReplayChunks => Set<ReplayChunk>();
 
+    // T-7B TCPA Consent Certificate
+    public DbSet<ConsentCertificate> ConsentCertificates => Set<ConsentCertificate>();
+    public DbSet<DisclosureVersion> DisclosureVersions => Set<DisclosureVersion>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -218,6 +222,23 @@ public class AppDbContext : IdentityDbContext<AdminUser>
         {
             e.HasIndex(c => new { c.ReplayId, c.Sequence });
             e.HasOne(c => c.Replay).WithMany().HasForeignKey(c => c.ReplayId);
+        });
+
+        modelBuilder.Entity<ConsentCertificate>(e =>
+        {
+            e.HasIndex(c => c.CertificateId).IsUnique();
+            e.HasIndex(c => c.FormSubmissionId);
+            e.HasIndex(c => c.DisclosureTextHash);
+            e.HasIndex(c => c.EmailHash);
+            e.HasIndex(c => c.PhoneHash);
+            e.HasIndex(c => c.ExpiresAt);
+        });
+
+        modelBuilder.Entity<DisclosureVersion>(e =>
+        {
+            e.HasIndex(v => v.Version).IsUnique();
+            e.HasIndex(v => v.TextHash).IsUnique();
+            e.HasIndex(v => v.Status);
         });
 
         modelBuilder.Entity<KnownProxyAsn>(e =>

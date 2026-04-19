@@ -1,0 +1,116 @@
+@page "/verify/{id}"
+@model TheSwitchboard.Web.Pages.VerifyModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Consent verification";
+    var c = Model.Cert;
+    var contrastBucket = c?.DisclosureContrastRatio switch
+    {
+        null => "n/a",
+        >= 7.0 => "AAA",
+        >= 4.5 => "AA",
+        _ => "fail"
+    };
+    var contrastColor = contrastBucket switch
+    {
+        "AAA" => "#10b981",
+        "AA" => "#3b82f6",
+        "fail" => "#ef4444",
+        _ => "#64748b"
+    };
+}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Consent verification — The Switchboard</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+  <style>
+    body { background: #0a0a0a; color: #e5e7eb; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; margin: 0; padding: 2rem 1rem; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    .card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 0.75rem; padding: 1.5rem 1.75rem; margin-bottom: 1rem; }
+    .label { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.12em; color: #64748b; margin-bottom: 0.375rem; }
+    .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+    .chip { display: inline-block; padding: 0.125rem 0.625rem; border-radius: 999px; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 0.25rem 0; color: white; }
+    .sub { color: #64748b; font-size: 0.875rem; margin-bottom: 2rem; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+    <span style="font-size: 1.25rem;">⚡</span>
+    <span style="font-weight: 600; color: white;">The Switchboard</span>
+    <span style="color: #64748b; margin-left: auto; font-size: 0.75rem;">Consent verification</span>
+  </div>
+  <h1>Verified consent record</h1>
+  <p class="sub">
+    This page is a public proof-of-consent record for a form submission. It never exposes the submitter&apos;s email, phone, IP, or session replay.
+  </p>
+
+  <div class="card">
+    <div class="label">Certificate ID</div>
+    <div class="mono" style="color: white; font-size: 0.875rem; word-break: break-all;">@c!.CertificateId</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Consent timestamp (UTC)</div>
+    <div style="color: white; font-size: 1rem;">@c.ConsentTimestamp.ToString("yyyy-MM-dd HH:mm:ss")</div>
+    <div style="color: #64748b; font-size: 0.75rem; margin-top: 0.375rem;">Expires @c.ExpiresAt.ToString("yyyy-MM-dd") · 5-year legal shelf life</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Disclosure text shown to the user</div>
+    <div style="color: white; font-size: 1rem; line-height: 1.6; padding: 1rem 1.25rem; background: @(c.DisclosureBackgroundColor ?? "rgba(255,255,255,0.04)"); color: @(c.DisclosureColor ?? "white"); border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.08);">
+      @c.DisclosureText
+    </div>
+    <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; align-items: center; font-size: 0.75rem; color: #64748b;">
+      <span class="chip" style="background: rgba(255,255,255,0.04); color: @contrastColor;">WCAG @contrastBucket</span>
+      @if (c.DisclosureContrastRatio is double r)
+      {
+        <span class="mono">contrast @r.ToString("0.##"):1</span>
+      }
+      @if (c.DisclosureIsVisible)
+      {
+        <span style="color: #10b981;">✓ in viewport at consent</span>
+      }
+      else
+      {
+        <span style="color: #f59e0b;">⚠ not in viewport at consent</span>
+      }
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Click evidence</div>
+    <div class="mono" style="color: white; font-size: 0.875rem;">@(c.ConsentMethod ?? "submit") at (@(c.ClickX ?? 0), @(c.ClickY ?? 0))</div>
+    <div class="mono" style="color: #64748b; font-size: 0.75rem; margin-top: 0.375rem;">@c.ConsentElementSelector</div>
+    <div style="color: #64748b; font-size: 0.75rem; margin-top: 0.375rem;">@(c.TimeOnPageSeconds ?? 0) seconds on page before consent</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Environment</div>
+    <div style="color: white; font-size: 0.875rem;">@(c.BrowserName ?? "?") · @(c.OsName ?? "?") · @(c.ScreenResolution ?? "?") · viewport @(c.ViewportW ?? 0)×@(c.ViewportH ?? 0)</div>
+    <div class="mono" style="color: #64748b; font-size: 0.75rem; margin-top: 0.375rem; word-break: break-all;">@c.UserAgent</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Behavioral signals</div>
+    <div style="color: white; font-size: 0.875rem;">
+      @(c.FormFieldsInteracted ?? 0) fields · @(c.KeystrokesPerMinute ?? 0) keystrokes/min · @(c.MouseDistancePx ?? 0) px mouse · scroll @((c.ScrollDepthPercent ?? 0))%
+    </div>
+    @if (c.IsSuspiciousBot)
+    {
+      <div class="chip" style="background: rgba(245,158,11,0.15); color: #f59e0b; margin-top: 0.5rem;">suspicious · minimal interaction</div>
+    }
+  </div>
+
+  <div style="color: #64748b; font-size: 0.75rem; margin-top: 2rem; text-align: center;">
+    This record is tamper-evident and stored for 5 years. For questions, contact
+    <a href="mailto:privacy@theswitchboardmarketing.com" style="color: #3b82f6;">privacy@theswitchboardmarketing.com</a>.
+  </div>
+</div>
+</body>
+</html>

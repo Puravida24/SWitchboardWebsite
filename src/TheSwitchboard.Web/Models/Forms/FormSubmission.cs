@@ -26,4 +26,8 @@ public class FormSubmission
     public int PhoenixSyncAttempts { get; set; }
     /// <summary>Timestamp of the most recent webhook attempt (used by the retry worker to decide when to retry).</summary>
     public DateTime? LastPhoenixAttemptAt { get; set; }
+
+    // ── T-7B TCPA consent ───────────────────────────────────────────
+    /// <summary>Links to the ConsentCertificate captured at submit time (nullable for pre-T7B submissions).</summary>
+    public long? ConsentCertificateId { get; set; }
 }

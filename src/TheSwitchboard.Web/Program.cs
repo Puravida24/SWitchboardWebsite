@@ -214,7 +214,8 @@ try
     // an unhandled non-2xx shouldn't rewrite the status code (which was masking our
     // 403 origin-check response behind a 404 because /Error/403 doesn't exist).
     app.UseWhen(
-        ctx => !ctx.Request.Path.StartsWithSegments("/api"),
+        ctx => !ctx.Request.Path.StartsWithSegments("/api")
+            && !ctx.Request.Path.StartsWithSegments("/verify"),
         branch => branch.UseStatusCodePagesWithReExecute("/Error/{0}"));
     if (app.Environment.IsDevelopment())
         app.UseHttpsRedirection();

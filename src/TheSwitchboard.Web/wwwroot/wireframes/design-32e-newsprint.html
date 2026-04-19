@@ -592,7 +592,8 @@
         <label for="cf-message">What brings you here?</label>
         <textarea id="cf-message" name="message" data-tb-field="message" placeholder="A sentence or two is plenty."></textarea>
       </div>
-      <p class="form-consent">By submitting, you agree to our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>. We&rsquo;ll use your information to respond to your inquiry and may follow up about our platform. If you provide a phone number, you also consent to receive calls from The Switchboard about your inquiry.</p>
+      <p class="form-consent" data-tb-consent-disclosure>By submitting, you agree to our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>. We&rsquo;ll use your information to respond to your inquiry and may follow up about our platform. If you provide a phone number, you also consent to receive calls from The Switchboard about your inquiry.</p>
+      <input type="hidden" name="ConsentCertificateId" value="" />
       <button type="submit" class="form-submit">Start the Conversation</button>
     </form>
     <!-- Phoenix vignette: plays after submit, before thank-you -->
@@ -671,6 +672,10 @@
     <div class="footer-bottom">
       <span class="footer-copy">&copy; 2026 The Switchboard, LLC · {{PHONE}} · {{ADDRESS}} · All rights reserved</span>
       <span class="footer-stamp">★ Built on Phoenix · Made in America · S/N 000001 ★</span>
+    </div>
+    <!-- T-7B CIPA notice — notice-before-recording defense (Javier v. Assurance IQ precedent) -->
+    <div class="footer-cipa" style="text-align: center; color: var(--ink-mute); font-size: 0.6875rem; padding: 0.5rem 0 0.25rem;">
+      We record sessions to improve this site — see our <a href="privacy.html" style="color: inherit; text-decoration: underline;">Privacy Policy</a>.
     </div>
   </div>
 </footer>
@@ -1481,6 +1486,7 @@ if (document.readyState === 'loading') {
 <script nonce="{{NONCE}}" src="/js/tracker/webvitals.js?v={{BUILDID}}" defer></script>
 <script nonce="{{NONCE}}" src="/js/tracker/errors.js?v={{BUILDID}}" defer></script>
 <script nonce="{{NONCE}}" src="/js/tracker/replay.js?v={{BUILDID}}" defer></script>
+<script nonce="{{NONCE}}" src="/js/tracker/consent-capture.js?v={{BUILDID}}" defer></script>
 <script nonce="{{NONCE}}" src="/js/tracker/tracker.js?v={{BUILDID}}" defer></script>
 
 </body>

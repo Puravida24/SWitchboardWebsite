@@ -107,6 +107,11 @@
     if (self.sw.replay && typeof self.sw.replay.boot === 'function') {
       self.sw.replay.boot();
     }
+
+    // T-7B TCPA consent capture — installs submit interceptor on [data-tb-form-id].
+    if (self.sw.consent && typeof self.sw.consent.boot === 'function') {
+      self.sw.consent.boot();
+    }
   }
 
   // Defer so identity.js + transport.js — loaded with matching `defer` attributes

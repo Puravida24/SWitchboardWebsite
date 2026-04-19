@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using FluentValidation;
 using TheSwitchboard.Web.Models.Forms;
+using Microsoft.EntityFrameworkCore;
 using TheSwitchboard.Web.Services;
 
 namespace TheSwitchboard.Web.Api;
@@ -30,6 +31,7 @@ public static class ContactEndpoints
             ContactFormRequest request,
             IValidator<ContactFormRequest> validator,
             IFormService formService,
+            TheSwitchboard.Web.Data.AppDbContext db,
             HttpContext context) =>
         {
             if (!IsOriginAllowed(context))
@@ -64,6 +66,25 @@ public static class ContactEndpoints
             var ip = context.Connection.RemoteIpAddress?.ToString();
             var ua = context.Request.Headers.UserAgent.FirstOrDefault();
             var submission = await formService.ProcessContactAsync(request, ip, ua, "/");
+
+            // T-7B: link the most recent unlinked consent cert for this session
+            // back to the form submission. Done server-side so the client doesn't
+            // need to await the /consent response before submitting the form.
+            var sid = context.Request.Cookies["sw_sid"];
+            if (!string.IsNullOrWhiteSpace(sid))
+            {
+                var cert = await db.ConsentCertificates
+                    .Where(c => c.SessionId == sid && c.FormSubmissionId == null)
+                    .OrderByDescending(c => c.CreatedAt)
+                    .FirstOrDefaultAsync();
+                if (cert is not null)
+                {
+                    cert.FormSubmissionId = submission.Id;
+                    var sub = await db.FormSubmissions.FindAsync(submission.Id);
+                    if (sub is not null) sub.ConsentCertificateId = cert.Id;
+                    await db.SaveChangesAsync();
+                }
+            }
 
             return Results.Ok(new { success = true, id = submission.Id });
         });
