@@ -128,6 +128,10 @@ try
     builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
     builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IAttributionAnalyticsService,
                                TheSwitchboard.Web.Services.Tracking.AttributionAnalyticsService>();
+    builder.Services.AddSingleton<TheSwitchboard.Web.Services.Tracking.IIpClassificationService,
+                                  TheSwitchboard.Web.Services.Tracking.IpClassificationService>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.ISessionService,
+                               TheSwitchboard.Web.Services.Tracking.SessionService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IImageService, ImageService>();
     builder.Services.AddHttpClient<IPhoenixCrmService, PhoenixCrmService>();

@@ -57,6 +57,10 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     public DbSet<Visitor> Visitors => Set<Visitor>();
     public DbSet<Session> Sessions => Set<Session>();
 
+    // T-3 Signals + bot classification
+    public DbSet<BrowserSignal> BrowserSignals => Set<BrowserSignal>();
+    public DbSet<KnownProxyAsn> KnownProxyAsns => Set<KnownProxyAsn>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -134,6 +138,33 @@ public class AppDbContext : IdentityDbContext<AdminUser>
             e.HasIndex(s => s.StartedAt);
             e.HasIndex(s => s.VisitorId);
             e.HasIndex(s => s.IsBot);
+        });
+
+        modelBuilder.Entity<BrowserSignal>(e =>
+        {
+            // One signal row per sid — endpoint is idempotent.
+            e.HasIndex(b => b.SessionId).IsUnique();
+            e.HasIndex(b => b.CanvasFingerprint);
+        });
+
+        modelBuilder.Entity<KnownProxyAsn>(e =>
+        {
+            e.HasIndex(a => a.Category);
+            // Starter seed — expanded by periodic import in future work.
+            e.HasData(
+                new KnownProxyAsn { Asn = 16509, Name = "Amazon AWS",          Category = "datacenter", UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 14061, Name = "DigitalOcean",        Category = "datacenter", UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 15169, Name = "Google Cloud",        Category = "datacenter", UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 8075,  Name = "Microsoft Azure",     Category = "datacenter", UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 63949, Name = "Linode",              Category = "datacenter", UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 20473, Name = "Vultr",               Category = "datacenter", UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 24940, Name = "Hetzner",             Category = "datacenter", UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 16276, Name = "OVH",                 Category = "datacenter", UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 9009,  Name = "M247 (VPN backbone)", Category = "vpn",        UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 60068, Name = "CDN77 / Datacamp",    Category = "vpn",        UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 212238,Name = "Datacamp (CyberGhost)", Category = "vpn",      UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 202425,Name = "IP Volume (NordVPN)", Category = "vpn",        UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) },
+                new KnownProxyAsn { Asn = 42708, Name = "Portlane (ExpressVPN)", Category = "vpn",      UpdatedAt = new DateTime(2026, 4, 19, 0, 0, 0, DateTimeKind.Utc) });
         });
     }
 }

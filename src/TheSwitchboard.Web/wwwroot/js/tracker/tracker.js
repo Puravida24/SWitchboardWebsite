@@ -65,6 +65,16 @@
     if (self.sw.pageview && typeof self.sw.pageview.record === 'function') {
       self.sw.pageview.record();
     }
+
+    // T-3 browser signals — once per session. Heavy-ish work deferred to idle.
+    if (self.sw.signals && typeof self.sw.signals.record === 'function') {
+      var fire = function () { self.sw.signals.record(); };
+      if (typeof requestIdleCallback === 'function') {
+        requestIdleCallback(fire, { timeout: 2000 });
+      } else {
+        setTimeout(fire, 250);
+      }
+    }
   }
 
   // Defer so identity.js + transport.js — loaded with matching `defer` attributes

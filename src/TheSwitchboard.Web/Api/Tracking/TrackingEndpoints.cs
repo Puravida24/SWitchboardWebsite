@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using TheSwitchboard.Web.Data;
 using TheSwitchboard.Web.Models.Analytics;
+using TheSwitchboard.Web.Models.Tracking;
 using TheSwitchboard.Web.Services.Tracking;
 
 namespace TheSwitchboard.Web.Api.Tracking;
@@ -13,8 +14,9 @@ namespace TheSwitchboard.Web.Api.Tracking;
 ///
 /// T-1:  <c>POST /api/tracking/ping</c>     — heartbeat
 /// T-2:  <c>POST /api/tracking/pageview</c> — enriched pageview with UTM/click-ids/UA/viewport
+/// T-3:  <c>POST /api/tracking/signals</c>  — per-session browser signals (idempotent)
 ///
-/// Subsequent slices add <c>/signals</c>, <c>/clicks</c>, <c>/scroll</c>, <c>/mouse-trail</c>,
+/// Subsequent slices add <c>/clicks</c>, <c>/scroll</c>, <c>/mouse-trail</c>,
 /// <c>/form-events</c>, <c>/vitals</c>, <c>/errors</c>, <c>/consent</c>, <c>/replay/chunk</c>.
 /// </summary>
 public static class TrackingEndpoints
@@ -36,6 +38,13 @@ public static class TrackingEndpoints
     {
         var bytes = Encoding.UTF8.GetBytes(ip + "|" + salt);
         return Convert.ToHexString(SHA256.HashData(bytes));
+    }
+
+    private static bool HonorsPrivacySignal(HttpContext context)
+    {
+        if (context.Request.Headers.TryGetValue("DNT", out var dnt) && dnt.ToString() == "1") return true;
+        if (context.Request.Headers.TryGetValue("Sec-GPC", out var gpc) && gpc.ToString() == "1") return true;
+        return false;
     }
 
     public sealed class PingRequest
@@ -68,16 +77,45 @@ public static class TrackingEndpoints
         public string? ConsentState { get; set; }
     }
 
+    public sealed class SignalsRequest
+    {
+        public string? Vid { get; set; }
+        public string? Sid { get; set; }
+        public string? Timezone { get; set; }
+        public string? Language { get; set; }
+        public int? ColorDepth { get; set; }
+        public int? HardwareConcurrency { get; set; }
+        public int? DeviceMemory { get; set; }
+        public int? TouchPoints { get; set; }
+        public int? ScreenW { get; set; }
+        public int? ScreenH { get; set; }
+        public double? PixelRatio { get; set; }
+        public bool? Cookies { get; set; }
+        public bool? LocalStorage { get; set; }
+        public bool? SessionStorage { get; set; }
+        public bool? IsMetaWebview { get; set; }
+        public bool? IsTikTokWebview { get; set; }
+        public string? CanvasFingerprint { get; set; }
+        public string? WebGLVendor { get; set; }
+        public string? WebGLRenderer { get; set; }
+        public string? Battery { get; set; }
+        public string? Connection { get; set; }
+    }
+
     public static void MapTrackingEndpoints(this WebApplication app)
     {
-        // T-1 heartbeat — returns 204 and logs.
-        app.MapPost("/api/tracking/ping", (
+        // T-1 heartbeat — returns 204 and logs, AND bumps Session.EventCount.
+        app.MapPost("/api/tracking/ping", async (
             PingRequest? request,
             HttpContext context,
+            ISessionService sessions,
+            IConfiguration config,
             ILogger<TrackingPingMarker> logger) =>
         {
             if (!IsOriginAllowed(context))
                 return Results.StatusCode(StatusCodes.Status403Forbidden);
+            if (HonorsPrivacySignal(context))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
 
             var vid = request?.Vid ?? "(anon)";
             var sid = request?.Sid ?? "(anon)";
@@ -86,16 +124,31 @@ public static class TrackingEndpoints
                 "Tracking ping vid={Vid} sid={Sid} path={Path} consent={Consent}",
                 vid, sid, path, request?.ConsentState ?? "none");
 
+            var rawIp = context.Connection.RemoteIpAddress?.ToString();
+            var salt = config["Analytics:IpHashSalt"] ?? "default-salt-change-in-prod";
+            var ipHash = string.IsNullOrEmpty(rawIp) ? null : HashIp(rawIp, salt);
+
+            await sessions.UpsertAsync(new UpsertInput(
+                Vid: request?.Vid, Sid: request?.Sid, Path: request?.Path,
+                UserAgent: context.Request.Headers.UserAgent.FirstOrDefault(),
+                IpAddress: rawIp, Referrer: null,
+                UtmSource: null, UtmMedium: null, UtmCampaign: null, UtmTerm: null, UtmContent: null,
+                Gclid: null, Fbclid: null, Msclkid: null,
+                ViewportW: null, ViewportH: null,
+                ConsentState: request?.ConsentState,
+                EventKind: EventKind.Ping,
+                IpHash: ipHash));
+
             return Results.StatusCode(StatusCodes.Status204NoContent);
         });
 
-        // T-2 enriched pageview. Writes one PageView row, derives LandingFlag from
-        // "is there a prior PV on this sid?", and parses the UA server-side so the
-        // client never sends parsed device/browser/os (preventing spoofed metrics).
+        // T-2 enriched pageview. Writes one PageView row, flips LandingFlag, parses UA.
+        // T-3: also upserts Session + Visitor with bot classification.
         app.MapPost("/api/tracking/pageview", async (
             PageviewRequest? request,
             HttpContext context,
             AppDbContext db,
+            ISessionService sessions,
             IConfiguration config,
             ILogger<TrackingPageviewMarker> logger) =>
         {
@@ -103,12 +156,7 @@ public static class TrackingEndpoints
                 return Results.StatusCode(StatusCodes.Status403Forbidden);
             if (request is null)
                 return Results.StatusCode(StatusCodes.Status204NoContent);
-
-            // DNT/GPC parity with server middleware. Belt-and-suspenders against a
-            // misbehaving tracker.js that somehow fired past the client-side gate.
-            if (context.Request.Headers.TryGetValue("DNT", out var dnt) && dnt.ToString() == "1")
-                return Results.StatusCode(StatusCodes.Status204NoContent);
-            if (context.Request.Headers.TryGetValue("Sec-GPC", out var gpc) && gpc.ToString() == "1")
+            if (HonorsPrivacySignal(context))
                 return Results.StatusCode(StatusCodes.Status204NoContent);
 
             var path = string.IsNullOrWhiteSpace(request.Path) ? "/" : request.Path!;
@@ -122,9 +170,6 @@ public static class TrackingEndpoints
                 landing = !await db.PageViews.AnyAsync(p => p.SessionId == sid);
             }
 
-            // Prefer the client-reported UA (it's the same string the browser sent in
-            // headers, but we accept it from the body so server-less sources like
-            // /api/tracking/pageview manual curl tests can exercise the parser).
             var ua = !string.IsNullOrWhiteSpace(request.UserAgent)
                 ? request.UserAgent
                 : context.Request.Headers.UserAgent.FirstOrDefault();
@@ -166,9 +211,117 @@ public static class TrackingEndpoints
             }
             catch (Exception ex)
             {
-                // Analytics MUST NEVER break the site — log and swallow.
                 logger.LogWarning(ex, "Pageview persist failed for sid={Sid} path={Path}", sid, path);
             }
+
+            await sessions.UpsertAsync(new UpsertInput(
+                Vid: vid, Sid: sid, Path: path,
+                UserAgent: ua, IpAddress: rawIp,
+                Referrer: request.Referrer,
+                UtmSource: request.UtmSource, UtmMedium: request.UtmMedium,
+                UtmCampaign: request.UtmCampaign, UtmTerm: request.UtmTerm, UtmContent: request.UtmContent,
+                Gclid: request.Gclid, Fbclid: request.Fbclid, Msclkid: request.Msclkid,
+                ViewportW: request.ViewportW, ViewportH: request.ViewportH,
+                ConsentState: request.ConsentState,
+                EventKind: EventKind.Pageview,
+                IpHash: ipHash));
+
+            return Results.StatusCode(StatusCodes.Status204NoContent);
+        });
+
+        // T-3 signals — once per session. Idempotent: second post for the same sid
+        // updates the existing row rather than inserting (unique index on SessionId).
+        app.MapPost("/api/tracking/signals", async (
+            SignalsRequest? request,
+            HttpContext context,
+            AppDbContext db,
+            ISessionService sessions,
+            IConfiguration config,
+            ILogger<TrackingSignalsMarker> logger) =>
+        {
+            if (!IsOriginAllowed(context))
+                return Results.StatusCode(StatusCodes.Status403Forbidden);
+            if (request is null || string.IsNullOrWhiteSpace(request.Sid))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+            if (HonorsPrivacySignal(context))
+                return Results.StatusCode(StatusCodes.Status204NoContent);
+
+            var sid = request.Sid!;
+            var rawIp = context.Connection.RemoteIpAddress?.ToString();
+            var salt = config["Analytics:IpHashSalt"] ?? "default-salt-change-in-prod";
+            var ipHash = string.IsNullOrEmpty(rawIp) ? null : HashIp(rawIp, salt);
+
+            try
+            {
+                var existing = await db.BrowserSignals.FirstOrDefaultAsync(b => b.SessionId == sid);
+                if (existing is null)
+                {
+                    db.BrowserSignals.Add(new BrowserSignal
+                    {
+                        SessionId = sid,
+                        Timezone = request.Timezone,
+                        Language = request.Language,
+                        ColorDepth = request.ColorDepth,
+                        HardwareConcurrency = request.HardwareConcurrency,
+                        DeviceMemory = request.DeviceMemory,
+                        TouchPoints = request.TouchPoints,
+                        ScreenW = request.ScreenW,
+                        ScreenH = request.ScreenH,
+                        PixelRatio = request.PixelRatio,
+                        Cookies = request.Cookies,
+                        LocalStorage = request.LocalStorage,
+                        SessionStorage = request.SessionStorage,
+                        IsMetaWebview = request.IsMetaWebview,
+                        IsTikTokWebview = request.IsTikTokWebview,
+                        CanvasFingerprint = request.CanvasFingerprint,
+                        WebGLVendor = request.WebGLVendor,
+                        WebGLRenderer = request.WebGLRenderer,
+                        Battery = request.Battery,
+                        Connection = request.Connection,
+                        CapturedAt = DateTime.UtcNow
+                    });
+                }
+                else
+                {
+                    // Idempotent merge — fill nulls, don't churn already-captured values.
+                    existing.Timezone            ??= request.Timezone;
+                    existing.Language            ??= request.Language;
+                    existing.ColorDepth          ??= request.ColorDepth;
+                    existing.HardwareConcurrency ??= request.HardwareConcurrency;
+                    existing.DeviceMemory        ??= request.DeviceMemory;
+                    existing.TouchPoints         ??= request.TouchPoints;
+                    existing.ScreenW             ??= request.ScreenW;
+                    existing.ScreenH             ??= request.ScreenH;
+                    existing.PixelRatio          ??= request.PixelRatio;
+                    existing.Cookies             ??= request.Cookies;
+                    existing.LocalStorage        ??= request.LocalStorage;
+                    existing.SessionStorage      ??= request.SessionStorage;
+                    existing.IsMetaWebview       ??= request.IsMetaWebview;
+                    existing.IsTikTokWebview     ??= request.IsTikTokWebview;
+                    existing.CanvasFingerprint   ??= request.CanvasFingerprint;
+                    existing.WebGLVendor         ??= request.WebGLVendor;
+                    existing.WebGLRenderer       ??= request.WebGLRenderer;
+                    existing.Battery             ??= request.Battery;
+                    existing.Connection          ??= request.Connection;
+                }
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Signals persist failed for sid={Sid}", sid);
+            }
+
+            // Also bump the session's event count so Health shows signals traffic.
+            await sessions.UpsertAsync(new UpsertInput(
+                Vid: request.Vid, Sid: request.Sid, Path: null,
+                UserAgent: context.Request.Headers.UserAgent.FirstOrDefault(),
+                IpAddress: rawIp, Referrer: null,
+                UtmSource: null, UtmMedium: null, UtmCampaign: null, UtmTerm: null, UtmContent: null,
+                Gclid: null, Fbclid: null, Msclkid: null,
+                ViewportW: null, ViewportH: null,
+                ConsentState: null,
+                EventKind: EventKind.Signals,
+                IpHash: ipHash));
 
             return Results.StatusCode(StatusCodes.Status204NoContent);
         });
@@ -178,4 +331,6 @@ public static class TrackingEndpoints
     public sealed class TrackingPingMarker { }
     /// <summary>ILogger category marker for pageview.</summary>
     public sealed class TrackingPageviewMarker { }
+    /// <summary>ILogger category marker for signals.</summary>
+    public sealed class TrackingSignalsMarker { }
 }
