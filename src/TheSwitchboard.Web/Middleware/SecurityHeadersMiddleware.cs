@@ -47,7 +47,10 @@ public class SecurityHeadersMiddleware
             "style-src 'self' 'unsafe-inline'; " +
             "img-src 'self' data: https:; " +
             "font-src 'self'; " +
-            "connect-src 'self'; " +
+            // T-8: add wss: so the admin real-time dashboard SignalR socket
+            // can upgrade. Public pages don't open WS — restriction still
+            // tight thanks to 'self'.
+            "connect-src 'self' wss: ws:; " +
             // T-7: worker-src for CompressionStream + rrweb in some browsers.
             "worker-src 'self' blob:; " +
             // T-7: frame-ancestors 'self' (relaxed from 'none') so admin heatmap

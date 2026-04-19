@@ -140,6 +140,13 @@ try
                                TheSwitchboard.Web.Services.Tracking.ErrorImpactService>();
     builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IComplianceAnalyticsService,
                                TheSwitchboard.Web.Services.Tracking.ComplianceAnalyticsService>();
+
+    // T-8 Real-time dashboard.
+    builder.Services.AddSignalR();
+    builder.Services.AddSingleton<TheSwitchboard.Web.Services.Tracking.IRealtimeMetrics,
+                                  TheSwitchboard.Web.Services.Tracking.RealtimeMetrics>();
+    builder.Services.AddScoped<TheSwitchboard.Web.Services.Tracking.IRealtimeBroadcaster,
+                               TheSwitchboard.Web.Services.Tracking.RealtimeBroadcaster>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IImageService, ImageService>();
     builder.Services.AddHttpClient<IPhoenixCrmService, PhoenixCrmService>();
@@ -259,6 +266,7 @@ try
     app.MapSeoEndpoints();
     TheSwitchboard.Web.Api.Tracking.TrackingEndpoints.MapTrackingEndpoints(app);
     TheSwitchboard.Web.Api.ConsentMatchEndpoints.MapConsentMatchEndpoints(app);
+    app.MapHub<TheSwitchboard.Web.Hubs.RealtimeHub>("/hubs/realtime");
 
     // Auto-migrate and seed
     try

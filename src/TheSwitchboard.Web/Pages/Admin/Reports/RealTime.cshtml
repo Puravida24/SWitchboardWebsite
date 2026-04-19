@@ -1,0 +1,52 @@
+@page
+@model TheSwitchboard.Web.Pages.Admin.Reports.RealTimeModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Real-time";
+    var nonce = TheSwitchboard.Web.Middleware.CspNonceMiddleware.GetNonce(HttpContext);
+}
+
+<div style="max-width: 1400px;">
+  <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.25rem;">
+    <h1 style="font-size: 1.5rem; font-weight: 700; color: white; margin: 0;">Real-time</h1>
+    <span style="display: inline-flex; align-items: center; gap: 0.375rem; font-size: 0.75rem; color: var(--slate-500);">
+      <span id="sw-rt-ping" style="display: inline-block; width: 8px; height: 8px; border-radius: 999px; background: #10b981; opacity: 0.2; transition: opacity 0.2s;"></span>
+      <span id="sw-rt-status">connecting…</span>
+    </span>
+  </div>
+  <p style="color: var(--slate-500); margin-bottom: 2rem;">
+    Every tracker event from the site streams in live via SignalR. Tape holds the last 100 events and pulses as they arrive.
+  </p>
+
+  <div style="display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem;">
+    <!-- Live counter panel -->
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 2rem 1.5rem; text-align: center; align-self: start;">
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--slate-500); margin-bottom: 0.75rem;">Active visitors</div>
+      <div id="sw-rt-visitor-count" style="font-size: 3.5rem; font-weight: 700; color: white; line-height: 1;">@Model.InitialVisitorCount</div>
+      <div style="font-size: 0.75rem; color: var(--slate-600); margin-top: 0.75rem;">on-site in last 2 min</div>
+      <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.05); margin: 1.5rem 0;">
+      <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Legend</div>
+      <div style="font-size: 0.7rem; color: var(--slate-500); text-align: left; line-height: 1.7;">
+        <div><span style="color: #3b82f6;">●</span> pageview</div>
+        <div><span style="color: #10b981;">●</span> form submit / convert</div>
+        <div><span style="color: #64748b;">●</span> ping / signals</div>
+        <div><span style="color: #f59e0b;">●</span> bot flagged</div>
+      </div>
+    </div>
+
+    <!-- Event tape -->
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden;">
+      <div style="padding: 0.875rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.1em;">
+        Event tape · newest first
+      </div>
+      <div id="sw-rt-tape" style="max-height: 640px; overflow-y: auto;">
+        <div style="padding: 2rem; color: var(--slate-500); font-size: 0.875rem; text-align: center;">
+          Waiting for events. Visit <code style="color: var(--slate-300);">/</code> in another tab to see events stream in here.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script nonce="@nonce" src="/js/vendor/signalr.min.js"></script>
+<script nonce="@nonce" src="/js/admin/realtime.js" defer></script>

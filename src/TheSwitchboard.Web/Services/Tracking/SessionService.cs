@@ -46,11 +46,19 @@ public class SessionService : ISessionService
 {
     private readonly AppDbContext _db;
     private readonly IIpClassificationService _ipClassifier;
+    private readonly IRealtimeMetrics _metrics;
+    private readonly IRealtimeBroadcaster _broadcaster;
 
-    public SessionService(AppDbContext db, IIpClassificationService ipClassifier)
+    public SessionService(
+        AppDbContext db,
+        IIpClassificationService ipClassifier,
+        IRealtimeMetrics metrics,
+        IRealtimeBroadcaster broadcaster)
     {
         _db = db;
         _ipClassifier = ipClassifier;
+        _metrics = metrics;
+        _broadcaster = broadcaster;
     }
 
     public async Task UpsertAsync(UpsertInput input)
@@ -165,5 +173,18 @@ public class SessionService : ISessionService
                 await _db.SaveChangesAsync();
             }
         }
+
+        // T-8: touch the live-visitor counter + fire a realtime broadcast.
+        if (!string.IsNullOrWhiteSpace(vid)) _metrics.TouchVisitor(vid!, now);
+        await _broadcaster.BroadcastActivityAsync(new ActivityEvent(
+            Kind: input.EventKind.ToString().ToLowerInvariant(),
+            Path: input.Path,
+            VisitorId: vid,
+            SessionId: sid,
+            DeviceType: session.DeviceType,
+            Browser: session.Browser,
+            UtmSource: session.UtmSource,
+            IsBot: session.IsBot,
+            Ts: now));
     }
 }
