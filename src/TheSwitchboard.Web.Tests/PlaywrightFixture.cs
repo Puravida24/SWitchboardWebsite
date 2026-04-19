@@ -22,6 +22,14 @@ public sealed class PlaywrightFixture : IAsyncLifetime
 
     public string BaseUrl { get; private set; } = string.Empty;
 
+    // Shared admin credentials for any Playwright test that needs to log in.
+    // These flow into the child process as ASP.NET config via the `Admin__*`
+    // env vars (double-underscore = section separator), so AdminSeedService
+    // creates the user at boot. Same shape as SwitchboardWebApplicationFactory
+    // uses for the non-browser integration tests.
+    public const string AdminEmail    = "admin@playwright.local";
+    public const string AdminPassword = "PlaywrightAdmin2026!";
+
     public async Task InitializeAsync()
     {
         EnsureChromiumInstalled();
@@ -40,6 +48,8 @@ public sealed class PlaywrightFixture : IAsyncLifetime
         };
         psi.EnvironmentVariables["ASPNETCORE_ENVIRONMENT"] = "Testing";
         psi.EnvironmentVariables["DOTNET_ROLL_FORWARD"] = "LatestMajor";
+        psi.EnvironmentVariables["Admin__Email"]    = AdminEmail;
+        psi.EnvironmentVariables["Admin__Password"] = AdminPassword;
         psi.EnvironmentVariables.Remove("PORT");
         psi.EnvironmentVariables.Remove("DATABASE_URL");
         psi.EnvironmentVariables.Remove("DATABASE_PRIVATE_URL");

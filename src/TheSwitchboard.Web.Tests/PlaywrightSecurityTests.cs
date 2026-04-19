@@ -1,0 +1,154 @@
+using System.Text.RegularExpressions;
+using Microsoft.Playwright;
+
+namespace TheSwitchboard.Web.Tests;
+
+/// <summary>
+/// A2 — real headless-Chromium verification of H-5 (CSP nonce), H-6/T-7 (frame
+/// embedding), and the admin login flow + auth cookie flags.
+///
+/// Unit/integration tests already assert header strings, but browser-driven tests
+/// are what catch the subtle real-world failures: a nonce that's in the header
+/// but missing on an inline script, a redirect loop that only triggers after
+/// JS runs, a SameSite cookie silently stripped by the browser because another
+/// attribute was malformed, etc.
+/// </summary>
+[Trait("Category", "Playwright")]
+[Collection("Playwright")]
+public class PlaywrightSecurityTests
+{
+    private readonly PlaywrightFixture _fx;
+    public PlaywrightSecurityTests(PlaywrightFixture fx) { _fx = fx; }
+
+    // ------------------------------------------------------------------
+    // A2-01  Every inline <script> carries a nonce that matches the
+    //        nonce advertised on the response's Content-Security-Policy
+    //        header. If one gets emitted without a nonce, Chromium will
+    //        silently refuse to execute it — this test proves parity.
+    // ------------------------------------------------------------------
+    [Fact]
+    public async Task A2_01_InlineScripts_AllCarryNonce_MatchingCspHeader()
+    {
+        var page = await _fx.NewPageAsync();
+        try
+        {
+            var response = await page.GotoAsync(_fx.BaseUrl + "/", new() { WaitUntil = WaitUntilState.DOMContentLoaded });
+            Assert.NotNull(response);
+            Assert.True(response!.Ok, $"Homepage responded {response.Status}");
+
+            var csp = (await response.AllHeadersAsync())["content-security-policy"];
+            var nonceMatch = Regex.Match(csp, @"'nonce-([A-Za-z0-9+/=_\-]+)'");
+            Assert.True(nonceMatch.Success, "CSP header did not contain a 'nonce-...' token.");
+            var headerNonce = nonceMatch.Groups[1].Value;
+
+            // Every <script> without a src="" attribute is inline — must carry the nonce.
+            //
+            // Chromium's "nonce hiding" spec clears `getAttribute('nonce')` post-parse
+            // so a compromised page can't exfiltrate other scripts' nonces; the live
+            // value stays on the IDL property `el.nonce`. Read that instead.
+            var inlineNonces = await page.EvalOnSelectorAllAsync<string[]>(
+                "script:not([src])",
+                "els => els.map(e => e.nonce || e.getAttribute('nonce') || '')");
+
+            Assert.NotEmpty(inlineNonces);
+            foreach (var n in inlineNonces)
+            {
+                Assert.Equal(headerNonce, n);
+            }
+        }
+        finally { await page.CloseAsync(); }
+    }
+
+    // ------------------------------------------------------------------
+    // A2-02  frame-ancestors 'self' + X-Frame-Options: SAMEORIGIN must
+    //        prevent external sites from iframing us. Using a data: URL
+    //        as the parent gives us a null-origin parent that is clearly
+    //        not our origin — real browsers block the frame.
+    // ------------------------------------------------------------------
+    [Fact]
+    public async Task A2_02_FrameAncestors_BlocksCrossOriginEmbedding()
+    {
+        var page = await _fx.NewPageAsync();
+        try
+        {
+            // Header assertion — cheap guardrail first.
+            var direct = await page.GotoAsync(_fx.BaseUrl + "/", new() { WaitUntil = WaitUntilState.DOMContentLoaded });
+            Assert.NotNull(direct);
+            var h = await direct!.AllHeadersAsync();
+            Assert.Contains("frame-ancestors 'self'", h["content-security-policy"]);
+            Assert.Equal("SAMEORIGIN", h["x-frame-options"]);
+
+            // Behavioral assertion — load a null-origin parent that tries to frame us;
+            // the parent must see zero navigated frames (browser refused embedding).
+            var embedHtml = $"<!doctype html><title>probe</title><iframe id='f' src='{_fx.BaseUrl}/'></iframe>";
+            var dataUrl = "data:text/html;charset=utf-8," + Uri.EscapeDataString(embedHtml);
+            await page.GotoAsync(dataUrl, new() { WaitUntil = WaitUntilState.Load });
+
+            // Give the (refused) navigation a beat to resolve.
+            await page.WaitForTimeoutAsync(500);
+
+            // When the browser blocks the frame, the iframe document exists but its
+            // location stays at "about:blank" (or is inaccessible). Either way, the
+            // frame never reaches our <title>Switchboard</title>.
+            var frameTitle = await page.EvaluateAsync<string?>(
+                "() => { try { return document.getElementById('f').contentDocument?.title ?? null; } catch { return null; } }");
+
+            Assert.True(
+                string.IsNullOrEmpty(frameTitle) || !frameTitle!.Contains("Switchboard", StringComparison.OrdinalIgnoreCase),
+                $"Homepage was embedded cross-origin (title='{frameTitle}'). frame-ancestors / X-Frame-Options not enforced.");
+        }
+        finally { await page.CloseAsync(); }
+    }
+
+    // ------------------------------------------------------------------
+    // A2-03  End-to-end admin login via the real login page: fill form,
+    //        submit, land on /Admin/Dashboard (not bounced back to login).
+    // ------------------------------------------------------------------
+    [Fact]
+    public async Task A2_03_AdminLogin_HappyPath_RedirectsToDashboard()
+    {
+        var page = await _fx.NewPageAsync();
+        try
+        {
+            await page.GotoAsync(_fx.BaseUrl + "/Admin/Login", new() { WaitUntil = WaitUntilState.DOMContentLoaded });
+            await page.FillAsync("input[name='Email']",    PlaywrightFixture.AdminEmail);
+            await page.FillAsync("input[name='Password']", PlaywrightFixture.AdminPassword);
+            await page.ClickAsync("button[type='submit']");
+            await page.WaitForURLAsync("**/Admin/Dashboard**", new() { Timeout = 10_000 });
+
+            Assert.EndsWith("/Admin/Dashboard", new Uri(page.Url).AbsolutePath, StringComparison.OrdinalIgnoreCase);
+        }
+        finally { await page.CloseAsync(); }
+    }
+
+    // ------------------------------------------------------------------
+    // A2-04  The Identity auth cookie set during login must be HttpOnly
+    //        (no JS theft) and SameSite=Strict/Lax (no CSRF cookie leak
+    //        on cross-site POSTs). If either flag is missing, Chromium
+    //        will still send the cookie, but our threat model is broken.
+    // ------------------------------------------------------------------
+    [Fact]
+    public async Task A2_04_AuthCookie_IsHttpOnly_AndSameSiteStrictOrLax()
+    {
+        var page = await _fx.NewPageAsync();
+        try
+        {
+            await page.GotoAsync(_fx.BaseUrl + "/Admin/Login", new() { WaitUntil = WaitUntilState.DOMContentLoaded });
+            await page.FillAsync("input[name='Email']",    PlaywrightFixture.AdminEmail);
+            await page.FillAsync("input[name='Password']", PlaywrightFixture.AdminPassword);
+            await page.ClickAsync("button[type='submit']");
+            await page.WaitForURLAsync("**/Admin/Dashboard**", new() { Timeout = 10_000 });
+
+            // Don't filter by URL — Playwright's URL filter is stricter than expected
+            // on loopback addresses. Enumerate all cookies and pick the Identity one.
+            var cookies = await page.Context.CookiesAsync();
+            var auth = cookies.FirstOrDefault(c => c.Name.StartsWith(".AspNetCore.Identity", StringComparison.Ordinal));
+            Assert.NotNull(auth);
+            Assert.True(auth!.HttpOnly, "Identity cookie is NOT HttpOnly — XSS can read it.");
+            Assert.True(
+                auth.SameSite == SameSiteAttribute.Strict || auth.SameSite == SameSiteAttribute.Lax,
+                $"Identity cookie SameSite is '{auth.SameSite}' — expected Strict or Lax.");
+        }
+        finally { await page.CloseAsync(); }
+    }
+}

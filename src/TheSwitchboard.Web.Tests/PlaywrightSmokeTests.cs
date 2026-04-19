@@ -12,7 +12,8 @@ namespace TheSwitchboard.Web.Tests;
 /// HttpClient fetch) is not a real browser test and won't catch JS/CSS bugs.
 /// </summary>
 [Trait("Category", "Playwright")]
-public class PlaywrightSmokeTests : IClassFixture<PlaywrightFixture>
+[Collection("Playwright")]
+public class PlaywrightSmokeTests
 {
     private readonly PlaywrightFixture _fx;
     public PlaywrightSmokeTests(PlaywrightFixture fx) { _fx = fx; }
