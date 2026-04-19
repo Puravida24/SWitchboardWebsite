@@ -79,6 +79,28 @@ public class SeoTests : IClassFixture<SwitchboardWebApplicationFactory>
         Assert.Contains("\"short_name\"", body);
     }
 
+    // ── H9g_01 ─────────────────────────────────────────────────────────
+    [Fact]
+    public async Task H9g_01_PublicPages_Use_NewOgImage()
+    {
+        foreach (var p in new[] { "/", "/privacy", "/terms", "/accessibility" })
+        {
+            var html = await _client.GetStringAsync(p);
+            Assert.Contains("/wireframes/assets/og/og-default.png", html);
+        }
+    }
+
+    // ── H9g_02 ─────────────────────────────────────────────────────────
+    [Fact]
+    public async Task H9g_02_OgImage_IsServed()
+    {
+        var res = await _client.GetAsync("/wireframes/assets/og/og-default.png");
+        res.EnsureSuccessStatusCode();
+        Assert.Equal("image/png", res.Content.Headers.ContentType?.MediaType);
+        var len = res.Content.Headers.ContentLength ?? 0;
+        Assert.InRange(len, 10_000, 200_000);
+    }
+
     // ── H9b_01 ─────────────────────────────────────────────────────────
     [Fact]
     public async Task H9b_01_Homepage_Has_Hreflang()
