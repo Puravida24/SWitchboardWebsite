@@ -16,9 +16,17 @@
     <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">
       <div style="font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate-500); margin-bottom: 0.5rem;">Last rollup</div>
       <div style="font-size: 0.875rem; color: white;">@(Model.LastRollupAt?.ToString("yyyy-MM-dd HH:mm UTC") ?? "never (runs 02:00 UTC)")</div>
-      <form method="post" asp-page-handler="RollupNow" style="margin-top: 0.75rem;">
+      <form method="post" asp-page-handler="RollupNow" style="margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
         @Html.AntiForgeryToken()
         <button type="submit" style="padding: 0.375rem 0.875rem; border-radius: 0.25rem; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); color: white; font-size: 0.75rem; cursor: pointer;">Run rollup now (yesterday)</button>
+      </form>
+      <form method="post" asp-page-handler="Backfill30d" style="margin-top: 0.5rem;">
+        @Html.AntiForgeryToken()
+        <button type="submit" style="padding: 0.375rem 0.875rem; border-radius: 0.25rem; background: rgba(251,146,60,0.12); border: 1px solid rgba(251,146,60,0.4); color: #fdba74; font-size: 0.75rem; cursor: pointer;"
+          title="Replay every daily rollup for the last 30 days. Use when a gap appears on the admin dashboards.">
+          Backfill 30 days
+          <span class="tb-help" tabindex="0" data-tip="Replays EventRollupDaily for each of the last 30 days (not including today). Safe to run repeatedly — each day is upserted. Takes a few seconds at current traffic; longer if raw tables are large. Use when a gap appears on Overview / Trends dashboards because the nightly rollup missed a night.">?</span>
+        </button>
       </form>
     </div>
     <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1.25rem;">

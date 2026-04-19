@@ -55,6 +55,16 @@ public class ExportsModel : PageModel
         return RedirectToPage();
     }
 
+    // H-4b — manually replay the last 30 days of daily rollups. Useful when
+    // the nightly 02:00 UTC RollupService has missed days (container restart,
+    // pg outage) and the admin dashboards show a gap.
+    public async Task<IActionResult> OnPostBackfill30dAsync()
+    {
+        var today = DateTime.UtcNow.Date;
+        await _rollup.RollupRangeAsync(today.AddDays(-30), today.AddDays(-1));
+        return RedirectToPage();
+    }
+
     public async Task<IActionResult> OnPostRetentionNowAsync()
     {
         await _retention.RunAsync();
