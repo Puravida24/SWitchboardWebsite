@@ -102,4 +102,26 @@ public class CopyContractTests
         Assert.Contains("The speed most carriers can't buy", home);
         Assert.Contains("Sub-five milliseconds", home);
     }
+
+    [Fact]
+    public void H1_G_MetaDescription_NoDoubleWritten_UsesOperatorsLine()
+    {
+        // Old meta/social-preview copy read "Written by people who have written policies..."
+        // which double-dips on "Written" in the Slack/X unfurl. New line is the approved option:
+        // "The intelligence layer for insurance distribution — built by operators, not engineers in a lab."
+        //
+        // Scope this assertion to the three description meta tags only — the ASCII-art header
+        // keeps the "Written by people who have written policies" keeper phrase on purpose.
+        var home = Read("wireframes/design-32e-newsprint.html");
+        var metaTags = Regex.Matches(
+            home,
+            @"<meta\s+(?:name|property)=""(?:description|og:description|twitter:description)""[^>]*>",
+            RegexOptions.IgnoreCase);
+        Assert.Equal(3, metaTags.Count);
+        foreach (Match tag in metaTags)
+        {
+            Assert.DoesNotContain("Written by people who have written", tag.Value);
+            Assert.Contains("built by operators, not engineers in a lab", tag.Value);
+        }
+    }
 }
