@@ -80,6 +80,44 @@ public class InsightsAlertsTests : IClassFixture<SwitchboardWebApplicationFactor
         Assert.True(await db.AlertLogs.AnyAsync(l => l.RuleId == rule.Id));
     }
 
+    // ── T12_09 SessionService.UpsertAsync survives concurrent same-sid/vid ──
+    // PlaywrightSecurityTests.A2_03 flaked intermittently with an InMemory
+    // "An item with the same key has already been added" error at the Session
+    // + Visitor upsert path. Two near-simultaneous requests both ran the
+    // "query → null → Add" branch, then both called SaveChanges. The original
+    // retry block replayed only the Session bump, leaving the Visitor add to
+    // re-throw. Regression test: fire two parallel UpsertAsync calls against
+    // separate scopes with identical sid/vid; assert neither throws and the
+    // row exists exactly once.
+    [Fact]
+    public async Task T12_09_Session_Upsert_ConcurrentCallsSameSidVid_NoException()
+    {
+        var sid = "s_race_" + Guid.NewGuid().ToString("N")[..8];
+        var vid = "v_race_" + Guid.NewGuid().ToString("N")[..8];
+        var input = new TheSwitchboard.Web.Services.Tracking.UpsertInput(
+            Vid: vid, Sid: sid, Path: "/", UserAgent: "test", IpAddress: null,
+            Referrer: null, UtmSource: null, UtmMedium: null, UtmCampaign: null,
+            UtmTerm: null, UtmContent: null, Gclid: null, Fbclid: null, Msclkid: null,
+            ViewportW: null, ViewportH: null, ConsentState: null,
+            EventKind: TheSwitchboard.Web.Services.Tracking.EventKind.Pageview, IpHash: null);
+
+        using var s1 = _factory.Services.CreateScope();
+        using var s2 = _factory.Services.CreateScope();
+        var svc1 = s1.ServiceProvider.GetRequiredService<TheSwitchboard.Web.Services.Tracking.ISessionService>();
+        var svc2 = s2.ServiceProvider.GetRequiredService<TheSwitchboard.Web.Services.Tracking.ISessionService>();
+
+        // Parallel calls — whichever saves first wins the INSERT; the other must
+        // catch the DbUpdateException and retry through the reload-both-and-bump
+        // path. Neither call should propagate an exception.
+        var ex = await Record.ExceptionAsync(() => Task.WhenAll(svc1.UpsertAsync(input), svc2.UpsertAsync(input)));
+        Assert.Null(ex);
+
+        using var verify = _factory.Services.CreateScope();
+        var db = verify.ServiceProvider.GetRequiredService<AppDbContext>();
+        Assert.Equal(1, await db.Sessions.CountAsync(x => x.Id == sid));
+        Assert.Equal(1, await db.Visitors.CountAsync(x => x.Id == vid));
+    }
+
     // ── T12_07 Bot-rate alert must NOT fire on tiny sample ─────────────
     // A single bot session in a quiet hour produced a 100% bot rate which
     // tripped the 5% threshold and spammed CRITICAL alerts. The rule must

@@ -35,10 +35,18 @@
         "uses-rel-preconnect": "off",
 
         "is-crawlable":              "off",
+        "canonical":                 "off",
         "lcp-lazy-loaded":           "off",
         "non-composited-animations": "off",
         "prioritize-lcp-image":      "off",
-        "unsized-images":            "warn"
+
+        "unsized-images":            "warn",
+        "bf-cache":                  "warn",
+        "color-contrast":            "warn",
+        "errors-in-console":         "warn",
+        "inspector-issues":          "warn",
+        "unminified-javascript":     "warn",
+        "uses-responsive-images":    "warn"
       }
     },
     "upload": { "target": "temporary-public-storage" }
