@@ -41,12 +41,13 @@
         "prioritize-lcp-image":      "off",
 
         "unsized-images":            "warn",
-        "bf-cache":                  "warn",
-        "color-contrast":            "warn",
-        "errors-in-console":         "warn",
-        "inspector-issues":          "warn",
+        "uses-responsive-images":    "warn",
         "unminified-javascript":     "warn",
-        "uses-responsive-images":    "warn"
+
+        "bf-cache":                  "error",
+        "color-contrast":            "error",
+        "errors-in-console":         "error",
+        "inspector-issues":          "error"
       }
     },
     "upload": { "target": "temporary-public-storage" }

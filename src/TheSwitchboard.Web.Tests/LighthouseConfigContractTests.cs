@@ -78,12 +78,13 @@ public class LighthouseConfigContractTests
 
         bool ok = val.ValueKind switch
         {
-            JsonValueKind.String when val.GetString() is "off" or "warn" => true,
+            JsonValueKind.String when val.GetString() is "off" or "warn" or "error" => true,
             JsonValueKind.Array when val.GetArrayLength() >= 1 &&
                                     val[0].GetString() is "off" or "warn" or "error" => true,
             _ => false
         };
         Assert.True(ok,
-            $"Override for '{auditId}' must be \"off\" / \"warn\" (string) or a [level, options] array.");
+            $"Override for '{auditId}' must be \"off\" / \"warn\" / \"error\" (string) or a [level, options] array. " +
+            "\"error\" is appropriate once the root cause is fixed — regression flips CI red.");
     }
 }
