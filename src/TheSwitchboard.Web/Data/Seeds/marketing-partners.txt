@@ -6,7 +6,6 @@
 21st Century
 21st Century Insurance
 2insure4less
-2nd State Insurance Agency
 2nd State Insurance Agency, Inc.
 316 Insurance Group
 3in1 Insurance Company, LLC
@@ -100,7 +99,6 @@ Acceptance Insurance Agency of Tennessee, Inc
 Access Capital Funding, LLC
 Access Capital Group, LLC
 Access Health Benefits Group
-Access Insurance
 Access Insurance Group
 Acclaimed Home Warranty
 AccordantMedia
@@ -187,7 +185,6 @@ Adrian Valdez State Farm
 Adriana Mora State Farm
 Adriane Kaufman Liberty Mutual
 Adriennikki Henley Independent
-Advance Client Solutions
 Advance Client Solutions LLC
 Advance Planning Services, LLC
 Advanced Vehicle Protection Center
@@ -448,8 +445,6 @@ Alpha One Agency
 Alpha Surance
 Alphatech Resource Holdings s.r.o.
 Alpine
-Alpine Digital
-Alpine Digital Group
 Alpine Digital Group Inc.
 Alset Insurance Services
 Alsop & Associates
@@ -513,7 +508,6 @@ America's Health Care Plan
 America's Health Center
 America's Ins. Consultants
 America's Insurance
-America's Trust
 America's Trust Inc.
 American
 American Access Casualty
@@ -521,7 +515,6 @@ American Alliance
 American Auto Care
 American Auto Club
 American Automobile Insurance
-American Automotive Alliance
 American Automotive Alliance, LLC
 American Banks
 American Benefit, LLC
@@ -550,9 +543,7 @@ American Health & Life Associates
 American Health Advisors
 American Health Life
 American Health Marketplace
-American Health Plans
 American Health Plans, LLC
-American Health Reform Solutions
 American Health Reform Solutions LLC
 American Health Reform Solutions LLC dba American Health Marketplace
 American Health Solutions
@@ -566,12 +557,10 @@ American Independent Companies
 American Independent Marketing, LLC
 American Insurance
 American Insurance Agencies
-American Insurance Agencies Direct
 American Insurance Agencies Direct Inc.
 American Insurance Agency
 American Insurance Brokers
 American Insurance Marketing Group, LLC
-American Insurance Organization
 American Insurance Organization LLC
 American Insurance Solutions
 American International
@@ -586,7 +575,6 @@ American Mayflower Insurance
 American Medical Securities
 American Motorists Insurance
 American National
-American National Insurance
 American National Insurance Co
 American National Life Insurance
 American National Property and Casualty
@@ -605,7 +593,6 @@ American Security Insurance Company
 American Select
 American Select Health
 American Select Partners LLC
-American Senior Benefits
 American Senior Benefits, LLC
 American Senior Choices, LLC
 American Service Insurance Agency
@@ -619,7 +606,6 @@ American Way Health
 American Workers Insurance Services
 Americans Choice Health
 Americans Health Brokers
-Americare
 Americare Group
 Americare/American Enterprise
 Americas Health Brokers
@@ -633,13 +619,11 @@ Americo Life, inc
 AmeriCredit Financial Services, Inc. dba GM Financial
 Amerigroup
 AmeriHealth
-Amerilife
 AmeriLife Group, LLC.
 Amerilife Marketing Group, LLC.
 AmeriPlan
 Ameriprise
 Ameriprise Financial Group
-Ameriprise Financial Inc.
 Ameriquote
 Amerisure
 amhealthsolutions
@@ -814,7 +798,6 @@ Angela Kulzer Farmers
 ANGELA LAMB INS AGENCY INC Farmers
 Angela Satre Farmers
 Angela Stubbs Farmers
-Angelic Marketing Group
 Angelic Marketing Group, LLC
 Angelica Barraza-Penuelas State Farm
 Angelica Campos State Farm
@@ -865,7 +848,6 @@ Annette Booth Allstate
 Annette Booth Insurance Agency
 Annette Snowden State Farm
 Annexus America, LLC
-Annexus Company, LLC
 Annexus Distributors AZ, LLC
 Annexus Distributors Global, LLC
 Annexus Enterprises, LLC
@@ -929,12 +911,10 @@ Antonio Mendoza State Farm
 Antonio Pineda Farmers
 Antonio Ponce de Leon Farmers
 AOG Group, Inc
-AON
 Aon Corp.
 AP AGENCY Farmers
 AP Hawkins Insurance Inc
 AP Insurance Advisors LLC
-AP of South Florida
 AP of South Florida, LLC
 Apex Health Advisor
 Apex Health Options LLC
@@ -945,22 +925,17 @@ APG Insurance Services Inc
 API
 Apliant
 Apollo
-Apollo Insurance
 Apollo Insurance Group
-Apollo Interactive
-Apollo Interactive Inc
 Apollo Interactive, LLC
 Apollo Partners
 Applied Data Finance
 Applied General
-Applied General Agency
 Applied General Agency, LLC
 April Knapp Farmers
 April Lusk State Farm
 April Seibold State Farm
 April Weeks
 Aquilas Zephir State Farm
-Aragon Advertising
 Aragon Advertising LLC
 Arbella
 Arbella Mutual Insurance
@@ -1057,18 +1032,14 @@ Associated Agents Group
 Associated Indemnity
 Associated Insurance Managers
 Assurance
-Assurance IQ
 Assurance IQ Inc.
 AssuranceAmerica
 Assurant
 Assure
 Assure Brokerage LLC
 Assure Media
-Assurean
 Assurean, LLC
 Assured Benefits Direct
-Assured Health
-Assured Health Group
 Assured Health Group, LLC
 Assured Life
 Assured Partners
@@ -1076,7 +1047,6 @@ Assured Partners of South Florida
 Assured Provider Services
 Assurity Health Insurance Agency,LLC
 Astonish
-Astoria
 Astoria Company
 ATHENA PREMIER INSURANCE SERVICES, INC. Farmers
 Atlanta Casualty
@@ -1085,12 +1055,10 @@ Atlanta Specialty
 Atlantic Auto Protection
 Atlantic Blue Media
 Atlantic Health
-Atlantic Health Advisors
 Atlantic Health Advisors LLC
 Atlantic Health Insurance Group
 Atlantic Indemnity
 Atlantis
-Atlantis Health Group
 Atlantis Health Group Inc
 Atlas Insurance Brokers Llc
 Atomic Leads
@@ -1175,7 +1143,6 @@ Avenge Digital
 Avetik Palyan Brix Insurance Brokerage
 Avex Funding Corporation dba Better Mortgage
 Aviva
-Avmed
 AvMed Inc.
 Avo Harutunian Farmers
 Avomark
@@ -1199,7 +1166,6 @@ Bain Morgan Allstate
 Baker Insurance Agency, Inc. DBA Kevin Baker
 Bakirtzis Health Advisors
 Bal Claire State Farm
-Baldwin Risk Partners
 Baldwin Risk Partners, LLC
 Balke Insurance Group
 Ballantyne Insurance Group Agency
@@ -1214,9 +1180,7 @@ Bankers & Shippers
 Bankers Conseco Life Insurance Company
 Bankers Hill Insurance
 Bankers Life
-Bankers Life and Casualty
 Bankers Life and Casualty Company
-Bankrate
 Bankrate Inc.
 Bankrate Insurance
 Banner Life
@@ -1380,7 +1344,6 @@ Best Health Options
 Best Insurance Group
 Best Insurance Group - Sam Crain
 Best Insurance Leads
-Best Insurance LLC
 Best Obamacare
 Best Value Insurance Services, LLC
 Bestow
@@ -1402,7 +1365,6 @@ Beto Gonzalez State Farm
 Beto Rodriguez State Farm
 Betonyou Management and Marketing
 Betsy Cruz Chavez State Farm
-Better Choice Insurance
 Better Choice Insurance Group
 Better Cover
 Better Health Advisors
@@ -1952,7 +1914,6 @@ Brock Whitmore State Farm
 Brody Jackson State Farm
 Brokerage 1 Agency, LLC
 Brokers Alliance
-Brokers Clearing House, LLC
 Brokers Clearing House, Ltd.
 Brokers Insurance Inc.
 Brokers International Financial Services, LLC
@@ -2097,7 +2058,6 @@ Caleb Vonderheide
 Caleb Whitaker State Farm
 Calen Nelsen State Farm
 Caley Baillio State Farm
-Caliber Health Solutions
 Caliber Health Solutions LLC
 California Casualty
 California Casualty Indemnity Exchange
@@ -2107,10 +2067,8 @@ Call Blade
 Call Center Partnerships
 Call Lead Solutions
 Call Link LLC
-Call Trader
 Call Trader LLC
 Call4SeniorSavings.com
-Callayo
 Callayo, LLC
 Callie Jones State Farm
 CalView Insurance Services
@@ -2170,7 +2128,6 @@ Carefree Direct Agency, LLC
 CareMore
 Caresource
 Carey Heitman State Farm
-CareZone
 Carezone Inc.
 CareZone Insurance Services
 CarGaurd
@@ -2300,7 +2257,6 @@ Cege
 Cege Media
 Celtic Consulting
 Celtic Insurance
-Centene
 Centene Corp.
 Centennial
 Center For Insurance Services LLC
@@ -2309,7 +2265,6 @@ Centerfield Insurance Services
 Central Health Advisors
 Central Mutual Insurance
 Centrion Consulting
-Century Benefits
 Century Benefits Group
 Ceranes Lejulus
 Certainly
@@ -2889,7 +2844,6 @@ Commerce West Insurance Company
 Commercial & Specialized Coverage Insurance Solutions
 Commercial Marketing Group
 Commercial Union
-CommercialInsurance.net
 CommercialInsurance.Net, LLC
 Commission Soup
 Commonwealth
@@ -3054,8 +3008,6 @@ Cover
 Coverage Choice LLC
 Coverage Cure LLC
 Coverage One
-Coverage One Insurance
-Coverage One Insurance Group
 Coverage One Insurance Group LLC
 Coverage That Matters
 Coverage with Katie
@@ -3123,13 +3075,11 @@ Crystal Johnson State Farm
 Crystal Nichols
 Crystal Nichols NPN 21301178
 Crystal Perez Shelter Insurance
-CS Marketing
 CS Marketing LLC
 CSAA Insurance Group
 CSE
 CSE Insurance Group
 CSG Actuarial, LLC
-CUNA Mutual
 CUNA Mutual Group
 Curadebt
 Curt Elsbury Farmers
@@ -3544,7 +3494,6 @@ DBA Compass Insurance
 DBA: All Lines Insurance
 DBA: Valley Trucking Insurance Agency
 DBA: Valley Trucking Insurance CA*
-DDS Agencies
 DDS Agencies, Inc.
 De Guezala Hub, LLC
 DE LONGE AGENCY LLC Farmers
@@ -3608,7 +3557,6 @@ Deidra Roberts-Gadberry State Farm
 Deidre Fresquez State Farm
 Deidre Kendrick State Farm
 Dejan Kukolj WFG Insurance Agency
-Dejesus Agency
 DeJesus Agency Inc
 Del Boykin State Farm
 Del High FFL
@@ -3653,7 +3601,6 @@ Dennis Wuensche Farmers
 Denny Kayrouz Jr State Farm
 Denny Singleterry Jr State Farm
 DentalInsurance.com
-DentalPlans.com
 DentalPlans.com, Inc.
 Denton Atkinson State Farm
 Department of Service Contracts
@@ -3698,7 +3645,6 @@ Destiny Kyles-Jones State Farm
 DET Insurance
 Det Phasakda State Farm
 Detroit Trading
-Devery Prince Agency
 Devery Prince Agency, Inc.
 Devin Canup State Farm
 Devin Graham State Farm
@@ -3743,7 +3689,6 @@ Digital DBA
 Digital Market Media
 Digital Marketing Connection
 Digital Marketing Media
-Digital Media Solutions
 Digital Media Solutions LLC
 Digital Soup Media
 Digital Thrive
@@ -3760,7 +3705,6 @@ Direct 2U Insurance
 Direct Auto
 Direct Choice
 Direct General
-Direct Health
 Direct Health Group
 Direct Health Markets
 Direct Health Markets-Jon Maso
@@ -3785,10 +3729,8 @@ DMS
 DNA Health
 DNA Health & Life
 DO NOT USE My Health Group Insurance Agency, LLC
-Dobak Holdings LLC
 Dobak Holdings, Inc.
 Doc Auto
-Doc Auto Insurance
 Doc Auto Insurance Group, LLC
 Doc Insurance
 Docktor's Insurace
@@ -3887,7 +3829,6 @@ Douglas Smith Farmers
 Douglas Snyder Farmers
 Douglas Tagler State Farm
 Douglas Workman State Farm
-Dozer Health
 Dozer Health Inc
 DPA Insurance Agency LLC
 DPMP
@@ -3977,7 +3918,6 @@ Dynasty II, LLC
 E H morales una agency
 E J Nusbaum State Farm
 e-telequote
-e-TeleQuote Insurance
 e-TeleQuote Insurance Inc.
 E. Craig Slater Farmers
 Eagle Cap Insurance
@@ -4124,13 +4064,10 @@ Elite Health Agency
 Elite Health Plus
 Elite Insurance Group of Texas
 Elite Insurance Group, Inc.
-Elite Insurance Llc
-Elite Insurance Partners
 Elite Insurance Partners, LLC
 Elite Medical Advancements
 Elite National Health Group
 Elite Service, LLC
-Elite Teams Insurance
 Elite Teams Insurance LLC
 EliteCashWire
 Elitha Moses State Farm
@@ -4184,7 +4121,6 @@ Emond Richardson State Farm
 Empire
 Empire Consumer Services
 Empire Health
-Empire Health Consultants
 Empire Health Consultants LLC
 Empire Health Solutions
 Empire Insurance Agency LLC
@@ -4216,13 +4152,11 @@ Ensurem
 Envela Insurance
 Enver Energy Improvements
 Enver Solar
-EOS Insurance Services
 EOS Insurance Services, LLC
 EPath
 EPIQ
 Epiq Insurance
 EQ
-Equis Financial
 Equis Financial LLC
 Equisource, LLC
 Equita Group
@@ -4302,7 +4236,6 @@ Ericka Luddy - Independent Agent
 Erie
 Erie Insurance Company
 Erie Insurance Exchange
-Erie Insurance Group
 Erie Insurance Property and Casualty
 Erik Cook Farmers
 Erik Coy Farmers
@@ -4384,7 +4317,6 @@ Evergreen Health Solutions LLC
 Evergreen Insurance Agency
 Everguard - Deano Barnes
 EverLife
-Everquote
 EverQuote and its marketing partners
 EverQuote Inc.
 EverQuote Marketing Partners
@@ -4396,11 +4328,9 @@ Evolve Insurance Partners
 Evolved Insurance Agency, Inc.
 Exact Match Media
 ExactCare
-Excel Impact
 Excel Impact LLC
 Excelium Group
 Excella Benefits Inc.
-Excelling
 Excelling Inc.
 Excellus
 Exchange Media
@@ -4434,11 +4364,8 @@ Fallon Community Health Plan
 Family Affordable Insurance
 Family First
 Family First Health LLC
-Family First Insurance
-Family First Insurance Advisors
 Family First Insurance Advisors LLC
 Family First Insurance Group
-Family First Life
 Family First Life and Independent Agents
 Family First Life Zander Rubin
 Family First Life, LLC
@@ -4474,7 +4401,6 @@ FCHCN
 FDE Marketing
 Federal
 Federal Benefits Educators, LLC
-Federated
 Federated American
 Federated Group
 Feilberto Flores USHA
@@ -4506,7 +4432,6 @@ Fiesta Franchise
 Fiesta Insurance
 Fili Digital
 Fillia Fransisca State Farm
-Filtered Quotes
 Filtered Quotes LLC
 Final Expense Connect
 FinalExpenseAssistant.com
@@ -4547,11 +4472,9 @@ First Health Alliance
 First Health One
 First Healthcare Options Insurance Agency LLC
 First Insurance Enterprises, LLC
-First Mutual Insurance
 First Mutual Insurance Group
 First Mutual Insurance Group (FMIG)
 First National
-First Option Health
 First Option Health Group
 First Palladium, LLC
 First Preferred Insurance
@@ -4586,7 +4509,6 @@ Foremost Insurance
 Foresters
 Forethought
 Formula Marketing & Analytics
-Formza
 Formza LLC
 Forrest Cobb State Farm
 Forrest Sevigny
@@ -4767,7 +4689,6 @@ Generation Life Insurance
 Generation Solar
 Genesis Health
 Genia Henderson Farmers
-Genie Leads
 Genie Leads, LLC
 Gennaro Costigliola Allstate
 Genworth
@@ -4798,7 +4719,6 @@ Gerardo Navarro Farmers
 Gerardo Varela Allstate
 Gerber
 Gerber Life
-Gerber Life Insurance
 Gerber Life Insurance Company
 Geremy Byrne State Farm
 Gerick Grozdanich State Farm
@@ -4810,11 +4730,9 @@ Get Covered USA
 Get Insured
 Get Me Healthcare
 Get My Life Insured
-Get Seen Media
 Get Seen Media Group
 Get Texans
 GetAQuote
-GetAQuote.com
 GetAQuote.com, LLC
 GetAuto
 getinsurancepricing.com
@@ -4907,7 +4825,6 @@ Golden Agency LLC
 Golden Bay Insurance Agency Inc
 Golden Insurance
 Golden Rule
-Golden Rule Insurance
 Golden Rule Insurance Co.
 Golden State Advisors Insurance Agency LLC
 Golden State Insurance Agency, LLC
@@ -5041,7 +4958,6 @@ Guaranteed Health Options
 Guaranty National
 Guaranty National Insurance
 Guardian
-Guardian Health Group
 Guardian Health Group, LLC
 Guardian Healthcare
 Guardian Life
@@ -5049,7 +4965,6 @@ Guerrilla Coverage LLC
 Guide One
 Guide One Insurance
 Guide to Insure
-Guided Insurance Solutions
 Guided Insurance Solutions LLC
 Guided Insurance Solutions/The Baldwin Group
 Guided Solutions
@@ -5195,7 +5110,6 @@ Health I.Q.
 Health Insurance Advantag
 Health Insurance Advantage
 Health Insurance Advisors
-Health Insurance Alliance
 Health Insurance Alliance, LLC
 Health Insurance Executives
 Health Insurance for Everyone
@@ -5204,7 +5118,6 @@ Health Insurance Guide
 Health Insurance Innovations
 Health Insurance Innovations (HII)
 Health Insurance King
-Health Insurance of America
 Health Insurance of America, inc
 Health Insurance Quote
 Health Insurance Services
@@ -5217,7 +5130,6 @@ Health IQ Insurance Services Inc.
 Health Lab Solutions LLC
 Health Leads One Inc.
 Health Line One
-Health Markets
 Health Markets Inc
 Health Net
 Health Network
@@ -5226,7 +5138,6 @@ Health Option One
 Health Options Team
 Health Partners of Philadelphia Inc.
 Health Plan
-Health Plan One
 Health Plan One, LLC
 Health Plan Services
 Health Plans 4 Less
@@ -5242,7 +5153,6 @@ Health Savings Group
 Health Sherpa
 Health Solutions One
 Health Solutions Team
-Health Team One
 Health Team One, LLC
 Health Trust
 Health Trust Financial
@@ -5255,7 +5165,6 @@ HealthCare Alternatives
 Healthcare Direct
 HealthCare Inc.
 Healthcare Solutions Direct
-HealthCare Solutions Team
 Healthcare Solutions Team, LLC
 Healthcare.com
 HealthCare.com Insurance Services
@@ -5289,7 +5198,6 @@ Healthy Access Insurance
 Healthy Halo
 Healthy Halo Insurance
 Heard and Smith
-Heartland Financial
 Heartland Financial Group, LLC
 Heartland Financial Holding Company, LLC
 Heartline Health
@@ -5354,7 +5262,6 @@ Hera Gutierrez State Farm
 Herb Albernas State Farm
 Herbie Strange State Farm
 Heritage
-Heritage Health
 Heritage Health Advisors
 Heritage Health Group
 Heritage Insurance
@@ -5371,7 +5278,6 @@ Hieg Partners LLC
 Hielly Martinez State Farm
 High Quality Vehicle Protection
 Highland Health Care
-Highland Health Direct
 Highland Health Direct, LLC.
 Highland Health Group
 HighlandHealth
@@ -5430,7 +5336,6 @@ Hometown Insurance LLC
 HomeWarrantyProject.com
 honeycomb insurance
 Honeycutt Insurance Marketing LLC
-HoneyQuote
 HoneyQuote LLC
 Hoosier Insurance Group, LLC
 Hoot Hoot Health, LLC
@@ -5511,12 +5416,10 @@ Ian Phillips State Farm
 Ian Schmidt Farmers
 Ibpnj, LLC
 iCan
-iCan Benefit
 iCan Benefit Group
 Iconic Consultants
 ICW Leads
 Ida Snead State Farm
-Ideal Concepts
 Ideal Concepts aka iWebQuotes
 Ideal Concepts, Inc.
 Ideal Health Benefits
@@ -5532,10 +5435,8 @@ IGF Insurance
 Ignacio Quezada State Farm
 Ignite Insurance Solutions
 Ignitist
-IHC
 IHC Group
 IHC Health Plans
-IHC Specialty Benefits
 IHC Specialty Benefits, Inc.
 IIS Insurance
 iLeads
@@ -5550,7 +5451,6 @@ IMO
 Impac Mortgage Corporation
 Impact Media
 Imperial Clermont
-Imperial Health Group
 Imperial Health Group LLC
 Imperial Health Solutions
 Imperial Insurance
@@ -5577,7 +5477,6 @@ Indra Energy
 INDS
 Indy Mahindru Agency
 Infinity
-Infinity Insurance
 Infinity Insurance Group
 Infinity National Insurance
 Infinity Select Insurance
@@ -5601,7 +5500,6 @@ INS Connections Agency
 Inside Response
 Inside Response (Allied Insurance)
 Insphere
-Insphere Insurance Solutions
 Insphere Insurance Solutions, INC
 Instant Auto Insurance
 InstaQuote LLC
@@ -5621,7 +5519,6 @@ Insurance Express Services Inc
 Insurance Geek LLC
 Insurance Insight
 Insurance Lead Broker , ILB
-Insurance Lead Brokers
 Insurance Lead Brokers, LLC
 Insurance leads
 Insurance Line One
@@ -5642,7 +5539,6 @@ Insurance Services
 Insurance Solutions & Related Services LLC
 Insurance Solutions Direct
 Insurance Solutions LLC
-Insurance Supermarket
 Insurance Supermarket Inc.
 Insurance Warehouse of FL, Inc
 Insurance X LLC
@@ -5655,38 +5551,31 @@ InsuranceLeads.com
 InsuranceMichigan.com
 InsuranceOnly
 InsuranceProz
-insuranceQuotes
 InsuranceQuotes Inc.
 insuranceQuotes.com
 insuranceratesforless.com
 InsuranceStep.com
 InsuranceTrak Services
-Insure Choice
 Insure Choice LLC
 Insure farm
 Insure Hopper
 Insure.com
 Insured Street
 InsuredNation
-InsureMe
 InsureMe, Inc
 InsureOne
-Insurify
 Insurify Inc
-Insurita
 Insurita LLC
 Insurzy
 Insweb
 Inszone Insurance Services
 Integon
-Integrated Benefits
 Integrated Benefits Administrators, LLC
 Integrated Benefits Holdings, LLC
 Integrated Insurance Solutions
 Integriant
 Integriant Mayberry
 Integriant Ventures Ins
-Integrity
 Integrity Advisors, LLC
 Integrity Advisory Solutions, LLC
 Integrity Alliance, LLC
@@ -5706,11 +5595,9 @@ Integrity Marketing Parent, LLC
 Integrity Marketing Partners Holdco, LLC
 Integrity Marketing Partners, LLC
 Integrity Servicing LLC
-Integrity Vehicle Services
 Integrity Vehicle Services, Inc
 Integrity Wealth, LLC
 Integrity, Inc.
-Integrity, LLC
 IntegritySure LLC
 Intelecare Inc
 Intelemedia
@@ -6399,7 +6286,6 @@ Jerry Ford Allstate
 Jerry Gasche Allstate
 Jerry Heckman State Farm
 Jerry Henson Farmers
-JERRY INSURANCE AGENCY
 Jerry Insurance Agency, LLC
 Jerry Ivie State Farm
 Jerry Johnson State Farm
@@ -6550,7 +6436,6 @@ JK Carter LLC
 JL Ezera Insurance Agency
 JLS
 JM Health Associates
-JMI Insurance
 JMI Insurance Group, LLC
 JNC Healthcare Solutions
 JNJ Health Group
@@ -6563,7 +6448,6 @@ Joanna Kierys State Farm
 Joanne Dauphin State Farm
 Joaquin Diaz Farmers
 Job Hunt Helper
-Jobble
 Jobble Inc
 Jobble Inc. and its subsidiary Jobble Insurance Services LLC
 Jobble Insurance Services
@@ -7132,7 +7016,6 @@ Julio Tejada State Farm
 Julio Tovar Farmers
 Jupiter
 Jupiter Auto Insurance
-Just Insure Agency
 Just Insure Agency, Inc
 Just Insure, Inc
 Justified Medical Group
@@ -7194,7 +7077,6 @@ Kahlil Taplin Farmers
 Kahubbard
 KaiAgency
 Kaiser
-Kaiser Foundation Health Plan
 Kaiser Foundation Health Plan of Colorado
 Kaiser Foundation Health Plan of Georgia, Inc.
 Kaiser Foundation Health Plan of the Mid-Atlantic States, Inc.
@@ -7611,7 +7493,6 @@ Kimberly Shurtleff State Farm
 Kimberly Wilcox State Farm
 Kimberly Wilson State Farm
 Kin
-Kin Insurance
 Kin Insurance, Inc.
 Kind Health
 Kingdom First Financial Services, LLC
@@ -7895,7 +7776,6 @@ Leader National Insurance
 Leader Preferred Insurance
 Leader Specialty Insurance
 Leading Healthcare
-Leading Healthcare Solutions
 Leading Healthcare Solutions Inc
 Leadmmatic
 Leadnomics
@@ -7905,13 +7785,11 @@ Leads 2 Success, LLC
 Leads Interactive
 Leads Market
 Leads Quotes Media
-LeadScorz
 LeadScorz, Inc.
 Leadsocity
 Leadsrow
 LeadSwami
 LeadSwami Demo - Allstate
-LeadWerx
 LeadWerx Inc
 League General
 Leah Hill Comparion Agency
@@ -7922,7 +7800,6 @@ Leah Wentz Allstate
 LeaNete Porter Agency
 LeaNete Porter Shelter Insurance
 Leatherstocking Group LLC
-LEB Insurance
 LEB Insurance Group
 LeBlanc Insurance Agency, LLC
 Lee Hudson State Farm
@@ -7959,7 +7836,6 @@ Lemonade
 Lemonade Insurance
 Lemonade Insurance Agency LLC
 Lemonade Insurance Company (LIC)
-Lender Daily
 Lender Daily Corp
 LenderFi, Inc.
 Lending Club
@@ -8017,7 +7893,6 @@ Liberty Insurance Corp
 Liberty Mutual
 Liberty Mutual - Juliana Abrantes
 Liberty Mutual Fire Insurance
-Liberty Mutual Insurance
 Liberty Mutual Insurance Company
 Liberty National
 Liberty National Life Insurance Compan
@@ -8041,7 +7916,6 @@ LifeWise Health Plan
 LiftLogic
 LIG Solutions
 Lighthouse
-Lighthouse Insurance
 LIGHTHOUSE INSURANCE AGENCY, LLC Farmers
 Lighthouse Insurance Group
 LightHouse Insurance Health
@@ -8087,7 +7961,6 @@ Link Interactive
 Link Pellow
 Lino Innocenzi Allstate
 Lino Reale State Farm
-Lion Insurance
 Lion Insurance Group
 Lion Pride Financial LLC
 Lion Street Advisors, LLC
@@ -8348,7 +8221,6 @@ Manzur Max Chowdhury
 MANZUR MAX CHOWDHURY INSURANCE AGENCY INC. Farmers
 MAPD HelpDesk Insurance Agency LLC
 MAPFRE
-MAPFRE Insurance
 MAPFRE Insurance Company
 MAPFRE Insurance Company of Florida
 MAPFRE U.S.A. Corp.
@@ -8370,7 +8242,6 @@ Marcel Dore State Farm
 Marcela Johnson Farmers
 Marcelo Dore State Farm
 Marcelo Rodriguez State Farm
-Marchex
 Marchex, Inc
 Marci Reece State Farm
 Marcia Galvan Allstate
@@ -8545,7 +8416,6 @@ Marta Nerin State Farm
 Martez (ELI) Twyman
 Martha Barillas Farmers
 Martha Dickens Liberty Mutual
-Martin Financial
 Martin financial Group
 Martin Insurance Group
 Martin Lopez State Farm
@@ -8556,8 +8426,6 @@ Martin Salvino State Farm
 Martin Woods Family First Life
 Martin's Point
 Martinez Dynasty Group Inc
-Martinez Insurance
-Martinez Insurance Group
 Martinez Insurance Group Inc
 Martino Insurance P.A.
 Marty Bothwell State Farm
@@ -8612,7 +8480,6 @@ Massive&Co
 Master Data Research
 MasterData
 Mat Dahms State Farm
-Match Media Group
 Match Media Group LLC
 Matched mortgage partners included but not limited to:
 Matched personal loan & debt partners included but not limited to:
@@ -8620,7 +8487,6 @@ MatchMedia
 Mathew Hanby FFL
 MATHEW JOHNSON INSURANCE AGENCY, INC Farmers
 Mathew Maccannell
-Matic Insurance Services
 Matic Insurance Services Inc
 Matrix Direct
 Matrix warranty Solutions
@@ -8791,7 +8657,6 @@ Mavrick Insurance
 Max Charleus Allstate
 Max Chernavsky State Farm
 Max James State Farm
-Max Media Marketing
 Max Media Marketing, LLC
 Max Thorp State Farm
 Max Wilson Agency
@@ -9302,7 +9167,6 @@ Milner Brokerage Holdings, LLC
 Milner Financial Services, LLC
 Milner Financial, LLC
 Milt Rawles State Farm
-Milton Insurance Services
 Milton Insurance Services LLC
 Milwaukee
 Milwaukee General
@@ -9375,7 +9239,6 @@ Mobile Focused Media
 Moby Young State Farm
 Modern Business Solutions
 Modern District Financial Group, LLC
-Modern Health
 Modern Health Benefits
 Modern Health LLC
 Modern Healthcare
@@ -9441,7 +9304,6 @@ Mortgage Savings Cente
 Morton Roberts State Farm
 Moses Mitchell Agency
 Moses Rotich Family First Life
-Moss
 Moss Affiliate
 Moss Affiliate Marketing
 Moss Affiliate Marketing Sellers
@@ -9457,7 +9319,6 @@ Mountain View Insurance LLC: Allstate Agency
 Moyees Merchant Farmers
 Mozeo
 MozeoBFL
-MT Lead Media
 MT Lead Media LLC.
 Mucha Health Advising LLC
 Mulroy Family Insurance
@@ -9477,7 +9338,6 @@ MVP
 MVX Sales
 My Best Health Plan
 My Free Health Quote
-My Health Advisors
 My Health Advisors Inc
 My Health Angel
 My Health Group
@@ -9596,15 +9456,11 @@ National Family
 National Family Assurance Group Inc.
 National Fire Insurance Company of Hartford
 National General
-National General Insurance
 National General Insurance Company
 National General Insurance Company (NGIC)
 National Health Advisors
 National Health Agents
-National Health Connect
-National Health Connect LLC
 National Health Connect, inc
-National Health Hub
 National Health Hub LLC
 National Health Insurance
 National Health Insurance Associates LLC
@@ -9625,7 +9481,6 @@ National Insurance USA
 National Medicare Group
 National Merit
 National Mutual Benefit
-National Plan Advisors
 National Plan Advisors Inc
 National Protection Assurance
 National Reach Marketing Center
@@ -9642,7 +9497,6 @@ Nations Insurance Solutions
 Nationwide
 Nationwide General Insurance
 Nationwide Health Advisors
-Nationwide Insurance
 Nationwide Insurance Company
 Nationwide Insurance Market
 Nationwide Mutual Fire Insurance
@@ -9655,7 +9509,6 @@ Navy Mutual
 Navy Mutual Aid Association
 Naylor Insurance Group
 NBL Insurance Services, Inc.
-NCWC
 NCWC, Inc.
 Neal Bracewell State Farm
 Neal Peterson State Farm
@@ -9677,12 +9530,10 @@ Neilson Financial
 Neilson Financial Services
 Neilson FS
 Neishloss & Fleming, LLC
-Nemisense
 Nemisense, LLC
 Nena Soto State Farm
 Neo Ogilvy
 Neptune Flood
-NerdWallet
 NerdWallet Inc
 Nese Sahin State Farm
 Net Credit
@@ -9708,7 +9559,6 @@ NewFi
 Newins
 NewQuest
 NexLevel Direct
-Next Call Club
 Next Call Club - Allstate
 Next Call Club - Farmers
 Next Call Club LLC
@@ -9718,7 +9568,6 @@ Next Level Benefits
 Next LM
 Next Wave Marketing
 Next Wave Marketing Strategies
-Nextgen Leads
 NextGen Leads Dingo Company
 NextGen Leads LLC
 Nexus Corporation
@@ -9874,7 +9723,6 @@ Norma Borrayo Farmers
 Norris Insurance
 North American
 North American Advantage Insurance Services LLC
-North American Senior Benefits
 North American Senior Benefits, LLC
 North Pacific
 North Pointe
@@ -9892,7 +9740,6 @@ Northwestern
 Northwestern Mutual
 Northwestern Mutual Life
 Northwestern Pacific Indemnity
-Norvax
 Norvax, LLC.
 Nova Insurance Services
 Novo Insurance
@@ -9904,14 +9751,11 @@ Nsure
 Nsure Insurance Agency, Inc
 Nu Life Health
 NuHealth
-Number One Health
 Number One Health Insuran
 Number One Health Insurance Agency
 Number One Health, inc
-Number One Prospecting
 Number One Prospecting Inc
 NuStar Insurance
-Nxt Level Health
 Nxt Level Health, LLC
 NYSTROM INSURANCE AGENCY INC Farmers
 O'Brien Insurance Agency
@@ -9926,7 +9770,6 @@ Oakmonte Insurance
 OB 1 Insurance Agency, LLC
 Oberlin Marketing Co., LLC
 Ocean Beach Media
-Ocho
 Ocho Holdings Co
 OctaneFire
 Octans Insurance
@@ -9996,14 +9839,11 @@ OneTrust Home Loans dba of CalCon Mutual Mortgage, LLC
 Online Auto Insurance
 Online Digital LLC
 online general insurance services
-Online Insurance Solutions
 Online Insurance Solutions LLC
 Onvaint
-Onviant
 Onviant Inc
 Onviant Insurance Agency Inc.
 Onviant Insurance Solutions
-Onviant LLC
 Onyx Digital Media
 Open Market Quotes
 Open Quote Insurance
@@ -10052,7 +9892,6 @@ Ox Car Care
 Oxford
 Oxford Health Plans
 Oxford Insurance
-Oxford Marketing Partners
 Oxford Marketing Partners, LLC
 Ozzie Gutierrez-Holden State Farm
 Pablo Sanchez State Farm
@@ -10069,7 +9908,6 @@ PADILLA AGENCY LLC Farmers
 Pafco
 Pafco General Insurance
 PALENCIA AGENCY LLC Farmers
-Palmer Administrative Services
 Palmer Administrative Services Inc.
 Palmetto Benefit Solutions
 Palmetto Senior Benefits of South Carolina LLC
@@ -10093,7 +9931,6 @@ Paradise Insurance LLC
 Paramount Equity Mortgage
 Parasol Agent Network
 Parasol Agents Network
-Parasol Leads
 Parasol Leads, Inc.
 Parente Agency
 Paris Easter Quility
@@ -10370,7 +10207,6 @@ Plan Advisors, LLC
 Plasmid Direct
 Plasmid Media, LLC
 Platinum Elite Insurance Group, Inc.
-Platinum Health
 Platinum Health Advisors
 Platinum Health Group
 Platinum Health Solutions
@@ -10385,7 +10221,6 @@ Polaris Agency
 Polcyn Insurance & Financial Services, LLC
 Policy Bind
 Policy Broker
-Policy Fuel
 Policy Fuel LLC
 Policy Goat
 Policy Liaison
@@ -10425,7 +10260,6 @@ Precursor Media
 Preeti Sehgal State Farm
 Preferred Abstainers
 Preferred Care
-Preferred Health Advisors
 Preferred Health Advisors, LLC
 Preferred Health Consulting
 Preferred Mutual
@@ -10435,7 +10269,6 @@ Premier Business Solutions
 Premier Choice Insurance
 Premier Disability
 Premier Financial Alliance
-Premier Health Associates
 Premier Health Associates Inc
 Premier Health Association
 Premier Health Solutions
@@ -10453,8 +10286,6 @@ Premium Precision Marketing
 Presbyterian Health Plan
 Presbyterian Healthcare Services
 Presidio
-Presidio Interactive
-Presidio Interactive Corp
 Presidio Interactive Corporation
 Presido Interactive
 Prestige
@@ -10493,14 +10324,12 @@ Pristine
 Pristine Media Group
 PRITIKA SINGH INSURANCE AGENCY ,INC Farmers
 Private Reserve Group, Inc
-Pro Data Research
 Pro Data Research, LLC
 Proactive Health Solutions
 Process driven marketing LLC.
 Prodest Insurance Group, LLC
 Prodigy Health Agency
 Prodigy Health Group
-Prodigy Insurance Associates
 Prodigy Insurance Associates LLC
 ProEco Solutions Inc
 Professional Insurance Planners & Consultants Of Iowa LLC
@@ -10553,7 +10382,6 @@ Purple Dog Marketing LLC
 Purple Solutions Insurance Group - Maria Villegas
 PURSE AGENCY, INC Farmers
 Push Interactive
-PX
 PX and its partners
 PX Brand Partners for Auto Insurance Companies
 PX Brand Partners for Health Insurance Companies
@@ -10563,10 +10391,8 @@ Px Brand Partners For Life Insurance
 PX Brand Partners for Life Insurance Companies
 PX Inc
 PX.com Commercial Auto
-Pyle Family Insurance
 Pyle Family Insurance LLC
 Pyramid Life
-Q3M Insurance Solutions
 Q3M Insurance Solutions LLC
 QA Advertiser 21
 Qatalyst
@@ -10585,19 +10411,15 @@ Quality Coverage, Inc.
 Quality Health
 Quality Health Insurance
 Quality Health Solutions
-Quality Healthcare Solutions
 Quality Healthcare Solutions, Inc.
 Quality Insurance Solutions
-Quantum 3 Media
 Quantum 3 Media LLC
 Quantum Assurance
 Quantum Assurance International
-Quantum Digital Media
 Quantum Digital Media Inc.
 Quantum Health Insurance Solutions, LLC
 Quantum Health LLC
 Quantum Life
-Quantum Research
 Quantum Research LLC
 Quantum3
 QuantumDigital
@@ -10624,7 +10446,6 @@ Quote Nerds
 Quote Rangers, LLC
 Quote Selection
 Quote Selection Insurance Services, Inc
-Quote Storm
 Quote Storm Holdings LLC
 Quote Velocity
 Quote Whiz, LLC.
@@ -10632,7 +10453,6 @@ Quote Wizard
 quote.com
 QuoteHound INC
 QuoteIt
-Quotelab
 QuoteLab LLC
 QuoteLynx Insurance Services
 QuoteManage LLC
@@ -10640,9 +10460,7 @@ QuoteNerds LLC
 QuoteSavant
 QuoteWhiz
 Quoting Edge
-Quoting Fast
 Quoting Fast LLC
-QuotIt
 Quotit Corporation
 Quotit Corporation / Quotit Corporation
 QW
@@ -10813,7 +10631,6 @@ Reina Mendoza State Farm
 Reiter Marshall State Farm
 Relentless Insurance Agency, LLC
 Reliable Benefits- Victor Donato
-Reliable Health Plans
 Reliable Health Plans LLC
 Reliable Insurance Group
 Reliable Insurance Services
@@ -10829,7 +10646,6 @@ Remix Dynamix
 Remon Wasfi State Farm
 Rena MacDonald State Farm
 Renaissance Health Services Corp.
-Renaissance Insurance
 Renaissance Insurance Group
 Renata Azizi State Farm
 RENDON INSURANCE AGENCY, INC Farmers
@@ -10842,7 +10658,6 @@ Renee Thibodeaux State Farm
 Renee' Montague State Farm
 Renegade Insurance
 Renegade- Hector Andujar
-Renew.com
 Renew.com Inc.
 Rennovate
 Renovation Experts
@@ -11133,9 +10948,7 @@ Rocio Morgan Farmers
 Rocket Health
 Rocket Health Insurance
 Rocket Loans
-Rocket Quote
 Rocket Quote Inc
-Rocket Quote LLC
 Rockford Mutual
 Rocking Ham Group
 Rockingham Insurance Company
@@ -11211,8 +11024,6 @@ Ronnie Romero State Farm
 Ronnie Ruffner State Farm
 Ronnie Stokes Farmers
 Roosevelt Kirkland Farmers
-Root
-Root Insurance
 Root Insurance Company
 Root, Inc
 RORY ADAMS INSURANCE AGENCY LLC Farmers
@@ -11752,7 +11563,6 @@ Senior Planning Services
 Senior Plus Advisors
 Senior Resource Services, LLC
 Senior Security Benefits, Inc.
-Senior Security Benefits, LLC
 Senior Select of Georgia, LLC
 Senior Services Of North America, LLC
 Senior Solutions & Services, LLC
@@ -11761,11 +11571,9 @@ SeniorQuote Insurance Services
 Seniors Advocate Group
 Sentara Health Management
 Sentinel Insurance
-Sentry
 Sentry Group
 Sentry Insurance a Mutual Company
 Sentry Insurance Company
-Sentry Insurance Group
 Serenity
 Sergio Gomez Farmers
 Seth Crow State Farm
@@ -11901,8 +11709,6 @@ Shelly Padilla State Farm
 Shelly Shilcoff Allstate
 Shelonda Payton State Farm
 Shelter
-Shelter Insurance
-Shelter Insurance Co.
 Shelter Insurance Company
 Shelter Mutual Insurance Company
 Shem Paul Allstate
@@ -11927,7 +11733,6 @@ Shren Yeager Jr State Farm
 SI Brokers, LLC
 SIA Insurance
 SIAA
-Sicuro Health
 Sicuro Health LLC
 Sicuro Insurance Group
 Sid Saunders State Farm
@@ -11953,7 +11758,6 @@ Sima Mozaffari State Farm
 Simmons Insurance Group
 Simo Najib State Farm
 Simple Health
-Simple Health Plans
 Simple Health Plans Inc.
 Simple Insurance
 Simple Insurance Leads
@@ -11964,7 +11768,6 @@ Simpli Health Insurance
 Simpli-Health Insurance, LLC
 Simplified Coverage
 SimplyIOA
-Simpson Financial
 Simpson Financial Group
 Sims and Associates Inc
 Sina In Family First Life
@@ -12006,7 +11809,6 @@ SmartScripts Agents
 Smedley Insurance Group
 Smit Shah State Farm
 Smith Agency, LLC
-Smith and Llanes
 Smith and Llanes INC
 SNK Media
 Snobiea Harn Other
@@ -12028,7 +11830,6 @@ SolarJoy
 SOLBRIG INSURANCE AGENCY INC Farmers
 Soleo
 Soleyon Insurance Partners
-SolidQuote
 SolidQuote LLC
 Solomon Barwegen State Farm
 SOLY ASMAR INSURANCE AGENCY INC Farmers
@@ -12081,8 +11882,6 @@ Spring EQ
 Spring Health Plans
 Spring Insurance
 Spring Insurance Solutions
-Spring Venture
-Spring Venture Group
 Spring Venture Group, LLC
 SpringLeaf Financial
 Sprinter Insurance Agency, LLC
@@ -12322,7 +12121,6 @@ Stratum Media DMCC
 Stratus Leads
 Strawn & Co Insurance
 Stride Force Solutions
-Stringbit
 StringBit inc
 Stuart Beussink State Farm
 Sturtevant & Associates LLC
@@ -12369,7 +12167,6 @@ Superior Global Marketing Inc.
 Superior Guaranty Insurance
 Superior Health Group LLC
 Superior Health Insurance Group
-Superior Health LLC
 Superior Insurance
 Superior Performers, LLC
 Support First
@@ -12385,7 +12182,6 @@ SureCo Health and Life
 Sureco Legacy Insurance Services, Inc
 SureHits
 Suretouch Leads
-Surety Auto Group
 Surety Auto Group, LLC
 Surety for Life
 Surety Health
@@ -12578,7 +12374,6 @@ The Automobile Club of Southern California
 The Baldwin Group
 The Baldwin Insurance Group Holdings, LLC
 The Benefit Depot
-The Benefit Link
 The Benefit Link, Inc.
 The Brimberry Agency, LLC
 The Broadwater Insurance Agency
@@ -12588,7 +12383,6 @@ The Buckman Agency
 The Castle Insurance Agency
 The Charles Agency Inc
 The Client's Insurance Agency LLC
-The Colby Group
 The Colby Group, Inc.
 The Colhoun Agency, Inc.
 The Commerce Insurance Company
@@ -12629,14 +12423,12 @@ The Insurance Superstore, LLC
 The Jeffrey J Dougherty Agency
 The Katyl Agency
 The Killimett Agency, LLC
-The Lead Company
 The Lead Company Inc.
 The Leads Warehouse
 The Leazer Group, LLC
 The Lewis Agency LLC
 The Loeber Agency LLC
 The Mantolokin Group
-The McGrp International
 The McGRP International LLC
 The Mcnerney Group, LLC
 The Medicare Basics
@@ -12684,7 +12476,6 @@ This or That Media dba HometownQuotes
 This or That Media, Inc.
 Thom Polvogt Independent
 Thomas Allen Insurance Agency
-Thomas Arts
 Thomas Arts Holdings, Inc.
 Thomas Blake Farmers
 Thomas Brooks Advanced Insurance
@@ -12969,7 +12760,6 @@ Top Pick Insurance Agency
 Top Tier Insurance Agency
 TopTier LLC
 Torchlight
-Torchlight Technology
 Torchlight Technology Group
 Torchmark
 Torie Taulli State Farm
@@ -13009,7 +12799,6 @@ Tracy Talley State Farm
 Tracy Terraneau State Farm
 Tracy Tucker State Farm
 Trademarc
-TradeMarc Global
 Trademarc Global LLC
 Traders Insurance
 Trae Covington State Farm
@@ -13020,7 +12809,6 @@ Tranzact
 Tranzact Insurance Solutions
 Travelers
 Travelers Indemnity
-Travelers Insurance
 Travelers Insurance Company
 Travis Barton State Farm
 Travis Britt Family First Life
@@ -13128,7 +12916,6 @@ Troy Turner State Farm
 Tru Source
 Tru Value Insurance
 TruAlliant
-TruBridge
 TruBridge Inc
 True Auto
 True Choice
@@ -13159,7 +12946,6 @@ Truvo Insurance
 Truvo, Inc.
 Tryton
 TSC
-TSC Direct
 TSC Direct Inc.
 TSC Insurance
 TTC Advising LLC - manny lopez
@@ -13249,7 +13035,6 @@ Tyrone Taylor Allstate
 Tyshawn Good State Farm
 Tyson Hawkins State Farm
 Tyson Norman State Farm
-TZ Insurance Solutions
 TZ Insurance Solutions LLC
 U S Financial
 Ucare
@@ -13300,7 +13085,6 @@ United States Fideli
 United Way Health
 UnitedHealthcare/UnitedHealthOne
 UnitedHealthOne
-Unitrin
 Unitrin Direct
 Unitrin Inc.
 Unity Care Insurance
@@ -13405,7 +13189,6 @@ Vantis Life
 Vasa North Atlantic
 Veerus Leads
 Vehicle Assurance Co
-Vehicle Protection
 Vehicle Protection Center
 Vehicle Protection Group
 Velapoint
@@ -13427,7 +13210,6 @@ Veronica Roman State Farm
 Versible Connect
 Versured
 Versus Media Group
-Verti Insurance
 Verti Insurance Company
 Vertigen LLC
 VESTAL AGENCY, LLC Farmers
@@ -13498,15 +13280,12 @@ Vladan Trifunovic State Farm
 Vladislav Cherchenko Farmers
 VMC Consulting LLC
 VNC Consulting Services LLC
-Vocara LLC
 Vocara, Inc
 Vocara.ai
 Vonnie McDonald State Farm
 Voom
 Voom Insurance
-Voxify
 Voxify LLC
-VSC Digital
 VSC Digital LLC
 VSC Digital Media. LLC
 VSC Group
@@ -13538,7 +13317,6 @@ Warranty Direct
 Warren M Gildersleeve Inc
 Warren Middleton State Farm
 Warren Stephens insurance services LLC
-Wasatch Marketing
 Wasatch Marketing Group
 Washburn Insurance Solutions
 Washington National Life
@@ -13596,7 +13374,6 @@ West Field
 West LLC
 West Plains
 West Sellers State Farm
-Western & Southern Financial
 Western & Southern Financial Group
 Western & Southern Life
 Western and Southern Life
