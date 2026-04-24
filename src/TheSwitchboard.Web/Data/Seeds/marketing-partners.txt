@@ -428,6 +428,7 @@ Allity's Health Compass
 ALLSBERRY INSURANCE AGENCY INC Farmers
 Allstar United Insurance Services
 Allstate
+Allstate - Arity
 Allstate County Mutual
 Allstate Digital
 Allstate Indemnity
@@ -1915,6 +1916,7 @@ Brien Plaza State Farm
 Bright Health Plan
 Bright Health Solutions
 Bright Home Solar
+Bright Horizon Media
 Bright Idea Insurance Solutions, Inc.
 Brightway
 BriJette Ortiz State Farm
@@ -4403,6 +4405,7 @@ Excelling Inc.
 Excellus
 Exchange Media
 ExchangeFlo, LLC
+ExchangeFlow
 Exclusive Partners Insurance Group, LLC
 Executive Capital Resources - Jennifer Adler
 Executive Resource Insurance Network, LLC
@@ -4444,6 +4447,7 @@ Family Heritage Life Insurance Company of America
 Family Life
 Family/Rural
 Farah Zaid Alkilanie Allstate
+Farante
 Farber Health Advisors
 Farm and Ranch
 Farm Bureau
@@ -4956,6 +4960,7 @@ Grant Murphy State Farm
 Grant Scofield State Farm
 Grayson Medford State Farm
 Grayson Tudor State Farm
+Graystone
 Graystone Investments LLC
 GRE Harleysville H
 Great American
@@ -5027,6 +5032,7 @@ Grimes Health Consultants
 Grinnell Mutual
 Grizzle Insurance Services
 Group Health Incorporated
+Group Health quotes - Smart Financial
 GROUP OF PROUD INDIANS
 Guadalupe Ortiz State Farm
 Guaranteed Benefits
@@ -5615,6 +5621,7 @@ Insurance Express Services Inc
 Insurance Geek LLC
 Insurance Insight
 Insurance Lead Broker , ILB
+Insurance Lead Brokers
 Insurance Lead Brokers, LLC
 Insurance leads
 Insurance Line One
@@ -7410,6 +7417,7 @@ Kelsi Lubovich State Farm
 Kelven Taylor Independent
 Kelvin Nunley State Farm
 Kemper
+Kemper Insurance
 Kemper Lloyds Insurance
 Ken Allen Insurance Agency
 Ken Bardales Independent
@@ -7901,6 +7909,7 @@ LeadScorz
 LeadScorz, Inc.
 Leadsocity
 Leadsrow
+LeadSwami
 LeadSwami Demo - Allstate
 LeadWerx
 LeadWerx Inc
@@ -7981,6 +7990,7 @@ Leticia Llamas Da Conceicao Farmers
 Leticia Pena-Torres Shelter
 LETICIA VELIZ INSURANCE AGENCY Farmers
 Lets Make A Lead
+Lettuce
 Level One Health Group
 Leverage Health Options
 Levi Monk State Farm
@@ -9480,6 +9490,7 @@ MyInsuranceExpert
 Mykhaylo Pantyushenko Farmers
 MyLifeProtected
 MyLifeProtected.com
+Mylo Insurance
 Mylo Solutions, LLC
 Mylo, Inc.
 Mylo, LLC. D/B/A Mylo Insurance Solutions, LLC
@@ -9702,6 +9713,7 @@ Next Call Club - Allstate
 Next Call Club - Farmers
 Next Call Club LLC
 Next Gen
+Next Insurance
 Next Level Benefits
 Next LM
 Next Wave Marketing
@@ -10550,6 +10562,7 @@ Px Brand Partners For Home Isurance
 Px Brand Partners For Life Insurance
 PX Brand Partners for Life Insurance Companies
 PX Inc
+PX.com Commercial Auto
 Pyle Family Insurance
 Pyle Family Insurance LLC
 Pyramid Life
@@ -10816,6 +10829,7 @@ Remix Dynamix
 Remon Wasfi State Farm
 Rena MacDonald State Farm
 Renaissance Health Services Corp.
+Renaissance Insurance
 Renaissance Insurance Group
 Renata Azizi State Farm
 RENDON INSURANCE AGENCY, INC Farmers
@@ -11976,6 +11990,7 @@ SLOAN A ELLISON INSURANCE AGENCY INC Farmers
 Sloan Ellison Farmers
 SlooceTech
 SLX Insurance Agency
+Smart Financial
 Smart Health Options
 Smart Match Insurance Agency
 Smart Match Insurance Solutions
@@ -12663,6 +12678,7 @@ Theressa Parra State Farm
 Thevethasyoucovered
 TheZebra.com
 Thielges Health
+Thimble
 This or That Media dba HometownQuotes
 This or That Media, Inc.
 Thom Polvogt Independent
@@ -13130,6 +13146,7 @@ Trupanion
 TruQ
 TruSource Marketing
 Trust Hall
+Trusted Choice
 Trusted Consumer
 Trusted Consumer Advisors
 Trusted Health
@@ -13464,6 +13481,7 @@ Virnie Tordera State Farm
 Visin Insurance Group
 Vision Financial Group
 Visiqua
+Visqua
 Vital Guard Insurance Services
 Vital Guard LLC
 Vital One Health
@@ -13481,6 +13499,7 @@ VMC Consulting LLC
 VNC Consulting Services LLC
 Vocara LLC
 Vocara, Inc
+Vocara.ai
 Vonnie McDonald State Farm
 Voom
 Voom Insurance
