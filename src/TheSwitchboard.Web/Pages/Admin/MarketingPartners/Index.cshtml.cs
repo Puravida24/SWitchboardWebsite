@@ -80,4 +80,72 @@ public class IndexModel : PageModel
         }
         return RedirectToPage();
     }
+
+    public async Task<IActionResult> OnPostImportAsync(IFormFile file)
+    {
+        if (file is null || file.Length == 0)
+        {
+            TempData["ImportResult"] = "No file uploaded.";
+            return RedirectToPage();
+        }
+
+        using var reader = new StreamReader(file.OpenReadStream());
+        var raw = await reader.ReadToEndAsync();
+
+        // Parse CSV: first line is header, one name per subsequent line.
+        // Accept either a single-column CSV or a "Name,Url" two-column CSV.
+        var lines = raw.Replace("\r\n", "\n").Split('\n');
+        var pairs = new List<(string name, string? url)>();
+        bool headerSeen = false;
+        foreach (var rawLine in lines)
+        {
+            var line = rawLine.Trim();
+            if (line.Length == 0) continue;
+            if (!headerSeen)
+            {
+                headerSeen = true;
+                // Skip header if it looks like one (contains "Name" or "name")
+                if (line.Contains("name", StringComparison.OrdinalIgnoreCase)) continue;
+            }
+            var parts = line.Split(',', 2);
+            var name = parts[0].Trim().Trim('"');
+            var url  = parts.Length > 1 ? parts[1].Trim().Trim('"') : null;
+            if (name.Length == 0) continue;
+            pairs.Add((name, string.IsNullOrWhiteSpace(url) ? null : url));
+        }
+
+        // Dedup incoming against itself first (case-insensitive).
+        var distinct = pairs
+            .GroupBy(p => p.name, StringComparer.OrdinalIgnoreCase)
+            .Select(g => g.First())
+            .ToList();
+
+        // Load existing names once for O(1) lookups.
+        var existing = new HashSet<string>(
+            await _db.MarketingPartners.Select(p => p.Name).ToListAsync(),
+            StringComparer.OrdinalIgnoreCase);
+
+        var now = DateTime.UtcNow;
+        var toInsert = distinct
+            .Where(p => !existing.Contains(p.name))
+            .Select(p => new MarketingPartner
+            {
+                Name = p.name,
+                WebsiteUrl = p.url,
+                IsActive = true,
+                CreatedAt = now
+            })
+            .ToList();
+        var skipped = distinct.Count - toInsert.Count;
+
+        if (toInsert.Count > 0)
+        {
+            _db.MarketingPartners.AddRange(toInsert);
+            await _db.SaveChangesAsync();
+        }
+
+        TempData["ImportResult"] =
+            $"Imported {toInsert.Count} new, skipped {skipped} existing (out of {distinct.Count} unique rows).";
+        return RedirectToPage();
+    }
 }

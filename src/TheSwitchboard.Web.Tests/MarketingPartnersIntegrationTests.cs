@@ -128,6 +128,44 @@ public class MarketingPartnersIntegrationTests : IClassFixture<MarketingPartners
         Assert.True(await db.MarketingPartners.AnyAsync(p => p.Name == "Preexisting Test Row"));
     }
 
+    // ── MP_16 CSV import: inserts new names, skips existing ──────────
+    [Fact]
+    public async Task MP_16_CsvImport_InsertsNew_SkipsExisting()
+    {
+        await SeedPartners("Existing Alpha", "Existing Beta");
+        var authed = await _factory.LoggedInClientAsync();
+
+        // CSV with 2 new + 2 existing (case-insensitive match on existing).
+        var csv = "Name\nNew Gamma\nNew Delta\nexisting alpha\nEXISTING BETA\n";
+        var ms = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(csv));
+        var content = new MultipartFormDataContent();
+        var fileContent = new StreamContent(ms);
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/csv");
+        content.Add(fileContent, "file", "import.csv");
+
+        // Grab AF token from the admin page first.
+        var page = await authed.GetStringAsync("/Admin/MarketingPartners");
+        var tokenMatch = System.Text.RegularExpressions.Regex.Match(page, @"name=""__RequestVerificationToken""[^>]*value=""([^""]+)""");
+        if (tokenMatch.Success)
+        {
+            content.Add(new StringContent(tokenMatch.Groups[1].Value), "__RequestVerificationToken");
+        }
+        var res = await authed.PostAsync("/Admin/MarketingPartners?handler=Import", content);
+        Assert.True(res.StatusCode is System.Net.HttpStatusCode.Redirect
+                                  or System.Net.HttpStatusCode.Found
+                                  or System.Net.HttpStatusCode.SeeOther
+                                  or System.Net.HttpStatusCode.OK,
+            $"Expected redirect or OK after import, got {res.StatusCode}");
+
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        Assert.True(await db.MarketingPartners.AnyAsync(p => p.Name == "New Gamma"));
+        Assert.True(await db.MarketingPartners.AnyAsync(p => p.Name == "New Delta"));
+        // Existing rows still only one copy each (case-insensitive dedup).
+        Assert.Equal(1, await db.MarketingPartners.CountAsync(p => p.Name.ToLower() == "existing alpha"));
+        Assert.Equal(1, await db.MarketingPartners.CountAsync(p => p.Name.ToLower() == "existing beta"));
+    }
+
     // ── MP_13 Public page ?letter=S filters to S partners only ───────
     [Fact]
     public async Task MP_13_PublicPage_LetterFilter_OnlyShowsThatLetter()

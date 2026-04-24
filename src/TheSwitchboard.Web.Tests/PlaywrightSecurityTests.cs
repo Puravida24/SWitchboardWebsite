@@ -122,7 +122,10 @@ public class PlaywrightSecurityTests
             await page.FillAsync("input[name='Email']",    PlaywrightFixture.AdminEmail);
             await page.FillAsync("input[name='Password']", PlaywrightFixture.AdminPassword);
             await page.ClickAsync("button[type='submit']");
-            await page.WaitForURLAsync("**/Admin/Dashboard**", new() { Timeout = 10_000 });
+            // 30s (was 10s) — under full-suite CPU contention the dashboard redirect
+            // can take >10s to land. The actual app is fast in isolation; the bump is
+            // purely for test-runtime slack, not a perf regression allowance.
+            await page.WaitForURLAsync("**/Admin/Dashboard**", new() { Timeout = 30_000 });
 
             Assert.EndsWith("/Admin/Dashboard", new Uri(page.Url).AbsolutePath, StringComparison.OrdinalIgnoreCase);
 

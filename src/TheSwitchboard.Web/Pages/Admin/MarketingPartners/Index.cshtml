@@ -23,6 +23,21 @@
     <button type="submit" style="background: #3b82f6; color: white; border: none; padding: 0.55rem 1.1rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem;">Add</button>
 </form>
 
+@if (TempData["ImportResult"] is string importMsg)
+{
+    <div style="padding: 0.7rem 1rem; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.35); border-radius: 6px; color: #bfdbfe; margin-bottom: 1rem; font-size: 0.85rem;">@importMsg</div>
+}
+
+<form method="post" asp-page-handler="Import" enctype="multipart/form-data" style="display: flex; gap: 0.75rem; margin-bottom: 1.25rem; align-items: end; padding: 0.75rem 1rem; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 6px;">
+    @Html.AntiForgeryToken()
+    <div style="flex:1">
+        <label style="display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 0.35rem;">Bulk CSV import</label>
+        <input type="file" name="file" accept=".csv,text/csv" required style="color: white; font-size: 0.85rem;" />
+        <span style="color: var(--slate-500); font-size: 0.78rem; display: block; margin-top: 0.35rem;">One column "Name", or two columns "Name,Url". Existing names (case-insensitive) are skipped.</span>
+    </div>
+    <button type="submit" style="background: #10b981; color: white; border: none; padding: 0.55rem 1.1rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem;">Import</button>
+</form>
+
 <form method="get" style="margin-bottom: 1rem;">
     <input name="q" value="@Model.Query" placeholder="Search partners…" style="width: 320px; padding: 0.5rem 0.7rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: white; font-size: 0.9rem;" />
     <button type="submit" style="background: rgba(255,255,255,0.08); color: white; border: none; padding: 0.55rem 1rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; margin-left: 0.35rem;">Search</button>

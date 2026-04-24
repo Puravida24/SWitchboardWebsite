@@ -110,6 +110,52 @@ public class InsightsAlertsTests : IClassFixture<SwitchboardWebApplicationFactor
             $"InMemory dup-key threw {t}: {thrown.Message} (inner: {thrown.InnerException?.GetType().FullName ?? "none"}). SessionService catch must handle this exact type.");
     }
 
+    // ── T12_12 Heavy-concurrency stress — 50 parallel upserts, no exceptions ──
+    // The try/catch-with-retry pattern in UpsertAsync has a narrower residual race:
+    // thread C retries, queries, sees existing, updates. Thread D does the same.
+    // Both call SaveChanges. Because UPDATE (not INSERT) doesn't collide, this is
+    // safe — but other paths in UpsertAsync (Session create + Visitor create in
+    // the same transaction) can still collide on the retry path. Run 50 parallel
+    // calls to deterministically flush every race window; assert clean exit +
+    // exactly one row each.
+    [Fact]
+    public async Task T12_12_Upsert_50Parallel_SameSidVid_NoException_ExactlyOneRow()
+    {
+        var sid = "s_heavy_" + Guid.NewGuid().ToString("N")[..8];
+        var vid = "v_heavy_" + Guid.NewGuid().ToString("N")[..8];
+        var input = new TheSwitchboard.Web.Services.Tracking.UpsertInput(
+            Vid: vid, Sid: sid, Path: "/", UserAgent: "test", IpAddress: null,
+            Referrer: null, UtmSource: null, UtmMedium: null, UtmCampaign: null,
+            UtmTerm: null, UtmContent: null, Gclid: null, Fbclid: null, Msclkid: null,
+            ViewportW: null, ViewportH: null, ConsentState: null,
+            EventKind: TheSwitchboard.Web.Services.Tracking.EventKind.Pageview, IpHash: null);
+
+        var tasks = new List<Task>();
+        var scopes = new List<IServiceScope>();
+        try
+        {
+            for (var i = 0; i < 50; i++)
+            {
+                var scope = _factory.Services.CreateScope();
+                scopes.Add(scope);
+                var svc = scope.ServiceProvider.GetRequiredService<TheSwitchboard.Web.Services.Tracking.ISessionService>();
+                tasks.Add(Task.Run(() => svc.UpsertAsync(input)));
+            }
+
+            var ex = await Record.ExceptionAsync(() => Task.WhenAll(tasks));
+            Assert.Null(ex);
+        }
+        finally
+        {
+            foreach (var s in scopes) s.Dispose();
+        }
+
+        using var verify = _factory.Services.CreateScope();
+        var db = verify.ServiceProvider.GetRequiredService<AppDbContext>();
+        Assert.Equal(1, await db.Sessions.CountAsync(x => x.Id == sid));
+        Assert.Equal(1, await db.Visitors.CountAsync(x => x.Id == vid));
+    }
+
     // ── T12_10 UpsertAsync must catch ArgumentException from InMemory Dictionary.Add ──
     // EF Core 9's InMemory provider does NOT wrap Dictionary.Add's ArgumentException
     // in DbUpdateException — it leaks through SaveChangesAsync. The original catch
