@@ -330,7 +330,13 @@ try
         Log.Warning(ex, "Database initialization skipped — running without persistence");
     }
 
-    try { await AdminSeedService.SeedAdminUserAsync(app.Services); }
+    try
+    {
+        // AdminSeedService depends on scoped services (UserManager/RoleManager), so
+        // we must resolve it through a scope — root provider would throw.
+        using var adminScope = app.Services.CreateScope();
+        await AdminSeedService.SeedAdminUserAsync(adminScope.ServiceProvider);
+    }
     catch (Exception ex) { Log.Warning(ex, "Admin user seed skipped"); }
 
     // MP-1: idempotent seed of marketing partners from Data/Seeds/marketing-partners.txt.

@@ -70,6 +70,37 @@ public class MarketingPartnersIntegrationTests : IClassFixture<MarketingPartners
             "Page must not contain the word 'leads' (brand rule).");
     }
 
+    // ── MP-06 seeder backfills WebsiteUrl on existing rows from link map ──
+    [Fact]
+    public async Task MP_06_Seeder_BackfillsUrlOnExistingRows()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        // Arrange: seed "Quote Wizard" without a URL (mirrors prod state where the
+        // row was inserted before the TSV mapping existed).
+        db.MarketingPartners.RemoveRange(db.MarketingPartners);
+        await db.SaveChangesAsync();
+        db.MarketingPartners.Add(new MarketingPartner { Name = "Quote Wizard", IsActive = true, WebsiteUrl = null });
+        await db.SaveChangesAsync();
+        var before = await db.MarketingPartners.FirstAsync(p => p.Name == "Quote Wizard");
+        Assert.Null(before.WebsiteUrl);
+
+        // Act
+        var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("test");
+        await MarketingPartnerSeeder.SeedMissingAsync(_factory.Services, env, logger);
+
+        // Assert: existing "Quote Wizard" row now has the URL from the TSV.
+        // Seeder ran in a separate scope — clear the tracker so we re-read from store,
+        // not from this scope's cached instance.
+        db.ChangeTracker.Clear();
+        var after = await db.MarketingPartners.AsNoTracking().FirstAsync(p => p.Name == "Quote Wizard");
+        Assert.False(string.IsNullOrEmpty(after.WebsiteUrl),
+            "Seeder should backfill WebsiteUrl on existing rows from the TSV link map");
+        Assert.Contains("quotewizard.com", after.WebsiteUrl);
+    }
+
     // ── MP-05 seeder inserts missing entries when table is non-empty ──
     [Fact]
     public async Task MP_05_Seeder_InsertsMissingWhenTableNonEmpty()

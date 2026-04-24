@@ -47,13 +47,26 @@ public static class MarketingPartnerSeeder
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        var existing = new HashSet<string>(
-            await db.MarketingPartners.Select(p => p.Name).ToListAsync(),
-            StringComparer.OrdinalIgnoreCase);
+        var existingRows = await db.MarketingPartners.ToListAsync();
+        var existingByName = new Dictionary<string, MarketingPartner>(StringComparer.OrdinalIgnoreCase);
+        foreach (var r in existingRows) existingByName.TryAdd(r.Name, r);
 
+        // Backfill WebsiteUrl on existing rows whenever the TSV has a mapping and the
+        // current value is empty or out of date. Prevents "row seeded before the TSV
+        // entry existed" from staying unlinked forever.
         var now = DateTime.UtcNow;
+        var updatedUrls = 0;
+        foreach (var (mappedName, mappedUrl) in urlMap)
+        {
+            if (!existingByName.TryGetValue(mappedName, out var row)) continue;
+            if (row.WebsiteUrl == mappedUrl) continue;
+            row.WebsiteUrl = mappedUrl;
+            row.UpdatedAt = now;
+            updatedUrls++;
+        }
+
         var toInsert = fileNames
-            .Where(n => !existing.Contains(n))
+            .Where(n => !existingByName.ContainsKey(n))
             .Select(name => new MarketingPartner
             {
                 Name = name,
@@ -63,18 +76,18 @@ public static class MarketingPartnerSeeder
             })
             .ToList();
 
-        if (toInsert.Count == 0)
+        if (toInsert.Count == 0 && updatedUrls == 0)
         {
-            logger.LogInformation("MarketingPartnerSeeder: nothing to insert ({Total} partners, seed file in sync)", existing.Count);
+            logger.LogInformation("MarketingPartnerSeeder: nothing to change ({Total} partners, seed file + link map in sync)", existingRows.Count);
             return;
         }
 
-        db.MarketingPartners.AddRange(toInsert);
+        if (toInsert.Count > 0) db.MarketingPartners.AddRange(toInsert);
         await db.SaveChangesAsync();
 
         var linked = toInsert.Count(r => !string.IsNullOrEmpty(r.WebsiteUrl));
         logger.LogInformation(
-            "MarketingPartnerSeeder: inserted {Inserted} missing partners ({Linked} hyperlinked); {Total} total after seed",
-            toInsert.Count, linked, existing.Count + toInsert.Count);
+            "MarketingPartnerSeeder: inserted {Inserted} missing ({Linked} hyperlinked), backfilled URLs on {Updated} existing; {Total} total after seed",
+            toInsert.Count, linked, updatedUrls, existingRows.Count + toInsert.Count);
     }
 }
