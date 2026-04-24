@@ -39,7 +39,7 @@ jobs:
         run: sleep 150
 
       - name: OWASP ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.12.0
+        uses: zaproxy/action-baseline@v0.15.0
         with:
           target: "https://www.theswitchboardmarketing.com/"
           rules_file_name: ".zap/rules.tsv"
