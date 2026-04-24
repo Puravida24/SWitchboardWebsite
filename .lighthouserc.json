@@ -40,14 +40,13 @@
         "non-composited-animations": "off",
         "prioritize-lcp-image":      "off",
 
-        "unsized-images":            "warn",
-        "uses-responsive-images":    "warn",
-        "unminified-javascript":     "warn",
-
         "bf-cache":                  "error",
         "color-contrast":            "error",
         "errors-in-console":         "error",
-        "inspector-issues":          "error"
+        "inspector-issues":          "error",
+        "unsized-images":            "error",
+        "unminified-javascript":     "error",
+        "uses-responsive-images":    "warn"
       }
     },
     "upload": { "target": "temporary-public-storage" }
