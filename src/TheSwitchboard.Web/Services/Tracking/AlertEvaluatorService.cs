@@ -93,10 +93,15 @@ public class AlertEvaluatorService : IAlertEvaluatorService
         return 100.0 * bots / total;
     }
 
+    // Same min-sample rationale as BotRate — a single submission without a cert
+    // produces 0% and trips the 95% floor. Below this floor the rate is meaningless
+    // so return 100 (pass-through) to suppress the rule.
+    private const int CaptureRateMinSampleSize = 10;
+
     private async Task<double> CaptureRate(DateTime from, DateTime to)
     {
         var subs = await _db.FormSubmissions.CountAsync(s => s.CreatedAt >= from && s.CreatedAt <= to);
-        if (subs == 0) return 100;
+        if (subs < CaptureRateMinSampleSize) return 100;
         var certified = await _db.FormSubmissions.CountAsync(s => s.CreatedAt >= from && s.CreatedAt <= to && s.ConsentCertificateId != null);
         return 100.0 * certified / subs;
     }

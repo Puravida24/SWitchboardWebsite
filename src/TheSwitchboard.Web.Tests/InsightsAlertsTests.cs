@@ -125,6 +125,51 @@ public class InsightsAlertsTests : IClassFixture<SwitchboardWebApplicationFactor
         Assert.False(fired, "bot-rate-above-5 must NOT fire when total session sample is below the minimum (1 session is not a meaningful rate).");
     }
 
+    // ── T12_08 Capture-rate alert must NOT fire on tiny sample ─────────
+    // One form submission without a consent cert = 0% capture rate =
+    // trips `capture-rate-below-95` with noise. Same shape as bot-rate.
+    [Fact]
+    public async Task T12_08_CaptureRateAlert_Suppressed_WhenSampleBelowMinimum()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.FormSubmissions.RemoveRange(db.FormSubmissions);
+        db.AlertLogs.RemoveRange(db.AlertLogs);
+        await db.SaveChangesAsync();
+
+        // Seed one submission WITHOUT a cert — 0% capture rate in the window.
+        db.FormSubmissions.Add(new TheSwitchboard.Web.Models.Forms.FormSubmission
+        {
+            FormType = "contact",
+            Data = "{}",
+            CreatedAt = DateTime.UtcNow.AddMinutes(-10),
+            ConsentCertificateId = null
+        });
+        await db.SaveChangesAsync();
+
+        var rule = await db.AlertRules.FirstOrDefaultAsync(r => r.Name == "capture-rate-below-95");
+        if (rule is null)
+        {
+            rule = new AlertRule
+            {
+                Name = "capture-rate-below-95",
+                MetricExpression = "capture-rate-1h",
+                Comparison = "lt",
+                Threshold = 95,
+                Window = "1h",
+                Enabled = true
+            };
+            db.AlertRules.Add(rule);
+            await db.SaveChangesAsync();
+        }
+
+        var svc = scope.ServiceProvider.GetRequiredService<IAlertEvaluatorService>();
+        await svc.EvaluateAsync();
+
+        var fired = await db.AlertLogs.AnyAsync(l => l.RuleId == rule.Id);
+        Assert.False(fired, "capture-rate-below-95 must NOT fire when total submission sample is below the minimum.");
+    }
+
     // ── T12_03 ─────────────────────────────────────────────────────────
     [Fact]
     public async Task T12_03_SegmentService_SavesAndRetrieves()
