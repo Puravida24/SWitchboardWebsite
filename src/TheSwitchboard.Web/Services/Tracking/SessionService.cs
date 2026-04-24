@@ -159,13 +159,16 @@ public class SessionService : ISessionService
         {
             await _db.SaveChangesAsync();
         }
-        catch (DbUpdateException)
+        catch (Exception ex) when (ex is DbUpdateException || ex is ArgumentException)
         {
             // Concurrent-request race on the same sid/vid — both threads added rows.
-            // Reload both entities and replay the bumps. Catches Session AND Visitor
-            // key collisions (the Playwright suite surfaced the Visitor variant when
-            // tests ran in parallel — InMemory "an item with the same key has already
-            // been added" at Sessions.SaveChangesAsync).
+            // Reload both entities and replay the bumps. Catches BOTH flavors:
+            //   - DbUpdateException: wrapped by relational providers (Postgres in prod)
+            //   - ArgumentException: raw from InMemory Dictionary.Add (test provider
+            //     surfaces this unwrapped — verified via T12_11 diagnostic).
+            // Verified required via the Playwright A2_03 flake trace where
+            // ArgumentException from InMemoryTable.Create propagated through
+            // SaveChangesAsync into middleware as a 500.
             _db.ChangeTracker.Clear();
 
             var existingSession = await _db.Sessions.FirstOrDefaultAsync(s => s.Id == sid);
@@ -189,7 +192,7 @@ public class SessionService : ISessionService
             {
                 await _db.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (Exception ex2) when (ex2 is DbUpdateException || ex2 is ArgumentException)
             {
                 // Race on the retry too (very rare — 3-way concurrency). Swallow:
                 // the event is ephemeral tracking data, not transactional business

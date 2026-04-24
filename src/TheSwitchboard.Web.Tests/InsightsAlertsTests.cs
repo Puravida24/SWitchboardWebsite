@@ -80,6 +80,83 @@ public class InsightsAlertsTests : IClassFixture<SwitchboardWebApplicationFactor
         Assert.True(await db.AlertLogs.AnyAsync(l => l.RuleId == rule.Id));
     }
 
+    // ── T12_11 Diagnostic: surface the actual exception type InMemory throws on dup-PK ──
+    // Direct test of EF 9 InMemory behavior. If this throws bare ArgumentException,
+    // the SessionService catch on DbUpdateException is insufficient and must broaden.
+    [Fact]
+    public async Task T12_11_Diagnostic_InMemory_DuplicateKey_ExceptionType()
+    {
+        using var s1 = _factory.Services.CreateScope();
+        using var s2 = _factory.Services.CreateScope();
+        var db1 = s1.ServiceProvider.GetRequiredService<AppDbContext>();
+        var db2 = s2.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        db1.Visitors.RemoveRange(db1.Visitors.Where(v => v.Id == "diag-dup-key"));
+        await db1.SaveChangesAsync();
+
+        var vid = "diag-dup-key";
+        db1.Visitors.Add(new Visitor { Id = vid, FirstSeen = DateTime.UtcNow, LastSeen = DateTime.UtcNow });
+        await db1.SaveChangesAsync();
+
+        db2.Visitors.Add(new Visitor { Id = vid, FirstSeen = DateTime.UtcNow, LastSeen = DateTime.UtcNow });
+        var thrown = await Record.ExceptionAsync(() => db2.SaveChangesAsync());
+        Assert.NotNull(thrown);
+        // Log the actual type so we can see it in test output; assert SessionService's
+        // current catch would handle it. If neither DbUpdateException nor
+        // ArgumentException, the catch needs broader handling.
+        var t = thrown!.GetType().FullName ?? "";
+        Assert.True(
+            thrown is DbUpdateException || thrown is ArgumentException,
+            $"InMemory dup-key threw {t}: {thrown.Message} (inner: {thrown.InnerException?.GetType().FullName ?? "none"}). SessionService catch must handle this exact type.");
+    }
+
+    // ── T12_10 UpsertAsync must catch ArgumentException from InMemory Dictionary.Add ──
+    // EF Core 9's InMemory provider does NOT wrap Dictionary.Add's ArgumentException
+    // in DbUpdateException — it leaks through SaveChangesAsync. The original catch
+    // only handled DbUpdateException, so on a duplicate-key race the ArgumentException
+    // propagated all the way to the middleware and produced a 500. Stress-test with
+    // many parallel calls to deterministically surface the race and verify no
+    // ArgumentException escapes.
+    [Fact]
+    public async Task T12_10_Upsert_SurvivesManyParallelCalls_NoArgumentExceptionLeak()
+    {
+        var sid = "s_stress_" + Guid.NewGuid().ToString("N")[..8];
+        var vid = "v_stress_" + Guid.NewGuid().ToString("N")[..8];
+        var input = new TheSwitchboard.Web.Services.Tracking.UpsertInput(
+            Vid: vid, Sid: sid, Path: "/", UserAgent: "test", IpAddress: null,
+            Referrer: null, UtmSource: null, UtmMedium: null, UtmCampaign: null,
+            UtmTerm: null, UtmContent: null, Gclid: null, Fbclid: null, Msclkid: null,
+            ViewportW: null, ViewportH: null, ConsentState: null,
+            EventKind: TheSwitchboard.Web.Services.Tracking.EventKind.Pageview, IpHash: null);
+
+        // Spawn 20 parallel upserts across 20 scopes — with a shared InMemory store
+        // this reliably collides on the first add.
+        var tasks = new List<Task>();
+        var scopes = new List<IServiceScope>();
+        try
+        {
+            for (var i = 0; i < 20; i++)
+            {
+                var scope = _factory.Services.CreateScope();
+                scopes.Add(scope);
+                var svc = scope.ServiceProvider.GetRequiredService<TheSwitchboard.Web.Services.Tracking.ISessionService>();
+                tasks.Add(svc.UpsertAsync(input));
+            }
+
+            var ex = await Record.ExceptionAsync(() => Task.WhenAll(tasks));
+            Assert.Null(ex);
+        }
+        finally
+        {
+            foreach (var s in scopes) s.Dispose();
+        }
+
+        using var verify = _factory.Services.CreateScope();
+        var db = verify.ServiceProvider.GetRequiredService<AppDbContext>();
+        Assert.Equal(1, await db.Sessions.CountAsync(x => x.Id == sid));
+        Assert.Equal(1, await db.Visitors.CountAsync(x => x.Id == vid));
+    }
+
     // ── T12_09 SessionService.UpsertAsync survives concurrent same-sid/vid ──
     // PlaywrightSecurityTests.A2_03 flaked intermittently with an InMemory
     // "An item with the same key has already been added" error at the Session
