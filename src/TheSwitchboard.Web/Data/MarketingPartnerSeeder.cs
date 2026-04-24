@@ -5,12 +5,16 @@ namespace TheSwitchboard.Web.Data;
 
 public static class MarketingPartnerSeeder
 {
-    public static async Task SeedIfEmptyAsync(IServiceProvider services, IWebHostEnvironment env, ILogger logger)
+    /// <summary>
+    /// Inserts any names from <c>Data/Seeds/marketing-partners.txt</c> that aren't already in
+    /// the <see cref="AppDbContext.MarketingPartners"/> table. Idempotent: re-running does nothing
+    /// once the seed file and table agree. Existing rows are left untouched (name + URL only
+    /// flow in; admin-managed state like IsActive is not overwritten once set).
+    /// </summary>
+    public static async Task SeedMissingAsync(IServiceProvider services, IWebHostEnvironment env, ILogger logger)
     {
         using var scope = services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        if (await db.MarketingPartners.AnyAsync()) return;
 
         var seedDir = Path.Combine(env.ContentRootPath, "Data", "Seeds");
         var namesPath = Path.Combine(seedDir, "marketing-partners.txt");
@@ -22,7 +26,6 @@ public static class MarketingPartnerSeeder
             return;
         }
 
-        // Load URL mapping — case-insensitive lookup by partner name.
         var urlMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         if (File.Exists(linksPath))
         {
@@ -38,12 +41,19 @@ public static class MarketingPartnerSeeder
             }
         }
 
-        var lines = await File.ReadAllLinesAsync(namesPath);
-        var now = DateTime.UtcNow;
-        var rows = lines
+        var fileNames = (await File.ReadAllLinesAsync(namesPath))
             .Select(l => l.Trim())
-            .Where(l => !string.IsNullOrEmpty(l))
+            .Where(n => n.Length > 0)
             .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var existing = new HashSet<string>(
+            await db.MarketingPartners.Select(p => p.Name).ToListAsync(),
+            StringComparer.OrdinalIgnoreCase);
+
+        var now = DateTime.UtcNow;
+        var toInsert = fileNames
+            .Where(n => !existing.Contains(n))
             .Select(name => new MarketingPartner
             {
                 Name = name,
@@ -53,9 +63,18 @@ public static class MarketingPartnerSeeder
             })
             .ToList();
 
-        db.MarketingPartners.AddRange(rows);
+        if (toInsert.Count == 0)
+        {
+            logger.LogInformation("MarketingPartnerSeeder: nothing to insert ({Total} partners, seed file in sync)", existing.Count);
+            return;
+        }
+
+        db.MarketingPartners.AddRange(toInsert);
         await db.SaveChangesAsync();
-        var linked = rows.Count(r => !string.IsNullOrEmpty(r.WebsiteUrl));
-        logger.LogInformation("MarketingPartnerSeeder: inserted {Count} partners ({Linked} hyperlinked)", rows.Count, linked);
+
+        var linked = toInsert.Count(r => !string.IsNullOrEmpty(r.WebsiteUrl));
+        logger.LogInformation(
+            "MarketingPartnerSeeder: inserted {Inserted} missing partners ({Linked} hyperlinked); {Total} total after seed",
+            toInsert.Count, linked, existing.Count + toInsert.Count);
     }
 }

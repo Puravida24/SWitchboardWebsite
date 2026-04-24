@@ -333,14 +333,16 @@ try
     try { await AdminSeedService.SeedAdminUserAsync(app.Services); }
     catch (Exception ex) { Log.Warning(ex, "Admin user seed skipped"); }
 
-    // MP-1: dev/local seed of marketing partners from Data/Seeds/marketing-partners.txt.
-    // Skipped in Testing env so integration tests stay deterministic.
+    // MP-1: idempotent seed of marketing partners from Data/Seeds/marketing-partners.txt.
+    // Each boot: inserts any file entries not already in the table. Safe to re-run;
+    // existing rows (including any admin-managed state) are untouched. Skipped in
+    // Testing env so integration tests stay deterministic.
     if (!app.Environment.IsEnvironment("Testing"))
     {
         try
         {
             var mpLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("MarketingPartnerSeeder");
-            await MarketingPartnerSeeder.SeedIfEmptyAsync(app.Services, app.Environment, mpLogger);
+            await MarketingPartnerSeeder.SeedMissingAsync(app.Services, app.Environment, mpLogger);
         }
         catch (Exception ex) { Log.Warning(ex, "Marketing partner seed skipped"); }
     }
