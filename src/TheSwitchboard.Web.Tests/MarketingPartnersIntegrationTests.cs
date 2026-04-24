@@ -128,6 +128,43 @@ public class MarketingPartnersIntegrationTests : IClassFixture<MarketingPartners
         Assert.True(await db.MarketingPartners.AnyAsync(p => p.Name == "Preexisting Test Row"));
     }
 
+    // ── MP_13 Public page ?letter=S filters to S partners only ───────
+    [Fact]
+    public async Task MP_13_PublicPage_LetterFilter_OnlyShowsThatLetter()
+    {
+        await SeedPartners("Alpha Co", "Sierra Co", "Sigma Co", "Zed Co");
+        var body = await _client.GetStringAsync("/marketing-partners?letter=S");
+        Assert.Contains("Sierra Co", body);
+        Assert.Contains("Sigma Co", body);
+        Assert.DoesNotContain("Alpha Co", body);
+        Assert.DoesNotContain("Zed Co", body);
+    }
+
+    // ── MP_14 Public page ?q=X filters substring match ──────────────
+    [Fact]
+    public async Task MP_14_PublicPage_Search_FiltersSubstring()
+    {
+        await SeedPartners("Allstate Insurance", "State Farm", "GEICO");
+        var body = await _client.GetStringAsync("/marketing-partners?q=stat");
+        // Case-insensitive substring
+        Assert.Contains("Allstate Insurance", body);
+        Assert.Contains("State Farm", body);
+        Assert.DoesNotContain("GEICO", body);
+    }
+
+    // ── MP_15 Public page renders A-Z nav strip ──────────────────────
+    [Fact]
+    public async Task MP_15_PublicPage_RendersAzNavStrip()
+    {
+        await SeedPartners("Alpha Co", "Mike Co", "Zulu Co");
+        var body = await _client.GetStringAsync("/marketing-partners");
+        // Look for the A-Z nav container
+        Assert.Contains("class=\"az-nav\"", body);
+        // Expect both enabled letters and at least one disabled class since not all letters have entries
+        Assert.Contains("az-nav-link", body);
+        Assert.Contains("az-nav-disabled", body);
+    }
+
     // ── MP_07 Admin list page requires auth ──────────────────────────
     [Fact]
     public async Task MP_07_AdminList_Anonymous_RedirectsToLogin()

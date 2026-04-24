@@ -186,6 +186,85 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.15; let
   font-weight: 400;
 }
 
+/* A-Z jump navigation */
+.az-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem;
+  padding: 0.75rem 0;
+  margin-bottom: 1.25rem;
+  border-top: 1px solid rgba(0, 51, 153, 0.08);
+  border-bottom: 1px solid rgba(0, 51, 153, 0.08);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+.az-nav a, .az-nav span {
+  display: inline-block;
+  min-width: 1.6rem;
+  padding: 0.25rem 0.35rem;
+  text-align: center;
+  border-radius: 3px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.az-nav-link {
+  color: var(--charcoal-1);
+}
+.az-nav-link:hover {
+  background: var(--gold);
+  color: var(--cream-1);
+}
+.az-nav-active {
+  background: var(--gold);
+  color: var(--cream-1) !important;
+}
+.az-nav-disabled {
+  color: var(--warm-gray-light);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.az-nav-all {
+  margin-left: 0.5rem;
+  border: 1px solid rgba(0, 51, 153, 0.15);
+}
+
+/* Search form */
+.partners-search {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  max-width: 520px;
+}
+.partners-search input[type="search"] {
+  flex: 1;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(0, 51, 153, 0.15);
+  border-radius: 4px;
+  background: var(--cream-1);
+  color: var(--charcoal-1);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+}
+.partners-search input[type="search"]:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+.partners-search button {
+  padding: 0.55rem 1.1rem;
+  background: var(--charcoal-1);
+  color: var(--cream-1);
+  border: none;
+  border-radius: 4px;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.partners-search button:hover { background: var(--gold); }
+
 .partners-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -284,6 +363,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.15; let
 
 <main class="legal-body">
   <p class="partners-intro">Carriers and partner companies include</p>
+  {{PARTNERS_SEARCH}}
+  {{AZ_NAV}}
   {{PARTNERS_GRID}}
 </main>
 
