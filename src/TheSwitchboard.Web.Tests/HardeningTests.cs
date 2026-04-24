@@ -149,6 +149,11 @@ public class HardeningTests : IClassFixture<SwitchboardWebApplicationFactory>
     }
 
     // ── H-9f_01 ─────────────────────────────────────────────────────────
+    // Was "no-cache, no-store"; dropped `no-store` because it disqualifies the
+    // browser bfcache (Lighthouse bf-cache audit). `no-cache, must-revalidate`
+    // still forces origin revalidation on every navigation — which is what we
+    // actually need to keep the per-request CSP nonce fresh — while allowing
+    // the memory-backed bfcache snapshot (nonce+body restored atomically).
     [Fact]
     public async Task H9f_01_Html_Has_NoCache_Headers()
     {
@@ -160,7 +165,9 @@ public class HardeningTests : IClassFixture<SwitchboardWebApplicationFactory>
         if (res.Content.Headers.TryGetValues("Cache-Control", out var b)) headers.AddRange(b);
         var cc = string.Join(",", headers);
         Assert.Contains("no-cache", cc, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("no-store", cc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("must-revalidate", cc, StringComparison.OrdinalIgnoreCase);
+        // Deliberately assert the ABSENCE of no-store — see Cache-Control comment above.
+        Assert.DoesNotContain("no-store", cc, StringComparison.OrdinalIgnoreCase);
     }
 
     // ── H-7_01 ─────────────────────────────────────────────────────────

@@ -1,9 +1,16 @@
 namespace TheSwitchboard.Web.Middleware;
 
 /// <summary>
-/// H-9f: Because every HTML response carries a per-request CSP nonce,
-/// any intermediate cache would serve stale nonces and break inline scripts.
-/// Set explicit no-cache headers so browsers + CDN edges never cache the body.
+/// H-9f: Every HTML response carries a per-request CSP nonce, so intermediate
+/// HTTP caches (browser disk cache, CDN edges) must NOT store the body — a
+/// stale nonce would break inline scripts on revisit.
+///
+/// Use `no-cache, must-revalidate` (not `no-store`). `no-cache` requires the
+/// browser to revalidate with the server on every navigation (origin controls
+/// freshness); `no-store` would have also blocked the browser back/forward
+/// cache, which is a memory snapshot — bfcache preserves headers + body
+/// together so the nonce remains consistent on restore (Lighthouse bf-cache
+/// audit flags no-store specifically).
 ///
 /// Static assets (/css, /js, /fonts, /wireframes/assets) still get the long-lived
 /// `public, max-age=604800, immutable` cache header set by StaticFileOptions.
@@ -24,7 +31,7 @@ public class HtmlNoCacheMiddleware
             var ct = context.Response.ContentType ?? string.Empty;
             if (ct.StartsWith("text/html", StringComparison.OrdinalIgnoreCase))
             {
-                context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+                context.Response.Headers["Cache-Control"] = "no-cache, must-revalidate";
                 context.Response.Headers["Pragma"] = "no-cache";
                 context.Response.Headers["Expires"] = "0";
             }
