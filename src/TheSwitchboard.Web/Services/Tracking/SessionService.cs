@@ -161,16 +161,40 @@ public class SessionService : ISessionService
         }
         catch (DbUpdateException)
         {
-            // Likely a concurrent-request race on the same sid — both added a row.
-            // Reload and retry the bump.
+            // Concurrent-request race on the same sid/vid — both threads added rows.
+            // Reload both entities and replay the bumps. Catches Session AND Visitor
+            // key collisions (the Playwright suite surfaced the Visitor variant when
+            // tests ran in parallel — InMemory "an item with the same key has already
+            // been added" at Sessions.SaveChangesAsync).
             _db.ChangeTracker.Clear();
-            var existing = await _db.Sessions.FirstOrDefaultAsync(s => s.Id == sid);
-            if (existing is not null)
+
+            var existingSession = await _db.Sessions.FirstOrDefaultAsync(s => s.Id == sid);
+            if (existingSession is not null)
             {
-                existing.EndedAt = now;
-                existing.EventCount += 1;
-                if (input.EventKind == EventKind.Pageview) existing.PageCount += 1;
+                existingSession.EndedAt = now;
+                existingSession.EventCount += 1;
+                if (input.EventKind == EventKind.Pageview) existingSession.PageCount += 1;
+            }
+
+            if (!string.IsNullOrWhiteSpace(vid))
+            {
+                var existingVisitor = await _db.Visitors.FirstOrDefaultAsync(v => v.Id == vid);
+                if (existingVisitor is not null)
+                {
+                    existingVisitor.LastSeen = now;
+                }
+            }
+
+            try
+            {
                 await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                // Race on the retry too (very rare — 3-way concurrency). Swallow:
+                // the event is ephemeral tracking data, not transactional business
+                // state, so dropping this one signal is preferable to propagating
+                // a 5xx to the browser.
             }
         }
 
