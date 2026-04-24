@@ -128,6 +128,109 @@ public class MarketingPartnersIntegrationTests : IClassFixture<MarketingPartners
         Assert.True(await db.MarketingPartners.AnyAsync(p => p.Name == "Preexisting Test Row"));
     }
 
+    // ── MP_07 Admin list page requires auth ──────────────────────────
+    [Fact]
+    public async Task MP_07_AdminList_Anonymous_RedirectsToLogin()
+    {
+        var res = await _client.GetAsync("/Admin/MarketingPartners");
+        Assert.True(res.StatusCode is System.Net.HttpStatusCode.Redirect
+                                  or System.Net.HttpStatusCode.Found
+                                  or System.Net.HttpStatusCode.SeeOther,
+            $"Expected redirect, got {res.StatusCode}");
+        Assert.Contains("/Admin/Login",
+            res.Headers.Location?.ToString() ?? string.Empty,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    // ── MP_08 Authenticated admin list page renders + shows partners ──
+    [Fact]
+    public async Task MP_08_AdminList_Authenticated_RendersPartners()
+    {
+        await SeedPartners("Admin Test Partner One", "Admin Test Partner Two");
+        var authed = await _factory.LoggedInClientAsync();
+        var body = await authed.GetStringAsync("/Admin/MarketingPartners");
+        Assert.Contains("Admin Test Partner One", body);
+        Assert.Contains("Admin Test Partner Two", body);
+    }
+
+    // ── MP_09 Admin can search the partner list ──────────────────────
+    [Fact]
+    public async Task MP_09_AdminList_Search_FiltersResults()
+    {
+        await SeedPartners("Alpha Unique", "Beta Unique", "Gamma Unique");
+        var authed = await _factory.LoggedInClientAsync();
+        var body = await authed.GetStringAsync("/Admin/MarketingPartners?q=Beta");
+        Assert.Contains("Beta Unique", body);
+        Assert.DoesNotContain("Alpha Unique", body);
+        Assert.DoesNotContain("Gamma Unique", body);
+    }
+
+    // ── MP_10 Admin can create a new partner ────────────────────────
+    [Fact]
+    public async Task MP_10_AdminCreate_PersistsPartner()
+    {
+        var authed = await _factory.LoggedInClientAsync();
+        await _factory.PostAsync(authed, "/Admin/MarketingPartners?handler=Create", new()
+        {
+            ["Name"] = "Newly Created Partner",
+            ["WebsiteUrl"] = "https://example.com/mp"
+        });
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var row = await db.MarketingPartners.FirstOrDefaultAsync(p => p.Name == "Newly Created Partner");
+        Assert.NotNull(row);
+        Assert.Equal("https://example.com/mp", row!.WebsiteUrl);
+        Assert.True(row.IsActive);
+    }
+
+    // ── MP_11 Admin can toggle IsActive ──────────────────────────────
+    [Fact]
+    public async Task MP_11_AdminToggle_FlipsIsActive()
+    {
+        await SeedPartners("Toggle Target");
+        int id;
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            id = (await db.MarketingPartners.FirstAsync(p => p.Name == "Toggle Target")).Id;
+        }
+        var authed = await _factory.LoggedInClientAsync();
+        await _factory.PostAsync(authed, $"/Admin/MarketingPartners?handler=Toggle&id={id}", new());
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var row = await db.MarketingPartners.FindAsync(id);
+            Assert.NotNull(row);
+            Assert.False(row!.IsActive, "Toggle should flip IsActive to false");
+        }
+    }
+
+    // ── MP_12 Admin can edit name + URL ──────────────────────────────
+    [Fact]
+    public async Task MP_12_AdminEdit_PersistsChanges()
+    {
+        await SeedPartners("Original Name");
+        int id;
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            id = (await db.MarketingPartners.FirstAsync(p => p.Name == "Original Name")).Id;
+        }
+        var authed = await _factory.LoggedInClientAsync();
+        await _factory.PostAsync(authed, $"/Admin/MarketingPartners?handler=Edit&id={id}", new()
+        {
+            ["Name"] = "Updated Name",
+            ["WebsiteUrl"] = "https://updated.example.com"
+        });
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var row = await db.MarketingPartners.FindAsync(id);
+            Assert.Equal("Updated Name", row!.Name);
+            Assert.Equal("https://updated.example.com", row.WebsiteUrl);
+        }
+    }
+
     private async Task SeedPartners(params string[] names)
     {
         using var scope = _factory.Services.CreateScope();
