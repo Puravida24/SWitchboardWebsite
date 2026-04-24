@@ -32,7 +32,13 @@
         "uses-http2":          "off",
         "unused-javascript":   "off",
         "unused-css-rules":    "off",
-        "uses-rel-preconnect": "off"
+        "uses-rel-preconnect": "off",
+
+        "is-crawlable":              "off",
+        "lcp-lazy-loaded":           "off",
+        "non-composited-animations": "off",
+        "prioritize-lcp-image":      "off",
+        "unsized-images":            "warn"
       }
     },
     "upload": { "target": "temporary-public-storage" }
