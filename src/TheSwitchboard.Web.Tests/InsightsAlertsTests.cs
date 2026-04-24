@@ -80,6 +80,51 @@ public class InsightsAlertsTests : IClassFixture<SwitchboardWebApplicationFactor
         Assert.True(await db.AlertLogs.AnyAsync(l => l.RuleId == rule.Id));
     }
 
+    // ── T12_07 Bot-rate alert must NOT fire on tiny sample ─────────────
+    // A single bot session in a quiet hour produced a 100% bot rate which
+    // tripped the 5% threshold and spammed CRITICAL alerts. The rule must
+    // require a minimum session sample before evaluating the rate.
+    [Fact]
+    public async Task T12_07_BotRateAlert_Suppressed_WhenSampleBelowMinimum()
+    {
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Sessions.RemoveRange(db.Sessions);
+        db.AlertLogs.RemoveRange(db.AlertLogs);
+        await db.SaveChangesAsync();
+
+        db.Sessions.Add(new Session
+        {
+            Id = "s_bot_solo_" + Guid.NewGuid().ToString("N")[..8],
+            StartedAt = DateTime.UtcNow.AddMinutes(-10),
+            EndedAt = DateTime.UtcNow.AddMinutes(-5),
+            IsBot = true
+        });
+        await db.SaveChangesAsync();
+
+        var rule = await db.AlertRules.FirstOrDefaultAsync(r => r.Name == "bot-rate-above-5");
+        if (rule is null)
+        {
+            rule = new AlertRule
+            {
+                Name = "bot-rate-above-5",
+                MetricExpression = "bot-rate-1h",
+                Comparison = "gt",
+                Threshold = 5,
+                Window = "1h",
+                Enabled = true
+            };
+            db.AlertRules.Add(rule);
+            await db.SaveChangesAsync();
+        }
+
+        var svc = scope.ServiceProvider.GetRequiredService<IAlertEvaluatorService>();
+        await svc.EvaluateAsync();
+
+        var fired = await db.AlertLogs.AnyAsync(l => l.RuleId == rule.Id);
+        Assert.False(fired, "bot-rate-above-5 must NOT fire when total session sample is below the minimum (1 session is not a meaningful rate).");
+    }
+
     // ── T12_03 ─────────────────────────────────────────────────────────
     [Fact]
     public async Task T12_03_SegmentService_SavesAndRetrieves()

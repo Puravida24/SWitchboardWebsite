@@ -79,10 +79,16 @@ public class AlertEvaluatorService : IAlertEvaluatorService
         await _db.SaveChangesAsync();
     }
 
+    // Minimum session sample before bot-rate is a meaningful percentage. Without
+    // this guard a single bot-classified session in a quiet hour produces 100%
+    // and trips the 5% threshold, spamming CRITICAL alerts. 10 sessions is a
+    // pragmatic floor — under it, one crawler hit stays under threshold.
+    private const int BotRateMinSampleSize = 10;
+
     private async Task<double> BotRate(DateTime from, DateTime to)
     {
         var total = await _db.Sessions.CountAsync(s => s.StartedAt >= from && s.StartedAt <= to);
-        if (total == 0) return 0;
+        if (total < BotRateMinSampleSize) return 0;
         var bots = await _db.Sessions.CountAsync(s => s.StartedAt >= from && s.StartedAt <= to && s.IsBot);
         return 100.0 * bots / total;
     }
