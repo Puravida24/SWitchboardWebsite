@@ -1,0 +1,9 @@
+# Marketing partner hyperlinks — tab-separated: partner-name<TAB>URL
+# Case-insensitive match on partner name. One canonical entry per destination URL.
+MediaAlpha's Marketing Partners	https://insurance.mediaalpha.com/content/marketing-partners.html
+Agent Marketing Partners	https://insurance.mediaalpha.com/content/agent-marketing-partners.html
+EverQuote's marketing partners	https://plist.everquote.com/partners/
+SmartFinancial Marketing Partners	https://smartfinancial.com/marketing-partners.html
+Apollo Partners	https://www.apollointeractive.com/carriers.php
+DIQ Partners	https://easy.quotza.com/partners.php
+The Lead Company	https://lead.co/resources/consumers/company-list/

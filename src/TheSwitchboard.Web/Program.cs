@@ -314,7 +314,8 @@ try
     TheSwitchboard.Web.Api.OpsEndpoints.MapOpsEndpoints(app);
     TheSwitchboard.Web.Api.IndexNowEndpoints.MapIndexNowEndpoints(app);
 
-    // Auto-migrate and seed
+    // Auto-migrate and seed (each step independent so a dev-only guard failure
+    // in one — e.g. AdminSeedService requiring Admin:Password — doesn't cascade).
     try
     {
         using var scope = app.Services.CreateScope();
@@ -323,11 +324,25 @@ try
             await db.Database.MigrateAsync();
         else
             await db.Database.EnsureCreatedAsync();
-        await AdminSeedService.SeedAdminUserAsync(scope.ServiceProvider);
     }
     catch (Exception ex)
     {
         Log.Warning(ex, "Database initialization skipped — running without persistence");
+    }
+
+    try { await AdminSeedService.SeedAdminUserAsync(app.Services); }
+    catch (Exception ex) { Log.Warning(ex, "Admin user seed skipped"); }
+
+    // MP-1: dev/local seed of marketing partners from Data/Seeds/marketing-partners.txt.
+    // Skipped in Testing env so integration tests stay deterministic.
+    if (!app.Environment.IsEnvironment("Testing"))
+    {
+        try
+        {
+            var mpLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("MarketingPartnerSeeder");
+            await MarketingPartnerSeeder.SeedIfEmptyAsync(app.Services, app.Environment, mpLogger);
+        }
+        catch (Exception ex) { Log.Warning(ex, "Marketing partner seed skipped"); }
     }
 
     app.Run();

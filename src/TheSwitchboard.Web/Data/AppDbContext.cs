@@ -23,6 +23,7 @@ public class AppDbContext : IdentityDbContext<AdminUser>
     public DbSet<ClientLogo> ClientLogos => Set<ClientLogo>();
     public DbSet<TeamMember> TeamMembers => Set<TeamMember>();
     public DbSet<PageMeta> PageMetas => Set<PageMeta>();
+    public DbSet<MarketingPartner> MarketingPartners => Set<MarketingPartner>();
 
     // Forms
     public DbSet<FormSubmission> FormSubmissions => Set<FormSubmission>();
@@ -120,6 +121,13 @@ public class AppDbContext : IdentityDbContext<AdminUser>
         modelBuilder.Entity<PageMeta>(e =>
         {
             e.HasIndex(p => p.PagePath).IsUnique();
+        });
+
+        modelBuilder.Entity<MarketingPartner>(e =>
+        {
+            e.Property(p => p.Name).HasMaxLength(300);
+            e.HasIndex(p => p.Name);
+            e.HasIndex(p => p.IsActive);
         });
 
         modelBuilder.Entity<PageView>(e =>
