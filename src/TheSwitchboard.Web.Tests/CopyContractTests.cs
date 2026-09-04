@@ -13,6 +13,9 @@ namespace TheSwitchboard.Web.Tests;
 ///   C. Privacy + Terms both show "Effective April 17, 2026 · Last updated April 17, 2026".
 ///   D. Homepage does not repeat the "Every line of code, every data pipeline, every model" refrain.
 ///   E. security.txt uses legal@theswitchboardmarketing.com (the real mailbox), not security@.
+///
+/// Link-integrity gate (L1 — 2026-09-03):
+///   Root-served wireframes carry no relative .html hrefs (they 404 at clean URLs).
 /// </summary>
 public class CopyContractTests
 {
