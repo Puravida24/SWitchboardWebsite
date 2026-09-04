@@ -103,6 +103,26 @@ public class CopyContractTests
         Assert.Contains("Sub-five milliseconds", home);
     }
 
+    // Link-integrity gate (2026-09-03): these four wireframes are served raw at
+    // root-level clean URLs (/ , /privacy, /terms, /accessibility) by PublicPageModel,
+    // so any relative *.html href resolves to a root path that has no file behind it
+    // and 404s in production. All internal links must be absolute clean URLs.
+    [Theory]
+    [InlineData("wireframes/design-32e-newsprint.html")]
+    [InlineData("wireframes/privacy.html")]
+    [InlineData("wireframes/terms.html")]
+    [InlineData("wireframes/accessibility.html")]
+    public void L1_RootServedPages_HaveNoRelativeHtmlLinks(string file)
+    {
+        var html = Read(file);
+        var offenders = Regex.Matches(html, @"href=""(?!https?://|/|#|mailto:|tel:)[^""]*\.html[^""]*""")
+            .Select(m => m.Value)
+            .Distinct()
+            .ToList();
+        Assert.True(offenders.Count == 0,
+            $"{file} contains relative .html links that 404 when served at a root URL: {string.Join(", ", offenders)}");
+    }
+
     [Fact]
     public void H1_G_MetaDescription_NoDoubleWritten_UsesOperatorsLine()
     {
